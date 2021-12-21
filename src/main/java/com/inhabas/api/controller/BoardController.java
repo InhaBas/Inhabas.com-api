@@ -2,20 +2,20 @@ package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.board.Category;
+import com.inhabas.api.dto.BoardDto;
 import com.inhabas.api.repository.BoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Slf4j
+@Tag(name = "Board")
 @RestController
-@Tag(name = "UserController")
-@RequestMapping("/api/board")
+@RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
@@ -27,28 +27,30 @@ public class BoardController {
         return repository.findById(id);
     }
 
+    @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
-    public List<Board> allBoards() {
-        return repository.findAll();
+    public List<Board> allBoards(
+            @RequestParam(required = false) Category category
+    ) {
+        return repository.findByType(category);
     }
 
+    @Operation(description = "게시글 추가")
     @PostMapping
     public Board addBoard(@ModelAttribute Board board) {
         return repository.save(board);
     }
 
+    @Operation(description = "게시글 수정")
     @PutMapping
-    public Board updateBoard(@RequestBody Board board) {
-        repository.update(board.getId(), board);
-        return repository.findById(board.getId());
+    public Board updateBoard(@RequestBody Long id, @RequestBody BoardDto board) {
+        repository.update(id, board);
+        return repository.findById(id);
     }
 
+    @Operation(description = "게시글 삭제")
     @DeleteMapping
     public void deleteBoard(@RequestParam Long id) {
         repository.deleteById(id);
     }
-
-
-
-
 }

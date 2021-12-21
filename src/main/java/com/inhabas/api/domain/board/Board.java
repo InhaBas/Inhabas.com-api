@@ -14,6 +14,7 @@ public class Board {
     private Integer writerId;
     private LocalDateTime created;
     private LocalDateTime updated;
+    private Category category;
 
     public Board() {
     }
@@ -22,5 +23,12 @@ public class Board {
         this.title = title;
         this.contents = contents;
         this.writerId = writerId;
+    }
+
+    public Board(String title, String contents, Integer writerId, Category category) {
+        this.title = title;
+        this.contents = contents;
+        this.writerId = writerId;
+        this.category = category;
     }
 }
