@@ -1,4 +1,4 @@
-package com.inhabas.api.repository;
+package com.inhabas.api.repository.board;
 
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.Board;
@@ -10,14 +10,14 @@ public interface BoardRepository {
 
     public Board save(Board board);
 
-    public Board findById(Long id);
+    public Board findById(Integer id);
 
     public List<Board> findAll();
 
     public List<Board> findByType(Category type);
 
-    public void deleteById(Long id);
+    public void deleteById(Integer id);
 
-    public void update(Long id, BoardDto board);
+    public void update(Integer id, BoardDto board);
 
 }

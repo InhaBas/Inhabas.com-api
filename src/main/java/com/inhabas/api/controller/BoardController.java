@@ -3,7 +3,7 @@ package com.inhabas.api.controller;
 import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.dto.BoardDto;
-import com.inhabas.api.repository.BoardRepository;
+import com.inhabas.api.repository.board.BoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class BoardController {
 
     @Operation(description = "게시글 조회")
     @GetMapping
-    public Board board(@RequestParam Long id) {
+    public Board board(@RequestParam Integer id) {
         return repository.findById(id);
     }
 
@@ -43,14 +43,14 @@ public class BoardController {
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public Board updateBoard(@RequestBody Long id, @RequestBody BoardDto board) {
+    public Board updateBoard(@RequestBody Integer id, @RequestBody BoardDto board) {
         repository.update(id, board);
         return repository.findById(id);
     }
 
     @Operation(description = "게시글 삭제")
     @DeleteMapping
-    public void deleteBoard(@RequestParam Long id) {
+    public void deleteBoard(@RequestParam Integer id) {
         repository.deleteById(id);
     }
 }
