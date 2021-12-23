@@ -1,8 +1,9 @@
 package com.inhabas.api.board.repository;
 
 import com.inhabas.api.domain.board.Category;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.dto.BoardDto;
-import com.inhabas.api.repository.MemoryBoardRepository;
+import com.inhabas.api.repository.board.MemoryBoardRepository;
 import com.inhabas.api.domain.board.Board;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class MemoryBoardRepositoryTest {
     @Test
     void save() {
         //given
-        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
+        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", new Member());
 
         //when
         Board savedBoard = store.save(board);
@@ -37,8 +38,8 @@ public class MemoryBoardRepositoryTest {
     @Test
     void findAll() {
         //given
-        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
-        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", 12165298);
+        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", new Member());
+        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", new Member());
 
         //when
         store.save(공지사항1);
@@ -53,8 +54,8 @@ public class MemoryBoardRepositoryTest {
     @Test
     void findById() {
         //given
-        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
-        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", 12165298);
+        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", new Member());
+        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", new Member());
 
         //when
         store.save(공지사항1);
@@ -68,36 +69,39 @@ public class MemoryBoardRepositoryTest {
     @Test
     void update() {
         //given
-        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
+        Member writer = new Member();
+        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", writer);
 
         //when
         Board savedBoard = store.save(board);
-        Long saveId = savedBoard.getId();
+        Integer saveId = savedBoard.getId();
 
         //then
         BoardDto updateParam =
-                new BoardDto("공지 변경", "오늘 점심 취소입니다.", 12171652, Category.values()[3]);
+                new BoardDto("공지 변경", "오늘 점심 취소입니다.", writer, Category.values()[3]);
         store.update(saveId, updateParam);
 
         Board findBoard = store.findById(saveId);
         assertThat(findBoard.getId()).isEqualTo(saveId);
         assertThat(findBoard.getContents()).isEqualTo(updateParam.getContents());
         assertThat(findBoard.getTitle()).isEqualTo(updateParam.getTitle());
-        assertThat(findBoard.getWriterId()).isEqualTo(updateParam.getWriterId());
+        assertThat(findBoard.getWriter()).isEqualTo(updateParam.getWriter());
     }
 
     @Test
     void illegalUpdate() {
         //given
-        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
+        Member writer1 = new Member();
+        Board board = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", writer1);
 
         //when
         Board savedBoard = store.save(board);
-        Long saveId = savedBoard.getId();
+        Integer saveId = savedBoard.getId();
 
         //then
+        Member writer2 = new Member();
         BoardDto updateParam =
-                new BoardDto("공지 변경", "오늘 점심 취소입니다.", null, Category.values()[1]);
+                new BoardDto("공지 변경", "오늘 점심 취소입니다.", writer2, Category.values()[1]);
         store.update(saveId, updateParam);
 
         Board findBoard = store.findById(saveId);
@@ -105,14 +109,14 @@ public class MemoryBoardRepositoryTest {
         assertThat(findBoard.getId()).isEqualTo(saveId);
         assertThat(findBoard.getContents()).isEqualTo(board.getContents());
         assertThat(findBoard.getTitle()).isEqualTo(board.getTitle());
-        assertThat(findBoard.getWriterId()).isEqualTo(board.getWriterId());
+        assertThat(findBoard.getWriter()).isEqualTo(board.getWriter());
     }
 
     @Test
     void deleteById() {
         //given
-        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", 12171652);
-        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", 12165298);
+        Board 공지사항1 = new Board("공지사항1", "오늘은 맛있는 점심을 먹습니다.", new Member());
+        Board 공지사항2 = new Board("공지사항2", "오늘은 맛없는 저녁을 먹습니다.", new Member());
 
         //when
         Board savedBoard = store.save(공지사항1);
@@ -135,7 +139,7 @@ public class MemoryBoardRepositoryTest {
 
             for (int j = 0; j < i; j++) {
                 Board board = new Board(
-                        String.format("board[%d,%d]",i,j), "any title", 10000000, Category.values()[i-1]);
+                        String.format("board[%d,%d]",i,j), "any title", new Member(), Category.values()[i-1]);
                 boardsTmp.add(board);
                 store.save(board);
             }
