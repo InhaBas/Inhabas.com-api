@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Date;
 
 @Embeddable
@@ -13,10 +15,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IbasInformation {
-    @Column(name = "USER_ROLE")
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "USER_JOINED")
     private Date joined;
 
     @Column(name = "USER_INTRO")

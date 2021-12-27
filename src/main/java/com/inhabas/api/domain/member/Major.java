@@ -9,17 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "MAJOR_INFO")
+@Table(name = "major_info")
 @Getter @NoArgsConstructor
 public class Major {
-    @Id @Column(name = "MAJOR_NO")
+    @Id
     private Integer id;
 
-    @Column(name = "MAJOR_COLLEGE")
     private String college;
 
-    @Column(name = "MAJOR_NAME")
-    private String name;
+    private String major;
 }
 
 //public enum Major {

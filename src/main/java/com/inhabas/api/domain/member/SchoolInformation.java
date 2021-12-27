@@ -15,12 +15,9 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 public class SchoolInformation {
     @ManyToOne
-    @JoinColumn(name = "USER_MAJOR")
     private Major major;
 
-    @Column(name = "USER_GRADE")
     private Integer grade;
 
-    @Column(name = "USER_GEN")
     private Integer gen;
 }
