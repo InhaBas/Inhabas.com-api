@@ -1,20 +1,16 @@
 package com.inhabas.api.domain.member;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Embeddable
-@Getter
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class SchoolInformation {
-    @ManyToOne
+
+    @Enumerated(EnumType.STRING)
     private Major major;
 
     private Integer grade;
