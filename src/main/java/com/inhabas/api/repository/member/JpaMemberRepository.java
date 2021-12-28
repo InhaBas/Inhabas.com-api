@@ -1,6 +1,8 @@
 package com.inhabas.api.repository.member;
 
 import com.inhabas.api.domain.member.Member;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -11,11 +13,12 @@ import java.util.List;
 public class JpaMemberRepository implements MemberRepository {
 
     @PersistenceContext
-    EntityManager em;
+    private EntityManager em;
 
     @Override
-    public void save(Member member) {
+    public Member save(Member member) {
         em.persist(member);
+        return em.find(Member.class, member.getId());
     }
 
     @Override

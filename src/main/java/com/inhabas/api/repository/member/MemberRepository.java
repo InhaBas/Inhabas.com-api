@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface MemberRepository {
 
-    public void save(Member member);
+    public Member save(Member member);
 
     public Member findById(Integer id);
 
