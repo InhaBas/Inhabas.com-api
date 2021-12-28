@@ -64,12 +64,12 @@ public class MemberServiceTest {
         member.setId(12171652);
         member.setName("유동현");
         member.setPhone("010-1111-1111");
-        member.setIbasInformation(new IbasInformation(Role.values()[0], new Date(), "hello", 0));
+        member.setIbasInformation(new IbasInformation(Role.values()[0], "hello", 0));
         memberService.join(member);
         memberRepository.detach(member);
 
         //when
-        IbasInformation param = new IbasInformation(Role.values()[1], new Date(), "not hello", 1);
+        IbasInformation param = new IbasInformation(Role.values()[1], "not hello", 1);
         member.setIbasInformation(param);     // no dirty check
         member.setPhone("010-2222-2222");
         Member updateMember = memberService.updateMember(member);
@@ -79,6 +79,5 @@ public class MemberServiceTest {
         assertThat(updateMember.getIbasInformation().getIntroduce()).isEqualTo(param.getIntroduce());
         assertThat(updateMember.getIbasInformation().getApplyPublish()).isEqualTo(param.getApplyPublish());
         assertThat(updateMember.getPhone()).isEqualTo("010-2222-2222");
-
     }
 }
