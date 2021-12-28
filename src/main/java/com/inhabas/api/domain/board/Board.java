@@ -3,6 +3,9 @@ package com.inhabas.api.domain.board;
 import com.inhabas.api.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -13,6 +16,7 @@ import java.util.Map;
 @Entity
 @Table
 @Getter @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Board {
 
     @Id
@@ -27,11 +31,11 @@ public class Board {
     @ManyToOne
     private Member writer;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
+    @CreatedDate
+    private LocalDateTime created;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updated;
+    @LastModifiedDate
+    private LocalDateTime updated;
 
     @Enumerated(EnumType.STRING)
     private Category category;
@@ -47,6 +51,14 @@ public class Board {
     }
 
     public Board(String title, String contents, Member writer, Category category) {
+        this.title = title;
+        this.contents = contents;
+        this.writer = writer;
+        this.category = category;
+    }
+
+    public Board(Integer id, String title, String contents, Member writer, Category category) {
+        this.id = id;
         this.title = title;
         this.contents = contents;
         this.writer = writer;

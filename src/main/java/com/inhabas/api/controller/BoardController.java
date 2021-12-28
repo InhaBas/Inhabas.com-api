@@ -32,7 +32,12 @@ public class BoardController {
     public List<Board> allBoards(
             @RequestParam(required = false) Category category
     ) {
-        return repository.findByType(category);
+        List<Board> boardList;
+		if (category == null) 
+			boardList = repository.findAll();
+		else
+			boardList = repository.findAllByCategory(category);
+		return boardList;
     }
 
     @Operation(description = "게시글 추가")
@@ -43,9 +48,9 @@ public class BoardController {
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public Board updateBoard(@RequestBody Integer id, @RequestBody BoardDto board) {
-        repository.update(id, board);
-        return repository.findById(id);
+    public Board updateBoard(@RequestBody Board board) {
+        repository.update(board);
+        return repository.findById(board.getId());
     }
 
     @Operation(description = "게시글 삭제")

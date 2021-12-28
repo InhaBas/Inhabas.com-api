@@ -77,9 +77,8 @@ public class MemoryBoardRepositoryTest {
         Integer saveId = savedBoard.getId();
 
         //then
-        BoardDto updateParam =
-                new BoardDto("공지 변경", "오늘 점심 취소입니다.", writer, Category.values()[3]);
-        store.update(saveId, updateParam);
+        Board updateParam = new Board(saveId, "공지 변경", "오늘 점심 취소입니다.", writer, Category.values()[3]);
+        store.update(updateParam);
 
         Board findBoard = store.findById(saveId);
         assertThat(findBoard.getId()).isEqualTo(saveId);
@@ -100,9 +99,8 @@ public class MemoryBoardRepositoryTest {
 
         //then
         Member writer2 = new Member();
-        BoardDto updateParam =
-                new BoardDto("공지 변경", "오늘 점심 취소입니다.", writer2, Category.values()[1]);
-        store.update(saveId, updateParam);
+        Board updateParam = new Board(saveId, "공지 변경", "오늘 점심 취소입니다.", writer2, Category.values()[1]);
+        store.update(updateParam);
 
         Board findBoard = store.findById(saveId);
 
@@ -148,7 +146,7 @@ public class MemoryBoardRepositoryTest {
 
         //then
         for (int i = 0; i < Category.values().length; i++) {
-            int size = store.findByType(Category.values()[i]).size();
+            int size = store.findAllByCategory(Category.values()[i]).size();
             assertThat(boards.get(i).size()).isEqualTo(size);
         }
     }

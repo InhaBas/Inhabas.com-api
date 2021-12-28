@@ -14,10 +14,10 @@ public interface BoardRepository {
 
     public List<Board> findAll();
 
-    public List<Board> findByType(Category type);
+    public List<Board> findAllByCategory(Category type);
 
     public void deleteById(Integer id);
 
-    public void update(Integer id, BoardDto board);
+    public void update(Board board);
 
 }

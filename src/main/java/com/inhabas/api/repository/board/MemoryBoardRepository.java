@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 
 @Slf4j
-@Repository
 public class MemoryBoardRepository implements BoardRepository {
 
     private final static ConcurrentHashMap<Integer, Board> store = new ConcurrentHashMap<>();
@@ -31,7 +30,7 @@ public class MemoryBoardRepository implements BoardRepository {
     @Override
     public Board save(Board board) {
         board.setId(sequence.incrementAndGet());
-        board.setCreated(new Date());
+        //board.setCreated(LocalDateTime.now());
         store.put(board.getId(), board);
         return board;
     }
@@ -47,7 +46,7 @@ public class MemoryBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> findByType(Category category) {
+    public List<Board> findAllByCategory(Category category) {
         if (category == null)
             return this.findAll();
 
@@ -62,8 +61,8 @@ public class MemoryBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void update(Integer id, BoardDto param) {
-        Board findBoard = this.findById(id);
+    public void update(Board param) {
+        Board findBoard = this.findById(param.getId());
 
         if (writerIsEquals(findBoard, param)) {
             updateBoard(findBoard, param);
@@ -73,13 +72,15 @@ public class MemoryBoardRepository implements BoardRepository {
         }
     }
 
-    private void updateBoard(Board findBoard, BoardDto param) {
+    private void updateBoard(Board findBoard, Board param) {
         findBoard.setContents(param.getContents());
         findBoard.setTitle(param.getTitle());
-        findBoard.setUpdated(new Date());
+        //findBoard.setUpdated(LocalDateTime.now());
     }
 
-    private boolean writerIsEquals(Board findBoard, BoardDto param) {
+    private boolean writerIsEquals(Board findBoard, Board param) {
+        // 게시판 작성자와 현재 수정을 시도하는 유저가 동일해야함.
+        // 로그인 로직이 구현되지 않았으므로, 임시로 이렇게 해놓음.
         return Objects.equals(findBoard.getWriter(), param.getWriter());
     }
 
@@ -87,12 +88,12 @@ public class MemoryBoardRepository implements BoardRepository {
         store.clear();
     }
 
-//    @PostConstruct
-//    public void init() { // 테스트용 데이터
-//        Board board1 = new Board("게시글1", "아무내용", new Member(), Category.values()[1]);
-//        Board board2 = new Board("게시글2", "아무내용", new Member(), Category.values()[3]);
-//
-//        this.save(board1);
-//        this.save(board2);
-//    }
+    @PostConstruct
+    public void init() { // 테스트용 데이터
+        Board board1 = new Board("게시글1", "아무내용", new Member(), Category.values()[1]);
+        Board board2 = new Board("게시글2", "아무내용", new Member(), Category.values()[3]);
+
+        this.save(board1);
+        this.save(board2);
+    }
 }
