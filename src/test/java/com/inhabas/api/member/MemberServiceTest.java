@@ -60,24 +60,19 @@ public class MemberServiceTest {
     @Test
     public void 회원_정보_수정() {
         //given
-        Member member = new Member();
-        member.setId(12171652);
-        member.setName("유동현");
-        member.setPhone("010-1111-1111");
-        member.setIbasInformation(new IbasInformation(Role.values()[0], "hello", 0));
+        Member member =
+                new Member(12171652, "유동현", "010-1111-1111", null, null, new IbasInformation(Role.values()[0], "hello", 0));
         memberService.join(member);
-        memberRepository.detach(member);
+
 
         //when
-        IbasInformation param = new IbasInformation(Role.values()[1], "not hello", 1);
-        member.setIbasInformation(param);     // no dirty check
-        member.setPhone("010-2222-2222");
-        Member updateMember = memberService.updateMember(member);
+        Member param =
+                new Member(12171652, "유동현", "010-2222-2222", null, null, new IbasInformation(Role.values()[1], "not hello", 1));
+        Member updateMember = memberService.updateMember(param);
 
         //then
-        assertThat(updateMember.getIbasInformation().getRole()).isEqualTo(param.getRole());
-        assertThat(updateMember.getIbasInformation().getIntroduce()).isEqualTo(param.getIntroduce());
-        assertThat(updateMember.getIbasInformation().getApplyPublish()).isEqualTo(param.getApplyPublish());
-        assertThat(updateMember.getPhone()).isEqualTo("010-2222-2222");
+        assertThat(updateMember)
+                .usingRecursiveComparison()
+                .isEqualTo(param);
     }
 }

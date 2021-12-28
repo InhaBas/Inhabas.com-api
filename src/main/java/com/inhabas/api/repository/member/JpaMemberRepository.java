@@ -1,5 +1,6 @@
 package com.inhabas.api.repository.member;
 
+import com.inhabas.api.domain.member.Major;
 import com.inhabas.api.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class JpaMemberRepository implements MemberRepository {
 
     @PersistenceContext
     private EntityManager em;
+
 
     @Override
     public Member save(Member member) {
@@ -35,10 +37,5 @@ public class JpaMemberRepository implements MemberRepository {
     @Override
     public Member update(Member member) {
         return em.merge(member);
-    }
-
-    // 테스트용
-    public void detach(Member member) {
-        em.detach(member);
     }
 }
