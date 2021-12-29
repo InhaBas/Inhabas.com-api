@@ -1,8 +1,10 @@
 package com.inhabas.api.domain.board;
 
+import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,7 +19,7 @@ import java.util.Map;
 @Table
 @Getter @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,18 +33,10 @@ public class Board {
     @ManyToOne
     private Member writer;
 
-    @CreatedDate
-    private LocalDateTime created;
-
-    @LastModifiedDate
-    private LocalDateTime updated;
-
     @Enumerated(EnumType.STRING)
     private Category category;
 
-
-    public Board() {
-    }
+    public Board() {}
 
     public Board(String title, String contents, Member writer) {
         this.title = title;
