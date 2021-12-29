@@ -3,6 +3,7 @@ package com.inhabas.api.member;
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.Role;
+import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.repository.member.JpaMemberRepository;
 import com.inhabas.api.repository.member.MemberRepository;
 import com.inhabas.api.service.member.MemberService;
@@ -29,8 +30,7 @@ public class MemberServiceTest {
     @Test
     public void 회원가입() {
         //given
-        Member member = new Member();
-        member.setId(12171652);
+        Member member = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
 
         //when
         Member joinedMember = memberService.join(member);
@@ -43,11 +43,9 @@ public class MemberServiceTest {
     @Test
     public void 중복_회원_예외() {
         //given
-        Member member1 = new Member();
-        member1.setId(12171652);
+        Member member1 = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
 
-        Member member2 = new Member();
-        member2.setId(12171652);
+        Member member2 = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
 
         //when
         memberService.join(member1);
@@ -60,14 +58,16 @@ public class MemberServiceTest {
     @Test
     public void 회원_정보_수정() {
         //given
-        Member member =
-                new Member(12171652, "유동현", "010-1111-1111", null, null, new IbasInformation(Role.values()[0], "hello", 0));
+        Member member = new Member(
+                12171652, "유동현", "010-1111-1111", null, null,
+                new IbasInformation(Role.values()[0], "hello", 0));
         memberService.join(member);
 
 
         //when
-        Member param =
-                new Member(12171652, "유동현", "010-2222-2222", null, null, new IbasInformation(Role.values()[1], "not hello", 1));
+        Member param = new Member(
+                12171652, "유동현", "010-2222-2222", null, null,
+                new IbasInformation(Role.values()[1], "not hello", 1));
         Member updateMember = memberService.updateMember(param);
 
         //then
