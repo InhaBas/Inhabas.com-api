@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Entity
 @Table
-@Getter @Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Board extends BaseEntity {
 

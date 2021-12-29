@@ -29,10 +29,10 @@ public class MemoryBoardRepository implements BoardRepository {
 
     @Override
     public Board save(Board board) {
-        board.setId(sequence.incrementAndGet());
-        //board.setCreated(LocalDateTime.now());
-        store.put(board.getId(), board);
-        return board;
+        Board boardToSave =
+                new Board(sequence.incrementAndGet(), board.getTitle(), board.getContents(), board.getWriter(), board.getCategory());
+        store.put(boardToSave.getId(), boardToSave);
+        return boardToSave;
     }
 
     @Override
@@ -61,21 +61,21 @@ public class MemoryBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void update(Board param) {
+    public Board update(Board param) {
         Board findBoard = this.findById(param.getId());
 
         if (writerIsEquals(findBoard, param)) {
             updateBoard(findBoard, param);
         } else {
             // 예외 처리..
-            return;
+            return null;
         }
+        return findBoard;
     }
 
     private void updateBoard(Board findBoard, Board param) {
-        findBoard.setContents(param.getContents());
-        findBoard.setTitle(param.getTitle());
-        //findBoard.setUpdated(LocalDateTime.now());
+        findBoard =
+                new Board(findBoard.getId(), param.getTitle(), param.getContents(), findBoard.getWriter(), findBoard.getCategory());
     }
 
     private boolean writerIsEquals(Board findBoard, Board param) {
