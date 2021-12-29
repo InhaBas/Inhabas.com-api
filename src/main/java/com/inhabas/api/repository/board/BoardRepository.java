@@ -18,6 +18,6 @@ public interface BoardRepository {
 
     public void deleteById(Integer id);
 
-    public void update(Board board);
+    public Board update(Board board);
 
 }

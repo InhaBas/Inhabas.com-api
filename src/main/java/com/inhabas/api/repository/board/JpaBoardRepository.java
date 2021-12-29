@@ -2,18 +2,19 @@ package com.inhabas.api.repository.board;
 
 import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.dto.BoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Slf4j
 @Repository
+@Transactional // BoardService 에 달아줘야함. 현재는 임시로 여기에.
 @RequiredArgsConstructor
 public class JpaBoardRepository implements BoardRepository {
 
@@ -50,7 +51,17 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void update(Board board) {
-        em.merge(board);
+    public Board update(Board board) {
+        if (exist(board)) {
+            board = em.merge(board);
+            em.flush(); // persist context 에 반영된 수정내용을 db 에 update query 보내게 함.
+            return board;
+        }
+        else
+            throw new EntityNotFoundException();
+    }
+
+    private boolean exist(Board board) {
+        return this.findById(board.getId()) != null;
     }
 }

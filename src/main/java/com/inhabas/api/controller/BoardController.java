@@ -42,15 +42,14 @@ public class BoardController {
 
     @Operation(description = "게시글 추가")
     @PostMapping
-    public Board addBoard(@ModelAttribute Board board) {
+    public Board addBoard(@RequestBody Board board) {
         return repository.save(board);
     }
 
     @Operation(description = "게시글 수정")
     @PutMapping
     public Board updateBoard(@RequestBody Board board) {
-        repository.update(board);
-        return repository.findById(board.getId());
+        return repository.update(board);
     }
 
     @Operation(description = "게시글 삭제")

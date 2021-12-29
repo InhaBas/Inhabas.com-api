@@ -49,7 +49,7 @@ public class JpaBoardRepositoryTest {
 
         //when
         Board saveBoard = boardRepository.save(board);
-        Board param = new Board(board.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.",saveMember, Category.beta);
+        Board param = new Board(board.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
         boardRepository.update(param);
 
         //then
