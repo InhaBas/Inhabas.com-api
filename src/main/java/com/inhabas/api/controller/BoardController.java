@@ -2,12 +2,16 @@ package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.dto.BoardDto;
+
 import com.inhabas.api.repository.board.BoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -31,14 +35,15 @@ public class BoardController {
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
-    public List<Board> allBoards(
+    public Page<Board> allBoards(
+            @ModelAttribute Pageable pageable,
             @RequestParam(required = false) Category category
     ) {
-        List<Board> boardList;
+        Page<Board> boardList;
 		if (category == null) 
-			boardList = repository.findAll();
+			boardList = repository.findAll(pageable);
 		else
-			boardList = repository.findAllByCategory(category);
+			boardList = repository.findAllByCategory(category, pageable);
 		return boardList;
     }
 
@@ -51,7 +56,7 @@ public class BoardController {
     @Operation(description = "게시글 수정")
     @PutMapping
     public Board updateBoard(@RequestBody Board board) {
-        return repository.update(board);
+        return repository.save(board);
     }
 
     @Operation(description = "게시글 삭제")

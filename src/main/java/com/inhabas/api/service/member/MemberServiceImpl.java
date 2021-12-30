@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -22,19 +24,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member join(Member member) {
+    public Optional<Member> join(Member member) {
         validateDuplicateMember(member);
-        memberRepository.save(member);
-        return member;
+        return Optional.of(memberRepository.save(member));
     }
 
     private void validateDuplicateMember(Member member) {
-        log.info("member : {}", member);
-        Member findMember = memberRepository.findById(member.getId());
-        log.info("findMember : {}", findMember);
-        if (findMember != null) {
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
-        }
+        memberRepository.findById(member.getId())
+                .ifPresent(__ -> { throw new EntityExistsException(); });
     }
 
     @Override
@@ -43,12 +40,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findOne(Integer id) {
+    public Optional<Member> findOne(Integer id) {
         return memberRepository.findById(id);
     }
 
     @Override
-    public Member updateMember(Member member) {
-        return memberRepository.update(member);
+    public Optional<Member> updateMember(Member member) {
+        return DoesExistMember(member) ?
+                Optional.of(memberRepository.save(member)) : Optional.empty();
+    }
+
+    private boolean DoesExistMember(Member member) {
+        return memberRepository.findById(member.getId()).isPresent();
     }
 }
