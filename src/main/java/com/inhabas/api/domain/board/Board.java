@@ -30,7 +30,7 @@ public class Board extends BaseEntity {
     @Column(columnDefinition = "MEDIUMTEXT")
     private String contents;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Member writer;
 
     @Enumerated(EnumType.STRING)
