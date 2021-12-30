@@ -4,8 +4,8 @@ import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.repository.board.JpaBoardRepository;
-import com.inhabas.api.repository.member.JpaMemberRepository;
+import com.inhabas.api.repository.board.BoardRepository;
+import com.inhabas.api.repository.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,9 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JpaBoardRepositoryTest {
 
     @Autowired
-    JpaBoardRepository boardRepository;
+    BoardRepository boardRepository;
     @Autowired
-    JpaMemberRepository memberRepository;
+    MemberRepository memberRepository;
 
 
     @Test
@@ -52,7 +52,7 @@ public class JpaBoardRepositoryTest {
         //when
         Board saveBoard = boardRepository.save(board);
         Board param = new Board(board.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
-        boardRepository.update(param);
+        boardRepository.save(param);
 
         //then
         Board findBoard = boardRepository.findById(saveBoard.getId())

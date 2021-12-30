@@ -5,18 +5,15 @@ import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
-import com.inhabas.api.repository.board.JpaBoardRepository;
-import com.inhabas.api.repository.member.JpaMemberRepository;
-import org.assertj.core.api.Assertions;
+import com.inhabas.api.repository.board.BoardRepository;
+import com.inhabas.api.repository.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,9 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BaseEntityTest {
 
     @Autowired
-    JpaMemberRepository memberRepository;
+    MemberRepository memberRepository;
     @Autowired
-    JpaBoardRepository boardRepository;
+    BoardRepository boardRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     public void createdTimeTest() {
@@ -55,7 +54,8 @@ public class BaseEntityTest {
 
         //when
         Board param = new Board(board.getId(), "new title", "new contents", member, Category.free);
-        Board updateBoard = boardRepository.update(param);
+        Board updateBoard = boardRepository.save(param);
+        em.flush();
 
         //then
         assertThat(updateBoard.getUpdated()).isNotNull();
