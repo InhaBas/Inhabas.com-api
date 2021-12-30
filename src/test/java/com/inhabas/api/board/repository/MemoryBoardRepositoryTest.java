@@ -31,7 +31,7 @@ public class MemoryBoardRepositoryTest {
         Board savedBoard = store.save(board);
 
         //then
-        Board findBoard = store.findById(savedBoard.getId());
+        Board findBoard = store.findById(savedBoard.getId()).get();
         assertThat(savedBoard).isEqualTo(findBoard);
     }
 
@@ -62,7 +62,7 @@ public class MemoryBoardRepositoryTest {
         공지사항2 = store.save(공지사항2);
 
         //then
-        Board findBoard = store.findById(공지사항1.getId());
+        Board findBoard = store.findById(공지사항1.getId()).get();
         assertThat(공지사항1).isEqualTo(findBoard);
     }
 
@@ -80,7 +80,7 @@ public class MemoryBoardRepositoryTest {
         Board updateParam = new Board(saveId, "공지 변경", "오늘 점심 취소입니다.", writer, Category.values()[3]);
         Board update = store.update(updateParam);
 
-        Board findBoard = store.findById(saveId);
+        Board findBoard = store.findById(saveId).get();
         assertThat(findBoard.getId()).isEqualTo(update.getId());
         assertThat(findBoard.getContents()).isEqualTo(update.getContents());
         assertThat(findBoard.getTitle()).isEqualTo(update.getTitle());
@@ -102,7 +102,7 @@ public class MemoryBoardRepositoryTest {
         Board updateParam = new Board(saveId, "공지 변경", "오늘 점심 취소입니다.", writer2, Category.values()[1]);
         store.update(updateParam);
 
-        Board findBoard = store.findById(saveId);
+        Board findBoard = store.findById(saveId).get();
 
         assertThat(findBoard.getId()).isEqualTo(saveId);
         assertThat(findBoard.getContents()).isEqualTo(board.getContents());

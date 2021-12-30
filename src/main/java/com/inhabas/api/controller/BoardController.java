@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -24,7 +25,8 @@ public class BoardController {
     @Operation(description = "게시글 조회")
     @GetMapping
     public Board board(@RequestParam Integer id) {
-        return repository.findById(id);
+        return repository.findById(id)
+                .orElseThrow(EntityNotFoundException::new); // 40x 응답할 것
     }
 
     @Operation(description = "모든 게시글 조회")

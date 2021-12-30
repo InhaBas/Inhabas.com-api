@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -28,8 +29,8 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public Board findById(Integer id) {
-        return em.find(Board.class, id);
+    public Optional<Board> findById(Integer id) {
+        return Optional.ofNullable(em.find(Board.class, id));
     }
 
     @Override
@@ -47,7 +48,8 @@ public class JpaBoardRepository implements BoardRepository {
 
     @Override
     public void deleteById(Integer id) {
-        em.remove(this.findById(id));
+        em.remove(this.findById(id)
+                .orElseThrow(EntityNotFoundException::new));
     }
 
     @Override
@@ -62,6 +64,6 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     private boolean exist(Board board) {
-        return this.findById(board.getId()) != null;
+        return this.findById(board.getId()).isPresent();
     }
 }

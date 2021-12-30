@@ -3,18 +3,16 @@ package com.inhabas.api.repository.board;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.Board;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.dto.BoardDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 
@@ -36,8 +34,8 @@ public class MemoryBoardRepository implements BoardRepository {
     }
 
     @Override
-    public Board findById(Integer id) {
-        return store.get(id);
+    public Optional<Board> findById(Integer id) {
+        return Optional.ofNullable(store.get(id));
     }
 
     @Override
@@ -62,7 +60,8 @@ public class MemoryBoardRepository implements BoardRepository {
 
     @Override
     public Board update(Board param) {
-        Board findBoard = this.findById(param.getId());
+        Board findBoard = this.findById(param.getId())
+                .orElseThrow(EntityNotFoundException::new);
 
         if (writerIsEquals(findBoard, param)) {
             updateBoard(findBoard, param);

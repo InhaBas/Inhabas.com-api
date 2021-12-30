@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,8 @@ public class JpaBoardRepositoryTest {
         Board saveBoard = boardRepository.save(board);
 
         //then
-        Board findBoard = boardRepository.findById(saveBoard.getId());
+        Board findBoard = boardRepository.findById(saveBoard.getId())
+                .orElseThrow(EntityNotFoundException::new);
         assertThat(board).isEqualTo(findBoard);
     }
 
@@ -53,7 +55,8 @@ public class JpaBoardRepositoryTest {
         boardRepository.update(param);
 
         //then
-        Board findBoard = boardRepository.findById(saveBoard.getId());
+        Board findBoard = boardRepository.findById(saveBoard.getId())
+                .orElseThrow(EntityNotFoundException::new);
         assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다.");
         assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
     }
