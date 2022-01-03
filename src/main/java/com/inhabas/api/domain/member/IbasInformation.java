@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -32,4 +33,25 @@ public class IbasInformation {
         this.introduce = introduce;
         this.applyPublish = applyPublish;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IbasInformation)) return false;
+        IbasInformation that = (IbasInformation) o;
+        return getRole() == that.getRole()
+                && getJoined().equals(that.getJoined())
+                && getIntroduce().equals(that.getIntroduce())
+                && getApplyPublish().equals(that.getApplyPublish());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                getRole(),
+                getJoined(),
+                getIntroduce(),
+                getApplyPublish());
+    }
+
 }

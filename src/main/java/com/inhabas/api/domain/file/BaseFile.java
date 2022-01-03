@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @MappedSuperclass
@@ -24,4 +25,21 @@ public abstract class BaseFile {
 
     @CreatedDate
     protected LocalDateTime uploaded;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BaseFile)) return false;
+        BaseFile baseFile = (BaseFile) o;
+        return getId().equals(baseFile.getId())
+                && Objects.equals(getLegacyPath(), baseFile.getLegacyPath())
+                && getFilename().equals(baseFile.getFilename())
+                && Objects.equals(getFilepath(), baseFile.getFilepath())
+                && getUploaded().equals(baseFile.getUploaded());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getLegacyPath(), getFilename(), getFilepath(), getUploaded());
+    }
 }

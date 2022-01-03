@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.file;
 
 import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.comment.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -26,5 +27,19 @@ public class BoardFile extends BaseFile {
         }
         this.parentBoard = newParentBoard;
         parentBoard.addFile(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(BoardFile.class.isAssignableFrom(o.getClass()))) return false;
+        if (!super.equals(o)) return false;
+        BoardFile boardFile = (BoardFile) o;
+        return getParentBoard().getId().equals(boardFile.getParentBoard().getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getParentBoard());
     }
 }

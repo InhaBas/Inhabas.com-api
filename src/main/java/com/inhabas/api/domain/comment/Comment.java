@@ -46,5 +46,21 @@ public class Comment extends BaseEntity {
         parentBoard.addComment(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(Comment.class.isAssignableFrom(o.getClass()))) return false;
+        Comment comment = (Comment) o;
+        return getId().equals(comment.getId())
+                && getWriter().equals(comment.getWriter())
+                && getContents().equals(comment.getContents())
+                && getParentBoard().equals(comment.getParentBoard())
+                && Objects.equals(getParentComment(), comment.getParentComment())
+                && Objects.equals(getChildren(), comment.getChildren());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
+    }
 }
