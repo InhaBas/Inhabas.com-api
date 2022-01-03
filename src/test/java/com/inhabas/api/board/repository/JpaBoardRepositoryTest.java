@@ -1,6 +1,6 @@
 package com.inhabas.api.board.repository;
 
-import com.inhabas.api.domain.board.Board;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
@@ -31,13 +31,13 @@ public class JpaBoardRepositoryTest {
         //given
         Member member = new Member(12171652, "홍길동", "010-4444-4444", null, null, new IbasInformation());
         Member saveMember = memberRepository.save(member);
-        Board board = new Board("이건 제목", "이건 내용입니다.", saveMember, Category.free);
+        NormalBoard board = new NormalBoard("이건 제목", "이건 내용입니다.", saveMember, Category.free);
 
         //when
-        Board saveBoard = boardRepository.save(board);
+        NormalBoard saveBoard = boardRepository.save(board);
 
         //then
-        Board findBoard = boardRepository.findById(saveBoard.getId())
+        NormalBoard findBoard = boardRepository.findById(saveBoard.getId())
                 .orElseThrow(EntityNotFoundException::new);
         assertThat(board).isEqualTo(findBoard);
     }
@@ -47,15 +47,15 @@ public class JpaBoardRepositoryTest {
         //given
         Member member = new Member(12171652, "홍길동", "010-4444-4444", null, null, new IbasInformation());
         Member saveMember = memberRepository.save(member);
-        Board board = new Board("이건 제목", "이건 내용입니다.", saveMember, Category.free);
+        NormalBoard board = new NormalBoard("이건 제목", "이건 내용입니다.", saveMember, Category.free);
 
         //when
-        Board saveBoard = boardRepository.save(board);
-        Board param = new Board(board.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
+        NormalBoard saveBoard = boardRepository.save(board);
+        NormalBoard param = new NormalBoard(board.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
         boardRepository.save(param);
 
         //then
-        Board findBoard = boardRepository.findById(saveBoard.getId())
+        NormalBoard findBoard = boardRepository.findById(saveBoard.getId())
                 .orElseThrow(EntityNotFoundException::new);
         assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다.");
         assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
@@ -66,16 +66,16 @@ public class JpaBoardRepositoryTest {
         //given
         Member member = new Member(12171652, "홍길동", "010-4444-4444", null, null, new IbasInformation());
         Member saveMember = memberRepository.save(member);
-        Board board1 = new Board("이건 제목", "이건 내용입니다.", saveMember, Category.free);
-        Board board2 = new Board("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
+        NormalBoard board1 = new NormalBoard("이건 제목", "이건 내용입니다.", saveMember, Category.free);
+        NormalBoard board2 = new NormalBoard("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
 
         //when
-        Board saveBoard1 = boardRepository.save(board1);
-        Board saveBoard2 = boardRepository.save(board2);
+        NormalBoard saveBoard1 = boardRepository.save(board1);
+        NormalBoard saveBoard2 = boardRepository.save(board2);
         boardRepository.deleteById(saveBoard1.getId());
 
         //then
-        List<Board> boards = boardRepository.findAll();
+        List<NormalBoard> boards = boardRepository.findAll();
 
         assertThat(boards).contains(saveBoard2);
         assertThat(boards).doesNotContain(saveBoard1);
@@ -87,15 +87,15 @@ public class JpaBoardRepositoryTest {
         //given
         Member member = new Member(12171652, "홍길동", "010-4444-4444", null, null, new IbasInformation());
         Member saveMember = memberRepository.save(member);
-        Board board1 = new Board("이건 제목", "이건 내용입니다.", saveMember, Category.free);
-        Board board2 = new Board("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
+        NormalBoard board1 = new NormalBoard("이건 제목", "이건 내용입니다.", saveMember, Category.free);
+        NormalBoard board2 = new NormalBoard("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
 
         //when
-        Board saveBoard1 = boardRepository.save(board1);
-        Board saveBoard2 = boardRepository.save(board2);
+        NormalBoard saveBoard1 = boardRepository.save(board1);
+        NormalBoard saveBoard2 = boardRepository.save(board2);
 
         //then
-        List<Board> boards = boardRepository.findAll();
+        List<NormalBoard> boards = boardRepository.findAll();
 
         assertThat(boards).contains(saveBoard2, saveBoard1);
         assertThat(boards.size()).isEqualTo(2);
@@ -106,18 +106,18 @@ public class JpaBoardRepositoryTest {
         //given
         Member member = new Member(12171652, "홍길동", "010-4444-4444", null, null, new IbasInformation());
         Member saveMember = memberRepository.save(member);
-        Board board1 = new Board("이건 제목", "이건 내용입니다.", saveMember, Category.free);
-        Board board2 = new Board("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
-        Board board3 = new Board("이건 제목3", "이건 내용3입니다.", saveMember, Category.activity);
+        NormalBoard board1 = new NormalBoard("이건 제목", "이건 내용입니다.", saveMember, Category.free);
+        NormalBoard board2 = new NormalBoard("이건 제목2", "이건 내용2입니다.", saveMember, Category.free);
+        NormalBoard board3 = new NormalBoard("이건 제목3", "이건 내용3입니다.", saveMember, Category.activity);
 
         //when
-        Board saveBoard1 = boardRepository.save(board1);
-        Board saveBoard2 = boardRepository.save(board2);
-        Board saveBoard3 = boardRepository.save(board3);
+        NormalBoard saveBoard1 = boardRepository.save(board1);
+        NormalBoard saveBoard2 = boardRepository.save(board2);
+        NormalBoard saveBoard3 = boardRepository.save(board3);
 
         //then
-        List<Board> freeBoards = boardRepository.findAllByCategory(Category.free);
-        List<Board> activityBoards = boardRepository.findAllByCategory(Category.activity);
+        List<NormalBoard> freeBoards = boardRepository.findAllByCategory(Category.free);
+        List<NormalBoard> activityBoards = boardRepository.findAllByCategory(Category.activity);
 
         assertThat(freeBoards).contains(saveBoard1, saveBoard2);
         assertThat(freeBoards.size()).isEqualTo(2);

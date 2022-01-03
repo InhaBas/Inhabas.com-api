@@ -1,6 +1,6 @@
 package com.inhabas.api.board;
 
-import com.inhabas.api.domain.board.Board;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
@@ -34,10 +34,10 @@ public class BaseEntityTest {
         //given
         Member member = new Member(12171123, "유동현", "010-1111-1111", null, new SchoolInformation(), new IbasInformation());
         memberRepository.save(member);
-        Board board = new Board("title", "contents", member, Category.free);
+        NormalBoard board = new NormalBoard("title", "contents", member, Category.free);
 
         //when
-        Board save = boardRepository.save(board);
+        NormalBoard save = boardRepository.save(board);
 
         //then
         assertThat(save.getCreated()).isNotNull();
@@ -49,12 +49,12 @@ public class BaseEntityTest {
         //given
         Member member = new Member(12171123, "유동현", "010-1111-1111", null, new SchoolInformation(), new IbasInformation());
         member = memberRepository.save(member);
-        Board board = new Board("title", "contents", member, Category.free);
+        NormalBoard board = new NormalBoard("title", "contents", member, Category.free);
         boardRepository.save(board);
 
         //when
-        Board param = new Board(board.getId(), "new title", "new contents", member, Category.free);
-        Board updateBoard = boardRepository.save(param);
+        NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents", member, Category.free);
+        NormalBoard updateBoard = boardRepository.save(param);
         em.flush();
 
         //then

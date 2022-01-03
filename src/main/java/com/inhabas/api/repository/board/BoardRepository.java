@@ -1,19 +1,17 @@
 package com.inhabas.api.repository.board;
 
 import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.domain.board.Board;
+import com.inhabas.api.domain.board.NormalBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.QueryHints;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BoardRepository extends JpaRepository<Board, Integer> {
+public interface BoardRepository extends JpaRepository<NormalBoard, Integer> {
 
-    Page<Board> findAllByCategory(Category category, Pageable pageable);
+    Page<NormalBoard> findAllByCategory(Category category, Pageable pageable);
 
-    List<Board> findAllByCategory(Category category);
+    List<NormalBoard> findAllByCategory(Category category);
 }
 
