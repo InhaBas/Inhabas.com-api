@@ -5,7 +5,7 @@ import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Major;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
-import com.inhabas.api.repository.member.MemberRepository;
+import com.inhabas.api.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

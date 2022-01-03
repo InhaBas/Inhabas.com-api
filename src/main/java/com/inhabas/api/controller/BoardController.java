@@ -3,7 +3,7 @@ package com.inhabas.api.controller;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 
-import com.inhabas.api.repository.board.BoardRepository;
+import com.inhabas.api.domain.board.BoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

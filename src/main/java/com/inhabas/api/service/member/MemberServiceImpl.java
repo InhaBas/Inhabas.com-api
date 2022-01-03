@@ -1,7 +1,7 @@
 package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.repository.member.MemberRepository;
+import com.inhabas.api.domain.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

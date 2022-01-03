@@ -1,4 +1,4 @@
-package com.inhabas.api.repository.member;
+package com.inhabas.api.domain.member;
 
 import com.inhabas.api.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
