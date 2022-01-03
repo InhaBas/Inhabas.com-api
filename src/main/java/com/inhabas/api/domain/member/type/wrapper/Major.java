@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.type.wrapper;
 
 public enum Major {
     기계공학과,

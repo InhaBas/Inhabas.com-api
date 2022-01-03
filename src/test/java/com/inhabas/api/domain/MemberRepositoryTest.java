@@ -1,8 +1,6 @@
 package com.inhabas.api.domain;
 
-
-import com.inhabas.api.domain.member.IbasInformation;
-import com.inhabas.api.domain.member.Major;
+import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
@@ -89,11 +87,11 @@ public class MemberRepositoryTest {
 
         //when
         Member param = new Member(MEMBER1.getId(), "유동현", "010-1111-2222", "", new SchoolInformation(Major.건축공학과, 2, 2), member.getIbasInformation());
-        MemberRepository.save(param);
+        Member updated = MemberRepository.save(param);
 
         //then
         Member findMember = MemberRepository.findById(MEMBER1.getId()).orElse(null);
-        assertThat(findMember).isEqualTo(param);
+        assertThat(findMember).isEqualTo(updated);
     }
 
 }

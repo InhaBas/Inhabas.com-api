@@ -1,15 +1,13 @@
 package com.inhabas.api.domain.member;
 
-import lombok.AllArgsConstructor;
+import com.inhabas.api.domain.member.type.wrapper.Introduce;
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 @Embeddable
@@ -23,15 +21,19 @@ public class IbasInformation {
     private LocalDateTime joined;
 
     @Column(name = "USER_INTRO")
-    private String introduce;
+    private Introduce introduce;
 
     @Column(name = "USER_APPLY_PUBLISH")
     private Integer applyPublish;
 
     public IbasInformation(Role role, String introduce, Integer applyPublish) {
         this.role = role;
-        this.introduce = introduce;
+        this.introduce = new Introduce(introduce);
         this.applyPublish = applyPublish;
+    }
+
+    public String getIntroduce() {
+        return introduce.getValue();
     }
 
     @Override

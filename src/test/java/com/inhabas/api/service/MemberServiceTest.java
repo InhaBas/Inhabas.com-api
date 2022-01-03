@@ -16,8 +16,7 @@ import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -35,12 +34,12 @@ public class MemberServiceTest {
         //then
         joinedMember.ifPresentOrElse(
                 newMember -> assertAll(
-                        () -> assertThat(newMember.getIbasInformation().getJoined()).isNotNull(),
                         () -> assertThat(newMember.getName()).isEqualTo(MEMBER1.getName()),
                         () -> assertThat(newMember.getPhone()).isEqualTo(MEMBER1.getPhone()),
                         () -> assertThat(newMember.getSchoolInformation())
                                 .usingRecursiveComparison()
                                 .isEqualTo(MEMBER1.getSchoolInformation()),
+                        () -> assertThat(newMember.getIbasInformation().getJoined()).isNotNull(),
                         () -> assertThat(newMember.getIbasInformation())
                                 .usingRecursiveComparison()
                                 .ignoringFields("joined")
@@ -65,15 +64,21 @@ public class MemberServiceTest {
     @Test
     public void 회원_정보_수정() {
         //given
-        Member save = memberService.join(MEMBER1).orElse(null);
+        Member save = memberService.join(MEMBER1)
+                .orElseThrow(EntityNotFoundException::new);
+        String originalPhoneNumber = save.getPhone();
 
         //when - 전화번호 수정
         Member param = new Member(
                 save.getId(), save.getName(), "010-2222-2222", save.getPicture(),
                 save.getSchoolInformation(), save.getIbasInformation());
-        Optional<Member> updateMember = memberService.updateMember(param);
+        Member updateMember = memberService.updateMember(param)
+                .orElseThrow(EntityNotFoundException::new);
 
         //then
-        assertThat(updateMember).hasValue(param);
+        String updatedPhoneNumber = updateMember.getPhone();
+
+        assertThat(updatedPhoneNumber).isEqualTo("010-2222-2222");
+        assertThat(updatedPhoneNumber).isNotEqualTo(originalPhoneNumber);
     }
 }

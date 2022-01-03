@@ -1,22 +1,43 @@
 package com.inhabas.api.domain.member;
 
+import com.inhabas.api.domain.member.type.wrapper.Grade;
+import com.inhabas.api.domain.member.type.wrapper.Major;
+import com.inhabas.api.domain.member.type.wrapper.Semester;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class SchoolInformation {
 
     @Enumerated(EnumType.STRING)
     private Major major;
 
-    private Integer grade;
+    @Embedded
+    private Grade grade;
 
-    private Integer gen;
+    @Embedded
+    private Semester gen;
+
+    public SchoolInformation(Major major, Integer grade, Integer semester) {
+        this.major = major;
+        this.grade = new Grade(grade);
+        this.gen = new Semester(semester);
+    }
+
+    public Major getMajor() {
+        return major;
+    }
+
+    public Integer getGrade() {
+        return grade.getValue();
+    }
+
+    public Integer getGen() {
+        return gen.getValue();
+    }
 
     @Override
     public boolean equals(Object o) {
