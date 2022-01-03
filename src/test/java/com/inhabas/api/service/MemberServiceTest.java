@@ -1,19 +1,22 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.Role;
-import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.service.member.MemberService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 
+import java.util.Optional;
+
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -23,52 +26,54 @@ public class MemberServiceTest {
     @Autowired MemberService memberService;
     @Autowired MemberRepository memberRepository;
 
+    @DisplayName("회원가입을 성공한다.")
     @Test
     public void 회원가입() {
-        //given
-        Member member = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
-
         //when
-        Member joinedMember = memberService.join(member).get();
+        Optional<Member> joinedMember = memberService.join(MEMBER1);
 
         //then
-        Member findMember = memberService.findOne(joinedMember.getId()).get();
-        assertThat(joinedMember).isEqualTo(findMember);
+        joinedMember.ifPresentOrElse(
+                newMember -> assertAll(
+                        () -> assertThat(newMember.getIbasInformation().getJoined()).isNotNull(),
+                        () -> assertThat(newMember.getName()).isEqualTo(MEMBER1.getName()),
+                        () -> assertThat(newMember.getPhone()).isEqualTo(MEMBER1.getPhone()),
+                        () -> assertThat(newMember.getSchoolInformation())
+                                .usingRecursiveComparison()
+                                .isEqualTo(MEMBER1.getSchoolInformation()),
+                        () -> assertThat(newMember.getIbasInformation())
+                                .usingRecursiveComparison()
+                                .ignoringFields("joined")
+                                .isEqualTo(MEMBER1.getIbasInformation())
+                ),
+                () -> { throw new EntityNotFoundException(); }
+        );
     }
 
+    @DisplayName("이미 가입된 회원이다.")
     @Test
     public void 중복_회원_예외() {
-        //given
-        Member member1 = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
-
-        Member member2 = new Member(12171652, "name", "010-0000-0000", null, new SchoolInformation(), new IbasInformation());
-
         //when
-        memberService.join(member1);
+        memberService.join(MEMBER1);
 
-        //then
+        //then에
         assertThrows(EntityExistsException.class,
-                () -> memberService.join(member2));
+                () -> memberService.join(MEMBER1));
     }
 
+    @DisplayName("개인정보 수정 성공한다.")
     @Test
     public void 회원_정보_수정() {
         //given
-        Member member = new Member(
-                12171652, "유동현", "010-1111-1111", null, null,
-                new IbasInformation(Role.values()[0], "hello", 0));
-        memberService.join(member);
+        Member save = memberService.join(MEMBER1).orElse(null);
 
-
-        //when
+        //when - 전화번호 수정
         Member param = new Member(
-                12171652, "유동현", "010-2222-2222", null, null,
-                new IbasInformation(Role.values()[1], "not hello", 1));
-        Member updateMember = memberService.updateMember(param).get();
+                save.getId(), save.getName(), "010-2222-2222", save.getPicture(),
+                save.getSchoolInformation(), save.getIbasInformation());
+        Optional<Member> updateMember = memberService.updateMember(param);
 
         //then
-        assertThat(updateMember)
-                .usingRecursiveComparison()
-                .isEqualTo(param);
+        assertThat(updateMember).hasValue(param);
     }
 }

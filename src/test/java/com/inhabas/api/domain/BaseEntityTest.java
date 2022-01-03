@@ -2,24 +2,23 @@ package com.inhabas.api.domain;
 
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.board.BoardRepository;
 import com.inhabas.api.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@Transactional
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class BaseEntityTest {
 
     @Autowired
@@ -32,9 +31,8 @@ public class BaseEntityTest {
     @Test
     public void createdTimeTest() {
         //given
-        Member member = new Member(12171123, "유동현", "010-1111-1111", null, new SchoolInformation(), new IbasInformation());
-        memberRepository.save(member);
-        NormalBoard board = new NormalBoard("title", "contents", member, Category.free);
+        memberRepository.save(MEMBER1);
+        NormalBoard board = new NormalBoard("title", "contents", MEMBER1, Category.free);
 
         //when
         NormalBoard save = boardRepository.save(board);
@@ -47,8 +45,7 @@ public class BaseEntityTest {
     @Test
     public void updatedTimeTest() {
         //given
-        Member member = new Member(12171123, "유동현", "010-1111-1111", null, new SchoolInformation(), new IbasInformation());
-        member = memberRepository.save(member);
+        Member member = memberRepository.save(MEMBER1);
         NormalBoard board = new NormalBoard("title", "contents", member, Category.free);
         boardRepository.save(board);
 
