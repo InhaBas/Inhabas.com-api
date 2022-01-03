@@ -5,7 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Embeddable
-@Getter @ToString
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SchoolInformation {

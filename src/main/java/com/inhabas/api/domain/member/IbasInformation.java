@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Embeddable
-@Getter @ToString
+@Getter
 @NoArgsConstructor
 public class IbasInformation {
     @Enumerated(EnumType.STRING)

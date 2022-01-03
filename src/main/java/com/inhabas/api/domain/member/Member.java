@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "user")
-@Getter @ToString
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
