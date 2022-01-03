@@ -1,4 +1,4 @@
-package com.inhabas.api.member;
+package com.inhabas.api.service;
 
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;

@@ -1,4 +1,4 @@
-package com.inhabas.api.board;
+package com.inhabas.api.domain;
 
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;

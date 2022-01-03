@@ -1,4 +1,4 @@
-package com.inhabas.api.board.repository;
+package com.inhabas.api.domain;
 
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-public class JpaBoardRepositoryTest {
+public class BoardRepositoryTest {
 
     @Autowired
     BoardRepository boardRepository;
