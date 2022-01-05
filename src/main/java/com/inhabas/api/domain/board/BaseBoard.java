@@ -45,10 +45,12 @@ public class BaseBoard extends BaseEntity {
 
     public void addFile(BoardFile uploadFile) {
         this.getFiles().add(uploadFile);
+        uploadFile.toBoard(this);
     }
 
     public void addComment(Comment newComment) {
         this.getComments().add(newComment);
+        newComment.toBoard(this);
     }
 
     public Integer getId() {
