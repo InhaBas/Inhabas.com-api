@@ -3,7 +3,7 @@ package com.inhabas.api.domain;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.board.BoardRepository;
+import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class BaseEntityTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
-    BoardRepository boardRepository;
+    NormalBoardRepository boardRepository;
     @PersistenceContext
     EntityManager em;
 

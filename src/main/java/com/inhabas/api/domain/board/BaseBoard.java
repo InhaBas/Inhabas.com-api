@@ -39,6 +39,14 @@ public class BaseBoard extends BaseEntity {
     @OneToMany(mappedBy = "parentBoard")
     protected Set<BoardFile> files = new HashSet<>();
 
+    public Object writtenBy(Member writer) {
+        if (Objects.nonNull(writer))
+            this.writer = writer;
+        else
+            throw new IllegalStateException("게시글 작성자를 수정할 수 없습니다.");
+        return this;
+    }
+
     public boolean isWriter(Member member) {
         return this.writer.equals(member);
     }
