@@ -1,6 +1,8 @@
 package com.inhabas.api.domain.board;
 
 import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.board.type.wrapper.Contents;
+import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
@@ -9,14 +11,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
 @Table(name = "base_board")
-@Getter
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
@@ -24,17 +23,16 @@ public class BaseBoard extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    protected String title;
+    protected Title title;
 
-    @Column(columnDefinition = "MEDIUMTEXT")
-    protected String contents;
+    protected Contents contents;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_baseboard_to_user"))
     protected Member writer;
 
     @OneToMany(mappedBy = "parentBoard")
-    protected List<Comment> comments;
+    protected List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "parentBoard")
     protected Set<BoardFile> files = new HashSet<>();
@@ -49,6 +47,30 @@ public class BaseBoard extends BaseEntity {
 
     public void addComment(Comment newComment) {
         this.getComments().add(newComment);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title.getValue();
+    }
+
+    public String getContents() {
+        return contents.getValue();
+    }
+
+    public Member getWriter() {
+        return writer;
+    }
+
+    public List<Comment> getComments() {
+        return Collections.unmodifiableList(comments);
+    }
+
+    public Set<BoardFile> getFiles() {
+        return Collections.unmodifiableSet(files);
     }
 
 }
