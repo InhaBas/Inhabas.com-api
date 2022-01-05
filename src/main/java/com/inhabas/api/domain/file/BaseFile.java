@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.file;
 
+import com.inhabas.api.domain.file.type.wrapper.FileName;
+import com.inhabas.api.domain.file.type.wrapper.FilePath;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -16,12 +18,12 @@ public abstract class BaseFile {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
-    @Column(name = "filepath_legacy")
-    protected String legacyPath;
+    @AttributeOverride(name = "value", column = @Column(name = "filepath_legacy"))
+    protected FilePath legacyPath;
 
-    protected String filename;
+    protected FileName filename;
 
-    protected String filepath;
+    protected FilePath filepath;
 
     @CreatedDate
     protected LocalDateTime uploaded;
@@ -29,7 +31,7 @@ public abstract class BaseFile {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BaseFile)) return false;
+        if (!(BaseFile.class.isAssignableFrom(o.getClass()))) return false;
         BaseFile baseFile = (BaseFile) o;
         return getId().equals(baseFile.getId())
                 && Objects.equals(getLegacyPath(), baseFile.getLegacyPath())
