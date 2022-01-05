@@ -2,18 +2,20 @@ package com.inhabas.api.domain.comment;
 
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "comment")
-@NoArgsConstructor @Getter
+@NoArgsConstructor
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +25,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_comment_to_user"))
     private Member writer;
 
-    private String contents;
+    private Contents contents;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_comment_to_baseboard"))
@@ -62,5 +64,29 @@ public class Comment extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Member getWriter() {
+        return writer;
+    }
+
+    public BaseBoard getParentBoard() {
+        return parentBoard;
+    }
+
+    public Comment getParentComment() {
+        return parentComment;
+    }
+
+    public List<Comment> getChildren() {
+        return Collections.unmodifiableList(children);
+    }
+
+    public String getContents() {
+        return this.contents.getValue();
     }
 }
