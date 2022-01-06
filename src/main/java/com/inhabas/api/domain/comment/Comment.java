@@ -25,6 +25,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_comment_to_user"))
     private Member writer;
 
+    @Embedded
     private Contents contents;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

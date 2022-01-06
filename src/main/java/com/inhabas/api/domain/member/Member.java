@@ -19,6 +19,7 @@ public class Member {
     @Id
     private Integer id;
 
+    @Embedded
     private Name name;
 
     @Embedded

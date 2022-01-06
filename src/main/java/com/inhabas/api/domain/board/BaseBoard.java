@@ -23,8 +23,10 @@ public class BaseBoard extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
+    @Embedded
     protected Title title;
 
+    @Embedded
     protected Contents contents;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

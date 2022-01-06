@@ -18,11 +18,14 @@ public abstract class BaseFile {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
+    @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "filepath_legacy"))
     protected FilePath legacyPath;
 
+    @Embedded
     protected FileName filename;
 
+    @Embedded
     protected FilePath filepath;
 
     @CreatedDate
