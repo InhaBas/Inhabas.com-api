@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.board;
 
-import com.inhabas.api.domain.board.type.wrapper.Contents;
-import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.file.BoardFile;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;

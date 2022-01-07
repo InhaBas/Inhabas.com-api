@@ -75,16 +75,5 @@ public class BaseBoard extends BaseEntity {
     public Set<BoardFile> getFiles() {
         return Collections.unmodifiableSet(files);
     }
-
-    public BaseBoard(){
-
-    }
-    @Builder
-    public BaseBoard(Title title, Contents contents, Set<BoardFile>files){
-        this.title = title;
-        this.contents = contents;
-        this.files = files;
-    }
-
 }
 
