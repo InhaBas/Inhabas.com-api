@@ -1,0 +1,31 @@
+package com.inhabas.api.domain.wrapper;
+
+import com.inhabas.api.domain.board.type.wrapper.Contents;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class BoardContentsTest {
+
+    @DisplayName("Contents 타입에 게시글 내용을 저장한다.")
+    @Test
+    public void Contents_is_OK() {
+        String contentsString = ".".repeat(2 << 24 - 2); // 16 MB - 2 byte
+
+        Contents contents = new Contents(contentsString);
+
+        assertThat(contents.getValue()).isEqualTo(contentsString);
+    }
+
+    @DisplayName("Contents 타입에 너무 긴 게시글을 저장한다. (16 MB - 1 byte) 이상")
+    @Test
+    public void Contents_is_too_long() {
+        String contentsString = ".".repeat(2 << 24 - 1); // 16 MB - 1 byte
+
+        //then
+        assertThrows(IllegalArgumentException.class,
+                () -> new Contents(contentsString));
+    }
+}
