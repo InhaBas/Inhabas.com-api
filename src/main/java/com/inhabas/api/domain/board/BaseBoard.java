@@ -6,6 +6,7 @@ import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -73,6 +74,16 @@ public class BaseBoard extends BaseEntity {
 
     public Set<BoardFile> getFiles() {
         return Collections.unmodifiableSet(files);
+    }
+
+    public BaseBoard(){
+
+    }
+    @Builder
+    public BaseBoard(Title title, Contents contents, Set<BoardFile>files){
+        this.title = title;
+        this.contents = contents;
+        this.files = files;
     }
 
 }
