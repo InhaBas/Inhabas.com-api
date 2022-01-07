@@ -40,12 +40,13 @@ public class Comment extends BaseEntity {
     private List<Comment> children = new ArrayList<>();
 
     // comment 과 baseBoard 의 연관관계 편의 메소드
-    public void toBoard(BaseBoard newParentBoard) {
+    public void setParentBoard(BaseBoard newParentBoard) {
         // 기존의 comment-board 연관관계를 끊는다.
         if (Objects.nonNull(this.parentBoard)) {
             this.parentBoard.getComments().remove(this);
         }
         this.parentBoard = newParentBoard;
+        parentBoard.addComment(this);
     }
 
     @Override

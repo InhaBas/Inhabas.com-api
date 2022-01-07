@@ -3,7 +3,7 @@ package com.inhabas.api.controller;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 
-import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.board.BoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class BoardController {
 
-    private final NormalBoardRepository repository;
+    private final BoardRepository repository;
 
     @Operation(description = "게시글 조회")
     @GetMapping

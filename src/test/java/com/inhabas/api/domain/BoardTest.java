@@ -4,16 +4,18 @@ import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class NormalBoardTest {
-    public static final NormalBoard FREE_BOARD = new NormalBoard("이건 제목", "이건 내용입니다.", Category.free);
-    public static final NormalBoard NOTICE_BOARD = new NormalBoard("이건 공지", "이건 공지입니다.", Category.notice);
-    public static final NormalBoard NOTICE_BOARD_2 = new NormalBoard("이건 공지2", "이건 공지2입니다.", Category.notice);
+public class BoardTest {
+    public static final NormalBoard FREE_BOARD = new NormalBoard("이건 제목", "이건 내용입니다.", MEMBER1, Category.free);
+    public static final NormalBoard NOTICE_BOARD = new NormalBoard("이건 공지", "이건 공지입니다.", MEMBER1, Category.notice);
+    public static final NormalBoard NOTICE_BOARD_2 = new NormalBoard("이건 공지2", "이건 공지2입니다.", MEMBER1, Category.notice);
 
     @DisplayName("Title 타입에 제목을 저장한다.")
     @Test
@@ -59,5 +61,4 @@ public class NormalBoardTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Contents(contentsString));
     }
-
 }

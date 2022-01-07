@@ -3,51 +3,41 @@ package com.inhabas.api.domain;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.board.BoardRepository;
 import com.inhabas.api.domain.member.MemberRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inhabas.api.domain.NormalBoardTest.*;
+import static com.inhabas.api.domain.BoardTest.*;
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class NormalBoardRepositoryTest {
+public class BoardRepositoryTest {
 
     @Autowired
-    NormalBoardRepository boardRepository;
+    BoardRepository boardRepository;
     @Autowired
     MemberRepository memberRepository;
-
-    @BeforeEach
-    public void setUp() {
-        Member saveMember = memberRepository.save(MEMBER1);
-
-        FREE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD_2.writtenBy(saveMember);
-    }
 
 
     @DisplayName("저장 후 반환값이 처음과 같다.")
     @Test
     public void save() {
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
+        //given
+        Member saveMember = memberRepository.save(MEMBER1);
 
         //when
-        NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
+        NormalBoard saveBoard = boardRepository.save(
+                new NormalBoard(FREE_BOARD.getTitle(), FREE_BOARD.getContents(), saveMember, FREE_BOARD.getCategory()));
 
         //then
         Assertions.assertAll(
@@ -64,6 +54,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void findById() {
         //given
+        memberRepository.save(MEMBER1);
         NormalBoard saveBoard1 = boardRepository.save(FREE_BOARD);
         NormalBoard saveBoard2 = boardRepository.save(NOTICE_BOARD);
 
@@ -80,9 +71,9 @@ public class NormalBoardRepositoryTest {
     @Test
     public void update() {
         //given
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
-        NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
+        Member saveMember = memberRepository.save(MEMBER1);
+        NormalBoard saveBoard = boardRepository.save(
+                new NormalBoard(FREE_BOARD.getTitle(), FREE_BOARD.getContents(), saveMember, FREE_BOARD.getCategory()));
 
         //when
         NormalBoard param = new NormalBoard(
@@ -98,6 +89,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void deleteById() {
         //given
+        Member saveMember = memberRepository.save(MEMBER1);
         NormalBoard saveBoard1 = boardRepository.save(FREE_BOARD);
         NormalBoard saveBoard2 = boardRepository.save(NOTICE_BOARD);
 
@@ -116,6 +108,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void findAll() {
         //given
+        memberRepository.save(MEMBER1);
         NormalBoard saveBoard1 = boardRepository.save(FREE_BOARD);
         NormalBoard saveBoard2 = boardRepository.save(NOTICE_BOARD);
 
@@ -130,6 +123,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void findAllByCategory() {
         //given
+        memberRepository.save(MEMBER1);
         NormalBoard saveBoard1 = boardRepository.save(FREE_BOARD);
         NormalBoard saveBoard2 = boardRepository.save(NOTICE_BOARD);
         NormalBoard saveBoard3 = boardRepository.save(NOTICE_BOARD_2);
