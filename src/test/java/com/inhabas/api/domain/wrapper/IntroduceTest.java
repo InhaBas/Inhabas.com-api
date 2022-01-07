@@ -34,4 +34,12 @@ public class IntroduceTest {
                 ()-> new Introduce(introduceString)
         );
     }
+
+    @DisplayName("Introduce value 가 null 이면 빈 문자열로 설정된다.")
+    @Test
+    public void Null_value_introduce_is_empty_string() {
+        Introduce introduce = new Introduce(null);
+
+        assertThat(introduce.getValue()).isEqualTo("");
+    }
 }

@@ -30,7 +30,20 @@ public class TitleTest {
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> new Title(titleString)
-        );
+                () -> new Title(titleString));
+    }
+
+    @DisplayName("제목은 null 일 수 없습니다.")
+    @Test
+    public void Title_cannot_be_Null() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Title(null));
+    }
+
+    @DisplayName("제목은 빈 문자열일 수 없습니다.")
+    @Test
+    public void Title_cannot_be_Blank() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Title("\t"));
     }
 }

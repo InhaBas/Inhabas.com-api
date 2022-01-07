@@ -26,7 +26,9 @@ public class Name {
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String))  return false;
+
         String o = (String) value;
+        if (o.isBlank()) return false;
         return o.length() < MAX_LENGTH;
     }
 

@@ -34,4 +34,18 @@ public class UsernameTest {
                 ()-> new Name(username)
         );
     }
+
+    @DisplayName("이름은 null 일 수 없다.")
+    @Test
+    public void Username_cannot_be_null() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Name(null));
+    }
+
+    @DisplayName("이름은 빈 문자열일 수 없다.")
+    @Test
+    public void Username_cannot_be_blank() {
+        assertThrows(IllegalArgumentException.class,
+                ()-> new Name(""));
+    }
 }

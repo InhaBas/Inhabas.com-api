@@ -33,4 +33,20 @@ public class CommentContentsTest {
                 () -> new Contents(contentsString)
         );
     }
+
+    @DisplayName("Contents 타입에 null 은 안된다.")
+    @Test
+    public void Contents_is_Null() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Contents(null)
+        );
+    }
+
+    @DisplayName("Contents 타입에 공백댓글은 저장할 수 없다.")
+    @Test
+    public void Contents_is_Blank() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Contents("  ")
+        );
+    }
 }

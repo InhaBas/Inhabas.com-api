@@ -31,9 +31,21 @@ public class FilepathTest {
         String tooLongFilePath = path + "file.txt";
 
         //when
-        assertThrows(
-                IllegalArgumentException.class,
-                ()->{FilePath filePath = new FilePath(tooLongFilePath);}
-        );
+        assertThrows(IllegalArgumentException.class,
+                () -> new FilePath(tooLongFilePath));
+    }
+
+    @DisplayName("FilePath 는 null이 될 수 없다.")
+    @Test
+    public void FilePath_cannot_be_null() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new FilePath(null));
+    }
+
+    @DisplayName("FilePath 는 빈 문자열이 될 수 없다.")
+    @Test
+    public void FilePath_cannot_be_blank() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new FilePath("\n\t"));
     }
 }

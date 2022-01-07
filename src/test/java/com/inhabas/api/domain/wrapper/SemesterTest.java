@@ -27,11 +27,11 @@ public class SemesterTest {
         //when
         assertThrows(
                 IllegalArgumentException.class,
-                () -> {Semester thirdSemester = new Semester(3);}
+                () -> new Semester(3)
         );
         assertThrows(
                 IllegalArgumentException.class,
-                () -> {Semester thirdSemester = new Semester(0);}
+                () -> new Semester(0)
         );
     }
 }

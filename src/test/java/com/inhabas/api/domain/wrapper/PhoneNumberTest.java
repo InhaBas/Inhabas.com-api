@@ -41,4 +41,18 @@ public class PhoneNumberTest {
                 number -> assertThrows(IllegalArgumentException.class, ()-> new Phone(number))
         );
     }
+
+    @DisplayName("핸드폰 번호에 null 이 저장될 수 없다.")
+    @Test
+    public void PhoneNumber_cannot_be_Null() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Phone(null));
+    }
+
+    @DisplayName("핸드폰 번호에 빈 문자열이 저장될 수 없다.")
+    @Test
+    public void PhoneNumber_cannot_be_Blank() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Phone("  "));
+    }
 }

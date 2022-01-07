@@ -28,4 +28,18 @@ public class BoardContentsTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Contents(contentsString));
     }
+
+    @DisplayName("Contents 타입에 공백을 저장할 수 없다.")
+    @Test
+    public void Contents_is_Empty() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Contents(""));
+    }
+
+    @DisplayName("Contents 타입에 null 은 허용 안된다.")
+    @Test
+    public void Contents_is_Null() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new Contents(null));
+    }
 }
