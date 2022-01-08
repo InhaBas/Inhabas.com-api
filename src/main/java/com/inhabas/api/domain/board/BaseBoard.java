@@ -47,6 +47,20 @@ public abstract class BaseBoard extends BaseEntity {
         return this;
     }
 
+    public Object addFiles(Set<BoardFile> UploadFiles) {
+        if (Objects.nonNull(UploadFiles))
+            UploadFiles.forEach(this::addFile);
+
+        return this;
+    }
+
+    public Object addComments(List<Comment> newComments) {
+        if (Objects.nonNull(newComments))
+            newComments.forEach(this::addComment);
+
+        return this;
+    }
+
     public boolean isWriter(Member member) {
         return this.writer.equals(member);
     }
