@@ -19,7 +19,7 @@ import java.util.*;
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
-public class BaseBoard extends BaseEntity {
+public abstract class BaseBoard extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
@@ -47,17 +47,31 @@ public class BaseBoard extends BaseEntity {
         return this;
     }
 
+    public Object addFiles(Set<BoardFile> UploadFiles) {
+        if (Objects.nonNull(UploadFiles))
+            UploadFiles.forEach(this::addFile);
+
+        return this;
+    }
+
+    public Object addComments(List<Comment> newComments) {
+        if (Objects.nonNull(newComments))
+            newComments.forEach(this::addComment);
+
+        return this;
+    }
+
     public boolean isWriter(Member member) {
         return this.writer.equals(member);
     }
 
     public void addFile(BoardFile uploadFile) {
-        this.getFiles().add(uploadFile);
+        files.add(uploadFile);
         uploadFile.toBoard(this);
     }
 
     public void addComment(Comment newComment) {
-        this.getComments().add(newComment);
+        comments.add(newComment);
         newComment.toBoard(this);
     }
 

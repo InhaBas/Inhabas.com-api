@@ -20,12 +20,6 @@ public class NormalBoard extends BaseBoard {
 
     public NormalBoard() {}
 
-    public NormalBoard(String title, String contents, Member writer) {
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-        this.writer = writer;
-    }
-
     public NormalBoard(String title, String contents, Category category) {
         this.title = new Title(title);
         this.contents = new Contents(contents);
