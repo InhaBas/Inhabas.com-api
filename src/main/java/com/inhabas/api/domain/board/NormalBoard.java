@@ -4,6 +4,7 @@ import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.dto.NormalBoardDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -23,11 +24,9 @@ public class NormalBoard extends BaseBoard {
 
     public NormalBoard() {}
 
-    @Builder
-    public NormalBoard(String title, String contents, Set<BoardFile>files, Category category){
+    public NormalBoard(String title, String contents, Category category){
         this.title = new Title(title);
         this.contents = new Contents(contents);
-        this.files = files;
         this.category = category;
     }
 

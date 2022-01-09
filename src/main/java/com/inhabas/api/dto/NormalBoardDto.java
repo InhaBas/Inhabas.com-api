@@ -1,7 +1,11 @@
-package com.inhabas.api.domain.board;
+package com.inhabas.api.dto;
 
+import com.inhabas.api.domain.board.Category;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.file.BoardFile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -10,6 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class NormalBoardDto {
 
     @NotBlank(message = "제목을 입력해주세요.")
@@ -19,17 +25,16 @@ public class NormalBoardDto {
     @NotNull(message = "본문을 입력해주세요.")
     private String contents;
 
+
     private Set<BoardFile> files = new HashSet<>();
 
     private String categoryName;
 
-    public NormalBoard toEntity(){
-        Category entityCategory = Category.valueOf(categoryName);
-        return NormalBoard.builder()
-                .title(title)
-                .contents(contents)
-                .files(files)
-                .category(entityCategory)
-                .build();
+    // Entity to Dto
+    public NormalBoardDto(NormalBoard normalBoard){
+        this.title = normalBoard.getTitle();
+        this.contents = normalBoard.getContents();
+        Category entityCategory = normalBoard.getCategory();
+        this.categoryName = entityCategory.name();
     }
 }
