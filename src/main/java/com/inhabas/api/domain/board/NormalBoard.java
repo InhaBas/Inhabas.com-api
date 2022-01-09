@@ -23,15 +23,7 @@ public class NormalBoard extends BaseBoard {
 
     public NormalBoard() {}
 
-    @Builder
-    public NormalBoard(String title, String contents, Set<BoardFile>files, Category category){
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-        this.files = files;
-        this.category = category;
-    }
-
-    public NormalBoard(String title, String contents, Member writer) {
+    public NormalBoard(String title, String contents, Category category) {
         this.title = new Title(title);
         this.contents = new Contents(contents);
         this.writer = writer;

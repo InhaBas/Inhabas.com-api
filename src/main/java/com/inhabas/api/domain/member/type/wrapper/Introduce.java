@@ -19,7 +19,9 @@ public class Introduce {
     public Introduce() {}
 
     public Introduce(String value) {
-        if (validate(value))
+        if (Objects.isNull(value))
+            this.value = "";
+        else if (validate(value))
             this.value = value;
         else
             throw new IllegalArgumentException();

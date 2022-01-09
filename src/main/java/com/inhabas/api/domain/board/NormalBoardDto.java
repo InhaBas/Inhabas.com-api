@@ -23,13 +23,4 @@ public class NormalBoardDto {
 
     private String categoryName;
 
-    public NormalBoard toEntity(){
-        Category entityCategory = Category.valueOf(categoryName);
-        return NormalBoard.builder()
-                .title(title)
-                .contents(contents)
-                .files(files)
-                .category(entityCategory)
-                .build();
-    }
 }
