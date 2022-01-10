@@ -37,4 +37,11 @@ public class NormalBoardDto {
         Category entityCategory = normalBoard.getCategory();
         this.categoryName = entityCategory.name();
     }
+
+    // Dto to Entity
+    public NormalBoard toEntity() {
+        return NormalBoard(title, contents, files, categoryName);
+    }
 }
+
+

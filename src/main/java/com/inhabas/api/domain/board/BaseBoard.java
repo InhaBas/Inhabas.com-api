@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.annotation.Generated;
 import javax.persistence.*;
 import java.util.*;
 

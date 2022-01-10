@@ -1,18 +1,21 @@
 package com.inhabas.api.service.board;
 
 
+import com.inhabas.api.domain.board.Category;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.dto.NormalBoardDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardService {
-    void write(NormalBoardDto board);
+    Integer write(NormalBoardDto board);
 
-    void modify(NormalBoardDto board);
+    Integer modify(NormalBoardDto board);
 
     void delete(Integer id);
 
-    void getBoard(NormalBoardDto board);
+    Optional<NormalBoard> getBoard(Integer id);
 
-    List<NormalBoardDto> getBoardList(NormalBoardDto board);
+    List<NormalBoard> getBoardList(Category category);
 }
