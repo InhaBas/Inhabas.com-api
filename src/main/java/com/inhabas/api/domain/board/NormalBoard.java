@@ -50,4 +50,8 @@ public class NormalBoard extends BaseBoard {
         this.writer = writer;
         this.category = category;
     }
+
+    public NormalBoard(String title, String contents, Set<BoardFile> files, String categoryName) {
+        
+    }
 }

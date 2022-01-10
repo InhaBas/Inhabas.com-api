@@ -40,7 +40,7 @@ public class NormalBoardDto {
 
     // Dto to Entity
     public NormalBoard toEntity() {
-        return NormalBoard(title, contents, files, categoryName);
+        return new NormalBoard(title, contents, files, categoryName);
     }
 }
 
