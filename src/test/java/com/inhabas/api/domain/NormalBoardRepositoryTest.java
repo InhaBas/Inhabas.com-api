@@ -19,8 +19,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inhabas.api.domain.NormalBoardTest.*;
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.NormalBoardTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -33,13 +33,17 @@ public class NormalBoardRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    NormalBoard FREE_BOARD;
+    NormalBoard NOTICE_BOARD;
+    NormalBoard NOTICE_BOARD_2;
+
     @BeforeEach
     public void setUp() {
         Member saveMember = memberRepository.save(MEMBER1);
 
-        FREE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD_2.writtenBy(saveMember);
+        FREE_BOARD = NormalBoardTest.getFreeBoard().writtenBy(saveMember);
+        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1().writtenBy(saveMember);
+        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2().writtenBy(saveMember);
     }
 
 

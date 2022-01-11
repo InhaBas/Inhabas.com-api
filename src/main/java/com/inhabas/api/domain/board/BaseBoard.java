@@ -40,7 +40,7 @@ public abstract class BaseBoard extends BaseEntity {
     protected Set<BoardFile> files = new HashSet<>();
 
     public Object writtenBy(Member writer) {
-        if (Objects.nonNull(writer))
+        if (Objects.isNull(this.writer))
             this.writer = writer;
         else
             throw new IllegalStateException("게시글 작성자를 수정할 수 없습니다.");
