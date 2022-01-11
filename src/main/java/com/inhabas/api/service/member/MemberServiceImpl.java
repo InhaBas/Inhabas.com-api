@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Optional<Member> updateMember(Member member) {
         return DoesExistMember(member) ?
-                Optional.of(memberRepository.save(member)) : Optional.empty();
+                        Optional.of(memberRepository.save(member)) : Optional.empty();
     }
 
     private boolean DoesExistMember(Member member) {

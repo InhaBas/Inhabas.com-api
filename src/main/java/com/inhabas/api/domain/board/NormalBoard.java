@@ -52,6 +52,10 @@ public class NormalBoard extends BaseBoard {
     }
 
     public NormalBoard(String title, String contents, Set<BoardFile> files, String categoryName) {
-        
+        this.title = new Title(title);
+        this.contents = new Contents(contents);
+        files.forEach(file -> this.addFile(file));
+        Category category = this.category.valueOf(categoryName);
+        this.category = category;
     }
 }

@@ -7,10 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -25,7 +27,7 @@ public class NormalBoardDto {
     @NotNull(message = "본문을 입력해주세요.")
     private String contents;
 
-
+    @Nullable
     private Set<BoardFile> files = new HashSet<>();
 
     private String categoryName;

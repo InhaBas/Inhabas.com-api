@@ -31,7 +31,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer modify(NormalBoardDto normalBoardDto) {
-        return boardRepository.save(normalBoardDto.toEntity()).getId();
+        if(DoesExistBoard(normalBoardDto.toEntity())){
+            return boardRepository.save(normalBoardDto.toEntity()).getId();
+        } else {
+            return 0; // 확인 필요
+        }
+    }
+
+    private boolean DoesExistBoard(NormalBoard normalBoard){
+        return boardRepository.findById(normalBoard.getId()).isPresent();
     }
 
     @Override
