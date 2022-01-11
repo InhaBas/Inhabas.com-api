@@ -36,8 +36,8 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "comment_ref", foreignKey = @ForeignKey(name = "fk_comment_to_comment"))
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment")
-    private List<Comment> children = new ArrayList<>();
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    private final List<Comment> children = new ArrayList<>();
 
     // comment 과 baseBoard 의 연관관계 편의 메소드
     public void toBoard(BaseBoard newParentBoard) {

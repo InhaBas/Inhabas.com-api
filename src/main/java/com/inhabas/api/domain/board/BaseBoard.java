@@ -33,10 +33,10 @@ public abstract class BaseBoard extends BaseEntity {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_baseboard_to_user"))
     protected Member writer;
 
-    @OneToMany(mappedBy = "parentBoard")
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL)
     protected List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parentBoard")
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL)
     protected Set<BoardFile> files = new HashSet<>();
 
     public Object writtenBy(Member writer) {
@@ -50,13 +50,6 @@ public abstract class BaseBoard extends BaseEntity {
     public Object addFiles(Set<BoardFile> UploadFiles) {
         if (Objects.nonNull(UploadFiles))
             UploadFiles.forEach(this::addFile);
-
-        return this;
-    }
-
-    public Object addComments(List<Comment> newComments) {
-        if (Objects.nonNull(newComments))
-            newComments.forEach(this::addComment);
 
         return this;
     }
