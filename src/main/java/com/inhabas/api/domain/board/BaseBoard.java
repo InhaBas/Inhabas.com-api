@@ -84,10 +84,6 @@ public abstract class BaseBoard extends BaseEntity {
         return writer;
     }
 
-    public List<Comment> getComments() {
-        return Collections.unmodifiableList(comments);
-    }
-
     public Set<BoardFile> getFiles() {
         return Collections.unmodifiableSet(files);
     }

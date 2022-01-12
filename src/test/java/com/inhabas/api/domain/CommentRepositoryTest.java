@@ -75,8 +75,6 @@ public class CommentRepositoryTest {
         assertThat(savedReply.getContents()).isEqualTo("익1 고마워");
         assertThat(savedReply.getParentBoard().getId()).isEqualTo(normalBoard.getId());
         assertThat(savedReply.getParentComment().getId()).isEqualTo(saveComment.getId());
-        assertThat(normalBoard.getComments().stream() // 게시판에 달린 댓글 리스트 하위에 작성한 대댓글이 달려있는가?
-                .anyMatch(_comment -> _comment.getChildren().contains(reply))).isTrue();
     }
 
     @DisplayName("게시글의 모든 댓글을 계층 구조로 가져온다.")
