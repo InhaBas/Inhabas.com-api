@@ -19,7 +19,7 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
                 .innerJoin(comment.writer).fetchJoin()
                 .leftJoin(comment.parentComment).fetchJoin()
                 .where(comment.parentBoard.id.eq(boardId))
-                .orderBy(comment.created.asc(), comment.parentComment.id.asc().nullsFirst())
+                .orderBy(comment.created.asc(), comment.parentComment.id.asc().nullsFirst(), comment.id.asc())
                 .fetch();
 
         return convertToNestedStructure(comments);
@@ -31,7 +31,6 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
         Map<Integer, CommentDetailDto> map = new HashMap<>();
 
         commentList.forEach(c -> {
-            System.out.println(c.getContents());
             CommentDetailDto dto = CommentDetailDto.fromEntity(c);
             if (isRootComment(c)) {
                 map.put(dto.getId(), dto);

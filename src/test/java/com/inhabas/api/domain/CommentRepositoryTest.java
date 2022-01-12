@@ -21,7 +21,6 @@ import static com.inhabas.api.domain.MemberTest.MEMBER2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-
 @DataJpaTest
 @Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -50,9 +49,11 @@ public class CommentRepositoryTest {
         normalBoard.addComment(newComment);  // 연관관계 설정.
         Comment saveComment = commentRepository.save(newComment);
 
+        em.clear();
+
         //then
-        assertThat(saveComment.equals(newComment)).isTrue();
-        assertThat(saveComment).isIn(normalBoard.getComments());
+        assertThat(saveComment.getContents()).isEqualTo("필력 좋다 쓴이야");
+        assertThat(saveComment.getParentBoard().getId()).isEqualTo(normalBoard.getId());
     }
 
     @DisplayName("대댓글을 성공적으로 등록한다.")
@@ -115,15 +116,18 @@ public class CommentRepositoryTest {
         // 첫번째 루트 댓글
         assertThat(commentList.get(0).getContents()).isEqualTo("1) 필력 좋다 쓴이야");
         // 첫번째 루트 댓글의 대댓글은 1개
-        assertThat(commentList.get(0).getChildren().size()).isEqualTo(1);
-        assertThat(commentList.get(0).getChildren().get(0).getContents()).isEqualTo("1-1) 고마워");
+        assertThat(commentList.get(0).getChildren())
+                .hasSize(1)
+                .extracting(CommentDetailDto::getContents)
+                .contains("1-1) 고마워");
 
         // 두번째 루트 댓글
         assertThat(commentList.get(1).getContents()).isEqualTo("2) 쓴이야 분발하자");
         // 두번째 루트 댓글의 대댓글은 2개
-        assertThat(commentList.get(1).getChildren().size()).isEqualTo(2);
-        assertThat(commentList.get(1).getChildren().get(0).getContents()).isEqualTo("2-1) 너 누구야?");
-        assertThat(commentList.get(1).getChildren().get(1).getContents()).isEqualTo("2-2) 나? 김첨지");
+        assertThat(commentList.get(1).getChildren())
+                .hasSize(2)
+                .extracting(CommentDetailDto::getContents)
+                .containsExactly("2-1) 너 누구야?", "2-2) 나? 김첨지");
     }
 
     @DisplayName("루트 댓글을 삭제하면 대댓글도 같이 삭제된다.")
@@ -142,17 +146,15 @@ public class CommentRepositoryTest {
         comment.addReply(reply_2); // 대댓글을 달았다
         commentRepository.save(reply_2);
 
-
         em.clear();
+
 
         //when
         commentRepository.delete(comment);
 
         //then
-        List<CommentDetailDto> all = commentRepository.findAllByParentBoardIdOrderByCreated(normalBoard.getId());
+        List<Comment> all = commentRepository.findAll();
         assertThat(all.size()).isEqualTo(0);
-        assertThat(commentRepository.findById(reply_1.getId()).isEmpty()).isTrue();
-        assertThat(commentRepository.findById(reply_2.getId()).isEmpty()).isTrue();
     }
 
     @DisplayName("대댓글을 삭제한다.")
@@ -161,7 +163,7 @@ public class CommentRepositoryTest {
         //given
         Comment comment = new Comment("root) 첫 댓글").writtenBy(commentWriter);
         normalBoard.addComment(comment); // 댓글을 달았다.
-        commentRepository.save(comment);
+        comment = commentRepository.save(comment);
 
         Comment reply_1 = new Comment("reply1) 대댓글1").writtenBy(writer);
         comment.addReply(reply_1); // 대댓글을 달았다.
@@ -169,7 +171,7 @@ public class CommentRepositoryTest {
 
         Comment reply_2 = new Comment("reply2) 대댓글2").writtenBy(commentWriter);
         comment.addReply(reply_2); // 대댓글을 달았다
-        commentRepository.save(reply_2);
+        reply_2 = commentRepository.save(reply_2);
 
         Comment reply_3 = new Comment("reply3) 대댓글3").writtenBy(commentWriter);
         comment.addReply(reply_3); // 대댓글을 달았다
@@ -183,16 +185,18 @@ public class CommentRepositoryTest {
 
 
         //then
-        List<CommentDetailDto> commentList = commentRepository.findAllByParentBoardIdOrderByCreated(normalBoard.getId());
+        List<Comment> all = commentRepository.findAll();
 
-        assertThat(commentList.size()).isEqualTo(1); // 루트 댓글은 1 개이다.
+        assertThat(all)
+                .hasSize(3)
+                .extracting(Comment::getContents)
+                .doesNotContain(reply_2.getContents())
+                .contains(
+                        comment.getContents(),
+                        reply_1.getContents(),
+                        reply_3.getContents()
+                );
 
-        // 루트 댓글
-        assertThat(commentList.get(0).getContents()).isEqualTo("root) 첫 댓글");
-        // 루트 댓글의 대댓글은 2개
-        assertThat(commentList.get(0).getChildren().size()).isEqualTo(2);
-        assertThat(commentList.get(0).getChildren().get(0).getContents()).isEqualTo("reply1) 대댓글1");
-        assertThat(commentList.get(0).getChildren().get(1).getContents()).isEqualTo("reply3) 대댓글3");
     }
 
     @DisplayName("게시판이 삭제되면 해당 댓글이 모두 삭제된다.")
@@ -216,6 +220,7 @@ public class CommentRepositoryTest {
         commentRepository.save(reply_3);
 
         em.clear();
+
 
         //when
         normalBoard = em.find(NormalBoard.class, normalBoard.getId());
