@@ -33,10 +33,10 @@ public abstract class BaseBoard extends BaseEntity {
     @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_baseboard_to_user"))
     protected Member writer;
 
-    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected Set<BoardFile> files = new HashSet<>();
 
     public Object writtenBy(Member writer) {
