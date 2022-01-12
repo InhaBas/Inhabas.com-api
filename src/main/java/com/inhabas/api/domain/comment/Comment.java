@@ -104,6 +104,7 @@ public class Comment extends BaseEntity {
         if (Objects.nonNull(this.parentComment))
             throw new IllegalStateException("대댓글을 다른 댓글로 옮길 수 없습니다.");
 
+        this.parentComment = parentComment;
         this.parentBoard = parentComment.getParentBoard();
     }
 

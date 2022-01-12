@@ -1,12 +1,11 @@
 package com.inhabas.api.domain.comment;
 
 import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.dto.CommentDetailDto;
 
 import java.util.List;
 
 public interface CustomCommentRepository {
 
-    void deleteAllByParentBoard(BaseBoard board);
-
-    List<Comment> findAllByParentBoardOrderByCreated(BaseBoard board);
+    List<CommentDetailDto> findAllByParentBoardIdOrderByCreated(Integer boardId);
 }
