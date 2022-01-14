@@ -1,5 +1,6 @@
 package com.inhabas.api.domain;
 
+import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
+@Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class MemberRepositoryTest {
 

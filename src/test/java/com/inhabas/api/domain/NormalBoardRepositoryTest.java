@@ -1,5 +1,6 @@
 package com.inhabas.api.domain;
 
+import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.Member;
@@ -12,16 +13,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inhabas.api.domain.NormalBoardTest.*;
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.NormalBoardTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(JpaConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class NormalBoardRepositoryTest {
 
@@ -30,13 +33,17 @@ public class NormalBoardRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
 
+    NormalBoard FREE_BOARD;
+    NormalBoard NOTICE_BOARD;
+    NormalBoard NOTICE_BOARD_2;
+
     @BeforeEach
     public void setUp() {
         Member saveMember = memberRepository.save(MEMBER1);
 
-        FREE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD.writtenBy(saveMember);
-        NOTICE_BOARD_2.writtenBy(saveMember);
+        FREE_BOARD = NormalBoardTest.getFreeBoard().writtenBy(saveMember);
+        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1().writtenBy(saveMember);
+        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2().writtenBy(saveMember);
     }
 
 

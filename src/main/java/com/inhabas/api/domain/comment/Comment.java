@@ -36,15 +36,13 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "comment_ref", foreignKey = @ForeignKey(name = "fk_comment_to_comment"))
     private Comment parentComment;
 
-    @OneToMany(mappedBy = "parentComment")
-    private List<Comment> children = new ArrayList<>();
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Comment> children = new ArrayList<>();
 
-    // comment 과 baseBoard 의 연관관계 편의 메소드
     public void toBoard(BaseBoard newParentBoard) {
-        // 기존의 comment-board 연관관계를 끊는다.
-        if (Objects.nonNull(this.parentBoard)) {
-            this.parentBoard.getComments().remove(this);
-        }
+        if (Objects.nonNull(this.parentBoard))
+            throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
+
         this.parentBoard = newParentBoard;
     }
 
@@ -88,5 +86,30 @@ public class Comment extends BaseEntity {
 
     public String getContents() {
         return this.contents.getValue();
+    }
+
+    public Comment(String contents) {
+        this.contents = new Contents(contents);
+    }
+
+    public Comment writtenBy(Member writer) {
+        if (Objects.nonNull(writer))
+            this.writer = writer;
+        else
+            throw new IllegalStateException("댓글 작성자를 수정할 수 없습니다.");
+        return this;
+    }
+
+    private void to(Comment parentComment) {
+        if (Objects.nonNull(this.parentComment))
+            throw new IllegalStateException("대댓글을 다른 댓글로 옮길 수 없습니다.");
+
+        this.parentComment = parentComment;
+        this.parentBoard = parentComment.getParentBoard();
+    }
+
+    public void addReply(Comment reply) {
+        this.children.add(reply);
+        reply.to(this);
     }
 }
