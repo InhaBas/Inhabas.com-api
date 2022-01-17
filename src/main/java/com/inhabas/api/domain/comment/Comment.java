@@ -4,6 +4,7 @@ import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.BaseBoard;
 import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "comment")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
