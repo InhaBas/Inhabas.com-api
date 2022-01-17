@@ -2,6 +2,7 @@ package com.inhabas.api.domain.file;
 
 import com.inhabas.api.domain.board.BaseBoard;
 import com.inhabas.api.domain.comment.Comment;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,10 +10,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.util.Objects;
 
-@Entity
+@Entity @Getter
 @Table(name = "board_file")
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardFile extends BaseFile {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

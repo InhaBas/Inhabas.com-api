@@ -3,7 +3,9 @@ package com.inhabas.api.domain.board;
 import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.member.Member;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -11,14 +13,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "normal_board")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @DiscriminatorValue("Normal")
 public class NormalBoard extends BaseBoard {
 
     @Enumerated(EnumType.STRING)
     private Category category;
-
-    public NormalBoard() {}
 
     public NormalBoard(String title, String contents, Category category) {
         this.title = new Title(title);
