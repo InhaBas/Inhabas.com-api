@@ -20,6 +20,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: '11'
+        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
@@ -28,13 +29,13 @@ jobs:
         arguments: build
 
     - name: build result to slack
-     uses: 8398a7/action-slack@v3
-     with:
-       status: ${{job.status}}
-       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-       author_name: Inhabas.com
-     env:
-       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{job.status}}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+        author_name: Inhabas.com
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
