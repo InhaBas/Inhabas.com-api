@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityManager;
@@ -32,9 +33,7 @@ public class NormalBoardRepositoryTest {
     @Autowired
     NormalBoardRepository boardRepository;
     @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    EntityManager em;
+    TestEntityManager em;
 
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
@@ -42,25 +41,24 @@ public class NormalBoardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Member saveMember = memberRepository.save(MEMBER1);
+        Member saveMember = em.persist(MEMBER1);
 
         FREE_BOARD = NormalBoardTest.getFreeBoard()
                 .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 2));
+                .inCategoryOf(em.find(Category.class, 2)); // 실제로는 getReference 해야하지만, TestEntityManager 에는 해당 함수 없음.
         NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
                 .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 1));
+                .inCategoryOf(em.find(Category.class, 1));
         NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
                 .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 1));
+                .inCategoryOf(em.find(Category.class, 1));
     }
 
 
     @DisplayName("저장 후 반환값이 처음과 같다.")
     @Test
     public void save() {
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
+        Member saveMember = em.find(Member.class, MEMBER1.getId());
 
         //when
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
@@ -96,8 +94,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void update() {
         //given
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
+        Member saveMember = em.find(Member.class, MEMBER1.getId());
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
 
         //when
