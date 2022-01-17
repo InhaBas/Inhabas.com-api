@@ -4,6 +4,8 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
 
 import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.dto.board.SaveBoardDto;
+import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class BoardController {
 
+    private final BoardService boardService;
     private final NormalBoardRepository repository;
 
     @Operation(description = "게시글 조회")
@@ -46,8 +49,8 @@ public class BoardController {
 
     @Operation(description = "게시글 추가")
     @PostMapping
-    public NormalBoard addBoard(@RequestBody NormalBoard board) {
-        return repository.save(board);
+    public NormalBoard addBoard(@RequestBody SaveBoardDto saveBoardDto) {
+        return boardService.write(saveBoardDto);
     }
 
     @Operation(description = "게시글 수정")

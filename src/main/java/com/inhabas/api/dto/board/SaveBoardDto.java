@@ -1,6 +1,7 @@
 package com.inhabas.api.dto.board;
 
 import com.inhabas.api.domain.board.Category;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,9 @@ public class SaveBoardDto {
         this.title = title;
         this.contents = contents;
         this.category = category;
+    }
+
+    public NormalBoard toEntity() {
+
     }
 }
