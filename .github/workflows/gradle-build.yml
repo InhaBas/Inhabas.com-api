@@ -31,6 +31,7 @@ jobs:
     - name: build result to slack
       uses: slackapi/slack-github-action@v1.17.0
       env:
+        GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
       with:
@@ -44,4 +45,4 @@ jobs:
 #         arguments: publish
 #       env:
 #         USERNAME: ${{ github.actor }}
-#         TOKEN: ${{secrets.GITHUB_TOKEN}}
+#         TOKEN: ${{secrets.WORKFLOW_TOKEN}}
