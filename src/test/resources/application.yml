@@ -8,18 +8,21 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MariaDB;
+    url: jdbc:h2:mem:testdb;MODE=MariaDB;
     username: sa
     password:
     driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
-      dialect: org.hibernate.dialect.MariaDBDialect
+      ddl-auto: create-drop
+#      dialect: org.hibernate.dialect.MariaDBDialect
     properties:
       format_sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+      hibernate:
+        dialect:
+
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
 
 file:
   dir: ../../../../files/
