@@ -3,6 +3,7 @@ package com.inhabas.api.service.board;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.dto.board.BoardDto;
+
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,8 @@ import java.util.Optional;
 @Transactional
 public class BoardServiceImpl implements BoardService {
 
-    private final NormalBoardRepository boardRepository;
+
+    private NormalBoardRepository boardRepository;
 
     @Autowired
     public BoardServiceImpl (NormalBoardRepository boardRepository){

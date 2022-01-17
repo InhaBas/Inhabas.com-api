@@ -18,4 +18,5 @@ public interface BoardService {
     Optional<BoardDto> getBoard(Integer categoryId, Integer boardId);
 
     Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
+
 }
