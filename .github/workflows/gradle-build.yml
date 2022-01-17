@@ -35,7 +35,7 @@ jobs:
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         author_name: Inhabas.com
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
 
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
@@ -45,4 +45,4 @@ jobs:
 #         arguments: publish
 #       env:
 #         USERNAME: ${{ github.actor }}
-#         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         TOKEN: ${{secrets.GITHUB_TOKEN}}
