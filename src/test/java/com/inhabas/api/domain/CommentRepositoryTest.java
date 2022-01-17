@@ -1,6 +1,7 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
+import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -38,7 +40,11 @@ public class CommentRepositoryTest {
     public void setUp() {
         writer = em.persist(MEMBER1);
         commentWriter = em.persist(MEMBER2);
-        normalBoard = em.persist(NormalBoardTest.getFreeBoard().writtenBy(writer));
+        normalBoard = em.persist(
+                NormalBoardTest.getFreeBoard()
+                        .writtenBy(writer)
+                        .inCategoryOf(em.find(Category.class, 2))
+        );
     }
 
     @DisplayName("작성한 댓글과 저장된 댓글이 같다.")

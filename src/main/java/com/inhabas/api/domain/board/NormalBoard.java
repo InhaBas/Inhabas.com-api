@@ -18,32 +18,28 @@ import javax.persistence.*;
 @DiscriminatorValue("Normal")
 public class NormalBoard extends BaseBoard {
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "normal_board_category_fk"))
     private Category category;
 
-    public NormalBoard(String title, String contents, Category category) {
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-        this.category = category;
-    }
-
-    public NormalBoard(String title, String contents, Member writer, Category category) {
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-        this.writer = writer;
-        this.category = category;
-    }
-
-    public NormalBoard(Integer id, String title, String contents, Member writer, Category category) {
+    public NormalBoard(Integer id, String title, String contents) {
         this.id = id;
         this.title = new Title(title);
         this.contents = new Contents(contents);
-        this.writer = writer;
-        this.category = category;
+    }
+
+    public NormalBoard(String title, String contents) {
+        this.title = new Title(title);
+        this.contents = new Contents(contents);
     }
 
     @Override
     public NormalBoard writtenBy(Member writer) {
         return (NormalBoard) super.writtenBy(writer);
+    }
+
+    public NormalBoard inCategoryOf(Category category) {
+        this.category = category;
+        return this;
     }
 }
