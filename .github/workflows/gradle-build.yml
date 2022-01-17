@@ -29,16 +29,16 @@ jobs:
         arguments: build
 
 
-    - name: Slack Notify
-      uses: rtCamp/action-slack-notify@v2.1.0
-      env:
-        SLACK_CHANNEL: group-dev
-        SLACK_COLOR: '#FF2D00'
-        SLACK_USERNAME: 'Github Action'
-        SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-        SLACK_TITLE: Build Result - ${{ github.event.pull_request.title }}
-        SLACK_MESSAGE: PR Url - ${{ github.event.pull_request.url }}
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+#     - name: Slack Notify
+#       uses: rtCamp/action-slack-notify@v2.1.0
+#       env:
+#         SLACK_CHANNEL: group-dev
+#         SLACK_COLOR: '#FF2D00'
+#         SLACK_USERNAME: 'Github Action'
+#         SLACK_ICON: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+#         SLACK_TITLE: Build Result - ${{ github.event.pull_request.title }}
+#         SLACK_MESSAGE: PR Url - ${{ github.event.pull_request.url }}
+#         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         
 #     - name: build result to slack
 #       uses: slackapi/slack-github-action@v1.17.0
