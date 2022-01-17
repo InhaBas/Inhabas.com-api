@@ -15,7 +15,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 #      dialect: org.hibernate.dialect.MariaDBDialect
     properties:
       format_sql: true
