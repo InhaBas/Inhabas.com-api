@@ -8,6 +8,8 @@ import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
 import lombok.AccessLevel;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,9 +19,10 @@ import java.util.*;
 
 @Entity
 @Table(name = "normal_board")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
 public class NormalBoard extends BaseEntity {
 
