@@ -1,0 +1,25 @@
+server:
+  servlet:
+    context-path: /api
+  port: 8080
+
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MariaDB;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MariaDBDialect
+    properties:
+      format_sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+
+file:
+  dir: ../../../../files/
