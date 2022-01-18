@@ -17,9 +17,9 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
-
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#      dialect: org.hibernate.dialect.MariaDBDialect
     properties:
       format_sql: true
   sql:
