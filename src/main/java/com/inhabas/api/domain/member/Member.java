@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "user")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
     @Id

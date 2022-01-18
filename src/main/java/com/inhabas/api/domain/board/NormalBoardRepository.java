@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface NormalBoardRepository extends JpaRepository<NormalBoard, Integer> {
 
-    Page<NormalBoard> findAllByCategory(Category category, Pageable pageable);
+    Page<NormalBoard> findAllByCategoryId(Integer categoryId, Pageable pageable);
 
-    List<NormalBoard> findAllByCategory(Category category);
+    List<NormalBoard> findAllByCategoryId(Integer categoryId);
 }
 

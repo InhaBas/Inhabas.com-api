@@ -35,7 +35,9 @@ public class BaseEntityTest {
     public void createdTimeTest() {
         //given
         memberRepository.save(MEMBER1);
-        NormalBoard board = new NormalBoard("title", "contents", MEMBER1, Category.free);
+        NormalBoard board = new NormalBoard("title", "contents")
+                .writtenBy(MEMBER1)
+                .inCategoryOf(em.getReference(Category.class, 2));
 
         //when
         NormalBoard save = boardRepository.save(board);
@@ -49,11 +51,15 @@ public class BaseEntityTest {
     public void updatedTimeTest() {
         //given
         Member member = memberRepository.save(MEMBER1);
-        NormalBoard board = new NormalBoard("title", "contents", member, Category.free);
+        NormalBoard board = new NormalBoard("title", "contents")
+                .writtenBy(member)
+                .inCategoryOf(em.getReference(Category.class, 2));
         boardRepository.save(board);
 
         //when
-        NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents", member, Category.free);
+        NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
+                .writtenBy(member)
+                .inCategoryOf(em.getReference(Category.class, 2));
         NormalBoard updateBoard = boardRepository.save(param);
         em.flush();
 

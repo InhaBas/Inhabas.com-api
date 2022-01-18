@@ -2,6 +2,7 @@ package com.inhabas.api.domain.member;
 
 import com.inhabas.api.domain.member.type.wrapper.Introduce;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,7 +13,7 @@ import java.util.Objects;
 
 @Embeddable
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IbasInformation {
     @Enumerated(EnumType.STRING)
     private Role role;

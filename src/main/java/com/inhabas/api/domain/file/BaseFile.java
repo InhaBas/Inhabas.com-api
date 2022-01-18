@@ -2,7 +2,9 @@ package com.inhabas.api.domain.file;
 
 import com.inhabas.api.domain.file.type.wrapper.FileName;
 import com.inhabas.api.domain.file.type.wrapper.FilePath;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,6 +14,7 @@ import java.util.Objects;
 
 @Getter
 @MappedSuperclass
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseFile {
 

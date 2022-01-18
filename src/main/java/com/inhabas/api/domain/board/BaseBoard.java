@@ -6,7 +6,9 @@ import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.annotation.Generated;
@@ -18,6 +20,7 @@ import java.util.*;
 @Table(name = "base_board")
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
 public abstract class BaseBoard extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

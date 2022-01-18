@@ -13,8 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +33,7 @@ public class NormalBoardRepositoryTest {
     @Autowired
     NormalBoardRepository boardRepository;
     @Autowired
-    MemberRepository memberRepository;
+    TestEntityManager em;
 
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
@@ -39,19 +41,24 @@ public class NormalBoardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Member saveMember = memberRepository.save(MEMBER1);
+        Member saveMember = em.persist(MEMBER1);
 
-        FREE_BOARD = NormalBoardTest.getFreeBoard().writtenBy(saveMember);
-        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1().writtenBy(saveMember);
-        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2().writtenBy(saveMember);
+        FREE_BOARD = NormalBoardTest.getFreeBoard()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.find(Category.class, 2)); // 실제로는 getReference 해야하지만, TestEntityManager 에는 해당 함수 없음.
+        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.find(Category.class, 1));
+        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.find(Category.class, 1));
     }
 
 
     @DisplayName("저장 후 반환값이 처음과 같다.")
     @Test
     public void save() {
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
+        Member saveMember = em.find(Member.class, MEMBER1.getId());
 
         //when
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
@@ -87,13 +94,12 @@ public class NormalBoardRepositoryTest {
     @Test
     public void update() {
         //given
-        Member saveMember = memberRepository.findById(MEMBER1.getId())
-                .orElseThrow(EntityNotFoundException::new);
+        Member saveMember = em.find(Member.class, MEMBER1.getId());
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
 
         //when
         NormalBoard param = new NormalBoard(
-                saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
+                saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.").writtenBy(saveMember);
         NormalBoard updated = boardRepository.save(param);
 
         //then
@@ -142,8 +148,8 @@ public class NormalBoardRepositoryTest {
         NormalBoard saveBoard3 = boardRepository.save(NOTICE_BOARD_2);
 
         //when
-        List<NormalBoard> freeBoards = boardRepository.findAllByCategory(Category.free);
-        List<NormalBoard> noticeBoards = boardRepository.findAllByCategory(Category.notice);
+        List<NormalBoard> freeBoards = boardRepository.findAllByCategoryId(2);
+        List<NormalBoard> noticeBoards = boardRepository.findAllByCategoryId(1);
 
         //then
         assertThat(freeBoards).contains(saveBoard1);

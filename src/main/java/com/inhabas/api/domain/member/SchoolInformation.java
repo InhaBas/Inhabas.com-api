@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Embeddable
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchoolInformation {
 
     @Enumerated(EnumType.STRING)

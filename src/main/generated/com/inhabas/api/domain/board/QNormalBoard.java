@@ -24,7 +24,7 @@ public class QNormalBoard extends EntityPathBase<NormalBoard> {
 
     public final QBaseBoard _super;
 
-    public final EnumPath<Category> category = createEnum("category", Category.class);
+    public final QCategory category;
 
     //inherited
     public final ListPath<com.inhabas.api.domain.comment.Comment, com.inhabas.api.domain.comment.QComment> comments;
@@ -69,6 +69,7 @@ public class QNormalBoard extends EntityPathBase<NormalBoard> {
     public QNormalBoard(Class<? extends NormalBoard> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this._super = new QBaseBoard(type, metadata, inits);
+        this.category = inits.isInitialized("category") ? new QCategory(forProperty("category")) : null;
         this.comments = _super.comments;
         this.contents = _super.contents;
         this.created = _super.created;
