@@ -23,7 +23,6 @@ public class SaveBoardDto {
     @NotNull
     private Integer category_id;
 
-
     public NormalBoard toEntity() {
         return null;
     }

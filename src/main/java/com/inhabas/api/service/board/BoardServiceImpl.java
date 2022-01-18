@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +23,9 @@ public class BoardServiceImpl implements BoardService {
 
     private NormalBoardRepository boardRepository;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Autowired
     public BoardServiceImpl (NormalBoardRepository boardRepository){
         this.boardRepository = boardRepository;
@@ -28,6 +33,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public NormalBoard write(SaveBoardDto saveBoardDto) {
+        Category category = em.getReference(Category.class, saveBoardDto.getCategory_id());
         return boardRepository.save(saveBoardDto.toEntity());
     }
 

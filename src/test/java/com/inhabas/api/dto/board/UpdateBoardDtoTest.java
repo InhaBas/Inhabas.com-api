@@ -1,11 +1,32 @@
 package com.inhabas.api.dto.board;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.hibernate.sql.Update;
+import org.junit.jupiter.api.*;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UpdateBoardDtoTest {
+
+    private static ValidatorFactory validatorFactory;
+    private static Validator validator;
+
+    @BeforeAll
+    public static void init() {
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterAll
+    public static void close() {
+        validatorFactory.close();
+    }
 
     @DisplayName("UpdateBoardDto를 정상적으로 생성한다. ")
     @Test
@@ -16,17 +37,17 @@ public class UpdateBoardDtoTest {
         String contents = "이것은 내용입니다.";
         Integer category_id = 2;
 
-        // when
         UpdateBoardDto updateBoardDto = new UpdateBoardDto();
         updateBoardDto.setId(id);
         updateBoardDto.setTitle(title);
         updateBoardDto.setContents(contents);
         updateBoardDto.setCategory_id(category_id);
 
+        // when
+        Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
+
         // then
-        assertThat(updateBoardDto.getTitle()).isEqualTo(title);
-        assertThat(updateBoardDto.getContents()).isEqualTo(contents);
-        assertThat(updateBoardDto.getCategory_id()).isEqualTo(category_id);
+        assertTrue(violations.isEmpty());
 
     }
 }
