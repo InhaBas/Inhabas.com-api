@@ -56,7 +56,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public List<NormalBoard> getBoardList(Category category) {
-        return boardRepository.findAllByCategory(category);
+    public List<NormalBoard> getBoardList(Integer categoryId) {
+        return boardRepository.findAllByCategoryId(categoryId);
     }
 }

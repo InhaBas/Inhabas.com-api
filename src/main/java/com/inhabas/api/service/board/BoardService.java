@@ -18,5 +18,5 @@ public interface BoardService {
 
     Optional<NormalBoard> getBoard(String category, Integer board_id);
 
-    List<NormalBoard> getBoardList(Category category);
+    List<NormalBoard> getBoardList(Integer categoryId);
 }

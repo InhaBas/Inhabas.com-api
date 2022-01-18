@@ -6,16 +6,24 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter @Setter
 public class BoardDetailDto {
+    @NotBlank
     private String title;
+    @NotEmpty
     private String contents;
+    @NotBlank
     private String name;
+    @NotNull
+    private Category category;
+
     private LocalDateTime created;
     private LocalDateTime updated;
-    private Category category;
 
     public BoardDetailDto(String title, String contents, String name, LocalDateTime created, LocalDateTime updated, Category category) {
         this.title = title;
