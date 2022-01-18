@@ -32,8 +32,17 @@ public class SaveBoardDtoTest {
         //given
         String title = "이것은 제목";
         String contents = "이것은 내용입니다.";
+<<<<<<< HEAD
 
         SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+=======
+        Integer category_id = 2;
+
+        SaveBoardDto saveBoardDto = new SaveBoardDto();
+        saveBoardDto.setTitle(title);
+        saveBoardDto.setContents(contents);
+        saveBoardDto.setCategory_id(category_id);
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -42,20 +51,34 @@ public class SaveBoardDtoTest {
         assertTrue(violations.isEmpty());
     }
 
+<<<<<<< HEAD
     @DisplayName("SaveBoardDto의 contents 필드가 null 이면 validation 실패")
+=======
+    @DisplayName("SaveBoardDto의 contents 필드가 null 상태이다.")
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
     @Test
     public void Contents_is_null() {
         // given
         String title = "이것은 제목";
         String contents = null;
+<<<<<<< HEAD
 
         SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+=======
+        Integer category_id = 2;
+
+        SaveBoardDto saveBoardDto = new SaveBoardDto();
+        saveBoardDto.setTitle(title);
+        saveBoardDto.setContents(contents);
+        saveBoardDto.setCategory_id(category_id);
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
         assertFalse(violations.isEmpty());
+<<<<<<< HEAD
         assertEquals(1, violations.size());
         assertEquals("본문을 입력하세요.", violations.iterator().next().getMessage());
     }
@@ -76,6 +99,8 @@ public class SaveBoardDtoTest {
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
         assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
+=======
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
     }
 
 
