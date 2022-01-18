@@ -38,13 +38,13 @@ public class BoardController {
     @GetMapping("/all")
     public Page<NormalBoard> allBoards(
             @ModelAttribute Pageable pageable,
-            @RequestParam(required = false) Category category
+            @RequestParam(required = false) Integer category
     ) {
         Page<NormalBoard> boardList;
 		if (category == null) 
 			boardList = repository.findAll(pageable);
 		else
-			boardList = repository.findAllByCategory(category, pageable);
+			boardList = repository.findAllByCategoryId(category, pageable);
 		return boardList;
     }
 

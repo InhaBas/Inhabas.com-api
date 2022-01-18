@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,8 @@ public class NormalBoardRepositoryTest {
     NormalBoardRepository boardRepository;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    EntityManager em;
 
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
@@ -41,9 +44,15 @@ public class NormalBoardRepositoryTest {
     public void setUp() {
         Member saveMember = memberRepository.save(MEMBER1);
 
-        FREE_BOARD = NormalBoardTest.getFreeBoard().writtenBy(saveMember);
-        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1().writtenBy(saveMember);
-        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2().writtenBy(saveMember);
+        FREE_BOARD = NormalBoardTest.getFreeBoard()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.getReference(Category.class, 2));
+        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.getReference(Category.class, 1));
+        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
+                .writtenBy(saveMember)
+                .inCategoryOf(em.getReference(Category.class, 1));
     }
 
 
@@ -93,7 +102,7 @@ public class NormalBoardRepositoryTest {
 
         //when
         NormalBoard param = new NormalBoard(
-                saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember, Category.beta);
+                saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.").writtenBy(saveMember);
         NormalBoard updated = boardRepository.save(param);
 
         //then
@@ -142,8 +151,8 @@ public class NormalBoardRepositoryTest {
         NormalBoard saveBoard3 = boardRepository.save(NOTICE_BOARD_2);
 
         //when
-        List<NormalBoard> freeBoards = boardRepository.findAllByCategory(Category.free);
-        List<NormalBoard> noticeBoards = boardRepository.findAllByCategory(Category.notice);
+        List<NormalBoard> freeBoards = boardRepository.findAllByCategoryId(2);
+        List<NormalBoard> noticeBoards = boardRepository.findAllByCategoryId(1);
 
         //then
         assertThat(freeBoards).contains(saveBoard1);
