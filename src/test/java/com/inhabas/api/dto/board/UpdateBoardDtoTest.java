@@ -1,11 +1,22 @@
 package com.inhabas.api.dto.board;
 
+<<<<<<< HEAD
 import org.junit.jupiter.api.*;
+=======
+import org.hibernate.sql.Update;
+import org.junit.jupiter.api.*;
+
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
+<<<<<<< HEAD
+=======
+
+import static org.assertj.core.api.Assertions.assertThat;
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UpdateBoardDtoTest {
@@ -31,14 +42,25 @@ public class UpdateBoardDtoTest {
         Integer id = 1;
         String title = "이것은 제목";
         String contents = "이것은 내용입니다.";
+<<<<<<< HEAD
 
         UpdateBoardDto updateBoardDto = new UpdateBoardDto(id, title, contents);
+=======
+        Integer category_id = 2;
+
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto();
+        updateBoardDto.setId(id);
+        updateBoardDto.setTitle(title);
+        updateBoardDto.setContents(contents);
+        updateBoardDto.setCategory_id(category_id);
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
 
         // when
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
 
         // then
         assertTrue(violations.isEmpty());
+<<<<<<< HEAD
     }
 
     @DisplayName("본문에 공백이 입력되었을 경우 예외 처리 + CategoryId가 등록되지 않았을 경우 예외 처리")
@@ -59,5 +81,8 @@ public class UpdateBoardDtoTest {
         // then
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
+=======
+
+>>>>>>> 0cfe72f ([feature] Bean Validation Test 추가)
     }
 }
