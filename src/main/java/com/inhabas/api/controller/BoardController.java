@@ -28,9 +28,10 @@ public class BoardController {
 
     @Operation(description = "게시글 조회")
     @GetMapping
-    public NormalBoard board(@RequestParam Integer id) {
-        return repository.findById(id)
-                .orElseThrow(EntityNotFoundException::new); // 40x 응답할 것
+    public NormalBoard board(@RequestParam String category, @RequestParam Integer board_id) {
+        return boardService.getBoard(category, board_id).orElseThrow(EntityNotFoundException::new);
+//        return repository.findById(id)
+//                .orElseThrow(EntityNotFoundException::new); // 40x 응답할 것
     }
 
     @Operation(description = "모든 게시글 조회")

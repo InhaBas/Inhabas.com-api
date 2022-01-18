@@ -16,7 +16,7 @@ public interface BoardService {
 
     void delete(Integer id);
 
-    Optional<NormalBoard> getBoard(Integer id);
+    Optional<NormalBoard> getBoard(String category, Integer board_id);
 
     List<NormalBoard> getBoardList(Category category);
 }
