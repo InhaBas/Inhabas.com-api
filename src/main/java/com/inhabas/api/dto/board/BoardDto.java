@@ -5,7 +5,6 @@ import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.member.type.wrapper.Name;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +16,7 @@ public class BoardDto {
     private String contents; // BoardListView에서 null
     private String writerName;
     private Integer menuId;
+
     private LocalDateTime created;
     private LocalDateTime updated;
 
@@ -41,7 +41,5 @@ public class BoardDto {
         this.created = created;
     }
 
-    public void setUpdated(LocalDateTime updated) {
-        this.updated = updated;
-    }
+    public void setUpdated(LocalDateTime updated) { this.updated = updated; }
 }
