@@ -23,5 +23,4 @@ public class SaveBoardDto {
     public NormalBoard toEntity() {
         return null;
     }
-
 }
