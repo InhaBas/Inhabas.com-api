@@ -43,7 +43,7 @@ public class CommentRepositoryTest {
         normalBoard = em.persist(
                 NormalBoardTest.getFreeBoard()
                         .writtenBy(writer)
-                        .inCategoryOf(em.find(Category.class, 2))
+                        .inCategoryOf(em.getEntityManager().getReference(Category.class, 2))
         );
     }
 

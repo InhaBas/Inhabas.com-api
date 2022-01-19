@@ -8,18 +8,18 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MariaDB;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=MySQL;DATABASE_TO_UPPER=false;
     username: sa
     password:
     driver-class-name: org.h2.Driver
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-#      dialect: org.hibernate.dialect.MariaDBDialect
     properties:
       format_sql: true
   sql:
