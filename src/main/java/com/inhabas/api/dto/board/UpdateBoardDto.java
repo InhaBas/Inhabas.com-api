@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 
 @Getter @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateBoardDto {
     private Integer id;
 

@@ -7,11 +7,13 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,7 @@ import java.util.Optional;
 @Transactional
 public class BoardServiceImpl implements BoardService {
 
-    private NormalBoardRepository boardRepository;
+    private final NormalBoardRepository boardRepository;
 
     @PersistenceContext
     EntityManager em;
@@ -33,14 +35,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public NormalBoard write(SaveBoardDto saveBoardDto) {
-        Category category = em.getReference(Category.class, saveBoardDto.getCategory_id());
+        Category category = em.getReference(Category.class, saveBoardDto.getCategoryId());
         return boardRepository.save(saveBoardDto.toEntity());
     }
 
     @Override
     public NormalBoard update(UpdateBoardDto updateBoardDto) {
-        if(DoesExistBoard(updateBoardDto.toEntity())){
-            return boardRepository.save(updateBoardDto.toEntity());
+        NormalBoard entity = updateBoardDto.toEntity();
+        if(DoesExistBoard(entity)){
+            return boardRepository.save(entity);
         } else {
             return null; // 확인 필요
         }
@@ -56,13 +59,16 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<NormalBoard> getBoard(String category, Integer id) {
+    public Optional<NormalBoard> getBoard(Integer categoryId, Integer id) {
 
         return boardRepository.findById(id);
     }
 
     @Override
-    public List<NormalBoard> getBoardList(Integer categoryId) {
-        return boardRepository.findAllByCategoryId(categoryId);
+    public Page<NormalBoard> getBoardList(Pageable pageable, Integer categoryId) {
+        if (categoryId == null)
+            return boardRepository.findAll(pageable);
+        else
+            return boardRepository.findAllByCategoryId(categoryId, pageable);
     }
 }

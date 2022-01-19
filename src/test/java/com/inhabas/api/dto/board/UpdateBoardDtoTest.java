@@ -35,13 +35,13 @@ public class UpdateBoardDtoTest {
         Integer id = 1;
         String title = "이것은 제목";
         String contents = "이것은 내용입니다.";
-        Integer category_id = 2;
+        Integer categoryId = 2;
 
         UpdateBoardDto updateBoardDto = new UpdateBoardDto();
         updateBoardDto.setId(id);
         updateBoardDto.setTitle(title);
         updateBoardDto.setContents(contents);
-        updateBoardDto.setCategory_id(category_id);
+        updateBoardDto.setCategoryId(categoryId);
 
         // when
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);

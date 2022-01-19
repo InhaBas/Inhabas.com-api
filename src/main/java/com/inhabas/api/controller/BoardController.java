@@ -28,23 +28,17 @@ public class BoardController {
 
     @Operation(description = "게시글 조회")
     @GetMapping
-    public NormalBoard board(@RequestParam String category, @RequestParam Integer board_id) {
-        return boardService.getBoard(category, board_id).orElseThrow(EntityNotFoundException::new);
-//        return repository.findById(id)
-//                .orElseThrow(EntityNotFoundException::new); // 40x 응답할 것
+    public NormalBoard board(@RequestParam Integer categoryId, @RequestParam Integer boardId) {
+        return boardService.getBoard(categoryId, boardId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
     public Page<NormalBoard> allBoards(
             @ModelAttribute Pageable pageable,
-            @RequestParam(required = false) Integer category
+            @RequestParam(required = false) Integer categoryId
     ) {
-        Page<NormalBoard> boardList;
-		if (category == null) 
-			boardList = repository.findAll(pageable);
-		else
-			boardList = repository.findAllByCategoryId(category, pageable);
+        Page<NormalBoard> boardList = boardService.getBoardList(pageable, categoryId);
 		return boardList;
     }
 
