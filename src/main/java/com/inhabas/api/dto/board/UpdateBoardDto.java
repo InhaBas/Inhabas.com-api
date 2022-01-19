@@ -10,18 +10,23 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateBoardDto {
     private Integer id;
-    @NotBlank
+
+    @NotBlank(message = "제목을 입력하세요.")
+    @Size(max = 100, message = "제목은 최대 100자입니다.")
     private String title;
-    @NotEmpty
+
+    @NotEmpty(message = "본문을 입력하세요")
     private String contents;
-    @NotNull
-    private Integer category_id;
+
+    @NotNull(message = "카테고리를 선택하세요.")
+    private Integer categoryId;
 
     public NormalBoard toEntity() {
         return null;

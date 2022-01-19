@@ -13,14 +13,14 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SaveBoardDto {
-    @NotBlank
-    @Size(max = 50)
+    @NotBlank(message = "제목을 입력하세요.")
+    @Size(max = 100, message = "제목은 최대 100자입니다.")
     private String title;
 
-    @NotEmpty
+    @NotBlank(message = "본문을 입력하세요.")
     private String contents;
 
-    @NotNull
+    @NotNull(message = "카테고리를 선택하세요.")
     private Integer category_id;
 
     public NormalBoard toEntity() {
