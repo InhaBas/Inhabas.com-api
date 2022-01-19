@@ -15,7 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
-
 import java.util.Optional;
 
 
@@ -23,7 +22,6 @@ import java.util.Optional;
 @Slf4j
 @Transactional
 public class BoardServiceImpl implements BoardService {
-
 
     private NormalBoardRepository boardRepository;
 
@@ -61,7 +59,6 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Optional<BoardDto> getBoard(Integer categoryId, Integer id) {
-
         return boardRepository.findDtoById(id);
     }
 
