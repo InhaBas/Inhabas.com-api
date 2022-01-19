@@ -1,8 +1,6 @@
 package com.inhabas.api.dto.board;
 
-import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

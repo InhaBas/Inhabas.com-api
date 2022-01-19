@@ -50,7 +50,7 @@ public class SaveBoardDtoTest {
         assertTrue(violations.isEmpty());
     }
 
-    @DisplayName("SaveBoardDto의 contents 필드가 null 상태이다.")
+    @DisplayName("SaveBoardDto의 contents 필드가 null 상태인 경우 예외 처리")
     @Test
     public void Contents_is_null() {
         // given
@@ -78,6 +78,29 @@ public class SaveBoardDtoTest {
 
     @DisplayName("게시글의 제목이 100자 이상을 넘긴 경우 예외 처리")
     @Test
-    void
+    public void Title_is_too_long() {
+        //given
+        String title = "title".repeat(30);
+        String contents = "그냥 본문 내용입니다.";
+        Integer categoryId = 3;
+
+        SaveBoardDto saveBoardDto = new SaveBoardDto();
+        saveBoardDto.setTitle(title);
+        saveBoardDto.setContents(contents);
+        saveBoardDto.setCategoryId(categoryId);
+
+        // when
+        Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
+
+        // then
+        assertFalse(violations.isEmpty());
+        assertEquals(1, violations.size());
+        assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
+
+        for(ConstraintViolation<SaveBoardDto> violation : violations){
+            logger.debug("violation error message : {}", violation.getMessage());
+        }
+    }
+
 
 }

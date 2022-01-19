@@ -15,13 +15,14 @@ import javax.validation.constraints.Size;
 @Getter @Setter
 @NoArgsConstructor
 public class UpdateBoardDto {
+    @NotNull
     private Integer id;
 
     @NotBlank(message = "제목을 입력하세요.")
     @Size(max = 100, message = "제목은 최대 100자입니다.")
     private String title;
 
-    @NotEmpty(message = "본문을 입력하세요")
+    @NotBlank(message = "본문을 입력하세요")
     private String contents;
 
     @NotNull(message = "카테고리를 선택하세요.")
