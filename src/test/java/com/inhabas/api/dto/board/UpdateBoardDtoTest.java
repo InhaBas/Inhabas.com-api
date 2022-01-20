@@ -45,9 +45,13 @@ public class UpdateBoardDtoTest {
 
         // then
         assertTrue(violations.isEmpty());
+<<<<<<< HEAD
+=======
+        assertEquals(0, violations.size());
+>>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     }
 
-    @DisplayName("본문에 공백이 입력되었을 경우 예외 처리 + CategoryId가 등록되지 않았을 경우 예외 처리")
+    @DisplayName("본문에 공백이 입력되었을 경우 + CategoryId가 등록되지 않았을 경우 통과하지 못함")
     @Test
     public void Contents_is_empty() {
         //given
@@ -64,7 +68,11 @@ public class UpdateBoardDtoTest {
 
         // then
         assertFalse(violations.isEmpty());
+<<<<<<< HEAD
         assertEquals(1, violations.size());
 
+=======
+        assertEquals(2, violations.size());
+>>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     }
 }
