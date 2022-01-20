@@ -13,18 +13,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import({JpaConfig.class, NormalBoardRepositoryImpl.class})
@@ -53,6 +52,7 @@ public class NormalBoardRepositoryTest {
         NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
                 .writtenBy(saveMember)
                 .inCategoryOf(em.getReference(Category.class, 1));
+
     }
 
 
@@ -80,15 +80,21 @@ public class NormalBoardRepositoryTest {
     public void findById() {
         //given
         BoardDto saveBoard1 = boardRepository.save(FREE_BOARD);
-        BoardDto saveBoard2 = boardRepository.save(NOTICE_BOARD);
+        boardRepository.save(NOTICE_BOARD);
 
         //when
         Optional<BoardDto> find1 = boardRepository.findById(saveBoard1.getId());
-        Optional<BoardDto> find2 = boardRepository.findById(saveBoard2.getId());
 
         //then
-        assertThat(find1).hasValue(saveBoard1);
-        assertThat(find2).hasValue(saveBoard2);
+        assertTrue(find1.isPresent());
+        assertAll(
+                () -> assertThat(find1.get().getId()).isEqualTo(saveBoard1.getId()),
+                () -> assertThat(find1.get().getCreated()).isNotNull(),
+                () -> assertThat(find1.get().getWriterName()).isEqualTo(saveBoard1.getWriterName()),
+                () -> assertThat(find1.get().getTitle()).isEqualTo(saveBoard1.getTitle()),
+                () -> assertThat(find1.get().getCategoryId()).isEqualTo(saveBoard1.getCategoryId()),
+                () -> assertThat(find1.get().getContents()).isEqualTo(saveBoard1.getContents())
+        );
     }
 
     @DisplayName("게시글을 수정한다.")
@@ -99,13 +105,19 @@ public class NormalBoardRepositoryTest {
         BoardDto saveBoard = boardRepository.save(FREE_BOARD);
 
         //when
-        NormalBoard param = new NormalBoard(
-                saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.").writtenBy(saveMember);
-        BoardDto updated = boardRepository.save(param);
+        NormalBoard param = new NormalBoard(saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.")
+                .writtenBy(saveMember)
+                .inCategoryOf(em.getReference(Category.class, 2));
+        boardRepository.save(param);
 
         //then
-        Optional<BoardDto> findBoard = boardRepository.findById(saveBoard.getId());
-        assertThat(findBoard).hasValue(updated);
+        BoardDto findBoard = boardRepository.findById(saveBoard.getId()).orElseThrow(EntityNotFoundException::new);
+        assertAll(
+                () -> assertThat(findBoard.getId()).isEqualTo(saveBoard.getId()),
+                () -> assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다."),
+                () -> assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다."),
+                () -> assertThat(findBoard.getUpdated()).isNotNull()
+        );
     }
 
     @DisplayName("id 로 게시글을 삭제한다.")
@@ -119,26 +131,30 @@ public class NormalBoardRepositoryTest {
         boardRepository.deleteById(boardId);
 
         //then
-        Assertions.assertTrue(boardRepository.findById(boardId).isEmpty());
+        assertTrue(boardRepository.findById(boardId).isEmpty());
     }
 
     @DisplayName("게시판 유형에 맞게 게시글을 불러온다.")
     @Test
     public void findAllByCategory() {
         //given
-        BoardDto saveBoard1 = boardRepository.save(FREE_BOARD);
-        BoardDto saveBoard2 = boardRepository.save(NOTICE_BOARD);
-        BoardDto saveBoard3 = boardRepository.save(NOTICE_BOARD_2);
+        boardRepository.save(FREE_BOARD);
+        boardRepository.save(NOTICE_BOARD);
+        boardRepository.save(NOTICE_BOARD_2);
 
         //when
         Page<BoardDto> freeBoards = boardRepository.findAllByCategoryId(2, Pageable.ofSize(5));
         Page<BoardDto> noticeBoards = boardRepository.findAllByCategoryId(1, Pageable.ofSize(5));
 
         //then
-        assertThat(freeBoards).contains(saveBoard1);
         assertThat(freeBoards.getTotalElements()).isEqualTo(1);
-        assertThat(noticeBoards).contains(saveBoard2, saveBoard3);
+        freeBoards.forEach(
+                board->assertThat(board.getCategoryId()).isEqualTo(2));
+
         assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
+        noticeBoards.forEach(
+                board->assertThat(board.getCategoryId()).isEqualTo(1));
+
     }
 
 }

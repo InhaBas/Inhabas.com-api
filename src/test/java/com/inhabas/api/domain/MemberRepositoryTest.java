@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,8 @@ public class MemberRepositoryTest {
 
     @Autowired
     MemberRepository MemberRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @DisplayName("저장 후 반환 값은 처음과 같다.")
     @Test
@@ -59,8 +63,8 @@ public class MemberRepositoryTest {
         Member save2 = MemberRepository.save(MEMBER2);
 
         //when
-        Optional<Member> find1 = MemberRepository.findById(MEMBER1.getId());
-        Optional<Member> find2 = MemberRepository.findById(MEMBER2.getId());
+        Optional<Member> find1 = MemberRepository.findById(save1.getId());
+        Optional<Member> find2 = MemberRepository.findById(save2.getId());
 
         //then
         assertThat(find1).hasValue(save1);

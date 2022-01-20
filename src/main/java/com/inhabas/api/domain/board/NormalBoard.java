@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "normal_board")
@@ -18,8 +19,8 @@ import javax.persistence.*;
 @DiscriminatorValue("Normal")
 public class NormalBoard extends BaseBoard {
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "normal_board_category_fk"))
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "normal_board_category_fk"), updatable = false)
     private Category category;
 
     public NormalBoard(Integer id, String title, String contents) {
@@ -39,7 +40,11 @@ public class NormalBoard extends BaseBoard {
     }
 
     public NormalBoard inCategoryOf(Category category) {
-        this.category = category;
+        if (Objects.isNull(this.category))
+            this.category = category;
+        else
+            throw new IllegalArgumentException("카테고리는 변경할 수 없습니다.");
+
         return this;
     }
 }
