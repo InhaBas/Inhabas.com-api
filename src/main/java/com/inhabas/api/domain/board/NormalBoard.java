@@ -76,6 +76,7 @@ public class NormalBoard extends BaseEntity {
         return contents.getValue();
     }
 
+<<<<<<< HEAD
     public Menu getMenu() {
         return menu;
     }
@@ -90,6 +91,15 @@ public class NormalBoard extends BaseEntity {
 
     /* relation method */
 
+=======
+    public NormalBoard(String title, String contents, Category category) {
+        this.title = new Title(title);
+        this.contents = new Contents(contents);
+        this.category = category;
+    }
+
+    @Override
+>>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     public NormalBoard writtenBy(Member writer) {
         if (Objects.isNull(this.writer))
             this.writer = writer;
