@@ -1,8 +1,9 @@
 package com.inhabas.api.service.board;
 
-import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
+import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
+
 import java.util.Optional;
 
 
@@ -34,13 +35,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public NormalBoard write(SaveBoardDto saveBoardDto) {
+    public BoardDto write(SaveBoardDto saveBoardDto) {
         Category category = em.getReference(Category.class, saveBoardDto.getCategoryId());
         return boardRepository.save(saveBoardDto.toEntity());
     }
 
     @Override
-    public NormalBoard update(UpdateBoardDto updateBoardDto) {
+    public BoardDto update(UpdateBoardDto updateBoardDto) {
         NormalBoard entity = updateBoardDto.toEntity();
         if(DoesExistBoard(entity)){
             return boardRepository.save(entity);
@@ -59,16 +60,13 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<NormalBoard> getBoard(Integer categoryId, Integer id) {
+    public Optional<BoardDto> getBoard(Integer categoryId, Integer id) {
 
         return boardRepository.findById(id);
     }
 
     @Override
-    public Page<NormalBoard> getBoardList(Pageable pageable, Integer categoryId) {
-        if (categoryId == null)
-            return boardRepository.findAll(pageable);
-        else
+    public Page<BoardDto> getBoardList(Pageable pageable, Integer categoryId) {
             return boardRepository.findAllByCategoryId(categoryId, pageable);
     }
 }

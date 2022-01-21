@@ -1,15 +1,19 @@
 package com.inhabas.api.domain.board;
 
+import com.inhabas.api.dto.board.BoardDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface NormalBoardRepository extends JpaRepository<NormalBoard, Integer> {
+public interface NormalBoardRepository {
 
-    Page<NormalBoard> findAllByCategoryId(Integer categoryId, Pageable pageable);
+    Page<BoardDto> findAllByCategoryId(Integer categoryId, Pageable pageable);
 
-    List<NormalBoard> findAllByCategoryId(Integer categoryId);
+    BoardDto save(NormalBoard entity);
+
+    Optional<BoardDto> findById(Integer integer);
+
+    void deleteById(Integer integer);
+
 }
-

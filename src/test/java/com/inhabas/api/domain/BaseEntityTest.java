@@ -3,68 +3,68 @@ package com.inhabas.api.domain;
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.board.NormalBoardRepositoryImpl;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.dto.board.BoardDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@Import(JpaConfig.class)
+@Import({JpaConfig.class})
 public class BaseEntityTest {
 
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    NormalBoardRepository boardRepository;
     @PersistenceContext
     EntityManager em;
 
     @Test
     public void createdTimeTest() {
         //given
-        memberRepository.save(MEMBER1);
+        em.persist(MEMBER1);
         NormalBoard board = new NormalBoard("title", "contents")
                 .writtenBy(MEMBER1)
                 .inCategoryOf(em.getReference(Category.class, 2));
 
         //when
-        NormalBoard save = boardRepository.save(board);
+        em.persist(board);
 
         //then
-        assertThat(save.getCreated()).isNotNull();
-        assertThat(save.getCreated()).isInstanceOf(LocalDateTime.class);
+        assertThat(board.getCreated()).isNotNull();
+        assertThat(board.getCreated()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
     public void updatedTimeTest() {
         //given
-        Member member = memberRepository.save(MEMBER1);
+        em.persist(MEMBER1);
         NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(member)
+                .writtenBy(MEMBER1)
                 .inCategoryOf(em.getReference(Category.class, 2));
-        boardRepository.save(board);
+        em.persist(board);
 
         //when
         NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
-                .writtenBy(member)
+                .writtenBy(MEMBER1)
                 .inCategoryOf(em.getReference(Category.class, 2));
-        NormalBoard updateBoard = boardRepository.save(param);
-        em.flush();
+        em.merge(param);
+        em.flush();em.clear();
 
         //then
-        assertThat(updateBoard.getUpdated()).isNotNull();
-        assertThat(updateBoard.getUpdated()).isInstanceOf(LocalDateTime.class);
+        NormalBoard find = em.find(NormalBoard.class, board.getId());
+        assertThat(find.getUpdated()).isNotNull();
+        assertThat(find.getUpdated()).isInstanceOf(LocalDateTime.class);
     }
 
 }
