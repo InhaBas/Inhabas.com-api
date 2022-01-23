@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.file;
 
-import com.inhabas.api.domain.board.BaseBoard;
-import com.inhabas.api.domain.comment.Comment;
+import com.inhabas.api.domain.board.NormalBoard;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +17,10 @@ public class BoardFile extends BaseFile {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_file_to_baseboard"))
-    private BaseBoard parentBoard;
+    private NormalBoard parentBoard;
 
     // boardFile 과 baseBoard 의 연관관계 편의 메소드
-    public void toBoard(BaseBoard newParentBoard) {
+    public void toBoard(NormalBoard newParentBoard) {
         // 기존의 file-board 연관관계를 끊는다.
         if (Objects.nonNull(this.parentBoard)) {
             this.parentBoard.getFiles().remove(this);

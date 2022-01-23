@@ -1,11 +1,10 @@
 package com.inhabas.api.domain.comment;
 
 import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_comment_to_baseboard"))
-    private BaseBoard parentBoard;
+    private NormalBoard parentBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_ref", foreignKey = @ForeignKey(name = "fk_comment_to_comment"))
@@ -40,7 +39,7 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> children = new ArrayList<>();
 
-    public void toBoard(BaseBoard newParentBoard) {
+    public void toBoard(NormalBoard newParentBoard) {
         if (Objects.nonNull(this.parentBoard))
             throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
 
@@ -73,7 +72,7 @@ public class Comment extends BaseEntity {
         return writer;
     }
 
-    public BaseBoard getParentBoard() {
+    public NormalBoard getParentBoard() {
         return parentBoard;
     }
 

@@ -1,7 +1,6 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
-import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
@@ -10,12 +9,10 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.dto.CommentDetailDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -25,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class CommentRepositoryTest {
 
     @Autowired
@@ -43,7 +39,6 @@ public class CommentRepositoryTest {
         normalBoard = em.persist(
                 NormalBoardTest.getFreeBoard()
                         .writtenBy(writer)
-                        .inCategoryOf(em.find(Category.class, 2))
         );
     }
 

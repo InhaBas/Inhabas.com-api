@@ -22,32 +22,24 @@ public class QNormalBoard extends EntityPathBase<NormalBoard> {
 
     public static final QNormalBoard normalBoard = new QNormalBoard("normalBoard");
 
-    public final QBaseBoard _super;
+    public final com.inhabas.api.domain.QBaseEntity _super = new com.inhabas.api.domain.QBaseEntity(this);
 
-    public final QCategory category;
+    public final ListPath<com.inhabas.api.domain.comment.Comment, com.inhabas.api.domain.comment.QComment> comments = this.<com.inhabas.api.domain.comment.Comment, com.inhabas.api.domain.comment.QComment>createList("comments", com.inhabas.api.domain.comment.Comment.class, com.inhabas.api.domain.comment.QComment.class, PathInits.DIRECT2);
 
-    //inherited
-    public final ListPath<com.inhabas.api.domain.comment.Comment, com.inhabas.api.domain.comment.QComment> comments;
-
-    // inherited
     public final com.inhabas.api.domain.board.type.wrapper.QContents contents;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> created;
+    public final DateTimePath<java.time.LocalDateTime> created = _super.created;
 
-    //inherited
-    public final SetPath<com.inhabas.api.domain.file.BoardFile, com.inhabas.api.domain.file.QBoardFile> files;
+    public final SetPath<com.inhabas.api.domain.file.BoardFile, com.inhabas.api.domain.file.QBoardFile> files = this.<com.inhabas.api.domain.file.BoardFile, com.inhabas.api.domain.file.QBoardFile>createSet("files", com.inhabas.api.domain.file.BoardFile.class, com.inhabas.api.domain.file.QBoardFile.class, PathInits.DIRECT2);
 
-    //inherited
-    public final NumberPath<Integer> id;
+    public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    // inherited
     public final com.inhabas.api.domain.board.type.wrapper.QTitle title;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> updated;
+    public final DateTimePath<java.time.LocalDateTime> updated = _super.updated;
 
-    // inherited
     public final com.inhabas.api.domain.member.QMember writer;
 
     public QNormalBoard(String variable) {
@@ -68,16 +60,9 @@ public class QNormalBoard extends EntityPathBase<NormalBoard> {
 
     public QNormalBoard(Class<? extends NormalBoard> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this._super = new QBaseBoard(type, metadata, inits);
-        this.category = inits.isInitialized("category") ? new QCategory(forProperty("category")) : null;
-        this.comments = _super.comments;
-        this.contents = _super.contents;
-        this.created = _super.created;
-        this.files = _super.files;
-        this.id = _super.id;
-        this.title = _super.title;
-        this.updated = _super.updated;
-        this.writer = _super.writer;
+        this.contents = inits.isInitialized("contents") ? new com.inhabas.api.domain.board.type.wrapper.QContents(forProperty("contents")) : null;
+        this.title = inits.isInitialized("title") ? new com.inhabas.api.domain.board.type.wrapper.QTitle(forProperty("title")) : null;
+        this.writer = inits.isInitialized("writer") ? new com.inhabas.api.domain.member.QMember(forProperty("writer"), inits.get("writer")) : null;
     }
 
 }

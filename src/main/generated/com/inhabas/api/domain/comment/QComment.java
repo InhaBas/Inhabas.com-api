@@ -33,7 +33,7 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final NumberPath<Integer> id = createNumber("id", Integer.class);
 
-    public final com.inhabas.api.domain.board.QBaseBoard parentBoard;
+    public final com.inhabas.api.domain.board.QNormalBoard parentBoard;
 
     public final QComment parentComment;
 
@@ -61,7 +61,7 @@ public class QComment extends EntityPathBase<Comment> {
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.contents = inits.isInitialized("contents") ? new com.inhabas.api.domain.comment.type.wrapper.QContents(forProperty("contents")) : null;
-        this.parentBoard = inits.isInitialized("parentBoard") ? new com.inhabas.api.domain.board.QBaseBoard(forProperty("parentBoard"), inits.get("parentBoard")) : null;
+        this.parentBoard = inits.isInitialized("parentBoard") ? new com.inhabas.api.domain.board.QNormalBoard(forProperty("parentBoard"), inits.get("parentBoard")) : null;
         this.parentComment = inits.isInitialized("parentComment") ? new QComment(forProperty("parentComment"), inits.get("parentComment")) : null;
         this.writer = inits.isInitialized("writer") ? new com.inhabas.api.domain.member.QMember(forProperty("writer"), inits.get("writer")) : null;
     }

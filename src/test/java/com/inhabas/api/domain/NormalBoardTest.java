@@ -1,10 +1,6 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.board.NormalBoard;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 
 public class NormalBoardTest {
 

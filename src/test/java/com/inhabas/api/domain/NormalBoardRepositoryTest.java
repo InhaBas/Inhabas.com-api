@@ -2,32 +2,25 @@ package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.board.Category;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.board.NormalBoardRepository;
-import com.inhabas.api.domain.member.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.NormalBoardTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class NormalBoardRepositoryTest {
 
     @Autowired
@@ -44,14 +37,11 @@ public class NormalBoardRepositoryTest {
         Member saveMember = em.persist(MEMBER1);
 
         FREE_BOARD = NormalBoardTest.getFreeBoard()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.find(Category.class, 2)); // 실제로는 getReference 해야하지만, TestEntityManager 에는 해당 함수 없음.
+                .writtenBy(saveMember);
         NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.find(Category.class, 1));
+                .writtenBy(saveMember);
         NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.find(Category.class, 1));
+                .writtenBy(saveMember);
     }
 
 
@@ -69,7 +59,6 @@ public class NormalBoardRepositoryTest {
                 () -> assertThat(saveBoard.getCreated()).isNotNull(),
                 () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(saveBoard.getCategory()).isEqualTo(FREE_BOARD.getCategory()),
                 () -> assertThat(saveBoard.getWriter()).isEqualTo(saveMember)
         );
     }
@@ -138,24 +127,6 @@ public class NormalBoardRepositoryTest {
         //then
         assertThat(boards).contains(saveBoard2, saveBoard1);
         assertThat(boards.size()).isEqualTo(2);
-    }
-
-    @Test
-    public void findAllByCategory() {
-        //given
-        NormalBoard saveBoard1 = boardRepository.save(FREE_BOARD);
-        NormalBoard saveBoard2 = boardRepository.save(NOTICE_BOARD);
-        NormalBoard saveBoard3 = boardRepository.save(NOTICE_BOARD_2);
-
-        //when
-        List<NormalBoard> freeBoards = boardRepository.findAllByCategoryId(2);
-        List<NormalBoard> noticeBoards = boardRepository.findAllByCategoryId(1);
-
-        //then
-        assertThat(freeBoards).contains(saveBoard1);
-        assertThat(freeBoards.size()).isEqualTo(1);
-        assertThat(noticeBoards).contains(saveBoard2, saveBoard3);
-        assertThat(noticeBoards.size()).isEqualTo(2);
     }
 
 }
