@@ -20,7 +20,7 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
-      format_sql: true
+      hibernate.format_sql: true
   sql:
     init:
       mode: embedded
