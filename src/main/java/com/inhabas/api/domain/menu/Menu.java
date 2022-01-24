@@ -4,6 +4,7 @@ import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.menu.wrapper.Description;
 import com.inhabas.api.domain.menu.wrapper.MenuName;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -50,6 +51,7 @@ public class Menu extends BaseEntity {
         this.description = new Description(description);
     }
 
+    @Builder
     public Menu(Integer id, MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
         this.id = id;
         this.menuGroup = menuGroup;

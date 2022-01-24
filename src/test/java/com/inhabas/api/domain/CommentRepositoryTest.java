@@ -6,6 +6,9 @@ import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
 import com.inhabas.api.domain.member.Member;
 
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.CommentDetailDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +39,21 @@ public class CommentRepositoryTest {
     public void setUp() {
         writer = em.persist(MEMBER1);
         commentWriter = em.persist(MEMBER2);
+
+        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
+        Menu freeBoardMenu = em.persist(
+                Menu.builder()
+                .menuGroup(boardMenuGroup)
+                .priority(2)
+                .type(MenuType.LIST)
+                .name("자유게시판")
+                .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
+                .build());
+
         normalBoard = em.persist(
-                NormalBoardTest.getFreeBoard()
+                NormalBoardTest.getBoard1()
                         .writtenBy(writer)
+                        .inMenu(freeBoardMenu)
         );
     }
 

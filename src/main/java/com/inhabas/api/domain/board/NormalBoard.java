@@ -6,6 +6,7 @@ import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.menu.Menu;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,7 +33,11 @@ public class NormalBoard extends BaseEntity {
     protected Contents contents;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_baseboard_to_user"))
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_board_to_menu"))
+    protected Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_board_to_user"))
     protected Member writer;
 
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,6 +71,10 @@ public class NormalBoard extends BaseEntity {
 
     public String getContents() {
         return contents.getValue();
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     public Member getWriter() {
@@ -104,6 +113,11 @@ public class NormalBoard extends BaseEntity {
 
     public void addComment(Comment newComment) {
         comments.add(newComment);
+    }
+
+    public NormalBoard inMenu(Menu menu) {
+        this.menu = menu;
+        return this;
     }
 }
 

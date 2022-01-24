@@ -4,6 +4,9 @@ import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +38,30 @@ public class NormalBoardRepositoryTest {
     @BeforeEach
     public void setUp() {
         Member saveMember = em.persist(MEMBER1);
+        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
+        Menu NoticeBoardMenu = em.persist(
+                Menu.builder()
+                        .menuGroup(boardMenuGroup)
+                        .priority(1)
+                        .type(MenuType.LIST)
+                        .name("공지사항")
+                        .description("부원이 알아야 할 내용을 게시합니다.")
+                        .build());
+        Menu freeBoardMenu = em.persist(
+                Menu.builder()
+                        .menuGroup(boardMenuGroup)
+                        .priority(2)
+                        .type(MenuType.LIST)
+                        .name("자유게시판")
+                        .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
+                        .build());
 
-        FREE_BOARD = NormalBoardTest.getFreeBoard()
-                .writtenBy(saveMember);
-        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
-                .writtenBy(saveMember);
-        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
-                .writtenBy(saveMember);
+        FREE_BOARD = NormalBoardTest.getBoard1()
+                .writtenBy(saveMember).inMenu(freeBoardMenu);
+        NOTICE_BOARD = NormalBoardTest.getBoard2()
+                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
+        NOTICE_BOARD_2 = NormalBoardTest.getBoard3()
+                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
     }
 
 
