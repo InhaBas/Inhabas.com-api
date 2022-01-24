@@ -2,22 +2,25 @@ package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.domain.board.NormalBoardRepository;
-import com.inhabas.api.domain.board.NormalBoardRepositoryImpl;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.dto.board.BoardDto;
+import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuType;
+import com.inhabas.api.dto.BoardDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import javax.persistence.EntityManager;
+
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -26,13 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-@Import({JpaConfig.class, NormalBoardRepositoryImpl.class})
+@Import(JpaConfig.class)
 public class NormalBoardRepositoryTest {
 
     @Autowired
     NormalBoardRepository boardRepository;
     @Autowired
-    EntityManager em;
+    TestEntityManager em;
 
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
@@ -40,19 +43,31 @@ public class NormalBoardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Member saveMember = MEMBER1;
-        em.persist(saveMember);
+        Member saveMember = em.persist(MEMBER1);
+        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
+        Menu NoticeBoardMenu = em.persist(
+                Menu.builder()
+                        .menuGroup(boardMenuGroup)
+                        .priority(1)
+                        .type(MenuType.LIST)
+                        .name("공지사항")
+                        .description("부원이 알아야 할 내용을 게시합니다.")
+                        .build());
+        Menu freeBoardMenu = em.persist(
+                Menu.builder()
+                        .menuGroup(boardMenuGroup)
+                        .priority(2)
+                        .type(MenuType.LIST)
+                        .name("자유게시판")
+                        .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
+                        .build());
 
-        FREE_BOARD = NormalBoardTest.getFreeBoard()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 2));
-        NOTICE_BOARD = NormalBoardTest.getNoticeBoard1()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 1));
-        NOTICE_BOARD_2 = NormalBoardTest.getNoticeBoard2()
-                .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 1));
-
+        FREE_BOARD = NormalBoardTest.getBoard1()
+                .writtenBy(saveMember).inMenu(freeBoardMenu);
+        NOTICE_BOARD = NormalBoardTest.getBoard2()
+                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
+        NOTICE_BOARD_2 = NormalBoardTest.getBoard3()
+                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
     }
 
 
@@ -62,38 +77,35 @@ public class NormalBoardRepositoryTest {
         Member saveMember = em.find(Member.class, MEMBER1.getId());
 
         //when
-        BoardDto saveBoard = boardRepository.save(FREE_BOARD);
+        NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
 
         //then
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(saveBoard.getId()).isNotNull(),
                 () -> assertThat(saveBoard.getCreated()).isNotNull(),
                 () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(saveBoard.getCategoryId()).isEqualTo(FREE_BOARD.getCategory().getId()),
-                () -> assertThat(saveBoard.getWriterName()).isEqualTo(saveMember.getName())
+                () -> assertThat(saveBoard.getWriter()).isEqualTo(saveMember)
         );
     }
 
-    @DisplayName("id로 게시글을 찾는다.")
+    @DisplayName("id에 해당하는 게시글을 dto 로 반환한다.")
     @Test
-    public void findById() {
+    public void findDtoById() {
         //given
-        BoardDto saveBoard1 = boardRepository.save(FREE_BOARD);
-        boardRepository.save(NOTICE_BOARD);
+        boardRepository.save(FREE_BOARD);
 
         //when
-        Optional<BoardDto> find1 = boardRepository.findById(saveBoard1.getId());
+        BoardDto find = boardRepository.findDtoById(FREE_BOARD.getId())
+                .orElseThrow(EntityNotFoundException::new);
 
         //then
-        assertTrue(find1.isPresent());
         assertAll(
-                () -> assertThat(find1.get().getId()).isEqualTo(saveBoard1.getId()),
-                () -> assertThat(find1.get().getCreated()).isNotNull(),
-                () -> assertThat(find1.get().getWriterName()).isEqualTo(saveBoard1.getWriterName()),
-                () -> assertThat(find1.get().getTitle()).isEqualTo(saveBoard1.getTitle()),
-                () -> assertThat(find1.get().getCategoryId()).isEqualTo(saveBoard1.getCategoryId()),
-                () -> assertThat(find1.get().getContents()).isEqualTo(saveBoard1.getContents())
+                () -> assertThat(find.getId()).isEqualTo(FREE_BOARD.getId()),
+                () -> assertThat(find.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
+                () -> assertThat(find.getContents()).isEqualTo(FREE_BOARD.getContents()),
+                () -> assertThat(find.getMenuId()).isEqualTo(FREE_BOARD.getMenu().getId()),
+                () -> assertThat(find.getWriterName()).isEqualTo(FREE_BOARD.getWriter().getName())
         );
     }
 
@@ -102,59 +114,70 @@ public class NormalBoardRepositoryTest {
     public void update() {
         //given
         Member saveMember = em.find(Member.class, MEMBER1.getId());
-        BoardDto saveBoard = boardRepository.save(FREE_BOARD);
+        boardRepository.save(FREE_BOARD);
 
         //when
-        NormalBoard param = new NormalBoard(saveBoard.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.")
-                .writtenBy(saveMember)
-                .inCategoryOf(em.getReference(Category.class, 2));
+        NormalBoard param = new NormalBoard(
+                FREE_BOARD.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.").writtenBy(saveMember);
         boardRepository.save(param);
 
         //then
-        BoardDto findBoard = boardRepository.findById(saveBoard.getId()).orElseThrow(EntityNotFoundException::new);
-        assertAll(
-                () -> assertThat(findBoard.getId()).isEqualTo(saveBoard.getId()),
-                () -> assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다."),
-                () -> assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다."),
-                () -> assertThat(findBoard.getUpdated()).isNotNull()
-        );
+        NormalBoard findBoard = boardRepository.findById(FREE_BOARD.getId())
+                .orElseThrow(EntityNotFoundException::new);
+        assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다.");
+        assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
     }
 
     @DisplayName("id 로 게시글을 삭제한다.")
     @Test
     public void deleteById() {
         //given
-        BoardDto saveBoard1 = boardRepository.save(FREE_BOARD);
-        Integer boardId = saveBoard1.getId();
+        boardRepository.save(FREE_BOARD);
 
         //when
-        boardRepository.deleteById(boardId);
+        boardRepository.deleteById(FREE_BOARD.getId());
 
         //then
-        assertTrue(boardRepository.findById(boardId).isEmpty());
+        assertTrue(boardRepository.findById(FREE_BOARD.getId()).isEmpty());
     }
 
-    @DisplayName("게시판 유형에 맞게 게시글을 불러온다.")
+    @DisplayName("모든 게시글을 조회한다.")
     @Test
-    public void findAllByCategory() {
+    public void findAll() {
+        //given
+        boardRepository.save(FREE_BOARD);
+        boardRepository.save(NOTICE_BOARD);
+
+        //when
+        List<NormalBoard> boards = boardRepository.findAll();
+
+        //then
+        assertThat(boards).contains(FREE_BOARD, NOTICE_BOARD);
+        assertThat(boards.size()).isEqualTo(2);
+    }
+
+    @DisplayName("메뉴 id 에 해당하는 게시글들을 갖고 온다.")
+    @Test
+    public void findAllByMenuId() {
         //given
         boardRepository.save(FREE_BOARD);
         boardRepository.save(NOTICE_BOARD);
         boardRepository.save(NOTICE_BOARD_2);
+        Integer freeBoardId = FREE_BOARD.getMenu().getId();
+        Integer noticeBoardId = NOTICE_BOARD.getMenu().getId();
 
         //when
-        Page<BoardDto> freeBoards = boardRepository.findAllByCategoryId(2, Pageable.ofSize(5));
-        Page<BoardDto> noticeBoards = boardRepository.findAllByCategoryId(1, Pageable.ofSize(5));
+        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardId, Pageable.ofSize(5));
+        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, Pageable.ofSize(5));
 
         //then
         assertThat(freeBoards.getTotalElements()).isEqualTo(1);
         freeBoards.forEach(
-                board->assertThat(board.getCategoryId()).isEqualTo(2));
+                board->assertThat(board.getMenuId()).isEqualTo(freeBoardId));
 
         assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
         noticeBoards.forEach(
-                board->assertThat(board.getCategoryId()).isEqualTo(1));
-
+                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardId));
     }
 
 }

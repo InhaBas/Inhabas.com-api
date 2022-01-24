@@ -1,11 +1,10 @@
 package com.inhabas.api.domain.comment;
 
 import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_comment_to_baseboard"))
-    private BaseBoard parentBoard;
+    private NormalBoard parentBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_ref", foreignKey = @ForeignKey(name = "fk_comment_to_comment"))
@@ -40,11 +39,14 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> children = new ArrayList<>();
 
-    public void toBoard(BaseBoard newParentBoard) {
+    public Comment toBoard(NormalBoard newParentBoard) {
         if (Objects.nonNull(this.parentBoard))
             throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
 
         this.parentBoard = newParentBoard;
+        newParentBoard.addComment(this);
+
+        return this;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class Comment extends BaseEntity {
         return writer;
     }
 
-    public BaseBoard getParentBoard() {
+    public NormalBoard getParentBoard() {
         return parentBoard;
     }
 
@@ -101,16 +103,19 @@ public class Comment extends BaseEntity {
         return this;
     }
 
-    private void to(Comment parentComment) {
+    public Comment replyTo(Comment parentComment) {
         if (Objects.nonNull(this.parentComment))
             throw new IllegalStateException("대댓글을 다른 댓글로 옮길 수 없습니다.");
 
         this.parentComment = parentComment;
-        this.parentBoard = parentComment.getParentBoard();
+        parentComment.addReply(this);
+
+        return this;
     }
 
-    public void addReply(Comment reply) {
+    private void addReply(Comment reply) {
         this.children.add(reply);
-        reply.to(this);
     }
+
+
 }

@@ -1,7 +1,6 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.board.NormalBoard;
-
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
