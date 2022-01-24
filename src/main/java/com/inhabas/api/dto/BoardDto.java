@@ -1,22 +1,27 @@
 package com.inhabas.api.dto;
 
-import com.inhabas.api.domain.board.Category;
-import com.inhabas.api.domain.member.Member;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter @Setter
 public class BoardDto {
+    private Integer id;
     private String title;
     private String contents;
-    private Member writer;
-    private Category category;
+    private String writerName;
+    private Integer menuId;
+    private LocalDateTime created;
+    private LocalDateTime updated;
 
-    public BoardDto(String title, String contents, Member writer, Category category) {
+    public BoardDto(Integer id, String title, String contents, String writerName, Integer menuId, LocalDateTime created, LocalDateTime updated) {
+        this.id = id;
         this.title = title;
         this.contents = contents;
-        this.writer = writer;
-        this.category = category;
+        this.writerName = writerName;
+        this.menuId = menuId;
+        this.created = created;
+        this.updated = updated;
     }
 }

@@ -1,8 +1,6 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.board.Category;
-
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,15 +30,10 @@ public class BoardController {
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
-    public Page<NormalBoard> allBoards(
-            @ModelAttribute Pageable pageable,
-            @RequestParam(required = false) Integer category
-    ) {
+    public Page<NormalBoard> allBoards(@ModelAttribute Pageable pageable) {
+
         Page<NormalBoard> boardList;
-		if (category == null) 
-			boardList = repository.findAll(pageable);
-		else
-			boardList = repository.findAllByCategoryId(category, pageable);
+        boardList = repository.findAll(pageable);
 		return boardList;
     }
 
