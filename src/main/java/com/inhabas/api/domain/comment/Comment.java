@@ -39,11 +39,14 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> children = new ArrayList<>();
 
-    public void toBoard(NormalBoard newParentBoard) {
+    public Comment toBoard(NormalBoard newParentBoard) {
         if (Objects.nonNull(this.parentBoard))
             throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
 
         this.parentBoard = newParentBoard;
+        newParentBoard.addComment(this);
+
+        return this;
     }
 
     @Override
@@ -100,16 +103,19 @@ public class Comment extends BaseEntity {
         return this;
     }
 
-    private void to(Comment parentComment) {
+    public Comment replyTo(Comment parentComment) {
         if (Objects.nonNull(this.parentComment))
             throw new IllegalStateException("대댓글을 다른 댓글로 옮길 수 없습니다.");
 
         this.parentComment = parentComment;
-        this.parentBoard = parentComment.getParentBoard();
+        parentComment.addReply(this);
+
+        return this;
     }
 
-    public void addReply(Comment reply) {
+    private void addReply(Comment reply) {
         this.children.add(reply);
-        reply.to(this);
     }
+
+
 }

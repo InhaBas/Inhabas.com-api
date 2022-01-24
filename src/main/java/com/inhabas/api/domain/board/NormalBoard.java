@@ -104,7 +104,6 @@ public class NormalBoard extends BaseEntity {
 
     public void addComment(Comment newComment) {
         comments.add(newComment);
-        newComment.toBoard(this);
     }
 }
 
