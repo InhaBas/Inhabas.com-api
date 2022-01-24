@@ -39,9 +39,9 @@ public class MenuRepositoryTest {
     @Test
     public void CreateNewMenu() {
         //given
-        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동");
-        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항");
-        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판");
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
+        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
 
         //when
         Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
@@ -59,13 +59,13 @@ public class MenuRepositoryTest {
     @Test
     public void UpdateMenuName() {
         //given
-        Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항"));
+        Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
         em.flush();em.clear();
 
         //when
         String newName = "공지 사항";
         Menu updated = menuRepository.save(
-                new Menu(noticeMenu.getId(), noticeMenu.getMenuGroup(), noticeMenu.getPriority(), noticeMenu.getType(), newName));
+                new Menu(noticeMenu.getId(), noticeMenu.getMenuGroup(), noticeMenu.getPriority(), noticeMenu.getType(), newName, noticeMenu.getDescription()));
 
         //then
         Assertions.assertThat(updated.getName()).isEqualTo(newName);
@@ -81,16 +81,16 @@ public class MenuRepositoryTest {
          */
 
         //given
-        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동");
-        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항");
-        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판");
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
+        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
         menuRepository.save(activityBoardMenu);
         menuRepository.save(noticeBoardMenu);
         menuRepository.save(freeBoardMenu);
 
         //when
         assertThrows(DataIntegrityViolationException.class,
-                () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.LIST, "질문게시판")));
+                () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.LIST, "질문게시판", "궁금한 점을 질문하는 게시판입니다.")));
     }
 
 

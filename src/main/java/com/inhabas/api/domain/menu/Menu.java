@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.menu;
 
 import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.menu.wrapper.Description;
 import com.inhabas.api.domain.menu.wrapper.MenuName;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,27 +26,36 @@ public class Menu extends BaseEntity {
     private Integer priority;
 
     @Enumerated(EnumType.STRING)
-    private MenuType Type;
+    private MenuType type;
 
     @Embedded
     private MenuName name;
+
+    @Embedded
+    private Description description;
 
     public String getName() {
         return name.getValue();
     }
 
-    public Menu(MenuGroup menuGroup, Integer priority, MenuType type, String name) {
-        this.menuGroup = menuGroup;
-        this.priority = priority;
-        Type = type;
-        this.name = new MenuName(name);
+    public String getDescription() {
+        return description.getValue();
     }
 
-    public Menu(Integer id, MenuGroup menuGroup, Integer priority, MenuType type, String name) {
+    public Menu(MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
+        this.menuGroup = menuGroup;
+        this.priority = priority;
+        this.type = type;
+        this.name = new MenuName(name);
+        this.description = new Description(description);
+    }
+
+    public Menu(Integer id, MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
         this.id = id;
         this.menuGroup = menuGroup;
         this.priority = priority;
-        Type = type;
+        this.type = type;
         this.name = new MenuName(name);
+        this.description = new Description(description);
     }
 }
