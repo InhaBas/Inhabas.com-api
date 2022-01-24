@@ -2,9 +2,6 @@ package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.board.NormalBoardRepository;
-import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
@@ -15,8 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -26,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(JpaConfig.class)
 public class BaseEntityTest {
 
-    @PersistenceContext
-    EntityManager em;
+    @Autowired
+    TestEntityManager em;
 
     Menu freeBoardMenu;
 

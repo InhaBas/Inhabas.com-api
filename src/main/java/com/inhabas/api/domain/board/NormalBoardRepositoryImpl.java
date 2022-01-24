@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.board;
 
-import com.inhabas.api.dto.BoardDto;
+import com.inhabas.api.dto.board.BoardDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.board.QNormalBoard.normalBoard;

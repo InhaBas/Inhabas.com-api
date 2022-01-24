@@ -16,19 +16,10 @@ public class BoardDto {
     private String title;
     private String contents; // BoardListView에서 null
     private String writerName;
-    private Integer categoryId;
+    private Integer menuId;
     private LocalDateTime created;
     private LocalDateTime updated;
 
-//    public BoardDto(Integer id, String title, String contents, String name, Integer categoryId, LocalDateTime created, LocalDateTime updated) {
-//        this.id = id;
-//        this.title = title;
-//        this.contents = contents;
-//        this.writerName = name;
-//        this.categoryId = categoryId;
-//        this.created = created;
-//        this.updated = updated;
-//    }
 
     public void setTitle(Title title) {
         this.title = title.getValue();
@@ -44,10 +35,6 @@ public class BoardDto {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
     }
 
     public void setCreated(LocalDateTime created) {

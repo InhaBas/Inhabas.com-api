@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.board;
 
-import com.inhabas.api.dto.BoardDto;
+import com.inhabas.api.dto.board.BoardDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
