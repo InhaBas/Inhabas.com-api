@@ -14,7 +14,7 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: create
       naming:

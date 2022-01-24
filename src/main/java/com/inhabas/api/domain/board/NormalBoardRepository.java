@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface NormalBoardRepository extends JpaRepository<NormalBoard, Integer> {
+public interface NormalBoardRepository extends JpaRepository<NormalBoard, Integer>, NormalBoardRepositoryCustom {
 }
 
