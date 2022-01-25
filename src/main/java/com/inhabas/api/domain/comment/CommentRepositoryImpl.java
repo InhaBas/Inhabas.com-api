@@ -1,9 +1,8 @@
 package com.inhabas.api.domain.comment;
 
-import com.inhabas.api.dto.CommentDetailDto;
+import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-
 import java.util.*;
 
 import static com.inhabas.api.domain.comment.QComment.comment;
@@ -47,5 +46,4 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
     private boolean isRootComment(Comment c) {
         return Objects.isNull(c.getParentComment());
     }
-
 }

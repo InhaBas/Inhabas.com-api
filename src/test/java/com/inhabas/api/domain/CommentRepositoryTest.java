@@ -9,7 +9,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
-import com.inhabas.api.dto.CommentDetailDto;
+import com.inhabas.api.dto.comment.CommentDetailDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

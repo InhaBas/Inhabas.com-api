@@ -74,6 +74,10 @@ public class Member {
                 getSchoolInformation(),
                 getIbasInformation());
     }
+
+    public boolean isSameMember(Integer id) {
+        return Objects.equals(this.id, id);
+    }
 }
 
 
