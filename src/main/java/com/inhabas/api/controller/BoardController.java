@@ -44,7 +44,7 @@ public class BoardController {
     @Operation(description = "게시글 추가")
     @PostMapping
     public Integer addBoard(@RequestBody SaveBoardDto saveBoardDto) {
-        return boardService.write(saveBoardDto);
+        return boardService.write(saveBoardDto).getId();
     }
 
     @Operation(description = "게시글 수정")
