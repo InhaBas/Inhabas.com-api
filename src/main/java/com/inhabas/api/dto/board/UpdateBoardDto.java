@@ -30,4 +30,7 @@ public class UpdateBoardDto {
     }
 
 
+    public NormalBoard toEntity() {
+        return null;
+    }
 }

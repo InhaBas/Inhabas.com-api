@@ -20,11 +20,9 @@ public class SaveBoardDto {
     public SaveBoardDto(String title, String contents) {
         this.title = title;
         this.contents = contents;
-<<<<<<< HEAD
-=======
-        this.categoryId = categoryId;
-
->>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     }
 
+    public Object toEntity() {
+        return null;
+    }
 }

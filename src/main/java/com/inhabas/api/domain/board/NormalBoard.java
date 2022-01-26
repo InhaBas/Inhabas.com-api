@@ -7,6 +7,7 @@ import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.dto.board.SaveBoardDto;
 import lombok.AccessLevel;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -62,6 +63,7 @@ public class NormalBoard extends BaseEntity {
         this.contents = new Contents(contents);
     }
 
+
     /* getter */
 
     public Integer getId() {
@@ -76,7 +78,6 @@ public class NormalBoard extends BaseEntity {
         return contents.getValue();
     }
 
-<<<<<<< HEAD
     public Menu getMenu() {
         return menu;
     }
@@ -91,15 +92,7 @@ public class NormalBoard extends BaseEntity {
 
     /* relation method */
 
-=======
-    public NormalBoard(String title, String contents, Category category) {
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-        this.category = category;
-    }
 
-    @Override
->>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     public NormalBoard writtenBy(Member writer) {
         if (Objects.isNull(this.writer))
             this.writer = writer;
