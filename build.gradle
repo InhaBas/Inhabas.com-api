@@ -34,6 +34,10 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-validation',
 			'org.springdoc:springdoc-openapi-ui:1.6.0',
 			'com.querydsl:querydsl-jpa',
+
+			'org.springframework.cloud:spring-cloud-starter-config',
+			'org.springframework.boot:spring-boot-starter-actuator',
+			'org.springframework.cloud:spring-cloud-starter-bootstrap'
 	)
 
 	testImplementation(
