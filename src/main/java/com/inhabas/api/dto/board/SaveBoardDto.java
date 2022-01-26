@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter @Setter
@@ -16,6 +17,12 @@ public class SaveBoardDto {
 
     @NotBlank(message = "본문을 입력하세요.")
     private String contents;
+
+    @NotNull
+    private Integer menuId;
+
+    @NotNull
+    private Integer loginedUser;
 
     public SaveBoardDto(String title, String contents) {
         this.title = title;
