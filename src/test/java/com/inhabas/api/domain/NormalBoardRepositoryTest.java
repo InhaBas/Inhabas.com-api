@@ -28,10 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Import(JpaConfig.class)
-<<<<<<< HEAD
-=======
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
->>>>>>> 6ef6179 (Create gradle-build.yml (#24))
 public class NormalBoardRepositoryTest {
 
     @Autowired

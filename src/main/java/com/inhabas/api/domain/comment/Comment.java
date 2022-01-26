@@ -5,10 +5,6 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
 import lombok.AccessLevel;
-<<<<<<< HEAD
-=======
-import lombok.Getter;
->>>>>>> 56c8abc ([refactor] 기본생성자 protected 로 변경 (see: #15))
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;

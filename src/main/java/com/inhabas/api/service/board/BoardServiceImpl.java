@@ -35,7 +35,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {
-        return boardRepository.save(saveBoardDto.toEntity()).getId();
+        NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents());
+        boardRepository.save(normalBoard);
+        return normalBoard.getId();
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<BoardDto> getBoard(Integer categoryId, Integer id) {
+    public Optional<BoardDto> getBoard(Integer menuId, Integer id) {
         return boardRepository.findDtoById(id);
     }
 

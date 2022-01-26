@@ -32,23 +32,18 @@ public class UpdateBoardDtoTest {
         String title = "이것은 제목";
         String contents = "이것은 내용입니다.";
 
-        Integer categoryId = 2;
 
         UpdateBoardDto updateBoardDto = new UpdateBoardDto();
         updateBoardDto.setId(id);
         updateBoardDto.setTitle(title);
         updateBoardDto.setContents(contents);
-        updateBoardDto.setCategoryId(categoryId);
 
         // when
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
 
         // then
         assertTrue(violations.isEmpty());
-<<<<<<< HEAD
-=======
         assertEquals(0, violations.size());
->>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     }
 
     @DisplayName("본문에 공백이 입력되었을 경우 + CategoryId가 등록되지 않았을 경우 통과하지 못함")
@@ -68,11 +63,6 @@ public class UpdateBoardDtoTest {
 
         // then
         assertFalse(violations.isEmpty());
-<<<<<<< HEAD
         assertEquals(1, violations.size());
-
-=======
-        assertEquals(2, violations.size());
->>>>>>> f9c4bbf ([bugfix] GitHub Comments 반영)
     }
 }
