@@ -2,10 +2,15 @@ package com.inhabas.api.service.board;
 
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.dto.board.BoardDto;
 
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,43 +20,43 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
+
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
 @Service
 @Slf4j
 @Transactional
+@RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
 
-    private NormalBoardRepository boardRepository;
+    private final NormalBoardRepository boardRepository;
+    private final MenuRepository menuRepository;
+    private final MemberRepository memberRepository;
 
     @PersistenceContext
-    EntityManager em;
-
-    @Autowired
-    public BoardServiceImpl (NormalBoardRepository boardRepository){
-        this.boardRepository = boardRepository;
-    }
+    private final EntityManager em;
 
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {
-        NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents());
-        boardRepository.save(normalBoard);
-        return normalBoard.getId();
+        Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
+        Member writer = memberRepository.findById(saveBoardDto.getLoginedUser()).orElseThrow();
+        NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
+                .inMenu(menu)
+                .writtenBy(writer);
+        return boardRepository.save(normalBoard).getId();
     }
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = updateBoardDto.toEntity();
-        if(DoesExistBoard(entity)){
-            return boardRepository.save(entity).getId();
-        } else {
-            return null; // 확인 필요
-        }
-    }
-
-    private boolean DoesExistBoard(NormalBoard normalBoard){
-        return boardRepository.findById(normalBoard.getId()).isPresent();
+        Optional<NormalBoard> entity = boardRepository.findById(updateBoardDto.getId());
+        entity.orElseThrow(() -> { throw new NoSuchElementException(); });
+        Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow();
+        if(entity.get().isWriter(writer))
+            return boardRepository.save(entity.get()).getId();
+        else
+            throw new RuntimeException("잘못된 사용자");
     }
 
     @Override
@@ -60,7 +65,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<BoardDto> getBoard(Integer menuId, Integer id) {
+    public Optional<BoardDto> getBoard(Integer id) {
         return boardRepository.findDtoById(id);
     }
 
@@ -68,4 +73,5 @@ public class BoardServiceImpl implements BoardService {
     public Page<BoardDto> getBoardList(Integer menuId, Pageable pageable) {
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
+
 }

@@ -78,7 +78,6 @@ public class BoardServiceTest {
         List<BoardDto> results = new ArrayList<>();
         results.add(boardDto1);
         results.add(boardDto2);
-
         Page<BoardDto> boardDto = new PageImpl<> (results, pageable, results.size());
 
         when(boardRepository.findAllByMenuId(any(), any())).thenReturn(boardDto);

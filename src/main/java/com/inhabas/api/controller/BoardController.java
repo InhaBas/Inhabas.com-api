@@ -24,18 +24,17 @@ import javax.persistence.EntityNotFoundException;
 public class BoardController {
 
     private final BoardService boardService;
-    private final NormalBoardRepository repository;
 
     @Operation(description = "게시글 조회")
     @GetMapping
-    public BoardDto board(@RequestParam Integer menuId, @RequestParam Integer boardId) {
-        return boardService.getBoard(menuId, boardId)
+    public BoardDto getBoard(@RequestParam Integer boardId) {
+        return boardService.getBoard( boardId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
-    public Page<BoardDto> allBoards(
+    public Page<BoardDto> getBoardList(
             @ModelAttribute Pageable pageable,
             @RequestParam Integer menuId
     ) {
@@ -50,8 +49,8 @@ public class BoardController {
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public Integer updateBoard(@RequestBody UpdateBoardDto board) {
-        return boardService.update(board);
+    public Integer updateBoard(@RequestBody UpdateBoardDto updateBoardDto) {
+        return boardService.update(updateBoardDto);
     }
 
     @Operation(description = "게시글 삭제")
