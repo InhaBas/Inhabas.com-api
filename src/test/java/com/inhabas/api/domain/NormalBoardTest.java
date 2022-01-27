@@ -14,4 +14,8 @@ public class NormalBoardTest {
         return new NormalBoard("이건 공지2", "이건 공지2입니다.");
     }
 
+    public static NormalBoard getTestBoard(Integer id) {
+        return new NormalBoard(id, "이건 공지2", "이건 공지2입니다.");
+    }
+
 }
