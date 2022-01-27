@@ -29,4 +29,4 @@ jobs:
           cd ./Inhabas.com-api && git checkout dev && git pull 
           chmod u+x gradlew && ./gradlew build
           rm ${{ secrets.IBAS_DEV_PATH }}/api-dev.pid
-          java -jar -Dspring.profiles.active=dev build/libs/api-0.0.1-SNAPSHOT.jar
+          nohup java -jar -Dspring.profiles.active=dev build/libs/api-0.0.1-SNAPSHOT.jar &
