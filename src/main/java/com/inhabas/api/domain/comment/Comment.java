@@ -39,33 +39,18 @@ public class Comment extends BaseEntity {
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> children = new ArrayList<>();
 
-    public Comment toBoard(NormalBoard newParentBoard) {
-        if (Objects.nonNull(this.parentBoard))
-            throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
+    /* constructor */
 
-        this.parentBoard = newParentBoard;
-        newParentBoard.addComment(this);
-
-        return this;
+    public Comment(String contents) {
+        this.contents = new Contents(contents);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(Comment.class.isAssignableFrom(o.getClass()))) return false;
-        Comment comment = (Comment) o;
-        return getId().equals(comment.getId())
-                && getWriter().equals(comment.getWriter())
-                && getContents().equals(comment.getContents())
-                && getParentBoard().equals(comment.getParentBoard())
-                && Objects.equals(getParentComment(), comment.getParentComment())
-                && Objects.equals(getChildren(), comment.getChildren());
+    public Comment(Integer id, String contents) {
+        this.id = id;
+        this.contents = new Contents(contents);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
-    }
+    /* getter */
 
     public Integer getId() {
         return id;
@@ -91,8 +76,21 @@ public class Comment extends BaseEntity {
         return this.contents.getValue();
     }
 
-    public Comment(String contents) {
+    /* setter */
+    public void setContents(String contents) {
         this.contents = new Contents(contents);
+    }
+
+    /* relation methods */
+
+    public Comment toBoard(NormalBoard newParentBoard) {
+        if (Objects.nonNull(this.parentBoard))
+            throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
+
+        this.parentBoard = newParentBoard;
+        newParentBoard.addComment(this);
+
+        return this;
     }
 
     public Comment writtenBy(Member writer) {
@@ -117,5 +115,28 @@ public class Comment extends BaseEntity {
         this.children.add(reply);
     }
 
+    /* others */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(Comment.class.isAssignableFrom(o.getClass()))) return false;
+        Comment comment = (Comment) o;
+        return getId().equals(comment.getId())
+                && getWriter().equals(comment.getWriter())
+                && getContents().equals(comment.getContents())
+                && getParentBoard().equals(comment.getParentBoard())
+                && Objects.equals(getParentComment(), comment.getParentComment())
+                && Objects.equals(getChildren(), comment.getChildren());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
+    }
+
+    public boolean isWrittenBy(Integer writerId) {
+        return writer.isSameMember(writerId);
+    }
 
 }
