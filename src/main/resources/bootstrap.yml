@@ -3,4 +3,4 @@ spring:
     name: api
   cloud:
     config:
-      uri: http://172.17.0.1:8088
+      uri: http://localhost:8888
