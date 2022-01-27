@@ -28,5 +28,5 @@ jobs:
           cd ${{ secrets.IBAS_DEV_PATH }} && git clone git@github.com:InhaBas/Inhabas.com-api.git
           cd ./Inhabas.com-api && git checkout dev && git pull 
           chmod u+x gradlew && ./gradlew build
-          # kill -9 $(pgrep -f api) 존재하는 스프링 정지 => 문제 있음. 배포버전과 구별되어야 함. jar 파일 명을 다르게 가져가거나, 설정파일에서 pid 명시해야할듯.
-          java -jar -Dspring.profiles.active=dev ./build/libs/api.jar
+          docker stop api-dev && docker rm api-dev
+          docker run -d --name=api-dev -p 8082:8082 api-dev:latest
