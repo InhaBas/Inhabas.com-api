@@ -50,13 +50,15 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        Optional<NormalBoard> entity = boardRepository.findById(updateBoardDto.getId());
-        entity.orElseThrow(() -> { throw new NoSuchElementException(); });
+        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow();
+//        NormalBoard updateBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
+        entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
         Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow();
-        if(entity.get().isWriter(writer))
-            return boardRepository.save(entity.get()).getId();
-        else
+        if(entity.isWriter(writer))
+            return boardRepository.save(entity).getId();
+        else{
             throw new RuntimeException("잘못된 사용자");
+        }
     }
 
     @Override

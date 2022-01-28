@@ -27,7 +27,8 @@ import java.util.*;
 @DiscriminatorColumn(name = "TYPE", length = 15)
 public class NormalBoard extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
     @Embedded
@@ -123,6 +124,12 @@ public class NormalBoard extends BaseEntity {
 
     public NormalBoard inMenu(Menu menu) {
         this.menu = menu;
+        return this;
+    }
+
+    public NormalBoard setTitleContents(String title, String contents) {
+        this.title = new Title(title);
+        this.contents = new Contents(contents);
         return this;
     }
 }
