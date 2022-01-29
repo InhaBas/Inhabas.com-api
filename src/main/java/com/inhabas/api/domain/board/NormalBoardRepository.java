@@ -8,4 +8,3 @@ import java.util.List;
 
 public interface NormalBoardRepository extends JpaRepository<NormalBoard, Integer>, NormalBoardRepositoryCustom {
 }
-
