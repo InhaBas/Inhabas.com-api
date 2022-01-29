@@ -14,8 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SaveBoardDtoTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(SaveBoardDtoTest.class);
-
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
 
@@ -34,12 +32,7 @@ public class SaveBoardDtoTest {
     @Test
     public void SaveBoardDto_is_OK(){
         //given
-        String title = "이것은 제목";
-        String contents = "이것은 내용입니다.";
-
-        SaveBoardDto saveBoardDto = new SaveBoardDto();
-        saveBoardDto.setTitle(title);
-        saveBoardDto.setContents(contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1, 12201863);
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -52,19 +45,12 @@ public class SaveBoardDtoTest {
     @Test
     public void Contents_is_null() {
         // given
-        String title = "이것은 제목";
-        String contents = null;
-
-
-        SaveBoardDto saveBoardDto = new SaveBoardDto();
-        saveBoardDto.setTitle(title);
-        saveBoardDto.setContents(contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, 1, 12201863);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
         assertEquals("본문을 입력하세요.", violations.iterator().next().getMessage());
     }
@@ -76,13 +62,12 @@ public class SaveBoardDtoTest {
         String title = "title".repeat(20) + ".";
         String contents = "그냥 본문 내용입니다.";
 
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, 1, 12201863);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
         assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
     }

@@ -53,7 +53,6 @@ public class Menu extends BaseEntity {
     }
 
     @Builder
-
     public Menu(Integer id, MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
         this.id = id;
         this.menuGroup = menuGroup;

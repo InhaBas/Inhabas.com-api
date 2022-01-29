@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +52,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
         NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow();
-//        NormalBoard updateBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
+
         entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
         Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow();
         if(entity.isWriter(writer))
@@ -68,7 +69,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Optional<BoardDto> getBoard(Integer id) {
-        return boardRepository.findDtoById(id);
+        return Optional.of(boardRepository.findDtoById(id)).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

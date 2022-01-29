@@ -28,8 +28,7 @@ public class BoardController {
     @Operation(description = "게시글 조회")
     @GetMapping
     public BoardDto getBoard(@RequestParam Integer id) {
-        return boardService.getBoard(id)
-                .orElseThrow(EntityNotFoundException::new);
+        return boardService.getBoard(id).get();
     }
 
     @Operation(description = "모든 게시글 조회")
