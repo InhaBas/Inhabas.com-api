@@ -42,7 +42,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.findById(saveBoardDto.getLoginedUser()).orElseThrow();
+        Member writer = memberRepository.findById(saveBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -51,15 +51,17 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow();
+        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(EntityNotFoundException::new);
 
         entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
-        Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow();
+//        Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
+        return boardRepository.save(entity).getId();
+        /*
         if(entity.isWriter(writer))
             return boardRepository.save(entity).getId();
         else{
             throw new RuntimeException("잘못된 사용자");
-        }
+        }*/
     }
 
     @Override

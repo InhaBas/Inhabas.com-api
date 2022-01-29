@@ -8,16 +8,14 @@ import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
-import com.inhabas.api.service.board.BoardService;
+import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,7 +24,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +32,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
-
 
     @InjectMocks
     BoardServiceImpl boardService;
@@ -54,6 +49,12 @@ public class BoardServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+//    @Mock
+//    NormalBoard normalBoard;
+
+//    @Mock
+//    Member member;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -61,8 +62,9 @@ public class BoardServiceTest {
         mockMvc = MockMvcBuilders.standaloneSetup(boardService).build();
     }
 
+    @DisplayName("게시판을 성공적으로 생성한다.")
     @Test
-    public void 게시판_생성() {
+    public void createBoard() {
         //given
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1, 12201863);
         NormalBoard normalBoard = new NormalBoard(1, "title", "contents");
@@ -81,8 +83,9 @@ public class BoardServiceTest {
         assertThat(returnedId).isEqualTo(normalBoard.getId());
     }
 
+    @DisplayName("게시판의 목록을 조회한다.")
     @Test
-    public void 게시판_리스트_조회() {
+    public void getBoardList() {
         //given
         PageRequest pageable = PageRequest.of(0,10, Sort.Direction.ASC, "created");
 
@@ -94,14 +97,73 @@ public class BoardServiceTest {
         results.add(boardDto2);
         Page<BoardDto> boardDto = new PageImpl<> (results, pageable, results.size());
 
-        when(boardRepository.findAllByMenuId(any(), any())).thenReturn(boardDto);
+        given(boardRepository.findAllByMenuId(any(), any())).willReturn(boardDto);
 
         //when
         Page<BoardDto> boardList = boardService.getBoardList(1, pageable);
 
         //then
-        verify(boardRepository).findAllByMenuId(any(), any());
+        then(boardRepository).should(times(1)).findAllByMenuId(any(), any());
         assertThat(boardList).isEqualTo(boardDto);
+    }
+
+    @DisplayName("게시글 단일 조회에 성공한다.")
+    @Test
+    public void getDetailBoard() {
+        //given
+        BoardDto boardDto = new BoardDto(1, "title", "contents", "김민겸", 1, LocalDateTime.now() , null);
+        given(boardRepository.findDtoById(any())).willReturn(Optional.of(boardDto));
+
+        // when
+        boardService.getBoard(1);
+
+        // then
+        then(boardRepository).should(times(1)).findDtoById(any());
+    }
+
+    @DisplayName("게시글을 성공적으로 삭제한다.")
+    @Test
+    public void deleteBoard() {
+        //given
+        doNothing().when(boardRepository).deleteById(any());
+
+        // when
+        boardService.delete(1);
+
+        // then
+        then(boardRepository).should(times(1)).deleteById(any());
+    }
+
+    @DisplayName("게시글을 수정한다.")
+    @Test
+    public void updateBoard() {
+        //given
+        Integer boardId = 1;
+        Member entityMember = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
+        NormalBoard entityNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
+
+        given(boardRepository.findById(boardId)).willReturn(Optional.of(entityNormalBoard));
+        given(boardRepository.save(any())).willReturn(entityNormalBoard);
+
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용", 12201863);
+
+        // when
+        Integer returnedId = boardService.update(updateBoardDto);
+
+        // then
+        then(boardRepository).should(times(1)).save(any());
+        assertThat(returnedId).isNotNull();
+        assertThat(returnedId).isEqualTo(entityNormalBoard.getId());
+    }
+
+    @DisplayName("게시글을 생성한 유저와 일치하지 않아 게시글 수정에 실패한다.")
+    @Test
+    public void failToUpdateBoard() {
+        //given
+
+        // when
+
+        // then
     }
 
 }
