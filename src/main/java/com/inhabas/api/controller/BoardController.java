@@ -1,6 +1,5 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @Tag(name = "Board")
