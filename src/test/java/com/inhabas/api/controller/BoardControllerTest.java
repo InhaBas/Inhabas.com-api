@@ -12,15 +12,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -67,17 +70,11 @@ public class BoardControllerTest {
         given(boardService.write(any(SaveBoardDto.class))).willReturn(1);
 
         // when
-        String responseBody  = mvc.perform(post("/board")
+        mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("1"))
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        // then
-        assertThat(responseBody).isNotNull();
-        assertThat(responseBody).isEqualTo("1");
+                .andExpect(content().string("1"));
     }
 
     @DisplayName("게시글 수정을 요청한다.")
@@ -89,16 +86,11 @@ public class BoardControllerTest {
 
         // when
         boardController.updateBoard(updateBoardDto);
-        String responseBody = mvc.perform(put("/board")
+        mvc.perform(put("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateBoardDto)))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        // then
-        assertThat(responseBody).isNotNull();
-        assertThat(responseBody).isEqualTo("1");
+                .andExpect(content().string("1"));
     }
 
     @DisplayName("게시글 삭제를 요청한다.")
@@ -117,13 +109,31 @@ public class BoardControllerTest {
 
     @DisplayName("게시글 목록 조회를 요청한다.")
     @Test
-    public void getBoardList() throws Exception{
-        //given
+    public void getBoardList() throws Exception {
+        PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
 
+        List<BoardDto> results = new ArrayList<>();
+        results.add(new BoardDto(1, "Shown Title1", "Shown Contents1", "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(2, "Shown Title2", "Shown Contents2", "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(3, "Shown Title3", "Shown Contents3", "Mingyeom", 2, LocalDateTime.now(), null));
+
+        Page<BoardDto> boardDtoPage = new PageImpl<>(results,pageable, results.size());
+
+        given(boardService.getBoardList(anyInt(), any())).willReturn(boardDtoPage);
 
         // when
+        String responseBody = mvc.perform(get("/board/all")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId", "2")
+                        .param("sort", "DESC")
+                        .param("properties", "id"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andReturn()
+                .getResponse().getContentAsString();
 
         // then
+        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(boardDtoPage));
     }
 
     @DisplayName("게시글 단일 조회를 요청한다.")
@@ -142,8 +152,18 @@ public class BoardControllerTest {
                 .getResponse().getContentAsString();
 
         // then
-        assertThat(responseBody).isNotNull();
         assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(boardDto));
+
+    }
+
+    @DisplayName("게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
+    @Test
+    public void TitleIsTooLongError() {
+        //given
+
+        // when
+
+        // then
     }
 
 }

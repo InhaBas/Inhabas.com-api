@@ -4,6 +4,7 @@ import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
@@ -17,6 +18,6 @@ public interface BoardService {
 
     Optional<BoardDto> getBoard( Integer boardId);
 
-    Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
+    Page<BoardDto> getBoardList(Integer menuId, PageRequest pageable);
 
 }

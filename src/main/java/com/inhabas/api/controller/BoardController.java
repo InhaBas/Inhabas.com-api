@@ -10,7 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -32,9 +35,15 @@ public class BoardController {
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
     public Page<BoardDto> getBoardList(
-            @ModelAttribute Pageable pageable,
-            @RequestParam Integer menuId
+//            @RequestBody PageRequest pageable,
+//            @PageableDefault(sort="id", direction = Sort.Direction.DESC) PageRequest pageable
+            @RequestParam Integer menuId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(required = false) Sort.Direction sort,
+            @RequestParam(required = false) String properties
     ) {
+        PageRequest pageable = PageRequest.of(page, size, sort, properties);
         return boardService.getBoardList(menuId, pageable);
     }
 
