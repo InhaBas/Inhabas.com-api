@@ -35,7 +35,7 @@ public class BoardController {
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
     public Page<BoardDto> getBoardList(
-//            @RequestBody PageRequest pageable,
+//            PageRequest pageable,
 //            @PageableDefault(sort="id", direction = Sort.Direction.DESC) PageRequest pageable
             @RequestParam Integer menuId,
             @RequestParam(defaultValue = "0") Integer page,

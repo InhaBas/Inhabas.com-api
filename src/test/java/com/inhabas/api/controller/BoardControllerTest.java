@@ -113,9 +113,9 @@ public class BoardControllerTest {
         PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
 
         List<BoardDto> results = new ArrayList<>();
-        results.add(new BoardDto(1, "Shown Title1", "Shown Contents1", "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(2, "Shown Title2", "Shown Contents2", "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(3, "Shown Title3", "Shown Contents3", "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(1, "Shown Title1", null, "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(2, "Shown Title2", null, "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(3, "Shown Title3", null, "Mingyeom", 2, LocalDateTime.now(), null));
 
         Page<BoardDto> boardDtoPage = new PageImpl<>(results,pageable, results.size());
 

@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class BoardDto {
     private Integer id;
     private String title;
-    private String contents; // BoardListView에서 null
+    private String contents;
     private String writerName;
     private Integer menuId;
 
