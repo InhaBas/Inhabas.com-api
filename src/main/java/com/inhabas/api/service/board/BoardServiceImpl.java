@@ -53,14 +53,7 @@ public class BoardServiceImpl implements BoardService {
         NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(EntityNotFoundException::new);
 
         entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
-//        Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
         return boardRepository.save(entity).getId();
-        /*
-        if(entity.isWriter(writer))
-            return boardRepository.save(entity).getId();
-        else{
-            throw new RuntimeException("잘못된 사용자");
-        }*/
     }
 
     @Override

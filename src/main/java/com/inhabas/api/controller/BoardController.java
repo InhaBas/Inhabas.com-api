@@ -40,8 +40,8 @@ public class BoardController {
             @RequestParam Integer menuId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(required = false) Sort.Direction sort,
-            @RequestParam(required = false) String properties
+            @RequestParam Sort.Direction sort,
+            @RequestParam String properties
     ) {
         PageRequest pageable = PageRequest.of(page, size, sort, properties);
         return boardService.getBoardList(menuId, pageable);

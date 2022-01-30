@@ -30,7 +30,4 @@ public class SaveBoardDto {
         this.menuId = menuId;
         this.loginedUser = loginedUser;
     }
-    public Object toEntity() {
-        return null;
-    }
 }

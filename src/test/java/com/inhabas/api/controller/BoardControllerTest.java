@@ -81,7 +81,7 @@ public class BoardControllerTest {
     @Test
     public void updateBoard() throws Exception{
         //given
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "제목을 수정하였습니다.", "내용을 수정하였습니다.", 12201863);
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "제목을 수정하였습니다.", "내용을 수정하였습니다.");
         given(boardService.update(any(UpdateBoardDto.class))).willReturn(1);
 
         // when
@@ -160,6 +160,8 @@ public class BoardControllerTest {
     @Test
     public void TitleIsTooLongError() {
         //given
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
+
 
         // when
 
