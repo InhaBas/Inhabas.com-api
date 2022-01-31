@@ -145,7 +145,7 @@ public class BoardServiceTest {
         given(boardRepository.findById(boardId)).willReturn(Optional.of(entityNormalBoard));
         given(boardRepository.save(any())).willReturn(entityNormalBoard);
 
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용", 12201863);
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
 
         // when
         Integer returnedId = boardService.update(updateBoardDto);
