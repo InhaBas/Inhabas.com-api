@@ -3,6 +3,7 @@ package com.inhabas.api.dto.board;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaveBoardDto {
     @NotBlank(message = "제목을 입력하세요.")
-    @Size(max = 100, message = "제목은 최대 100자입니다.")
+    @Length(max = 100, message = "제목은 최대 100자입니다.")
     private String title;
 
     @NotBlank(message = "본문을 입력하세요.")

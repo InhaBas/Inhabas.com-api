@@ -4,8 +4,8 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
-import com.inhabas.api.service.board.BoardServiceImpl;
-import com.inhabas.api.service.member.MemberServiceImpl;
+import com.inhabas.api.service.board.BoardService;
+import com.inhabas.api.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,15 +16,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -38,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BoardController.class)
 public class BoardControllerTest {
 
+    @Autowired
     private MockMvc mvc;
 
     @Autowired
@@ -47,10 +52,10 @@ public class BoardControllerTest {
     BoardController boardController;
 
     @MockBean
-    BoardServiceImpl boardService;
+    BoardService boardService;
 
     @MockBean
-    MemberServiceImpl memberService;
+    MemberService memberService;
 
     @MockBean
     NormalBoard normalBoard;
@@ -59,6 +64,13 @@ public class BoardControllerTest {
     public void setUp() {
         mvc = MockMvcBuilders
                 .standaloneSetup(boardController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
+                .setViewResolvers(new ViewResolver() {
+                    @Override
+                    public View resolveViewName(String viewName, Locale locale) throws Exception {
+                        return new MappingJackson2JsonView();
+                    }
+                })
                 .build();
     }
 
@@ -117,9 +129,9 @@ public class BoardControllerTest {
         results.add(new BoardDto(2, "Shown Title2", null, "Mingyeom", 2, LocalDateTime.now(), null));
         results.add(new BoardDto(3, "Shown Title3", null, "Mingyeom", 2, LocalDateTime.now(), null));
 
-        Page<BoardDto> boardDtoPage = new PageImpl<>(results,pageable, results.size());
+        Page<BoardDto> expectedBoardDto = new PageImpl<>(results,pageable, results.size());
 
-        given(boardService.getBoardList(anyInt(), any())).willReturn(boardDtoPage);
+        given(boardService.getBoardList(anyInt(), any())).willReturn(expectedBoardDto);
 
         // when
         String responseBody = mvc.perform(get("/board/all")
@@ -127,7 +139,7 @@ public class BoardControllerTest {
                         .param("menuId", "2")
                         .param("page", "2")
                         .param("size", "1")
-                        .param("sort", "DESC")
+                        .param("sort", "ASC")
                         .param("properties", "id"))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -135,7 +147,7 @@ public class BoardControllerTest {
                 .getResponse().getContentAsString();
 
         // then
-        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(boardDtoPage));
+        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(expectedBoardDto));
     }
 
     @DisplayName("게시글 단일 조회를 요청한다.")
@@ -160,14 +172,39 @@ public class BoardControllerTest {
 
     @DisplayName("게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
     @Test
-    public void TitleIsTooLongError() {
+    public void TitleIsTooLongError() throws Exception {
         //given
         SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
 
-
         // when
+        String errorMessage = mvc.perform(post("/board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(saveBoardDto)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResolvedException().getMessage();
 
         // then
+        assertThat(errorMessage).isNotBlank();
+        assertThat(errorMessage).contains("제목은 최대 100자입니다.");
     }
 
+    @DisplayName("게시글 작성 시 Contents가 null인 경우 오류 발생")
+    @Test
+    public void ContentIsNullError() throws Exception {
+        //given
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1, 12201863);
+
+        // when
+        String errorMessage = mvc.perform(post("/board")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(saveBoardDto)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResolvedException().getMessage();
+
+        // then
+        assertThat(errorMessage).isNotBlank();
+        assertThat(errorMessage).contains("본문을 입력하세요.");
+    }
 }

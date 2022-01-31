@@ -66,7 +66,7 @@ public class BoardServiceTest {
         Member member = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
         given(boardRepository.save(any())).willReturn(normalBoard);
         given(menuRepository.getById(any())).willReturn(menu);
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
+        given(memberRepository.getById(any())).willReturn(member);
 
         // when
         Integer returnedId = boardService.write(saveBoardDto);

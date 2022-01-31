@@ -16,9 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 
@@ -45,7 +43,8 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
         NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-        entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
+        entity.setTitle(updateBoardDto.getTitle());
+        entity.setContents(updateBoardDto.getContents());
         return boardRepository.save(entity).getId();
     }
 
