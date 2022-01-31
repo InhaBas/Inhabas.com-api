@@ -23,10 +23,14 @@ public class UpdateBoardDto {
     @NotBlank(message = "본문을 입력하세요")
     private String contents;
 
-    public UpdateBoardDto(Integer id, String title, String contents) {
+    @NotNull
+    private Integer loginedUser;
+
+    public UpdateBoardDto(Integer id, String title, String contents, Integer loginedUser) {
         this.id = id;
         this.title = title;
         this.contents = contents;
+        this.loginedUser = loginedUser;
     }
 
 }
