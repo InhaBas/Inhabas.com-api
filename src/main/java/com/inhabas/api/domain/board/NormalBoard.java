@@ -64,6 +64,7 @@ public class NormalBoard extends BaseEntity {
         this.contents = new Contents(contents);
     }
 
+
     /* getter */
 
     public Integer getId() {
