@@ -2,13 +2,16 @@ package com.inhabas.api.dto.board;
 
 import com.inhabas.api.domain.board.NormalBoard;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.validation.constraints.NotEmpty;
 
 @Getter @Setter
+@NoArgsConstructor
 public class UpdateBoardDto {
     @NotNull
     private Integer id;
@@ -20,13 +23,14 @@ public class UpdateBoardDto {
     @NotBlank(message = "본문을 입력하세요")
     private String contents;
 
-    public UpdateBoardDto(Integer id, String title, String contents) {
+    @NotNull
+    private Integer loginedUser;
+
+    public UpdateBoardDto(Integer id, String title, String contents, Integer loginedUser) {
         this.id = id;
         this.title = title;
         this.contents = contents;
+        this.loginedUser = loginedUser;
     }
 
-    public NormalBoard toEntity() {
-        return null;
-    }
 }

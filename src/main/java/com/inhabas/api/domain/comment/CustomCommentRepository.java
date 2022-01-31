@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.comment;
 
-import com.inhabas.api.dto.CommentDetailDto;
+import com.inhabas.api.dto.comment.CommentDetailDto;
 
 import java.util.List;
 

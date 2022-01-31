@@ -1,5 +1,7 @@
 package com.inhabas.api.dto.board;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -30,10 +32,7 @@ public class SaveBoardDtoTest {
     @Test
     public void SaveBoardDto_is_OK(){
         //given
-        String title = "이것은 제목";
-        String contents = "이것은 내용입니다.";
-
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1, 12201863);
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -46,37 +45,31 @@ public class SaveBoardDtoTest {
     @Test
     public void Contents_is_null() {
         // given
-        String title = "이것은 제목";
-        String contents = null;
-
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, 1, 12201863);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
         assertEquals("본문을 입력하세요.", violations.iterator().next().getMessage());
     }
 
-    @DisplayName("게시글의 제목이 100자 이상을 넘기면 validation 실패")
+    @DisplayName("게시글의 제목이 100자 이상을 넘긴 경우 validation 통과하지 못함.")
     @Test
     public void Title_is_too_long() {
         //given
-        String title = "title".repeat(30);
+        String title = "title".repeat(20) + ".";
         String contents = "그냥 본문 내용입니다.";
 
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents);
+        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, 1, 12201863);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
         assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
     }
-
 
 }

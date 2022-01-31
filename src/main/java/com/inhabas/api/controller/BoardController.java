@@ -1,8 +1,10 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+
 import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,13 +27,13 @@ public class BoardController {
 
     @Operation(description = "게시글 조회")
     @GetMapping
-    public BoardDto board(@RequestParam Integer categoryId, @RequestParam Integer boardId) {
-        return boardService.getBoard(categoryId, boardId).orElseThrow(EntityNotFoundException::new);
+    public BoardDto getBoard(@RequestParam Integer id) {
+        return boardService.getBoard(id).get();
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
-    public Page<BoardDto> allBoards(
+    public Page<BoardDto> getBoardList(
             @ModelAttribute Pageable pageable,
             @RequestParam Integer menuId
     ) {
@@ -46,8 +48,8 @@ public class BoardController {
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public Integer updateBoard(@RequestBody UpdateBoardDto board) {
-        return boardService.update(board);
+    public Integer updateBoard(@RequestBody UpdateBoardDto updateBoardDto) {
+        return boardService.update(updateBoardDto);
     }
 
     @Operation(description = "게시글 삭제")

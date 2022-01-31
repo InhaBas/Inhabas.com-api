@@ -1,12 +1,14 @@
 package com.inhabas.api.dto.board;
 
-import com.inhabas.api.domain.board.NormalBoard;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
-@Getter @Setter
+@Getter
 public class SaveBoardDto {
     @NotBlank(message = "제목을 입력하세요.")
     @Size(max = 100, message = "제목은 최대 100자입니다.")
@@ -15,12 +17,19 @@ public class SaveBoardDto {
     @NotBlank(message = "본문을 입력하세요.")
     private String contents;
 
-    public SaveBoardDto(String title, String contents) {
+    @NotNull
+    private Integer menuId;
+
+    @NotNull
+    private Integer loginedUser;
+
+    public SaveBoardDto(String title, String contents, Integer menuId, Integer loginedUser) {
         this.title = title;
         this.contents = contents;
+        this.menuId = menuId;
+        this.loginedUser = loginedUser;
     }
-
-    public NormalBoard toEntity() {
+    public Object toEntity() {
         return null;
     }
 }

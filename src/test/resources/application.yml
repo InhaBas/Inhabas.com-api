@@ -24,6 +24,5 @@ spring:
   sql:
     init:
       mode: embedded
-
 file:
   dir: ../../../../files/

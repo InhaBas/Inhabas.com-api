@@ -14,7 +14,12 @@ public class MemberTest {
             , new SchoolInformation(Major.경영학과, 2, 2)
             , new IbasInformation(Role.normalMember, "hi", 0));
 
-
+    public static Member getTestMember(Integer id) {
+        return new Member(
+                id, "유동현", "010-1111-1111", ""
+                , new SchoolInformation(Major.건축공학과, 3, 1)
+                , new IbasInformation(Role.normalMember, "hello", 0));
+    }
 
 
 }

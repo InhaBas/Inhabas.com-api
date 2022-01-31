@@ -15,7 +15,8 @@ public interface BoardService {
 
     void delete(Integer id);
 
-    Optional<BoardDto> getBoard(Integer categoryId, Integer boardId);
+    Optional<BoardDto> getBoard( Integer boardId);
 
     Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
+
 }
