@@ -12,19 +12,12 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 
 @Service
 @Slf4j
@@ -36,13 +29,10 @@ public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final MemberRepository memberRepository;
 
-    @PersistenceContext
-    private final EntityManager em;
-
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.findById(saveBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
+        Member writer = memberRepository.getById(saveBoardDto.getLoginedUser());
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -51,17 +41,10 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(EntityNotFoundException::new);
-
-        entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
-//        Member writer = memberRepository.findById(updateBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
+        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        entity.setTitle(updateBoardDto.getTitle());
+        entity.setContents(updateBoardDto.getContents());
         return boardRepository.save(entity).getId();
-        /*
-        if(entity.isWriter(writer))
-            return boardRepository.save(entity).getId();
-        else{
-            throw new RuntimeException("잘못된 사용자");
-        }*/
     }
 
     @Override
@@ -70,8 +53,8 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<BoardDto> getBoard(Integer id) {
-        return Optional.of(boardRepository.findDtoById(id)).orElseThrow(EntityNotFoundException::new);
+    public BoardDto getBoard(Integer id) {
+        return boardRepository.findDtoById(id).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
     }
 
     @Override

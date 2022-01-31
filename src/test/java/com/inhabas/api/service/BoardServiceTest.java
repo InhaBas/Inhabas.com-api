@@ -49,12 +49,6 @@ public class BoardServiceTest {
     @Mock
     MemberRepository memberRepository;
 
-//    @Mock
-//    NormalBoard normalBoard;
-
-//    @Mock
-//    Member member;
-
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -72,7 +66,7 @@ public class BoardServiceTest {
         Member member = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
         given(boardRepository.save(any())).willReturn(normalBoard);
         given(menuRepository.getById(any())).willReturn(menu);
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
+        given(memberRepository.getById(any())).willReturn(member);
 
         // when
         Integer returnedId = boardService.write(saveBoardDto);
@@ -95,16 +89,16 @@ public class BoardServiceTest {
         List<BoardDto> results = new ArrayList<>();
         results.add(boardDto1);
         results.add(boardDto2);
-        Page<BoardDto> boardDto = new PageImpl<> (results, pageable, results.size());
+        Page<BoardDto> expectedBoardDto = new PageImpl<> (results, pageable, results.size());
 
-        given(boardRepository.findAllByMenuId(any(), any())).willReturn(boardDto);
+        given(boardRepository.findAllByMenuId(any(), any())).willReturn(expectedBoardDto);
 
         //when
-        Page<BoardDto> boardList = boardService.getBoardList(1, pageable);
+        Page<BoardDto> returnedBoardList = boardService.getBoardList(1, pageable);
 
         //then
         then(boardRepository).should(times(1)).findAllByMenuId(any(), any());
-        assertThat(boardList).isEqualTo(boardDto);
+        assertThat(returnedBoardList).isEqualTo(expectedBoardDto);
     }
 
     @DisplayName("게시글 단일 조회에 성공한다.")
@@ -145,7 +139,7 @@ public class BoardServiceTest {
         given(boardRepository.findById(boardId)).willReturn(Optional.of(entityNormalBoard));
         given(boardRepository.save(any())).willReturn(entityNormalBoard);
 
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용", 12201863);
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
 
         // when
         Integer returnedId = boardService.update(updateBoardDto);
