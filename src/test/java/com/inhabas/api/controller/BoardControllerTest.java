@@ -125,6 +125,8 @@ public class BoardControllerTest {
         String responseBody = mvc.perform(get("/board/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId", "2")
+                        .param("page", "2")
+                        .param("size", "1")
                         .param("sort", "DESC")
                         .param("properties", "id"))
                 .andExpect(status().isOk())
@@ -141,7 +143,7 @@ public class BoardControllerTest {
     public void getBoardDetail() throws Exception{
         //given
         BoardDto boardDto = new BoardDto(1, "Shown Title", "Shown Contents", "Mingyeom", 1, LocalDateTime.now(), null);
-        given(boardService.getBoard(anyInt())).willReturn(Optional.of(boardDto));
+        given(boardService.getBoard(anyInt())).willReturn(boardDto);
 
         // when
         String responseBody = mvc.perform(get("/board")

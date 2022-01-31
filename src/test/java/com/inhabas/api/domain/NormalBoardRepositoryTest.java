@@ -166,8 +166,8 @@ public class NormalBoardRepositoryTest {
         Integer noticeBoardId = NOTICE_BOARD.getMenu().getId();
 
         //when
-        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardId, PageRequest.ofSize(5));
-        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, PageRequest.ofSize(5));
+        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardId, Pageable.ofSize(5));
+        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, Pageable.ofSize(5));
 
         //then
         assertThat(freeBoards.getTotalElements()).isEqualTo(1);

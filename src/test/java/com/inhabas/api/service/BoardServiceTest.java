@@ -49,12 +49,6 @@ public class BoardServiceTest {
     @Mock
     MemberRepository memberRepository;
 
-//    @Mock
-//    NormalBoard normalBoard;
-
-//    @Mock
-//    Member member;
-
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -95,16 +89,16 @@ public class BoardServiceTest {
         List<BoardDto> results = new ArrayList<>();
         results.add(boardDto1);
         results.add(boardDto2);
-        Page<BoardDto> boardDto = new PageImpl<> (results, pageable, results.size());
+        Page<BoardDto> expectedBoardDto = new PageImpl<> (results, pageable, results.size());
 
-        given(boardRepository.findAllByMenuId(any(), any())).willReturn(boardDto);
+        given(boardRepository.findAllByMenuId(any(), any())).willReturn(expectedBoardDto);
 
         //when
-        Page<BoardDto> boardList = boardService.getBoardList(1, pageable);
+        Page<BoardDto> returnedBoardList = boardService.getBoardList(1, pageable);
 
         //then
         then(boardRepository).should(times(1)).findAllByMenuId(any(), any());
-        assertThat(boardList).isEqualTo(boardDto);
+        assertThat(returnedBoardList).isEqualTo(expectedBoardDto);
     }
 
     @DisplayName("게시글 단일 조회에 성공한다.")

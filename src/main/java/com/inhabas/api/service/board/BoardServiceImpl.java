@@ -13,16 +13,13 @@ import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 
 @Service
@@ -35,13 +32,10 @@ public class BoardServiceImpl implements BoardService {
     private final MenuRepository menuRepository;
     private final MemberRepository memberRepository;
 
-    @PersistenceContext
-    private final EntityManager em;
-
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.findById(saveBoardDto.getLoginedUser()).orElseThrow(EntityNotFoundException::new);
+        Member writer = memberRepository.getById(saveBoardDto.getLoginedUser());
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -50,8 +44,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(EntityNotFoundException::new);
-
+        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         entity.setTitleContents(updateBoardDto.getTitle(), updateBoardDto.getContents());
         return boardRepository.save(entity).getId();
     }
@@ -62,12 +55,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Optional<BoardDto> getBoard(Integer id) {
-        return Optional.of(boardRepository.findDtoById(id)).orElseThrow(EntityNotFoundException::new);
+    public BoardDto getBoard(Integer id) {
+        return boardRepository.findDtoById(id).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
     }
 
     @Override
-    public Page<BoardDto> getBoardList(Integer menuId, PageRequest pageable) {
+    public Page<BoardDto> getBoardList(Integer menuId, Pageable pageable) {
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
 

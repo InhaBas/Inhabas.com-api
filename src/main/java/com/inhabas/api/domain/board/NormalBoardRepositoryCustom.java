@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface NormalBoardRepositoryCustom {
 
-    Page<BoardDto> findAllByMenuId(Integer menuId, PageRequest pageable);
+    Page<BoardDto> findAllByMenuId(Integer menuId, Pageable pageable);
     Optional<BoardDto> findDtoById(Integer id);
 }

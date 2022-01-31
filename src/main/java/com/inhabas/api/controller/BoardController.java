@@ -29,21 +29,15 @@ public class BoardController {
     @Operation(description = "게시글 조회")
     @GetMapping
     public BoardDto getBoard(@RequestParam Integer id) {
-        return boardService.getBoard(id).get();
+        return boardService.getBoard(id);
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
     public Page<BoardDto> getBoardList(
-//            PageRequest pageable,
-//            @PageableDefault(sort="id", direction = Sort.Direction.DESC) PageRequest pageable
-            @RequestParam Integer menuId,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam Sort.Direction sort,
-            @RequestParam String properties
+            Pageable pageable,
+            @RequestParam Integer menuId
     ) {
-        PageRequest pageable = PageRequest.of(page, size, sort, properties);
         return boardService.getBoardList(menuId, pageable);
     }
 
