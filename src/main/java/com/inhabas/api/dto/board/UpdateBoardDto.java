@@ -15,7 +15,7 @@ public class UpdateBoardDto {
     @NotNull
     private Integer id;
 
-    @NotBlank(message = "제목을 입력하g세요.")
+    @NotBlank(message = "제목을 입력하세요.")
     @Size(max = 100, message = "제목은 최대 100자입니다.")
     private String title;
 

@@ -7,8 +7,6 @@ import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
-import com.inhabas.api.dto.board.SaveBoardDto;
-import lombok.AccessLevel;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
