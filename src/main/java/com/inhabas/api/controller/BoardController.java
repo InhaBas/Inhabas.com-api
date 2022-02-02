@@ -14,7 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
+
 
 @Slf4j
 @Tag(name = "Board")
@@ -28,13 +29,21 @@ public class BoardController {
     @Operation(description = "게시글 조회")
     @GetMapping
     public BoardDto getBoard(@RequestParam Integer id) {
+<<<<<<< HEAD
         return boardService.getBoard(id).get();
+=======
+        return boardService.getBoard(id);
+>>>>>>> 3771cf78b9f68b363cf1835432834dbb52b7be05
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
     public Page<BoardDto> getBoardList(
+<<<<<<< HEAD
             @ModelAttribute Pageable pageable,
+=======
+            Pageable pageable,
+>>>>>>> 3771cf78b9f68b363cf1835432834dbb52b7be05
             @RequestParam Integer menuId
     ) {
         return boardService.getBoardList(menuId, pageable);
@@ -42,13 +51,17 @@ public class BoardController {
 
     @Operation(description = "게시글 추가")
     @PostMapping
-    public Integer addBoard(@RequestBody SaveBoardDto saveBoardDto) {
+    public Integer addBoard(@Valid @RequestBody SaveBoardDto saveBoardDto) {
         return boardService.write(saveBoardDto);
     }
 
     @Operation(description = "게시글 수정")
     @PutMapping
+<<<<<<< HEAD
     public Integer updateBoard(@RequestBody UpdateBoardDto updateBoardDto) {
+=======
+    public Integer updateBoard(@Valid @RequestBody UpdateBoardDto updateBoardDto) {
+>>>>>>> 3771cf78b9f68b363cf1835432834dbb52b7be05
         return boardService.update(updateBoardDto);
     }
 
