@@ -125,9 +125,13 @@ public class NormalBoard extends BaseEntity {
         return this;
     }
 
-    public NormalBoard setTitleContents(String title, String contents) {
+    /* Setter */
+
+    public void setTitle(String title){
         this.title = new Title(title);
+    }
+
+    public void setContents(String contents){
         this.contents = new Contents(contents);
-        return this;
     }
 }
