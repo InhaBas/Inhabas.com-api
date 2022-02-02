@@ -7,8 +7,6 @@ import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
-import com.inhabas.api.dto.board.SaveBoardDto;
-import lombok.AccessLevel;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -127,9 +125,13 @@ public class NormalBoard extends BaseEntity {
         return this;
     }
 
-    public NormalBoard setTitleContents(String title, String contents) {
+    /* Setter */
+
+    public void setTitle(String title){
         this.title = new Title(title);
+    }
+
+    public void setContents(String contents){
         this.contents = new Contents(contents);
-        return this;
     }
 }
