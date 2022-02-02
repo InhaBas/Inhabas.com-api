@@ -7,7 +7,10 @@ import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.dto.board.SaveBoardDto;
 import lombok.AccessLevel;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -17,13 +20,15 @@ import java.util.*;
 
 @Entity
 @Table(name = "normal_board")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
 public class NormalBoard extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Integer id;
 
     @Embedded
@@ -59,6 +64,7 @@ public class NormalBoard extends BaseEntity {
         this.contents = new Contents(contents);
     }
 
+
     /* getter */
 
     public Integer getId() {
@@ -86,6 +92,7 @@ public class NormalBoard extends BaseEntity {
     }
 
     /* relation method */
+
 
     public NormalBoard writtenBy(Member writer) {
         if (Objects.isNull(this.writer))
@@ -118,5 +125,15 @@ public class NormalBoard extends BaseEntity {
     public NormalBoard inMenu(Menu menu) {
         this.menu = menu;
         return this;
+    }
+
+    /* Setter */
+
+    public void setTitle(String title){
+        this.title = new Title(title);
+    }
+
+    public void setContents(String contents){
+        this.contents = new Contents(contents);
     }
 }
