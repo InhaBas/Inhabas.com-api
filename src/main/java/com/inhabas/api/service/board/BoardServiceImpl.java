@@ -16,20 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import org.springframework.data.domain.Pageable;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-=======
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
->>>>>>> 3771cf78b9f68b363cf1835432834dbb52b7be05
 
 @Service
 @Slf4j
