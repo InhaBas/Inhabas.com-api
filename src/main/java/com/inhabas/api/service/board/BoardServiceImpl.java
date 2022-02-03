@@ -61,5 +61,4 @@ public class BoardServiceImpl implements BoardService {
     public Page<BoardDto> getBoardList(Integer menuId, Pageable pageable) {
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
-
 }

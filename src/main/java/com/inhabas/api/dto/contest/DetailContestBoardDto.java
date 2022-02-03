@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class DetailContestDto {
+public class DetailContestBoardDto {
 
     private Integer id;
     private String writerName;
