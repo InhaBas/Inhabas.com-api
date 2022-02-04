@@ -41,18 +41,10 @@ public class ContestBoard extends NormalBoard {
         this.deadline = deadline;
     }
 
-    public ContestBoard(String title, String contents, Topic topic, Association association, LocalDate start, LocalDate deadline) {
-        super(title, contents);
-        this.topic = topic;
-        this.association = association;
-        this.start = start;
-        this.deadline = deadline;
-    }
-
-    public ContestBoard(Integer id, String title, String contents, String topic, String association, LocalDate start , LocalDate deadline){
+    public ContestBoard(Integer id, String title, String contents,String association, String topic, LocalDate start , LocalDate deadline){
         super(id, title, contents);
-        this.topic = new Topic(topic);
         this.association = new Association(association);
+        this.topic = new Topic(topic);
         this.start = start;
         this.deadline =deadline;
     }

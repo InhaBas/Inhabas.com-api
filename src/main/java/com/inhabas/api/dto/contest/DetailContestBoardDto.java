@@ -1,5 +1,6 @@
 package com.inhabas.api.dto.contest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,9 +18,13 @@ public class DetailContestBoardDto {
     private String association;
     private String topic;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
     private LocalDate start;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
     private LocalDate deadline;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime created;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime updated;
 }
