@@ -35,9 +35,15 @@ dependencies {
 			'org.springdoc:springdoc-openapi-ui:1.6.0',
 			'com.querydsl:querydsl-jpa',
 
+			// cloud config
 			'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
 			'org.springframework.boot:spring-boot-starter-actuator:2.6.2',
-			'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
+			'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0',
+
+			// security
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-oauth2-client',
+			'javax.xml.bind:jaxb-api',
 	)
 
 	testImplementation(
