@@ -3,8 +3,11 @@ package com.inhabas.api.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.inhabas.api.security.jwtUtils.JwtTokenDto;
+import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -14,63 +17,70 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
+@RequiredArgsConstructor
 @RestController
 public class LoginController {
 
-    /*
-    * Mapping url 을 run-time 으로 설정파일에서 읽어들이기 때문에
-    * run-time error 조심해야함!
-    * */
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("${login.success-url}")
     @Operation(description = "로그인 성공하여 최종적으로 accessToken, refreshToken 을 발행한다.", hidden = true)
-    public ResponseEntity<Object> successLogin(HttpServletRequest request, Principal principal) throws JsonProcessingException {
+    public ResponseEntity<?> successLogin(HttpServletRequest request, Principal principal) {
 
         OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) principal;
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+
         String loginIp = ((WebAuthenticationDetails) authentication.getDetails()).getRemoteAddress();
-        boolean alreadyJoined = ((CustomOAuth2User) authentication.getPrincipal()).isAlreadyJoined();
-        Integer authUserId = ((CustomOAuth2User) authentication.getPrincipal()).getAuthUserId();
+//        String provider = authentication.getAuthorizedClientRegistrationId();
+//        String email = (String) oAuth2User.getAttributes().get("email");
+        boolean alreadyJoined = oAuth2User.isAlreadyJoined();
+        Integer authUserId = oAuth2User.getAuthUserId();
 
         if (alreadyJoined) {
-            // jwt 토큰 발행
-            //
+
+            // 유저 권한 들고오기
+            JwtTokenDto jwtToken = jwtTokenProvider.createJwtToken(authUserId, null, null);
+            // refresh token db 에 저장하
+
+            return ResponseEntity.ok(jwtToken);
         }
         else {
-            // 회원가입
-            // 기존에 회원가입 중이었으면, 회원 정보 넘겨줌.
+            // 회원가입 해야됨.
+
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         // 로그인 이력 남기기.
 
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-//        System.out.println(request);
-        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(principal));
-        return new ResponseEntity<>("잘 됐다!", HttpStatus.OK);
+//        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+////        System.out.println(request);
+//        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(principal));
+//        return new ResponseEntity<>("잘 됐다!", HttpStatus.OK);요
     }
 
     @GetMapping("${login.failure-url}")
     @Operation(hidden = true)
-    public ResponseEntity<Object> failToLogin() {
+    public ResponseEntity<?> failToLogin() {
 
         return new ResponseEntity<>("소셜로그인 실패", HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("/login/profile")
     @Operation(description = "회원가입 시 프로필을 저장한다.")
-    public ResponseEntity<Object> saveProfile() {
+    public ResponseEntity<?> saveProfile() {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/login/questionnaire")
     @Operation(description = "회원가입에 필요한 질문 리스트를 요청.")
-    public ResponseEntity<Object> getQuestionnaire() {
+    public ResponseEntity<?> getQuestionnaire() {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/login/questionnaire")
     @Operation(description = "회원가입 시 작성한 질문을 저장한다.")
-    public ResponseEntity<Object> saveQuestionnaire() {
+    public ResponseEntity<?> saveQuestionnaire() {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
