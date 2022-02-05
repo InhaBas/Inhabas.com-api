@@ -40,7 +40,7 @@ public class AuthUser {
         lastLogin = LocalDateTime.now();
     }
 
-    public AuthUser setLogin(LocalDateTime time) {
+    public AuthUser setLastLoginTime(LocalDateTime time) {
         this.lastLogin = time;
         return this;
     }

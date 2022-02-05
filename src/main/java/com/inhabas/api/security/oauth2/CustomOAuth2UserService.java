@@ -40,7 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 기존 회원 연결하는 로직 필요! 또는 db 옮기는 작업 필요!
         AuthUser loginUser = authUserRepository.findByProviderAndEmail(provider, email)
                 .orElse(new AuthUser(provider, email))
-                .setLogin(LocalDateTime.now());
+                .setLastLoginTime(LocalDateTime.now());
         authUserRepository.save(loginUser);
 
         return new CustomOAuth2User(
@@ -84,6 +84,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
         }
 
+        @SuppressWarnings("unchecked")
         private static OAuth2Attribute ofKakao(String attributeKey,
                                                Map<String, Object> attributes) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
@@ -98,6 +99,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
         }
 
+        @SuppressWarnings("unchecked")
         private static OAuth2Attribute ofNaver(String attributeKey,
                                                Map<String, Object> attributes) {
             Map<String, Object> response = (Map<String, Object>) attributes.get("response");
