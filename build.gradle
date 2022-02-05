@@ -50,9 +50,6 @@ dependencies {
 			'org.springframework.boot:spring-boot-starter-test',
 	)
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude group: "junit", module: "junit"
-	}
 
 	compileOnly(
 			'org.projectlombok:lombok'

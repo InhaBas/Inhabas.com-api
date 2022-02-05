@@ -8,7 +8,7 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MariaDB;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -21,8 +21,13 @@ spring:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
       hibernate.format_sql: true
+    database: sql_server
   sql:
     init:
       mode: embedded
 file:
   dir: ../../../../files/
+
+login:
+  success-url: /testOAuth2SeccessUrl
+  failure-url: /testOAuth2FailureUrl
