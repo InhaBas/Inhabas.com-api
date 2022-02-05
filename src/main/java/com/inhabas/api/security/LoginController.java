@@ -3,6 +3,8 @@ package com.inhabas.api.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.inhabas.api.security.domain.RefreshToken;
+import com.inhabas.api.security.domain.RefreshTokenRepository;
 import com.inhabas.api.security.jwtUtils.JwtTokenDto;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import java.security.Principal;
 public class LoginController {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @GetMapping("${login.success-url}")
     @Operation(description = "로그인 성공하여 최종적으로 accessToken, refreshToken 을 발행한다.", hidden = true)
@@ -30,31 +34,24 @@ public class LoginController {
         OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) principal;
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-        String loginIp = ((WebAuthenticationDetails) authentication.getDetails()).getRemoteAddress();
-//        String provider = authentication.getAuthorizedClientRegistrationId();
-//        String email = (String) oAuth2User.getAttributes().get("email");
         boolean alreadyJoined = oAuth2User.isAlreadyJoined();
         Integer authUserId = oAuth2User.getAuthUserId();
 
         if (alreadyJoined) {
 
-            // 유저 권한 들고오기
-            JwtTokenDto jwtToken = jwtTokenProvider.createJwtToken(authUserId, null, null);
-            // refresh token db 에 저장하
+            /* 유저 권한 들고오기 (추후 작업이 필요함.)
+            - role 은 (미승인회원, 일반회원, 교수, 회장단, 회장) 과 같이 수직구조의 권한 => 상대적으로 덜 변함. => enum 타입
+            - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
+            */
+            JwtTokenDto jwtToken = jwtTokenProvider
+                    .createJwtToken(authUserId, new SimpleGrantedAuthority("ROLE_MEMBER"), null);
+            refreshTokenRepository.save(new RefreshToken(jwtToken.getRefreshToken()));
 
             return ResponseEntity.ok(jwtToken);
         }
         else {
-            // 회원가입 해야됨.
-
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("회원가입 해야됨.", HttpStatus.UNAUTHORIZED);
         }
-        // 로그인 이력 남기기.
-
-//        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-////        System.out.println(request);
-//        System.out.println(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(principal));
-//        return new ResponseEntity<>("잘 됐다!", HttpStatus.OK);요
     }
 
     @GetMapping("${login.failure-url}")
