@@ -12,9 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,8 +42,10 @@ public class LoginController {
             - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
             */
             JwtTokenDto jwtToken = jwtTokenProvider
-                    .createJwtToken(authUserId, new SimpleGrantedAuthority("ROLE_MEMBER"), null);
+                    .createJwtToken(authUserId, "ROLE_MEMBER", null);
             refreshTokenRepository.save(new RefreshToken(jwtToken.getRefreshToken()));
+
+            request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.
 
             return ResponseEntity.ok(jwtToken);
         }
