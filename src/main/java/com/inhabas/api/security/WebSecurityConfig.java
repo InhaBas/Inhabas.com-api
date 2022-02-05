@@ -17,11 +17,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-@Profile(value = {"dev", "production", "local"})
+
 public class WebSecurityConfig {
 
     @Order(2)
     @EnableWebSecurity
+    @Profile({"local", "dev", "production"})
     public static class OpenApi extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -44,6 +45,7 @@ public class WebSecurityConfig {
     @Order(0)
     @EnableWebSecurity
     @RequiredArgsConstructor
+    @Profile({"local", "dev", "production"})
     @EnableConfigurationProperties(LoginUrlProperty.class)
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
@@ -90,8 +92,9 @@ public class WebSecurityConfig {
     }
 
     @Order(1)
-    @RequiredArgsConstructor
     @EnableWebSecurity
+    @RequiredArgsConstructor
+    @Profile({"local", "dev", "production"})
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
