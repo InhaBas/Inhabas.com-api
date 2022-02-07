@@ -52,7 +52,7 @@ public class JwtTokenProvider {
                 .compact();
 
         return JwtTokenDto.builder()
-                .grantType("bearer")
+                .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .accessTokenExpireDate(accessTokenValidMilliSecond)
@@ -106,8 +106,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             result = true;
-        } catch (SignatureException e) {
-            log.error(e.getMessage());
+        } catch (SignatureException | ExpiredJwtException e) {
+            log.debug(e.getMessage());
         }
 
         return result;
