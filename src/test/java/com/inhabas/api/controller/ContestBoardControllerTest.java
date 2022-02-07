@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ContestBoardController.class)
 public class ContestBoardControllerTest {
-    @Autowired
+
     private MockMvc mvc;
 
     @Autowired
@@ -73,7 +73,7 @@ public class ContestBoardControllerTest {
     @Test
     public void addNewContestBoard() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) , 12201863);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 03,26) , 12201863);
         given(contestBoardService.write(any(SaveContestBoardDto.class))).willReturn(1);
 
         // when
@@ -88,7 +88,7 @@ public class ContestBoardControllerTest {
     @Test
     public void updateContestBoard() throws Exception{
         //given
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 03,26) );
         given(contestBoardService.update(any(UpdateContestBoardDto.class))).willReturn(1);
 
         // when
@@ -110,8 +110,7 @@ public class ContestBoardControllerTest {
         mvc.perform(delete("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @DisplayName("공모전 게시판 목록 조회를 요청한다.")
@@ -124,19 +123,19 @@ public class ContestBoardControllerTest {
         results.add(new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29)));
         results.add(new ListContestBoardDto("title3", "contents3", LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29)));
 
-        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results,pageable, results.size());
+        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
 
         given(contestBoardService.getBoardList(anyInt(), any())).willReturn(expectedContestBoardDto);
 
         // when
         String responseBody = mvc.perform(get("/board/contest/all")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId", "9")
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "DESC")
                         .param("properties", "id"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andReturn()
                 .getResponse().getContentAsString();
 

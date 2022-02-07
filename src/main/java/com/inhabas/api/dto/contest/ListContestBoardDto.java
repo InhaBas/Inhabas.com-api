@@ -11,8 +11,8 @@ import java.time.LocalDate;
 public class ListContestBoardDto {
     private String title;
     private String topic;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate start;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate deadline;
 }

@@ -5,12 +5,16 @@ import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.contest.type.wrapper.Association;
 import com.inhabas.api.domain.contest.type.wrapper.Topic;
+import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.menu.Menu;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "contest_board")
@@ -19,16 +23,25 @@ import java.time.LocalDate;
 public class ContestBoard extends NormalBoard {
 
     @Embedded
-    protected Topic topic;
+    private Topic topic;
 
     @Embedded
-    protected Association association;
+    private Association association;
 
     @Column
-    protected LocalDate start;
+    private LocalDate start;
 
     @Column
-    protected LocalDate deadline;
+    private LocalDate deadline;
+
+    /* Getter */
+    public String getAssociation(){
+        return association.getValue();
+    }
+
+    public String getTopic(){
+        return topic.getValue();
+    }
 
     /* Constructor */
 
@@ -41,6 +54,7 @@ public class ContestBoard extends NormalBoard {
         this.deadline = deadline;
     }
 
+    @Builder
     public ContestBoard(Integer id, String title, String contents,String association, String topic, LocalDate start , LocalDate deadline){
         super(id, title, contents);
         this.association = new Association(association);
@@ -49,21 +63,16 @@ public class ContestBoard extends NormalBoard {
         this.deadline =deadline;
     }
 
-    /* Setter */
+    /* relation method */
 
-    public void setTopic(String topic) {
-        this.topic = new Topic(topic);
+
+    public ContestBoard writtenBy(Member writer){
+        super._writtenBy(writer);
+        return this;
     }
 
-    public void setAssociation(String association) {
-        this.association = new Association(association);
-    }
-
-    public void setStart(LocalDate start) {
-        this.start = start;
-    }
-
-    public void setDeadline(LocalDate deadline) {
-        this.deadline = deadline;
+    public ContestBoard inMenu(Menu menu){
+        super._inMenu(menu);
+        return this;
     }
 }

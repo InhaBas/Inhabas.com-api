@@ -115,8 +115,7 @@ public class BoardControllerTest {
         mvc.perform(delete("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @DisplayName("게시글 목록 조회를 요청한다.")
@@ -142,7 +141,6 @@ public class BoardControllerTest {
                         .param("sort", "ASC")
                         .param("properties", "id"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andReturn()
                 .getResponse().getContentAsString();
 

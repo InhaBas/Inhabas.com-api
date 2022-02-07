@@ -1,33 +1,31 @@
 package com.inhabas.api.dto.contest;
 
-import com.inhabas.api.dto.board.SaveBoardDto;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import static com.inhabas.api.dto.contest.BaseContestBoardDtoTest.*;
-
 
 
 public class SaveContestBoardDtoTest {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
+    private static List<String> errorMessage;
 
     @BeforeAll
     public static void init() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
+
+        errorMessage = new ArrayList<>();
     }
 
     @AfterAll
@@ -35,35 +33,90 @@ public class SaveContestBoardDtoTest {
         validatorFactory.close();
     }
 
-    @DisplayName("SaveContestBoardDto 객체를 정상적으로 생성한다. ")
+    @DisplayName("공모전 게시글 저장 시 모든 필드가 null일 경우")
     @Test
-    public void SaveContestBoardDto_is_OK() {
+    public void FieldsAreNullError() {
+        //given
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(null, null, null, null, null, null, null);
+
         // when
-        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto1);
+        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
-        assertTrue(violations.isEmpty());
+        assertThat(errorMessage).contains(
+                "제목을 입력하세요.",
+                "본문을 입력하세요.",
+                "협회기관을 입력하세요.",
+                "공모전 주제를 입력하세요.",
+                "공모전 모집 시작일을 등록해주세요.",
+                "공모전 모집 마감일을 등록해주세요.",
+                "로그인 후 이용해주세요."
+        );
     }
 
-    @DisplayName("SaveContestBoardDto의 contents 필드가 null 이면 validation 실패")
+    @DisplayName("공모전 게시글 저장 시 모든 필드가 Blank일 경우")
     @Test
-    public void Contents_is_null() {
-        // when
-        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto2);
+    public void FieldsAreBlankedError() {
+        // given
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(" ", " ", " ", " ", null, null, null);
+
+        //when
+        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
-        assertEquals(1, violations.size());
-        assertEquals("본문을 입력하세요.", violations.iterator().next().getMessage());
+        assertThat(errorMessage).contains(
+                "제목을 입력하세요.",
+                "본문을 입력하세요.",
+                "협회기관을 입력하세요.",
+                "공모전 주제를 입력하세요.",
+                "공모전 모집 시작일을 등록해주세요.",
+                "공모전 모집 마감일을 등록해주세요.",
+                "로그인 후 이용해주세요."
+        );
     }
 
-    @DisplayName("게시글의 제목이 100자 이상을 넘긴 경우 validation 통과하지 못함.")
+    @DisplayName("공모전 게시글 저장 시 제목, 협회기관명, 주제가 입력 길이를 초과하여 Validation 실패")
     @Test
-    public void Title_is_too_long() {
+    public void  InputsAreExceededError() {
+        //given
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(
+                "title".repeat(20) + ".",
+                "contents! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
+                "Assoc".repeat(20) + ".",
+                "topic".repeat(100)+ ".",
+                LocalDate.of(2022, 01, 01),
+                LocalDate.of(2022, 03, 03),
+                12201863 );
+
         // when
-        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto3);
+        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
-        assertEquals(1, violations.size());
-        assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
+        assertEquals(3, violations.size());
+        assertThat(errorMessage).contains(
+                "제목은 최대 100자입니다.",
+                "100자 이내로 작성해주세요.",
+                "500자 이내로 작성해주세요."
+        );
+    }
+
+    @DisplayName("공모전 게시글 저장 시 마감일자가 이미 지난 경우 Validation 실패")
+    @Test
+    public void DeadlineIsOutdatedError() {
+        //given
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic",
+                LocalDate.of(2022, 01, 01), LocalDate.of(2022, 02, 01), 12201863);
+
+        // when
+        Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
+
+        // then
+        assertThat(errorMessage).contains(
+                "이미 모집기간이 종료된 공모전은 등록할 수 없습니다."
+        );
     }
 }

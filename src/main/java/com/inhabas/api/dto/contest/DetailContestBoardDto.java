@@ -2,12 +2,14 @@ package com.inhabas.api.dto.contest;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 @AllArgsConstructor
 public class DetailContestBoardDto {
 
@@ -18,13 +20,13 @@ public class DetailContestBoardDto {
     private String association;
     private String topic;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate start;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private LocalDate deadline;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime created;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyy-MM-dd'T'HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updated;
 }

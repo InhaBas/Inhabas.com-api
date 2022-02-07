@@ -41,9 +41,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-        entity.setTitle(updateBoardDto.getTitle());
-        entity.setContents(updateBoardDto.getContents());
+        NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
+//        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         return boardRepository.save(entity).getId();
     }
 
@@ -54,7 +53,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public BoardDto getBoard(Integer id) {
-        return boardRepository.findDtoById(id).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        return boardRepository.findDtoById(id)
+                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
     }
 
     @Override

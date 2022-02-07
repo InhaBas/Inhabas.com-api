@@ -27,21 +27,30 @@ public class ContestBoardServiceImpl implements ContestBoardService{
     @Override
     public Integer write(SaveContestBoardDto dto) {
         Member writer = memberRepository.getById(dto.getLoginedUser());
-        ContestBoard contestBoard = new ContestBoard(dto.getTitle(), dto.getContents(), dto.getAssociation( ), dto.getTopic(), dto.getStart(), dto.getDeadline());
-
-        contestBoard.writtenBy(writer);
+        ContestBoard contestBoard = ContestBoard.builder()
+                .title(dto.getTitle())
+                .contents(dto.getContents())
+                .association(dto.getAssociation())
+                .topic(dto.getTopic())
+                .start(dto.getStart())
+                .deadline(dto.getDeadline())
+                .build()
+                        .writtenBy(writer);
         return contestBoardRepository.save(contestBoard).getId();
     }
 
     @Override
     public Integer update(UpdateContestBoardDto dto) {
-        ContestBoard entity = contestBoardRepository.findById(dto.getId()).orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
-        entity.setTitle(dto.getTitle());
-        entity.setContents(dto.getContents());
-        entity.setAssociation(dto.getAssociation());
-        entity.setTopic(dto.getTopic());
-        entity.setStart(dto.getStart());
-        entity.setDeadline(dto.getDeadline());
+        ContestBoard entity = ContestBoard.builder()
+                .id(dto.getId())
+                .title(dto.getTitle())
+                .contents(dto.getContents())
+                .association(dto.getAssociation())
+                .topic(dto.getTopic())
+                .start(dto.getStart())
+                .deadline(dto.getDeadline())
+                .build();
+        // em.merge() 호출되는 지 확인할 것
         return contestBoardRepository.save(entity).getId();
     }
 
@@ -53,7 +62,8 @@ public class ContestBoardServiceImpl implements ContestBoardService{
 
     @Override
     public DetailContestBoardDto getBoard(Integer id) {
-        return  contestBoardRepository.findDtoById(id).orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        return  contestBoardRepository.findDtoById(id)
+                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
     }
 
     @Override

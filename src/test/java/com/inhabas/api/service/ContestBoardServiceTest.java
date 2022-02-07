@@ -1,12 +1,9 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.dto.board.BoardDto;
-import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -19,10 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -81,16 +75,20 @@ public class ContestBoardServiceTest {
 
     @DisplayName("공모전 게시판의 목록을 조회한다.")
     @Test
-    public void getBoardList() {
+    public void getContestBoardList() {
         //given
-        PageRequest pageable = PageRequest.of(0,10, Sort.Direction.ASC, "created");
+        Pageable pageable = PageRequest.of(0,10, Sort.Direction.DESC, "deadline");
 
-        ListContestBoardDto contestBoardDto1 = new ListContestBoardDto("title1", "contents1", LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29));
-        ListContestBoardDto contestBoardDto2 = new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29));
+        ListContestBoardDto contestBoardDto1 = new ListContestBoardDto("title1", "contents1", LocalDate.of(2022,01,01), LocalDate.of(2022, 03, 4));
+        ListContestBoardDto contestBoardDto2 = new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,01,01), LocalDate.of(2022, 05, 28));
+        ListContestBoardDto contestBoardDto3 = new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,01,01), LocalDate.of(2022, 02, 20));
 
         List<ListContestBoardDto> results = new ArrayList<>();
+        results.add(contestBoardDto3);
         results.add(contestBoardDto1);
         results.add(contestBoardDto2);
+
+
         Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
 
         given(contestBoardRepository.findAllByMenuId(any(), any())).willReturn(expectedContestBoardDto);
@@ -99,8 +97,8 @@ public class ContestBoardServiceTest {
         Page<ListContestBoardDto> returnedBoardList = contestBoardService.getBoardList(1, pageable);
 
         //then
-        then(contestBoardRepository).should(times(1)).findAllByMenuId(any(), any());
         assertThat(returnedBoardList).isEqualTo(expectedContestBoardDto);
+
     }
 
     @DisplayName("공모전 게시글 단일 조회에 성공한다.")
@@ -118,9 +116,9 @@ public class ContestBoardServiceTest {
     }
 
 
-    @DisplayName("게시글을 성공적으로 삭제한다.")
+    @DisplayName("공모전 게시글을 성공적으로 삭제한다.")
     @Test
-    public void deleteBoard() {
+    public void deleteContestBoard() {
         //given
         doNothing().when(contestBoardRepository).deleteById(any());
 
@@ -131,16 +129,14 @@ public class ContestBoardServiceTest {
         then(contestBoardRepository).should(times(1)).deleteById(any());
     }
 
-    @DisplayName("게시글을 수정한다.")
+    @DisplayName("공모전 게시글을 수정한다.")
     @Test
-    public void updateBoard() {
+    public void updateContestBoard() {
         //given
-        Integer boardId = 1;
         Member writer = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
-        ContestBoard expectedContestBoard = new ContestBoard(1, "title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
-        expectedContestBoard.writtenBy(writer);
+        ContestBoard expectedContestBoard = new ContestBoard(1, "title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) )
+                .writtenBy(writer);
 
-        given(contestBoardRepository.findById(boardId)).willReturn(Optional.of(expectedContestBoard));
         given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
 
         UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
@@ -153,6 +149,4 @@ public class ContestBoardServiceTest {
         assertThat(returnedId).isNotNull();
         assertThat(returnedId).isEqualTo(expectedContestBoard.getId());
     }
-
-
 }
