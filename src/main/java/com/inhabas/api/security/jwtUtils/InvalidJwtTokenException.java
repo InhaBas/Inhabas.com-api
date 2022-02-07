@@ -1,8 +1,10 @@
 package com.inhabas.api.security.jwtUtils;
 
-public class InvalidJwtTokenException extends RuntimeException {
+import org.springframework.security.core.AuthenticationException;
 
-    private static final String defaultMessage = "Invalid jwt token! Maybe jwt token signature had been corrupted!";
+public class InvalidJwtTokenException extends AuthenticationException {
+
+    private static final String defaultMessage = "Invalid jwt token! corrupted signature or expired token";
 
     public InvalidJwtTokenException() {
         super(defaultMessage);

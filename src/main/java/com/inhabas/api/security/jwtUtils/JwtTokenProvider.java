@@ -61,25 +61,23 @@ public class JwtTokenProvider {
 
     /* web request 에 대한 인증 정보를 반환함. */
     @SuppressWarnings("unchecked")
-    public JwtTokenDecodedInfo authenticate(String token) throws InvalidJwtTokenException {
-        if (validateToken(token)) {
-            Claims claims = this.parseClaims(token);
-            Integer userId = Integer.parseInt(claims.getSubject());
-            String role = (String) claims.get(ROLE);
-            List<String> teams = (ArrayList<String>) claims.get(TEAM);
+    public JwtTokenDecodedInfo authenticate(String token) {
 
-            Set<GrantedAuthority> totalGrantedAuthorities = new HashSet<>();
-            totalGrantedAuthorities.add(new SimpleGrantedAuthority(role));
-            if (teams != null) {
-                teams.forEach(
-                        teamAuthority -> totalGrantedAuthorities.add(new SimpleGrantedAuthority(teamAuthority)));
-            }
+        validateToken(token); // if not valid, it will throw jwtException
 
-            return new JwtTokenDecodedInfo(userId, totalGrantedAuthorities);
+        Claims claims = this.parseClaims(token);
+        Integer userId = Integer.parseInt(claims.getSubject());
+        String role = (String) claims.get(ROLE);
+        List<String> teams = (ArrayList<String>) claims.get(TEAM);
+
+        Set<GrantedAuthority> totalGrantedAuthorities = new HashSet<>();
+        totalGrantedAuthorities.add(new SimpleGrantedAuthority(role));
+        if (teams != null) {
+            teams.forEach(
+                    teamAuthority -> totalGrantedAuthorities.add(new SimpleGrantedAuthority(teamAuthority)));
         }
-        else {
-            throw new InvalidJwtTokenException();
-        }
+
+        return new JwtTokenDecodedInfo(userId, totalGrantedAuthorities);
     }
 
     /* request 헤더에 담긴 access 토큰을 가져옴. */
@@ -95,22 +93,16 @@ public class JwtTokenProvider {
 
     /* The key from before is being used to validate the signature of the JWT.
      * If it fails to verify the JWT, a SignatureException (which extends from JwtException) is thrown. */
-    public boolean validateToken(String token) {
-        boolean result = false;
+    public void validateToken(String token) {
 
-        if (!StringUtils.hasText(token)) {
-            log.debug("jwt token cannot be null!");
-            return false;
-        }
+        assert StringUtils.hasText(token);
 
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            result = true;
         } catch (SignatureException | ExpiredJwtException e) {
             log.debug(e.getMessage());
+            throw new InvalidJwtTokenException();
         }
-
-        return result;
     }
 
     /* 토큰 body 에 넣어둔 사용자 정보를 가져옴

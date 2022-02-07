@@ -1,8 +1,5 @@
-package com.inhabas.api.security;
+package com.inhabas.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.inhabas.api.security.domain.RefreshToken;
 import com.inhabas.api.security.domain.RefreshTokenRepository;
 import com.inhabas.api.security.jwtUtils.JwtTokenDto;
@@ -17,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,7 +24,9 @@ public class LoginController {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @GetMapping("${login.success-url}")
+    /* token authentication */
+
+    @GetMapping("${authenticate.oauth2-success-handle-url}")
     @Operation(description = "로그인 성공하여 최종적으로 accessToken, refreshToken 을 발행한다.", hidden = true)
     public ResponseEntity<?> successLogin(HttpServletRequest request, Principal principal) {
 
@@ -54,12 +55,24 @@ public class LoginController {
         }
     }
 
-    @GetMapping("${login.failure-url}")
+    @GetMapping("${authenticate.invalid-jwt-token-handle-url}")
+    @Operation(description = "토큰 유효성 검사에 실패했다.", hidden = true)
+    public ResponseEntity<Map<String, String>> invalidToken() {
+        Map<String, String> message = new HashMap<>() {{
+            put("message","invalid_token");
+        }};
+        return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("${authenticate.oauth2-failure-handle-url}")
     @Operation(hidden = true)
     public ResponseEntity<?> failToLogin() {
 
         return new ResponseEntity<>("소셜로그인 실패", HttpStatus.UNAUTHORIZED);
     }
+
+
+    /* join new member */
 
     @PostMapping("/login/profile")
     @Operation(description = "회원가입 시 프로필을 저장한다.")

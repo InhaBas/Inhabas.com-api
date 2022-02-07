@@ -12,8 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@ConfigurationProperties("login")
-public class LoginUrlProperty {
-    private String successUrl;
-    private String failureUrl;
+@ConfigurationProperties("authenticate")
+public class AuthenticateEndPointUrlProperties {
+    private String oauth2SuccessHandleUrl;
+    private String oauth2FailureHandleUrl;
+    private String invalidJwtTokenHandleUrl;
+    private String reissueAccessTokenUrl;
 }

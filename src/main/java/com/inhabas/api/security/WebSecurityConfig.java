@@ -1,6 +1,7 @@
 package com.inhabas.api.security;
 
 import com.inhabas.api.security.domain.AuthUserService;
+import com.inhabas.api.security.jwtUtils.InvalidJwtTokenHandler;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationProcessingFilter;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.oauth2.CustomAuthenticationFailureHandler;
@@ -20,37 +21,15 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 public class WebSecurityConfig {
 
-    @Order(2)
-    @EnableWebSecurity
-    @Profile({"local", "dev", "production"})
-    public static class OpenApi extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            // 공개된 api, 접근 수준이 가장 낮다.
-            http
-                    .httpBasic().disable()
-                    .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
-                    .csrf()
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .and()
-
-                    .authorizeRequests()
-                    .antMatchers("/login").permitAll();  // 개발 테스트용 임시 로그인 페이지
-        }
-    }
-
-
     @Order(0)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"local", "dev", "production"})
-    @EnableConfigurationProperties(LoginUrlProperty.class)
+    @EnableConfigurationProperties(AuthenticateEndPointUrlProperties.class)
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final CustomOAuth2UserService customOAuth2UserService;
-        private final LoginUrlProperty loginUrlProperty;
+        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -77,21 +56,42 @@ public class WebSecurityConfig {
                         .and()
                     .oauth2Login(oauth2Login ->
                             oauth2Login
-                                    .failureHandler(new CustomAuthenticationFailureHandler(loginUrlProperty.getFailureUrl()))
-                                    .successHandler(new CustomAuthenticationSuccessHandler(loginUrlProperty.getSuccessUrl()))
+                                    .failureHandler(new CustomAuthenticationFailureHandler(authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()))
+                                    .successHandler(new CustomAuthenticationSuccessHandler(authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl()))
                                     .userInfoEndpoint().userService(customOAuth2UserService).and()
                                     .authorizationEndpoint().baseUri("/login/oauth2/authorization"))
                     .authorizeRequests(request ->
                             request.antMatchers(
-                                        loginUrlProperty.getSuccessUrl(),
-                                        loginUrlProperty.getFailureUrl()).hasRole("USER")
+                                        authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
+                                        authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
                     );
-
         }
     }
 
     @Order(1)
+    @EnableWebSecurity
+    @Profile({"local", "dev", "production"})
+    public static class OpenApi extends WebSecurityConfigurerAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            // 공개된 api, 접근 수준이 가장 낮다.
+            http
+                    .antMatcher("/jwt/**")
+                    .httpBasic().disable()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .and()
+
+                    .authorizeRequests()
+                    .antMatchers("/jwt/**").permitAll();
+        }
+    }
+
+    @Order(2)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"local", "dev", "production"})
@@ -99,6 +99,7 @@ public class WebSecurityConfig {
 
         private final JwtTokenProvider jwtTokenProvider;
         private final AuthUserService authUserService;
+        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -110,7 +111,11 @@ public class WebSecurityConfig {
                     .csrf()
                         .disable()
 
-                    .addFilterAfter(new JwtAuthenticationProcessingFilter(authUserService, jwtTokenProvider), LogoutFilter.class)
+                    .addFilterAfter(new JwtAuthenticationProcessingFilter(
+                            authUserService,
+                            jwtTokenProvider,
+                            new InvalidJwtTokenHandler(authenticateEndPointUrlProperties.getInvalidJwtTokenHandleUrl())), LogoutFilter.class
+                    )
 
                     .authorizeRequests()
                     .anyRequest().hasRole("MEMBER");
