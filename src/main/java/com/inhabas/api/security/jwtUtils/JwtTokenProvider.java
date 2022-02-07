@@ -44,12 +44,12 @@ public class JwtTokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + refreshTokenValidMilliSecond))
-                .signWith(secretKey)
-                .compact();
+                    .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                    .setClaims(claims)
+                    .setIssuedAt(now)
+                    .setExpiration(new Date(now.getTime() + refreshTokenValidMilliSecond))
+                    .signWith(secretKey)
+                    .compact();
 
         return JwtTokenDto.builder()
                 .grantType("Bearer")
@@ -106,9 +106,34 @@ public class JwtTokenProvider {
     }
 
     /* 토큰 body 에 넣어둔 사용자 정보를 가져옴
-     * signature validation 검사를 먼저 꼭 해야함! */
+     * validation 검사를 먼저 꼭 해야함! */
     private Claims parseClaims(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     }
 
+
+    public JwtTokenDto reissueAccessTokenUsing(String refreshToken) {
+        Claims claims = this.parseClaims(refreshToken);
+
+        return this.createAccessTokenOnly(claims);
+    }
+
+    private JwtTokenDto createAccessTokenOnly(Claims claims) {
+        Date now = new Date();
+
+        String accessToken = Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + accessTokenValidMilliSecond))
+                .signWith(secretKey)
+                .compact();
+
+        return JwtTokenDto.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken("")
+                .accessTokenExpireDate(accessTokenValidMilliSecond)
+                .build();
+    }
 }

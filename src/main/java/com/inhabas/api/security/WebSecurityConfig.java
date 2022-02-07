@@ -82,12 +82,10 @@ public class WebSecurityConfig {
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
-                    .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .and()
+                    .csrf().disable()
 
                     .authorizeRequests()
-                    .antMatchers("/jwt/**").permitAll();
+                    .anyRequest().permitAll();
         }
     }
 
