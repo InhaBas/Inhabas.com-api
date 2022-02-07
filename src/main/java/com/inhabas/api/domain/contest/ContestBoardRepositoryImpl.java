@@ -72,6 +72,9 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             break;
                     }
             }
+        } else {
+            OrderSpecifier<?> orderDeadline = getSortedColumn(Order.DESC, contestBoard, "deadline");
+            ORDERS.add(orderDeadline);
         }
         return ORDERS;
     }

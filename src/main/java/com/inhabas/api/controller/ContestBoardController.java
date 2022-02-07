@@ -28,7 +28,7 @@ public class ContestBoardController {
 
     @Operation(description = "공모전 게시판의 모든 게시글 조회")
     @GetMapping("all")
-    public Page<ListContestBoardDto> getBoardList(Integer menuId, Pageable pageable) {
+    public Page<ListContestBoardDto> getBoardList(@RequestParam Integer menuId, Pageable pageable) {
         return boardService.getBoardList(menuId, pageable);
     }
 

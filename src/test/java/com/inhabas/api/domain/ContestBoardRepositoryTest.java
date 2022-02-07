@@ -10,6 +10,7 @@ import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +21,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -81,19 +84,12 @@ public class ContestBoardRepositoryTest {
 
         // when
         Optional<DetailContestBoardDto> returnedDto = contestBoardRepository.findDtoById(savedContestBoard.getId());
-        System.out.println("Here it is!" + savedContestBoard.getId());
 
         // then
-        assertAll(
-                () -> assertEquals(expectedDto.getId(), returnedDto.get().getId()),
-                () -> assertEquals(expectedDto.getWriterName(), returnedDto.get().getWriterName()),
-                () -> assertEquals(expectedDto.getTitle(), returnedDto.get().getTitle()),
-                () -> assertEquals(expectedDto.getContents(), returnedDto.get().getContents()),
-                () -> assertEquals(expectedDto.getAssociation(), returnedDto.get().getAssociation()),
-                () -> assertEquals(expectedDto.getTopic(), returnedDto.get().getTopic()),
-                () -> assertEquals(expectedDto.getStart(), returnedDto.get().getStart()),
-                () -> assertEquals(expectedDto.getDeadline(), returnedDto.get().getDeadline())
-        );
+        assertThat(expectedDto)
+                .usingRecursiveComparison()
+                .ignoringFields("created", "updated")
+                        .isEqualTo(returnedDto.get());
     }
 
     @DisplayName("특정 menuId를 기준으로 모든 게시글 Dto를 조회해 Page 객체를 반환한다.")
@@ -115,11 +111,6 @@ public class ContestBoardRepositoryTest {
         List<ListContestBoardDto> returnedDtoList = contestBoardRepository.findAllByMenuId(menu.getId(), pageable).getContent();
 
         // then
-        for(int i =0 ; i < returnedDtoList.size(); i++){
-            assertEquals(returnedDtoList.get(i).getTitle(), expectedDtoList.get(i).getTitle());
-            assertEquals(returnedDtoList.get(i).getTopic(), expectedDtoList.get(i).getTopic());
-            assertEquals(returnedDtoList.get(i).getStart(), expectedDtoList.get(i).getStart());
-            assertEquals(returnedDtoList.get(i).getDeadline(), expectedDtoList.get(i).getDeadline());
-        }
+        assertThat(returnedDtoList).usingRecursiveFieldByFieldElementComparator().isEqualTo(expectedDtoList);
     }
 }

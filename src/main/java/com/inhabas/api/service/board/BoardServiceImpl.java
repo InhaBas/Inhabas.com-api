@@ -42,7 +42,6 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public Integer update(UpdateBoardDto updateBoardDto) {
         NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
-//        NormalBoard entity = boardRepository.findById(updateBoardDto.getId()).orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
         return boardRepository.save(entity).getId();
     }
 
