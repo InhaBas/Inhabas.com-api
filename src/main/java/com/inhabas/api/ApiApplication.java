@@ -12,5 +12,4 @@ public class ApiApplication {
 		app.addListeners(new ApplicationPidFileWriter());
 		app.run(args);
 	}
-
 }

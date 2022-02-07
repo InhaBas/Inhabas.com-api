@@ -132,11 +132,9 @@ public class BoardServiceTest {
     @Test
     public void updateBoard() {
         //given
-        Integer boardId = 1;
         Member entityMember = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
         NormalBoard entityNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
 
-        given(boardRepository.findById(boardId)).willReturn(Optional.of(entityNormalBoard));
         given(boardRepository.save(any())).willReturn(entityNormalBoard);
 
         UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
