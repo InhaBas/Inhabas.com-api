@@ -23,9 +23,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final AuthUserService authUserService;
 
-    private final JwtTokenProvider jwtTokenProvider;
-
     private final AuthenticationFailureHandler failureHandler;
+
+    private final TokenProvider tokenProvider;
 
     private AuthenticationSuccessHandler successHandler; // this is not necessary, for future usage
 
@@ -33,28 +33,27 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * JwtAuthenticationProcessingFilter is required these fields.
      * you can modify this filter's functionality by changing these fields.
      * @param authUserService Check whether request-user exist our database or not.
-     * @param jwtTokenProvider Authenticate jwt token.
      * @param failureHandler In the case of the invalid jwt token,
      *                       default behavior is just to redirect to controller to response "Invalid_Token" error.
      */
     public JwtAuthenticationProcessingFilter(AuthUserService authUserService,
-                                             JwtTokenProvider jwtTokenProvider,
+                                             TokenProvider tokenProvider,
                                              AuthenticationFailureHandler failureHandler) {
         this.authUserService = authUserService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.failureHandler = failureHandler;
+        this.tokenProvider = tokenProvider;
     }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtTokenProvider.resolveToken(request);
+        String token = tokenProvider.resolveToken(request);
 
         if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             try {
-                JwtTokenDecodedInfo decodedInfo = jwtTokenProvider.authenticate(token);
+                JwtTokenDecodedInfo decodedInfo = (JwtTokenDecodedInfo) tokenProvider.authenticate(token);
                 AuthUser authUser = authUserService.loadUser(decodedInfo.getAuthUserId());
                 JwtAuthenticationToken authentication = new JwtAuthenticationToken(authUser, decodedInfo.getGrantedAuthorities());
 

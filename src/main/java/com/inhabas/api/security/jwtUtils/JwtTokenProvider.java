@@ -2,8 +2,6 @@ package com.inhabas.api.security.jwtUtils;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,8 +14,7 @@ import java.util.*;
 // https://github.com/jwtk/jjwt
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class JwtTokenProvider {
+public class JwtTokenProvider implements TokenProvider {
 
     // spring boot 가 실행될 때마다 secretKey 가 매번 달라짐.
     private static final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
@@ -27,7 +24,10 @@ public class JwtTokenProvider {
     private static final String ROLE = "role";
     private static final String TEAM = "teams";
 
-    public JwtTokenDto createJwtToken(Integer authUserId, String role, Set<String> teams) {
+    @Override
+    public TokenDto createJwtToken(Integer authUserId, String role, Set<String> teams) {
+        assert Objects.nonNull(authUserId);
+        assert StringUtils.hasText(role);
 
         Claims claims = Jwts.claims().setSubject(String.valueOf(authUserId));
         claims.put(ROLE, role);
@@ -51,7 +51,7 @@ public class JwtTokenProvider {
                     .signWith(secretKey)
                     .compact();
 
-        return JwtTokenDto.builder()
+        return TokenDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -60,8 +60,9 @@ public class JwtTokenProvider {
     }
 
     /* web request 에 대한 인증 정보를 반환함. */
+    @Override
     @SuppressWarnings("unchecked")
-    public JwtTokenDecodedInfo authenticate(String token) {
+    public JwtTokenDecodedInfo authenticate(String token) throws JwtException {
 
         validateToken(token); // if not valid, it will throw jwtException
 
@@ -81,6 +82,7 @@ public class JwtTokenProvider {
     }
 
     /* request 헤더에 담긴 access 토큰을 가져옴. */
+    @Override
     public String resolveToken(HttpServletRequest request) {
 
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
@@ -93,13 +95,13 @@ public class JwtTokenProvider {
 
     /* The key from before is being used to validate the signature of the JWT.
      * If it fails to verify the JWT, a SignatureException (which extends from JwtException) is thrown. */
-    public void validateToken(String token) {
+    private void validateToken(String token) {
 
         assert StringUtils.hasText(token);
 
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-        } catch (SignatureException | ExpiredJwtException e) {
+        } catch (JwtException e) {
             log.debug(e.getMessage());
             throw new InvalidJwtTokenException();
         }
@@ -107,18 +109,24 @@ public class JwtTokenProvider {
 
     /* 토큰 body 에 넣어둔 사용자 정보를 가져옴
      * validation 검사를 먼저 꼭 해야함! */
-    private Claims parseClaims(String token) {
+    private Claims parseClaims(String token) throws JwtException {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     }
 
+    @Override
+    public TokenDto reissueAccessTokenUsing(String refreshToken) throws InvalidJwtTokenException {
 
-    public JwtTokenDto reissueAccessTokenUsing(String refreshToken) {
-        Claims claims = this.parseClaims(refreshToken);
+        try {
+            Claims claims = this.parseClaims(refreshToken);
+            return this.createAccessTokenOnly(claims);
 
-        return this.createAccessTokenOnly(claims);
+        } catch (JwtException e) {
+            throw new InvalidJwtTokenException();
+        }
     }
 
-    private JwtTokenDto createAccessTokenOnly(Claims claims) {
+
+    private TokenDto createAccessTokenOnly(Claims claims) {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
@@ -129,7 +137,7 @@ public class JwtTokenProvider {
                 .signWith(secretKey)
                 .compact();
 
-        return JwtTokenDto.builder()
+        return TokenDto.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken("")

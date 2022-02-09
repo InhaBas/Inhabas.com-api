@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class JwtTokenDto {
+public class TokenDto {
 
     private final String grantType;
     private final String accessToken;
@@ -12,7 +12,7 @@ public class JwtTokenDto {
     private final Long expiresIn;
 
     @Builder
-    public JwtTokenDto(String grantType, String accessToken, String refreshToken, Long accessTokenExpireDate) {
+    public TokenDto(String grantType, String accessToken, String refreshToken, Long accessTokenExpireDate) {
         this.grantType = grantType;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

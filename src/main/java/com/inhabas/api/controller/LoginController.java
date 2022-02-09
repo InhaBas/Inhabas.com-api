@@ -3,8 +3,8 @@ package com.inhabas.api.controller;
 import com.inhabas.api.security.domain.RefreshToken;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
-import com.inhabas.api.security.jwtUtils.JwtTokenDto;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.security.jwtUtils.TokenDto;
+import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ import java.util.Map;
 @RestController
 public class LoginController {
 
-    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final TokenProvider tokenProvider;
 
     /* token authentication */
 
@@ -43,7 +43,7 @@ public class LoginController {
             - role 은 (미승인회원, 일반회원, 교수, 회장단, 회장) 과 같이 수직구조의 권한 => 상대적으로 덜 변함. => enum 타입
             - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
             */
-            JwtTokenDto jwtToken = jwtTokenProvider.createJwtToken(authUserId, "ROLE_MEMBER", null);
+            TokenDto jwtToken = tokenProvider.createJwtToken(authUserId, "ROLE_MEMBER", null);
             refreshTokenService.save(new RefreshToken(jwtToken.getRefreshToken()));
 
             request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.
@@ -75,12 +75,12 @@ public class LoginController {
 
     @PostMapping("${authenticate.reissue-access-token-url}")
     @Operation(description = "access token 재발급을 요청한다.")
-    public ResponseEntity<JwtTokenDto> reissueAccessToken(HttpServletRequest request) {
-        String refreshToken = jwtTokenProvider.resolveToken(request);
+    public ResponseEntity<TokenDto> reissueAccessToken(HttpServletRequest request) {
+        String refreshToken = tokenProvider.resolveToken(request);
 
         try {
             if (refreshTokenService.DoesExist(refreshToken)) {
-                JwtTokenDto newAccessToken = jwtTokenProvider.reissueAccessTokenUsing(refreshToken);
+                TokenDto newAccessToken = tokenProvider.reissueAccessTokenUsing(refreshToken);
                 return ResponseEntity.ok(newAccessToken);
             }
             else {
