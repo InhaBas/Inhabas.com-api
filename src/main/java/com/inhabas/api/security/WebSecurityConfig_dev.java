@@ -19,12 +19,12 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 
-public class WebSecurityConfig {
+public class WebSecurityConfig_dev {
 
     @Order(0)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"local", "production"})
+    @Profile({"dev"})
     @EnableConfigurationProperties(AuthenticateEndPointUrlProperties.class)
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                     .csrf()
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .and()
+                    .cors().disable()
                     .oauth2Login(oauth2Login ->
                             oauth2Login
                                     .failureHandler(new CustomAuthenticationFailureHandler(authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()))
@@ -62,8 +63,8 @@ public class WebSecurityConfig {
                                     .authorizationEndpoint().baseUri("/login/oauth2/authorization"))
                     .authorizeRequests(request ->
                             request.antMatchers(
-                                        authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
-                                        authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
+                                            authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
+                                            authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
                     );
         }
@@ -71,7 +72,7 @@ public class WebSecurityConfig {
 
     @Order(1)
     @EnableWebSecurity
-    @Profile({"local", "production"})
+    @Profile({"dev"})
     public static class OpenApi extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -82,6 +83,7 @@ public class WebSecurityConfig {
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
+                    .cors().disable()
                     .csrf().disable()
 
                     .authorizeRequests()
@@ -92,7 +94,7 @@ public class WebSecurityConfig {
     @Order(2)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"local", "production"})
+    @Profile({"dev"})
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
@@ -103,11 +105,10 @@ public class WebSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
-
-                    .csrf()
-                        .disable()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
+                    .cors().disable()
+                    .csrf().disable()
 
                     .addFilterAfter(new JwtAuthenticationProcessingFilter(
                             authUserService,
@@ -121,3 +122,4 @@ public class WebSecurityConfig {
     }
 
 }
+
