@@ -8,7 +8,7 @@ import com.inhabas.api.security.oauth2.CustomAuthenticationFailureHandler;
 import com.inhabas.api.security.oauth2.CustomAuthenticationSuccessHandler;
 import com.inhabas.api.security.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,14 +18,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
-
 public class WebSecurityConfig_dev {
 
     @Order(0)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"dev"})
-    @EnableConfigurationProperties(AuthenticateEndPointUrlProperties.class)
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final CustomOAuth2UserService customOAuth2UserService;
@@ -54,7 +52,7 @@ public class WebSecurityConfig_dev {
                     .csrf()
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .and()
-                    .cors().disable()
+                    .cors().and()
                     .oauth2Login(oauth2Login ->
                             oauth2Login
                                     .failureHandler(new CustomAuthenticationFailureHandler(authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()))
@@ -62,36 +60,18 @@ public class WebSecurityConfig_dev {
                                     .userInfoEndpoint().userService(customOAuth2UserService).and()
                                     .authorizationEndpoint().baseUri("/login/oauth2/authorization"))
                     .authorizeRequests(request ->
-                            request.antMatchers(
+                            request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                                    .antMatchers(
                                             authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
                                             authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
                     );
         }
+
+
     }
 
     @Order(1)
-    @EnableWebSecurity
-    @Profile({"dev"})
-    public static class OpenApi extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            // 공개된 api, 접근 수준이 가장 낮다.
-            http
-                    .antMatcher("/jwt/**")
-                    .httpBasic().disable()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .cors().disable()
-                    .csrf().disable()
-
-                    .authorizeRequests()
-                    .anyRequest().permitAll();
-        }
-    }
-
-    @Order(2)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"dev"})
@@ -104,10 +84,11 @@ public class WebSecurityConfig_dev {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
+                    .httpBasic().disable()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
-                    .cors().disable()
+                    .cors().and()
                     .csrf().disable()
 
                     .addFilterAfter(new JwtAuthenticationProcessingFilter(
@@ -117,9 +98,11 @@ public class WebSecurityConfig_dev {
                     )
 
                     .authorizeRequests()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
                     .anyRequest().hasRole("MEMBER");
         }
-    }
 
+    }
 }
 

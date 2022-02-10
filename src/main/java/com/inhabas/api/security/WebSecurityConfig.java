@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.cors.CorsUtils;
 
 
 public class WebSecurityConfig {
@@ -25,7 +26,6 @@ public class WebSecurityConfig {
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"local", "production"})
-    @EnableConfigurationProperties(AuthenticateEndPointUrlProperties.class)
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final CustomOAuth2UserService customOAuth2UserService;
@@ -61,7 +61,8 @@ public class WebSecurityConfig {
                                     .userInfoEndpoint().userService(customOAuth2UserService).and()
                                     .authorizationEndpoint().baseUri("/login/oauth2/authorization"))
                     .authorizeRequests(request ->
-                            request.antMatchers(
+                            request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                                    .antMatchers(
                                         authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
                                         authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
@@ -70,26 +71,6 @@ public class WebSecurityConfig {
     }
 
     @Order(1)
-    @EnableWebSecurity
-    @Profile({"local", "production"})
-    public static class OpenApi extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            // 공개된 api, 접근 수준이 가장 낮다.
-            http
-                    .antMatcher("/jwt/**")
-                    .httpBasic().disable()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                    .csrf().disable()
-
-                    .authorizeRequests()
-                    .anyRequest().permitAll();
-        }
-    }
-
-    @Order(2)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"local", "production"})
@@ -102,6 +83,7 @@ public class WebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
+                    .httpBasic().disable()
                     .sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .and()
@@ -116,6 +98,8 @@ public class WebSecurityConfig {
                     )
 
                     .authorizeRequests()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    .antMatchers("/jwt/**").permitAll()
                     .anyRequest().hasRole("MEMBER");
         }
     }

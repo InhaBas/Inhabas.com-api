@@ -57,17 +57,17 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 AuthUser authUser = authUserService.loadUser(decodedInfo.getAuthUserId());
                 JwtAuthenticationToken authentication = new JwtAuthenticationToken(authUser, decodedInfo.getGrantedAuthorities());
 
-                // Authentication success
+                // Authentication success redirection
                 successfulAuthentication(request, response, filterChain, authentication);
 
-                // keep going to process client's request
-                filterChain.doFilter(request, response);
-
             } catch (InvalidJwtTokenException e) {
-                // Authentication failed
+                // Authentication failed redirection
                 this.unsuccessfulAuthentication(request, response, e);
             }
         }
+
+        // If client doesn't have any token, keep going to process client's request
+        filterChain.doFilter(request, response);
     }
 
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
