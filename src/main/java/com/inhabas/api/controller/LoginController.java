@@ -14,6 +14,9 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.http.HttpClient;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +32,11 @@ public class LoginController {
 
     @GetMapping("${authenticate.oauth2-success-handle-url}")
     @Operation(description = "로그인 성공하여 최종적으로 accessToken, refreshToken 을 발행한다.", hidden = true)
-    public ResponseEntity<?> successLogin(HttpServletRequest request, Principal principal) {
+    public void successLogin(HttpServletRequest request, HttpServletResponse response, Principal principal) throws IOException {
 
         OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) principal;
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        String host = request.getRemoteHost();
 
         boolean alreadyJoined = oAuth2User.isAlreadyJoined();
         Integer authUserId = oAuth2User.getAuthUserId();
@@ -48,10 +52,13 @@ public class LoginController {
 
             request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.
 
-            return ResponseEntity.ok(jwtToken);
+            response.sendRedirect(String.format("%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d",
+                    host, jwtToken.getAccessToken(), jwtToken.getRefreshToken(), jwtToken.getExpiresIn()));
         }
         else {
-            return new ResponseEntity<>("회원가입 해야됨.", HttpStatus.UNAUTHORIZED);
+            String provider = ((OAuth2AuthenticationToken) principal).getAuthorizedClientRegistrationId();
+            String email = principal.getName();
+            response.sendRedirect(String.format("%s/signUp?provider=%s&email=%s", host, provider, email));
         }
     }
 
