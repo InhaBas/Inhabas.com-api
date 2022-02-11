@@ -95,7 +95,7 @@ public class LoginController {
 
         url.append(scheme);
         url.append("://");
-        url.append(request.getServerName());
+        url.append(request.getRemoteHost()); // 배포시에는 getServerName 사용해야함
         if ((scheme.equals("http") && (port != 80))
                 || (scheme.equals("https") && (port != 443))) {
             url.append(':');
