@@ -1,5 +1,6 @@
 package com.inhabas.api.security;
 
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.InvalidJwtTokenHandler;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationProcessingFilter;
@@ -101,7 +102,8 @@ public class WebSecurityConfig_dev {
                     .authorizeRequests()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
-                    .anyRequest().hasRole("MEMBER");
+                    .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                    .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
 
     }
