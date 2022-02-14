@@ -5,6 +5,9 @@ import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.service.member.DuplicatedMemberFieldException;
+import com.inhabas.api.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +25,7 @@ import static com.inhabas.api.domain.MemberTest.MEMBER2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+@DefaultDataJpaTest
 public class MemberRepositoryTest {
 
     @Autowired
