@@ -1,16 +1,20 @@
 package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.dto.signUp.StudentSignUpForm;
+import com.inhabas.api.security.domain.AuthUser;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
-    public Optional<Member> join(Member member);
+    Member signUp(AuthUser authUser, StudentSignUpForm signUpForm);
 
-    public List<Member> findMembers();
+    StudentSignUpForm loadSignUpForm(Integer memberId, String email);
 
-    public Optional<Member> findOne(Integer memberId);
+    List<Member> findMembers();
 
-    public Optional<Member> updateMember(Member member);
+    Optional<Member> findById(Integer memberId);
+
+    Optional<Member> updateMember(Member member);
 }

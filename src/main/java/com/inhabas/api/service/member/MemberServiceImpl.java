@@ -1,50 +1,94 @@
 package com.inhabas.api.service.member;
 
+import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.signUp.StudentSignUpForm;
+import com.inhabas.api.security.domain.AuthUser;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
-    @Autowired
-    public MemberServiceImpl(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    @Override
+    @Transactional
+    public Member signUp(AuthUser authUser, StudentSignUpForm signUpForm) {
+        IbasInformation ibasInformation = new IbasInformation(getDefaultRole(signUpForm.isProfessor()), "", 0);
+        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
+        Member member = Member.builder()
+                .id(signUpForm.getStudentId())
+                .name(signUpForm.getName())
+                .phone(signUpForm.getPhoneNumber())
+                .ibasInformation(ibasInformation)
+                .schoolInformation(schoolInformation)
+                .build();
+
+        checkDuplicatedStudentId(signUpForm);
+
+        try {
+            Member save = memberRepository.save(member);
+            authUser.addProfile(save);
+            return save;
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedMemberFieldException("전화번호");
+        }
+    }
+
+    private void checkDuplicatedStudentId(StudentSignUpForm signUpForm) {
+        memberRepository.findById(signUpForm.getStudentId()).ifPresent(__ -> {
+            throw new DuplicatedMemberFieldException("학번");
+        });
+    }
+
+    private Role getDefaultRole(boolean isProfessor) {
+            return isProfessor ? Role.PROFESSOR : Role.ANONYMOUS;
     }
 
     @Override
-    public Optional<Member> join(Member member) {
-        validateDuplicateMember(member);
-        return Optional.of(memberRepository.save(member));
-    }
+    @Transactional(readOnly = true)
+    public StudentSignUpForm loadSignUpForm(Integer memberId, String email) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotExistException::new);
 
-    private void validateDuplicateMember(Member member) {
-        memberRepository.findById(member.getId())
-                .ifPresent(__ -> { throw new EntityExistsException(); });
+        return StudentSignUpForm.builder()
+                .studentId(memberId)
+                .phoneNumber(member.getPhone())
+                .email(email)
+                .name(member.getName())
+                .major(member.getSchoolInformation().getMajor())
+                .grade(member.getSchoolInformation().getGrade())
+                .semester(member.getSchoolInformation().getGen())
+                .isProfessor(member.getIbasInformation().getRole() == Role.PROFESSOR)
+                .build();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }
 
     @Override
-    public Optional<Member> findOne(Integer id) {
+    @Transactional(readOnly = true)
+    public Optional<Member> findById(Integer id) {
         return memberRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public Optional<Member> updateMember(Member member) {
         return DoesExistMember(member) ?
                 Optional.of(memberRepository.save(member)) : Optional.empty();

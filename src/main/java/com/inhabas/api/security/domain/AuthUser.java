@@ -68,4 +68,8 @@ public class AuthUser {
     public boolean hasJoined() {
         return this.hasJoined;
     }
+
+    public void addProfile(Member member) {
+        this.profile = member;
+    }
 }
