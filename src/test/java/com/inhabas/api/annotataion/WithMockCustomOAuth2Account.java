@@ -11,7 +11,7 @@ import static java.lang.Integer.valueOf;
 @WithSecurityContext(factory = WithMockCustomOAuth2AccountSecurityContextFactory.class)
 public @interface WithMockCustomOAuth2Account {
 
-    String username() default "username";
+    String name() default "username";
 
     String role() default "USER";
 

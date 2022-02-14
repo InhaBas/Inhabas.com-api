@@ -19,7 +19,7 @@ public class WithMockCustomOAuth2AccountSecurityContextFactory
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         HashMap<String, Object> attributes = new HashMap<>();
-        attributes.put("username", customOAuth2Account.username());
+        attributes.put("username", customOAuth2Account.name());
         attributes.put("email", customOAuth2Account.email());
         attributes.put("picture", customOAuth2Account.picture());
         attributes.put("role", customOAuth2Account.role());

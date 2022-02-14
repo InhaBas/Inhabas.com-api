@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -64,12 +65,7 @@ public class BoardControllerTest {
         mvc = MockMvcBuilders
                 .standaloneSetup(boardController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setViewResolvers(new ViewResolver() {
-                    @Override
-                    public View resolveViewName(String viewName, Locale locale) throws Exception {
-                        return new MappingJackson2JsonView();
-                    }
-                })
+                .setViewResolvers((viewName, locale) -> new MappingJackson2JsonView())
                 .build();
     }
 
@@ -174,12 +170,14 @@ public class BoardControllerTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
 
         // when
-        String errorMessage = mvc.perform(post("/board")
+        String errorMessage = Objects.requireNonNull(
+                mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
-                .getResolvedException().getMessage();
+                .getResolvedException())
+                .getMessage();
 
         // then
         assertThat(errorMessage).isNotBlank();
@@ -193,12 +191,14 @@ public class BoardControllerTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1, 12201863);
 
         // when
-        String errorMessage = mvc.perform(post("/board")
+        String errorMessage = Objects.requireNonNull(
+                mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
-                .getResolvedException().getMessage();
+                .getResolvedException())
+                .getMessage();
 
         // then
         assertThat(errorMessage).isNotBlank();
