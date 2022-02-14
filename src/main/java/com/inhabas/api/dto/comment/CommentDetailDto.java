@@ -33,12 +33,12 @@ public class CommentDetailDto {
         );
     }
 
-    public CommentDetailDto(Integer id, String contents, Integer memberId, String memberName, Major major, LocalDateTime created) {
+    public CommentDetailDto(Integer id, String contents, Integer memberId, String memberName, String major, LocalDateTime created) {
         this.id = id;
         this.contents = contents;
         this.writerId = memberId;
         this.writerName = memberName;
-        this.writerMajor = major;
+        this.writerMajor = new Major(major);
         this.created = created;
         this.children = new ArrayList<>();
     }

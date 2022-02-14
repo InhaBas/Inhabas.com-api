@@ -1,7 +1,6 @@
 package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.api.dto.comment.CommentSaveDto;
 import com.inhabas.api.dto.comment.CommentUpdateDto;
@@ -58,9 +57,9 @@ public class CommentControllerTest {
     void getCommentList() throws Exception {
         //given
         List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
-                new CommentDetailDto(1, "contents1", 12171652, "유동현", Major.간호학과, LocalDateTime.now()),
-                new CommentDetailDto(2, "contents2", 12171652, "유동현", Major.간호학과, LocalDateTime.now()),
-                new CommentDetailDto(3, "contents3", 12171652, "유동현", Major.간호학과, LocalDateTime.now())
+                new CommentDetailDto(1, "contents1", 12171652, "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(2, "contents2", 12171652, "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(3, "contents3", 12171652, "유동현", "간호학과", LocalDateTime.now())
         });
         given(commentService.getComments(anyInt())).willReturn(commentList);
 

@@ -33,6 +33,7 @@ public class Member {
     @Embedded
     private IbasInformation ibasInformation;
 
+    @Builder
     public Member(Integer id, String name, String phone, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
         this.name = new Name(name);
