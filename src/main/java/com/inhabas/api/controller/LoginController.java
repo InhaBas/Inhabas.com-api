@@ -2,7 +2,6 @@ package com.inhabas.api.controller;
 
 import com.inhabas.api.security.domain.RefreshToken;
 import com.inhabas.api.security.domain.RefreshTokenService;
-import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
 import com.inhabas.api.security.jwtUtils.TokenDto;
 import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
@@ -12,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;

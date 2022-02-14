@@ -4,10 +4,10 @@ import com.inhabas.api.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.jwtUtils.TokenDto;
+import com.inhabas.api.testConfig.DefaultWebMvcTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LoginController.class)
+@DefaultWebMvcTest(LoginController.class)
 public class LoginControllerTest {
 
     @Autowired

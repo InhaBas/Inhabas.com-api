@@ -6,11 +6,11 @@ import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.api.dto.comment.CommentSaveDto;
 import com.inhabas.api.dto.comment.CommentUpdateDto;
 import com.inhabas.api.service.comment.CommentServiceImpl;
+import com.inhabas.api.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(CommentController.class)
+@DefaultWebMvcTest(CommentController.class)
 public class CommentControllerTest {
 
     private MockMvc mockMvc;
