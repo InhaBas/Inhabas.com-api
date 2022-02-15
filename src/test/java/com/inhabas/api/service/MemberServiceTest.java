@@ -5,8 +5,8 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.DetailSignUpForm;
-import com.inhabas.api.dto.signUp.StudentSignUpForm;
+import com.inhabas.api.dto.signUp.DetailSignUpDto;
+import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
 import com.inhabas.api.service.member.MemberServiceImpl;
@@ -44,7 +44,7 @@ public class MemberServiceTest {
     @Test
     public void 회원가입() {
         //given
-        StudentSignUpForm signUpForm = StudentSignUpForm.builder()
+        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
                 .grade(3)
                 .semester(2)
@@ -91,7 +91,7 @@ public class MemberServiceTest {
         ReflectionTestUtils.setField(currentSignUpUser, "id", 1);
 
         //when
-        StudentSignUpForm signUpForm = StudentSignUpForm.builder()
+        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
                 .grade(3)
                 .semester(2)
@@ -117,7 +117,7 @@ public class MemberServiceTest {
                 .willThrow(DataIntegrityViolationException.class);
 
         //when
-        StudentSignUpForm signUpForm = StudentSignUpForm.builder()
+        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
                 .grade(3)
                 .semester(2)
@@ -149,14 +149,14 @@ public class MemberServiceTest {
         given(memberService.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
         //when
-        DetailSignUpForm savedForm = memberService.loadSignUpForm(studentId, email);
+        DetailSignUpDto savedForm = memberService.loadSignUpForm(studentId, email);
 
         //then
         then(memberRepository).should(times(1)).findById(anyInt());
         assertThat(savedForm)
                 .usingRecursiveComparison()
-                .isEqualTo(StudentSignUpForm.builder()
-                        .studentId(studentId)
+                .isEqualTo(DetailSignUpDto.builder()
+                        .memberId(studentId)
                         .email(email)
                         .grade(3)
                         .semester(1)

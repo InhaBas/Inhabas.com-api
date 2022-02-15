@@ -5,8 +5,8 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.DetailSignUpForm;
-import com.inhabas.api.dto.signUp.StudentSignUpForm;
+import com.inhabas.api.dto.signUp.DetailSignUpDto;
+import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.security.domain.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member signUp(AuthUser authUser, StudentSignUpForm signUpForm) {
+    public Member signUp(AuthUser authUser, StudentSignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(getDefaultRole(signUpForm.isProfessor()), "", 0);
         SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
         Member member = Member.builder()
@@ -48,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private void checkDuplicatedStudentId(StudentSignUpForm signUpForm) {
+    private void checkDuplicatedStudentId(StudentSignUpDto signUpForm) {
         memberRepository.findById(signUpForm.getStudentId()).ifPresent(__ -> {
             throw new DuplicatedMemberFieldException("학번");
         });
@@ -60,11 +60,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public DetailSignUpForm loadSignUpForm(Integer memberId, String email) {
+    public DetailSignUpDto loadSignUpForm(Integer memberId, String email) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotExistException::new);
 
-        return DetailSignUpForm.builder()
+        return DetailSignUpDto.builder()
                 .memberId(memberId)
                 .phoneNumber(member.getPhone())
                 .email(email)

@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
-public class StudentSignUpForm {
+public class StudentSignUpDto {
 
     @NotBlank
     @Length(max = 25)
@@ -40,7 +40,7 @@ public class StudentSignUpForm {
     private boolean isProfessor;
 
     @Builder
-    public StudentSignUpForm(String name, String major, String phoneNumber, String email, Integer studentId, Integer grade, Integer semester, boolean isProfessor) {
+    public StudentSignUpDto(String name, String major, String phoneNumber, String email, Integer studentId, Integer grade, Integer semester, boolean isProfessor) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;

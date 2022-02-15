@@ -48,7 +48,7 @@ public class LoginController {
             - role 은 (미승인회원, 일반회원, 교수, 회장단, 회장) 과 같이 수직구조의 권한 => 상대적으로 덜 변함. => enum 타입
             - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
             */
-            TokenDto jwtToken = tokenProvider.createJwtToken(oAuth2User.getAuthUserId(), "ROLE_MEMBER", null);
+            TokenDto jwtToken = tokenProvider.createJwtToken(oAuth2User.getAuthUserId(), "ROLE_MEMBER", null); // 변경해야함.
             refreshTokenService.save(new RefreshToken(jwtToken.getRefreshToken()));
 
             request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.

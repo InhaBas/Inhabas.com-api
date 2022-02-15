@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class DetailSignUpForm {
+public class DetailSignUpDto {
 
     private String name;
 
@@ -23,7 +23,7 @@ public class DetailSignUpForm {
     private boolean isProfessor;
 
     @Builder
-    public DetailSignUpForm(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester, boolean isProfessor) {
+    public DetailSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester, boolean isProfessor) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
