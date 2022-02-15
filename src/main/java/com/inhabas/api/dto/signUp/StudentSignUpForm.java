@@ -2,11 +2,13 @@ package com.inhabas.api.dto.signUp;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 
 @Data
+@NoArgsConstructor
 public class StudentSignUpForm {
 
     @NotBlank

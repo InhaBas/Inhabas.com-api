@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.dto.signUp.DetailSignUpForm;
 import com.inhabas.api.dto.signUp.StudentSignUpForm;
 import com.inhabas.api.security.argumentResolver.AuthenticatedAuthUser;
 import com.inhabas.api.security.domain.AuthUser;
@@ -33,8 +34,8 @@ public class SignUpController {
 
     @GetMapping("/signUp/student")
     @Operation(description = "임시저장한 개인정보를 불러온다.")
-    public ResponseEntity<StudentSignUpForm> loadProfile(@AuthenticatedAuthUser AuthUser signUpUser) {
-        StudentSignUpForm form = memberService.loadSignUpForm(signUpUser.getProfile().getId(), signUpUser.getEmail());
+    public ResponseEntity<DetailSignUpForm> loadProfile(@AuthenticatedAuthUser AuthUser signUpUser) {
+        DetailSignUpForm form = memberService.loadSignUpForm(signUpUser.getProfile().getId(), signUpUser.getEmail());
 
         return ResponseEntity.ok(form);
     }

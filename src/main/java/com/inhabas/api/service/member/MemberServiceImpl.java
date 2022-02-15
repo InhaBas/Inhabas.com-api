@@ -5,6 +5,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.signUp.DetailSignUpForm;
 import com.inhabas.api.dto.signUp.StudentSignUpForm;
 import com.inhabas.api.security.domain.AuthUser;
 import lombok.RequiredArgsConstructor;
@@ -59,12 +60,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public StudentSignUpForm loadSignUpForm(Integer memberId, String email) {
+    public DetailSignUpForm loadSignUpForm(Integer memberId, String email) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotExistException::new);
 
-        return StudentSignUpForm.builder()
-                .studentId(memberId)
+        return DetailSignUpForm.builder()
+                .memberId(memberId)
                 .phoneNumber(member.getPhone())
                 .email(email)
                 .name(member.getName())

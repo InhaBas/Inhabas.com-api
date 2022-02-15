@@ -3,6 +3,7 @@ package com.inhabas.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.signUp.DetailSignUpForm;
 import com.inhabas.api.dto.signUp.StudentSignUpForm;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.testConfig.DefaultWebMvcTest;
@@ -58,13 +59,77 @@ public class SignUpControllerTest {
                 .andReturn();
     }
 
+    @DisplayName("개인정보를 빈칸으로 제출하면 안된다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 개인정보를_빈칸으로_제출하면_안된다() throws Exception {
+        //given
+        StudentSignUpForm signUpForm = StudentSignUpForm.builder()
+                .name("")
+                .grade(null)
+                .semester(null)
+                .email("")
+                .major("")
+                .phoneNumber("")
+                .studentId(null)
+                .isProfessor(false)
+                .build();
+
+        String response = mvc.perform(post("/signUp/student")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signUpForm)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(response).contains(
+                "[studentId](은)는 must not be null",
+                "[grade](은)는 must not be null",
+                "[name](은)는 must not be blank",
+                "[major](은)는 must not be blank",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
+                "[semester](은)는 must not be null");
+    }
+
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
+        //given
+        StudentSignUpForm signUpForm = StudentSignUpForm.builder()
+                .name("홍길동만세".repeat(5) + ".") // 25자까지만 가능
+                .grade(6) // 5학년까지만 가능
+                .semester(3) // 2학기가지만 가능
+                .email("") // 상관없음.
+                .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
+                .phoneNumber("8210-1111-1111")
+                .studentId(-1)
+                .isProfessor(false)
+                .build();
+
+        String response = mvc.perform(post("/signUp/student")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(signUpForm)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(response).contains(
+                "[semester](은)는 must be less than or equal to 2",
+                "[grade](은)는 must be less than or equal to 5",
+                "[name](은)는 length must be between 0 and 25",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
+                "[major](은)는 length must be between 0 and 15");
+    }
+
     @DisplayName("임시 저장했던 개인정보를 불러온다.")
     @Test
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
-        StudentSignUpForm expectedSavedForm = StudentSignUpForm.builder()
-                .studentId(12171652)
+        DetailSignUpForm expectedSavedForm = DetailSignUpForm.builder()
+                .memberId(12171652)
                 .name("홍길동")
                 .grade(1)
                 .semester(1)

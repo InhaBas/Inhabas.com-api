@@ -5,6 +5,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.signUp.DetailSignUpForm;
 import com.inhabas.api.dto.signUp.StudentSignUpForm;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
@@ -148,7 +149,7 @@ public class MemberServiceTest {
         given(memberService.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
         //when
-        StudentSignUpForm savedForm = memberService.loadSignUpForm(studentId, email);
+        DetailSignUpForm savedForm = memberService.loadSignUpForm(studentId, email);
 
         //then
         then(memberRepository).should(times(1)).findById(anyInt());
