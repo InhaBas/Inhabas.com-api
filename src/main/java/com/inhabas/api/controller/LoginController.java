@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.security.argumentResolver.Authenticated;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.RefreshToken;
@@ -30,6 +31,7 @@ public class LoginController {
 
     private final RefreshTokenService refreshTokenService;
     private final TokenProvider tokenProvider;
+    private final MemberService memberService;
 
     /* token authentication */
 
@@ -48,7 +50,11 @@ public class LoginController {
             - role 은 (미승인회원, 일반회원, 교수, 회장단, 회장) 과 같이 수직구조의 권한 => 상대적으로 덜 변함. => enum 타입
             - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
             */
-            TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), "ROLE_MEMBER", null); // 변경해야함.
+            Member member = memberService.findById(authUserDetail.getProfileId()); // 권한만 갖고 오도록 리팩토링 필요
+            String role = member.getIbasInformation().getRole().toString();
+            // List<String> teams = member.getIbasInformation().getTeams().stream().map(t-> t.toString()).collect(Collections.toCollect);
+
+            TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), role, null); // 변경해야함.
             refreshTokenService.save(new RefreshToken(jwtToken.getRefreshToken()));
 
             request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.
