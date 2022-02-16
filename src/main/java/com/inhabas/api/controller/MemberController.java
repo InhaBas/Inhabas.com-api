@@ -22,7 +22,7 @@ public class MemberController {
     @Operation(description = "멤버 조회")
     @GetMapping
     public Member member(@RequestParam Integer id) {
-        return memberService.findById(id).get();
+        return memberService.findById(id);
     }
 
     @Operation(description = "모든 유저 조회")

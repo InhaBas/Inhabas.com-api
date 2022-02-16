@@ -82,8 +82,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Member> findById(Integer id) {
-        return memberRepository.findById(id);
+    public Member findById(Integer id) {
+        return memberRepository.findById(id)
+                .orElseThrow(MemberNotExistException::new);
     }
 
     @Override

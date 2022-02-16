@@ -147,7 +147,7 @@ public class MemberServiceTest {
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
                 .schoolInformation(new SchoolInformation("전자공학과", 3, 1))
                 .build();
-        given(memberService.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
+        given(memberRepository.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
         //when
         DetailSignUpDto savedForm = memberService.loadSignUpForm(studentId, email);

@@ -1,10 +1,13 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.security.argumentResolver.Authenticated;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.RefreshToken;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.TokenDto;
 import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
+import com.inhabas.api.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ import java.util.Map;
 public class LoginController {
 
     private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d";
-    private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?provider=%s&email=%s";
+    private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?";
 
     private final RefreshTokenService refreshTokenService;
     private final TokenProvider tokenProvider;
@@ -36,19 +38,17 @@ public class LoginController {
     public void successLogin(
             HttpServletRequest request,
             HttpServletResponse response,
-            Principal principal) throws IOException {
+            @Authenticated AuthUserDetail authUserDetail) throws IOException {
 
-        OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) principal;
-        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         StringBuffer origin = this.getOrigin(request);
 
-        if (oAuth2User.isAlreadyJoined()) {
+        if (authUserDetail.hasJoined()) {
 
             /* 유저 권한 들고오기 (추후 작업이 필요함.)
             - role 은 (미승인회원, 일반회원, 교수, 회장단, 회장) 과 같이 수직구조의 권한 => 상대적으로 덜 변함. => enum 타입
             - team 은 (총무팀, 운영팀, 기획팀, IT팀, 회계) 등 과 같은 수평구조의 권한 => 시간에 따라 더 변하기 쉬움 => db 연동
             */
-            TokenDto jwtToken = tokenProvider.createJwtToken(oAuth2User.getAuthUserId(), "ROLE_MEMBER", null); // 변경해야함.
+            TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), "ROLE_MEMBER", null); // 변경해야함.
             refreshTokenService.save(new RefreshToken(jwtToken.getRefreshToken()));
 
             request.getSession().invalidate(); // 프론트 단에서 브라우저 쿠키 JSESSIONID, XSRF-TOKEN 지우는 게 좋을 듯. 상관없긴 한디.
@@ -61,11 +61,11 @@ public class LoginController {
 
             /* 회원가입 필요 */
 
-            String provider = ((OAuth2AuthenticationToken) principal).getAuthorizedClientRegistrationId();
-            String email = principal.getName();
+//            String provider = ((OAuth2AuthenticationToken) principal).getAuthorizedClientRegistrationId();
+//            String email = principal.getName();
 
             response.sendRedirect(
-                    String.format(SIGNUP_REQUIRED_REDIRECT_URL, origin, provider, email));
+                    String.format(SIGNUP_REQUIRED_REDIRECT_URL, origin));
         }
     }
 

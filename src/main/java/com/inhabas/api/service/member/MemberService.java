@@ -15,7 +15,7 @@ public interface MemberService {
 
     List<Member> findMembers();
 
-    Optional<Member> findById(Integer memberId);
+    Member findById(Integer memberId);
 
     Optional<Member> updateMember(Member member);
 

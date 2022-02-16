@@ -1,5 +1,6 @@
 package com.inhabas.api.security.argumentResolver;
 
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
@@ -20,11 +21,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final AuthUserService authUserService;
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticatedAuthUser.class);
+        return parameter.hasParameterAnnotation(Authenticated.class);
     }
 
     @Override
@@ -32,16 +31,15 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        com.inhabas.api.security.domain.AuthUser authenticatedUser = null;
+        AuthUserDetail authenticatedUser = null;
 
         if (Objects.nonNull(authentication)) {
 
             if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후
-                authenticatedUser = (com.inhabas.api.security.domain.AuthUser) authentication.getPrincipal();
+                authenticatedUser = (AuthUserDetail) authentication.getPrincipal();
 
             } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
-                Integer authUserId = ((CustomOAuth2User) authentication.getPrincipal()).getAuthUserId();
-                authenticatedUser = authUserService.loadUser(authUserId);
+                authenticatedUser = ((CustomOAuth2User) authentication.getPrincipal()).getAuthUserDetail();
             }
         }
 

@@ -1,6 +1,7 @@
 package com.inhabas.api.security.jwtUtils;
 
 import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,7 +56,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             try {
                 JwtTokenDecodedInfo decodedInfo = (JwtTokenDecodedInfo) tokenProvider.authenticate(token);
                 AuthUser authUser = authUserService.loadUser(decodedInfo.getAuthUserId());
-                JwtAuthenticationToken authentication = new JwtAuthenticationToken(authUser, decodedInfo.getGrantedAuthorities());
+                JwtAuthenticationToken authentication =
+                        new JwtAuthenticationToken(AuthUserDetail.convert(authUser), decodedInfo.getGrantedAuthorities());
 
                 // Authentication success redirection
                 successfulAuthentication(request, response, filterChain, authentication);

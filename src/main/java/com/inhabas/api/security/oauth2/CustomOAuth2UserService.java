@@ -1,6 +1,7 @@
 package com.inhabas.api.security.oauth2;
 
 import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserRepository;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +42,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         AuthUser loginUser = authUserRepository.findByProviderAndEmail(provider, email)
                 .orElse(new AuthUser(provider, email))
                 .setLastLoginTime(LocalDateTime.now());
-        authUserRepository.save(loginUser);
+        loginUser = authUserRepository.save(loginUser);
 
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-                memberAttribute, "email", loginUser.getId(), loginUser.hasJoined());
+                memberAttribute, "email", AuthUserDetail.convert(loginUser));
     }
 
 

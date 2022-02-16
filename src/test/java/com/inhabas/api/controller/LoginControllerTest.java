@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.service.member.MemberService;
 import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
@@ -28,6 +29,9 @@ public class LoginControllerTest {
 
     @MockBean
     private RefreshTokenService refreshTokenService;
+
+    @MockBean
+    private MemberService memberService;
 
     @Test
     @WithMockCustomOAuth2Account

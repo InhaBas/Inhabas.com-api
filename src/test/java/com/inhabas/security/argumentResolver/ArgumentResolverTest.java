@@ -2,9 +2,11 @@ package com.inhabas.security.argumentResolver;
 
 import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
 import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,18 +36,20 @@ public class ArgumentResolverTest {
     @Mock
     private NativeWebRequest request;
 
-    @Mock
-    private AuthUserService authUserService;
-
     @InjectMocks
     private AuthUserArgumentResolver authUserArgumentResolver;
+
+    @AfterEach
+    public void clearSecurityContest() {
+        SecurityContextHolder.clearContext();
+    }
 
 
     @DisplayName("인증이 이루어지지 않았으면, null을 반환한다.")
     @Test
     public void returnNullIfNotAuthenticated() {
         //when
-        AuthUser invalidUser = (AuthUser) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+        AuthUserDetail invalidUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
 
         //then
         assertThat(invalidUser).isNull();
@@ -62,13 +66,13 @@ public class ArgumentResolverTest {
 
         // jwt 토큰 인증 결과
         JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(expectedUser, Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+                new JwtAuthenticationToken(AuthUserDetail.convert(expectedUser), Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //when
-        AuthUser authenticatedUser = (AuthUser) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+        AuthUserDetail authenticatedUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
 
         //then
         assertThat(authenticatedUser).isNotNull();
@@ -94,8 +98,14 @@ public class ArgumentResolverTest {
                 List.of(new SimpleGrantedAuthority("ROLE_USER")),
                 attributes,
                 "email",
-                authUserId,
-                true);
+                AuthUserDetail.builder()
+                        .id(authUserId)
+                        .email("my@email.com")
+                        .profileId(12171652)
+                        .provider("google")
+                        .hasJoined(true)
+                        .isActive(true)
+                        .build());
         //OAuth2 인증결과를 authentication 객체에 담는다.
         OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
                 principal,
@@ -104,13 +114,8 @@ public class ArgumentResolverTest {
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(token);
 
-        //기존 유저 정보를 불러오는 행위를 mocking 한다.
-        AuthUser expectedUser = new AuthUser("google", "my@email.com");
-        ReflectionTestUtils.setField(expectedUser, "id", authUserId);
-        given(authUserService.loadUser(authUserId)).willReturn(expectedUser);
-
         //when
-        AuthUser authenticatedUser = (AuthUser) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+        AuthUserDetail authenticatedUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
 
         //then
         assertThat(authenticatedUser).isNotNull();

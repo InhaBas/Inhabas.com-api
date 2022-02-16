@@ -19,9 +19,13 @@ public @interface WithMockCustomOAuth2Account {
 
     String picture() default "https://get_my_picture.com";
 
-    String registrationId() default "google";
+    String provider() default "google";
 
     int authUserId() default 1;
 
     boolean alreadyJoined() default true;
+
+    boolean isActive() default true;
+
+    int profileId() default 0;
 }

@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -38,7 +39,8 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
             ReflectionTestUtils.setField(authUser, "profileId", profile.getId());
         }
 
-        JwtAuthenticationToken token = new JwtAuthenticationToken(authUser, Collections.singleton(new SimpleGrantedAuthority(role)));
+        JwtAuthenticationToken token
+                = new JwtAuthenticationToken(AuthUserDetail.convert(authUser), Collections.singleton(new SimpleGrantedAuthority(role)));
         token.setAuthenticated(true);
 
         context.setAuthentication(token);

@@ -1,5 +1,6 @@
 package com.inhabas.security.annotataion;
 
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,13 +29,19 @@ public class WithMockCustomOAuth2AccountSecurityContextFactory
                 List.of(new SimpleGrantedAuthority(customOAuth2Account.role())),
                 attributes,
                 "email",
-                customOAuth2Account.authUserId(),
-                customOAuth2Account.alreadyJoined());
+                AuthUserDetail.builder()
+                        .id(customOAuth2Account.authUserId())
+                        .email(customOAuth2Account.email())
+                        .provider(customOAuth2Account.provider())
+                        .profileId(customOAuth2Account.profileId())
+                        .hasJoined(customOAuth2Account.alreadyJoined())
+                        .isActive(customOAuth2Account.isActive())
+                        .build());
 
         OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
                 principal,
                 principal.getAuthorities(),
-                customOAuth2Account.registrationId());
+                customOAuth2Account.provider());
 
         context.setAuthentication(token);
         return context;
