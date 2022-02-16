@@ -8,7 +8,7 @@ import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
-import com.inhabas.api.testConfig.DefaultDataJpaTest;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

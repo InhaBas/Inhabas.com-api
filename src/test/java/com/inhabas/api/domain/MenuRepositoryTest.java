@@ -4,7 +4,7 @@ import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.domain.menu.MenuType;
-import com.inhabas.api.testConfig.DefaultDataJpaTest;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

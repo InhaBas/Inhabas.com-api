@@ -4,7 +4,7 @@ import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.jwtUtils.TokenDto;
-import com.inhabas.api.testConfig.DefaultWebMvcTest;
+import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.inhabas.api.testConfig;
+package com.inhabas.testConfig;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;

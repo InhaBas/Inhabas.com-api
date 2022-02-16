@@ -13,7 +13,7 @@ import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
-import com.inhabas.api.testConfig.DefaultWebMvcTest;
+import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

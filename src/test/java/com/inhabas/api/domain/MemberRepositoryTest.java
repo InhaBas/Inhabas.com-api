@@ -6,7 +6,7 @@ import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 
-import com.inhabas.api.testConfig.DefaultDataJpaTest;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.inhabas.api.testConfig;
+package com.inhabas.testConfig;
 
 import com.inhabas.api.security.domain.AuthUserService;
 import org.springframework.boot.test.context.TestConfiguration;

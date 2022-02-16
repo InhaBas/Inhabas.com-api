@@ -9,7 +9,7 @@ import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.comment.CommentDetailDto;
-import com.inhabas.api.testConfig.DefaultDataJpaTest;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;

@@ -1,4 +1,4 @@
-package com.inhabas.api.testConfig;
+package com.inhabas.testConfig;
 
 import com.inhabas.api.config.JpaConfig;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
