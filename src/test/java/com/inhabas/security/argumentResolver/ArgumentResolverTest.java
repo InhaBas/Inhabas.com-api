@@ -1,5 +1,6 @@
-package com.inhabas.api.security.argumentResolver;
+package com.inhabas.security.argumentResolver;
 
+import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;

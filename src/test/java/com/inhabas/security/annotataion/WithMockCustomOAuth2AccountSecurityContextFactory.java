@@ -1,4 +1,4 @@
-package com.inhabas.api.annotataion;
+package com.inhabas.security.annotataion;
 
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

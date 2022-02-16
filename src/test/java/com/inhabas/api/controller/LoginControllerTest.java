@@ -1,6 +1,6 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.annotataion.WithMockCustomOAuth2Account;
+import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.jwtUtils.TokenDto;

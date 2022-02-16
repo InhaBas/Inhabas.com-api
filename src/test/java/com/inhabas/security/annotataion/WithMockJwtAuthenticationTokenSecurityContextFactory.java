@@ -1,9 +1,8 @@
-package com.inhabas.api.annotataion;
+package com.inhabas.security.annotataion;
 
 import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
-import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

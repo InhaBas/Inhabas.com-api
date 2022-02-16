@@ -1,4 +1,4 @@
-package com.inhabas.api.annotataion;
+package com.inhabas.security.annotataion;
 
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import org.springframework.security.test.context.support.WithSecurityContext;

@@ -2,7 +2,7 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.annotataion.WithMockJwtAuthenticationToken;
+import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Answer;
