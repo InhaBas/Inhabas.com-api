@@ -20,10 +20,13 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockJwtAuthenticationToken principalInfo) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        Member profile = null;
-        String role = principalInfo.memberRole().toString(); // 기본은 익명.
+        AuthUser authUser = new AuthUser(principalInfo.provider(), principalInfo.Email());
+        ReflectionTestUtils.setField(authUser, "id", principalInfo.authUserId());
+        ReflectionTestUtils.setField(authUser, "hasJoined", principalInfo.joined());
+
+        String role = principalInfo.memberRole().toString(); // 기본은 ANONYMOUS.
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
-            profile = Member.builder()
+            Member profile = Member.builder()
                     .id(principalInfo.memberId())
                     .picture("")
                     .name(principalInfo.memberName())
@@ -31,12 +34,9 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
                     .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()))
                     .ibasInformation(new IbasInformation(principalInfo.memberRole(), "", 0))
                     .build();
-        }
-        AuthUser authUser = new AuthUser(principalInfo.provider(), principalInfo.Email());
 
-        ReflectionTestUtils.setField(authUser, "id", principalInfo.authUserId());
-        ReflectionTestUtils.setField(authUser, "hasJoined", principalInfo.joined());
-        ReflectionTestUtils.setField(authUser, "profile", profile);
+            ReflectionTestUtils.setField(authUser, "profileId", profile.getId());
+        }
 
         JwtAuthenticationToken token = new JwtAuthenticationToken(authUser, Collections.singleton(new SimpleGrantedAuthority(role)));
         token.setAuthenticated(true);

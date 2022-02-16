@@ -9,6 +9,7 @@ import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
+import com.inhabas.api.service.member.MemberNotExistException;
 import com.inhabas.api.service.member.MemberServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -168,25 +169,51 @@ public class MemberServiceTest {
                 );
     }
 
-//    @DisplayName("개인정보 수정 성공한다.")
-//    @Test
-//    public void 회원_정보_수정() {
-//        //given
-//        Member save = memberService.signUp(MEMBER1)
-//                .orElseThrow(EntityNotFoundException::new);
-//        String originalPhoneNumber = save.getPhone();
-//
-//        //when - 전화번호 수정
-//        Member param = new Member(
-//                save.getId(), save.getName(), "010-2222-2222", save.getPicture(),
-//                save.getSchoolInformation(), save.getIbasInformation());
-//        Member updateMember = memberService.updateMember(param)
-//                .orElseThrow(EntityNotFoundException::new);
-//
-//        //then
-//        String updatedPhoneNumber = updateMember.getPhone();
-//
-//        assertThat(updatedPhoneNumber).isEqualTo("010-2222-2222");
-//        assertThat(updatedPhoneNumber).isNotEqualTo(originalPhoneNumber);
-//    }
+    @DisplayName("회원의 권한을 변경한다.")
+    @Test
+    public void changeRoleTest() {
+        //given
+        Integer memberId = 12171652;
+        Member targetMember = Member.builder()
+                .id(memberId)
+                .picture("")
+                .name("유동현")
+                .phone("010-0000-0000")
+                .schoolInformation(new SchoolInformation("정보통신공학과", 1, 1))
+                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+                .build();
+        given(memberRepository.findById(anyInt()))
+                .willReturn(Optional.ofNullable(targetMember));
+
+        assert targetMember != null;
+        Member result = Member.builder()
+                .id(targetMember.getId())
+                .picture(targetMember.getPicture())
+                .name(targetMember.getName())
+                .phone(targetMember.getPhone())
+                .schoolInformation(targetMember.getSchoolInformation())
+                .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
+                .build();
+        given(memberRepository.save(any(Member.class)))
+                .willReturn(result); // NOT care about this return-value of save() in Service logic
+
+        //when
+        memberService.changeRole(memberId, Role.NOT_APPROVED_MEMBER);
+
+        //then
+        assertThat(targetMember.getIbasInformation().getRole())
+                .isEqualTo(Role.NOT_APPROVED_MEMBER);
+    }
+
+    @DisplayName("권한변경 시도 시에, 회원이 존재하지 않는 경우 MemberNotExistException 발생")
+    @Test
+    public void failToChangeRoleTest() {
+
+        given(memberRepository.findById(anyInt()))
+                .willReturn(Optional.empty());
+
+        //when
+        assertThrows(MemberNotExistException.class,
+                () -> memberService.changeRole(12171652, Role.BASIC_MEMBER));
+    }
 }

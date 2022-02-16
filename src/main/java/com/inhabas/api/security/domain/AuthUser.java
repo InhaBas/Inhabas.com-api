@@ -71,4 +71,8 @@ public class AuthUser {
     public void setProfileId(Integer profileId) {
         this.profileId = profileId;
     }
+
+    public void setJoinFlag() {
+        this.hasJoined = true;
+    }
 }

@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.QuestionnaireDto;
@@ -14,10 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -75,6 +73,16 @@ public class SignUpController {
     public ResponseEntity<?> saveAnswers(
             @AuthenticatedAuthUser AuthUser signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
         answerService.saveAnswers(answers, signUpUser.getProfileId());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /* finish signUp */
+    @PutMapping("/signUp/finish")
+    @Operation(description = "회원가입을 완료한다")
+    public ResponseEntity<?> finishSignUp(@AuthenticatedAuthUser AuthUser signUpUser) {
+        authUserService.finishSignUp(signUpUser.getId());
+        memberService.changeRole(signUpUser.getProfileId(), Role.NOT_APPROVED_MEMBER);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

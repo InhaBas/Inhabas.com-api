@@ -96,4 +96,13 @@ public class MemberServiceImpl implements MemberService {
     private boolean DoesExistMember(Member member) {
         return memberRepository.findById(member.getId()).isPresent();
     }
+
+    @Transactional
+    public void changeRole(Integer memberId, Role role) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotExistException::new);
+
+        member.setRole(role);
+        memberRepository.save(member);
+    }
 }

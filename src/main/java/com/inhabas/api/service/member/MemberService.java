@@ -1,6 +1,7 @@
 package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
 
@@ -17,4 +18,6 @@ public interface MemberService {
     Optional<Member> findById(Integer memberId);
 
     Optional<Member> updateMember(Member member);
+
+    void changeRole(Integer memberId, Role role);
 }

@@ -28,8 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(SignUpController.class)
@@ -237,6 +236,16 @@ public class SignUpControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(submittedAnswers)))
+                .andExpect(status().isNoContent())
+                .andReturn();
+    }
+
+    @DisplayName(" ")
+    @Test
+    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    public void 회원가입을_완료처리한다() throws Exception {
+        //when
+        mvc.perform(put("/signUp/finish").with(csrf()))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }

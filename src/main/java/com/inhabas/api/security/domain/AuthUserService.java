@@ -25,4 +25,13 @@ public class AuthUserService {
         authUser.setProfileId(memberId);
         authUserRepository.save(authUser);
     }
+
+    @Transactional
+    public void finishSignUp(Integer authUserId) {
+        AuthUser authUser = authUserRepository.findById(authUserId)
+                .orElseThrow(AuthUserNotFoundException::new);
+
+        authUser.setJoinFlag();
+        authUserRepository.save(authUser);
+    }
 }
