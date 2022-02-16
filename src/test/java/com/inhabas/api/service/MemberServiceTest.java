@@ -69,7 +69,7 @@ public class MemberServiceTest {
         given(memberRepository.save(any(Member.class))).willReturn(expected);
 
         //when
-        Member newMember = memberService.signUp(currentSignUpUser, signUpForm);
+        Member newMember = memberService.saveSignUpForm(signUpForm);
 
         //then
         assertThat(newMember)
@@ -103,7 +103,7 @@ public class MemberServiceTest {
 
         //then
         assertThrows(DuplicatedMemberFieldException.class,
-                () -> memberService.signUp(currentSignUpUser, signUpForm));
+                () -> memberService.saveSignUpForm(signUpForm));
     }
 
     @DisplayName("같은 전화번호 저장 예외")
@@ -129,7 +129,7 @@ public class MemberServiceTest {
 
         //then
         assertThrows(DuplicatedMemberFieldException.class,
-                () -> memberService.signUp(currentSignUpUser, signUpForm));
+                () -> memberService.saveSignUpForm(signUpForm));
     }
 
     @DisplayName("임시저장한_개인정보를_불러온다")

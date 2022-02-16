@@ -6,6 +6,7 @@ import com.inhabas.api.dto.signUp.QuestionnaireDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.security.argumentResolver.AuthenticatedAuthUser;
 import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
@@ -27,6 +28,7 @@ public class SignUpController {
 
     private final MemberService memberService;
     private final AnswerService answerService;
+    private final AuthUserService authUserService;
     private final QuestionnaireService questionnaireService;
 
     /* profile */
@@ -34,7 +36,8 @@ public class SignUpController {
     @PostMapping("/signUp/student")
     @Operation(description = "회원가입 시 프로필을 저장한다.")
     public ResponseEntity<?> saveProfile(@AuthenticatedAuthUser AuthUser authUser, @Valid @RequestBody StudentSignUpDto form) {
-        memberService.signUp(authUser, form);
+        memberService.saveSignUpForm(form);
+        authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getStudentId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -42,7 +45,7 @@ public class SignUpController {
     @GetMapping("/signUp/student")
     @Operation(description = "임시저장한 개인정보를 불러온다.")
     public ResponseEntity<DetailSignUpDto> loadProfile(@AuthenticatedAuthUser AuthUser signUpUser) {
-        DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfile().getId(), signUpUser.getEmail());
+        DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
 
         return ResponseEntity.ok(form);
     }
@@ -62,7 +65,7 @@ public class SignUpController {
     @GetMapping("/signUp/answer")
     @Operation(description = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     public ResponseEntity<List<AnswerDto>> loadAnswers(@AuthenticatedAuthUser AuthUser signUpUser) {
-        List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfile().getId());
+        List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfileId());
 
         return ResponseEntity.ok(answers);
     }
@@ -71,7 +74,7 @@ public class SignUpController {
     @Operation(description = "회원가입 시 작성한 질문을 저장한다.")
     public ResponseEntity<?> saveAnswers(
             @AuthenticatedAuthUser AuthUser signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
-        answerService.saveAnswers(answers, signUpUser.getProfile().getId());
+        answerService.saveAnswers(answers, signUpUser.getProfileId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

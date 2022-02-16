@@ -16,4 +16,13 @@ public class AuthUserService {
         return authUserRepository.findById(id)
                 .orElseThrow(AuthUserNotFoundException::new);
     }
+
+    @Transactional
+    public void setProfileIdToSocialAccount(Integer authUserId, Integer memberId) {
+        AuthUser authUser = authUserRepository.findById(authUserId)
+                .orElseThrow(AuthUserNotFoundException::new);
+
+        authUser.setProfileId(memberId);
+        authUserRepository.save(authUser);
+    }
 }

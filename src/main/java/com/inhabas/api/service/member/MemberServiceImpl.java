@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member signUp(AuthUser authUser, StudentSignUpDto signUpForm) {
+    public Member saveSignUpForm(StudentSignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(getDefaultRole(signUpForm.isProfessor()), "", 0);
         SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
         Member member = Member.builder()
@@ -40,9 +40,7 @@ public class MemberServiceImpl implements MemberService {
         checkDuplicatedStudentId(signUpForm);
 
         try {
-            Member save = memberRepository.save(member);
-            authUser.addProfile(save);
-            return save;
+            return memberRepository.save(member);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicatedMemberFieldException("전화번호");
         }
