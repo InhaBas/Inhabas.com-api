@@ -14,6 +14,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 
+/**
+ * WithMockJwtAuthenticationToken 어노테이션 정보를 기반으로 SecurityContext 를 설정한다. <br>
+ * - memberId 가 default 이면 AuthUser 와 매핑되는 Member 는 null 이다.
+ * @see WithMockJwtAuthenticationToken
+ */
 public class WithMockJwtAuthenticationTokenSecurityContextFactory
         implements WithSecurityContextFactory<WithMockJwtAuthenticationToken> {
 

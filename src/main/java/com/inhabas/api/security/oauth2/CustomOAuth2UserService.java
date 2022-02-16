@@ -25,6 +25,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final AuthUserRepository authUserRepository;
 
+    /**
+     * OAuth2 인증 후, db에서 회원 정보를 가져옴. 없으면 db에 생성한 후 반환한다.
+     * @param userRequest OAuth2 인증 결과가 들어있음. 클라이언트의 attributes 를 가져오기 위해 사용.
+     * @return CustomOAuth2User - (클라이언트의 소셜 계정 정보) + (db의 회원 정보)
+     * @throws OAuth2AuthenticationException super.loadUser() 에서 발생하는 예외
+     */
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -50,6 +56,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
 
+    /**
+     * OAuth2 인증 결과로부터 이름, 이메일, 프로필 사진 정보를 일관된 메소드로 뽑아오기 위함.
+     */
     @ToString
     @Builder(access = AccessLevel.PRIVATE)
     @Getter

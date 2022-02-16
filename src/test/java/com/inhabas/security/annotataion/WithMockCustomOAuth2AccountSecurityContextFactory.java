@@ -11,6 +11,11 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 import java.util.HashMap;
 import java.util.List;
 
+
+/**
+ * WithMockCustomOAuth2Account 어노테이션 정보를 기반으로 SecurityContext 를 설정한다.
+ * @see WithMockCustomOAuth2Account
+ */
 public class WithMockCustomOAuth2AccountSecurityContextFactory
     implements WithSecurityContextFactory<WithMockCustomOAuth2Account> {
 

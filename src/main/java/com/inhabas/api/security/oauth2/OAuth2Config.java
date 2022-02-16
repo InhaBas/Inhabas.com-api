@@ -8,12 +8,15 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 @Configuration
 public class OAuth2Config {
 
+    /**
+     * 인증된 oauth2 정보를 세션에 저장하도록 함.
+     * spring security 의 default 설정이 in-memory 방식이라, session 방식으로 변경했음.
+     * @see <a href="https://github.com/InhaBas/Inhabas.com-api/issues/3#issuecomment-1028777973">issue-#3</a>
+     * @return HttpSessionOAuth2AuthorizedClientRepository
+     */
     @Bean
     public OAuth2AuthorizedClientRepository OAuth2AuthorizedClientRepository() {
-        /* 인증된 oauth2 정보가 세션에 저장됨.
-         spring security 의 default 설정이 in-memory 방식이라 변경했음.
-         https://github.com/InhaBas/Inhabas.com-api/issues/3
-         */
+
         return new HttpSessionOAuth2AuthorizedClientRepository();
     }
 }

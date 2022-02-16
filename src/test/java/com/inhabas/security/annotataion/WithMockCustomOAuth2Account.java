@@ -5,8 +5,11 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static java.lang.Integer.valueOf;
-
+/**
+ * OAuth2 인증 결과를 securityContext 에 담아두기 위한 test 용 annotation.<br>
+ * OAuth2 인증 후의 어떤 특정한 상황을 Mocking 하고 싶을 때 사용한다.
+ * @see WithMockCustomOAuth2AccountSecurityContextFactory
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = WithMockCustomOAuth2AccountSecurityContextFactory.class)
 public @interface WithMockCustomOAuth2Account {

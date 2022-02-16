@@ -7,10 +7,10 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-/* Type-Safe Property Binding
-* https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.external-config.typesafe-configuration-properties
-* */
-
+/**
+ * for Type-Safe Property Binding.
+ * @see <a href="https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#features.external-config.typesafe-configuration-properties">typesafe-configuration-properties</a>
+ */
 @Getter @Setter
 @Component
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

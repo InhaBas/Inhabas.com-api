@@ -13,11 +13,13 @@ import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
+import com.inhabas.testConfig.AuthUserServiceMockBean;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(SignUpController.class)
+@Import(AuthUserServiceMockBean.class)
 public class SignUpControllerTest {
 
     @Autowired

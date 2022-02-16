@@ -9,7 +9,6 @@ import com.inhabas.api.security.oauth2.CustomAuthenticationFailureHandler;
 import com.inhabas.api.security.oauth2.CustomAuthenticationSuccessHandler;
 import com.inhabas.api.security.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,7 +19,12 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsUtils;
 
-
+/**
+ * Security 패키지는 독립적으로 구성되도록 의도하였음.
+ * 인증 및 인가 관련 서비스는 모든 비지니스 로직에 필요하기 때문에,
+ * IBAS 서비스를 위해 작성한 Bean 을 의존해서는 안됨!
+ * 비지니스 로직 작성 시 이 패키지를 외부 라이브러리처럼 가져다 사용할 수 있도록 항상 유의해야함.
+ */
 public class WebSecurityConfig {
 
     @Order(0)

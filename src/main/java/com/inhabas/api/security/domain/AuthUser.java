@@ -1,8 +1,6 @@
 package com.inhabas.api.security.domain;
 
-import com.inhabas.api.domain.member.Member;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
