@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
@@ -41,6 +42,7 @@ public class LoginControllerTest {
         TokenDto expectedReturnToken
                 = new TokenDto("Bearer", "test access token", "test refresh token", 180000L);
         given(tokenProvider.createJwtToken(anyInt(), anyString(), any())).willReturn(expectedReturnToken);
+        given(memberService.findById(anyInt())).willReturn(MemberTest.MEMBER1);
 
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
@@ -57,6 +59,11 @@ public class LoginControllerTest {
     @WithMockCustomOAuth2Account(alreadyJoined = false)
     public void OAuth2_인증_후_신규회원을_회원가입_페이지로_이동시킨다() throws Exception {
 
+        //given
+        TokenDto expectedReturnToken
+                = new TokenDto("Bearer", "test access token", "test refresh token", 180000L);
+        given(tokenProvider.createJwtToken(anyInt(), anyString(), any())).willReturn(expectedReturnToken);
+
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
                 .andExpect(status().is3xxRedirection())
@@ -65,7 +72,7 @@ public class LoginControllerTest {
         //then
         String redirectedUrl = response.getResponse().getRedirectedUrl();
         Assertions.assertThat(redirectedUrl)
-                .contains("/signUp");
+                .contains("/signUp", "accessToken=", "expiresIn=");
     }
 
 }

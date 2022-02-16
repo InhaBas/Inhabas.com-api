@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.argumentResolver.Authenticated;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.RefreshToken;
@@ -27,7 +28,7 @@ import java.util.Map;
 public class LoginController {
 
     private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d";
-    private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?";
+    private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?accessToken=%s&expiresIn=%d";
 
     private final RefreshTokenService refreshTokenService;
     private final TokenProvider tokenProvider;
@@ -67,11 +68,11 @@ public class LoginController {
 
             /* 회원가입 필요 */
 
-//            String provider = ((OAuth2AuthenticationToken) principal).getAuthorizedClientRegistrationId();
-//            String email = principal.getName();
+            TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), Role.ANONYMOUS.toString(), null);
 
             response.sendRedirect(
-                    String.format(SIGNUP_REQUIRED_REDIRECT_URL, origin));
+                    String.format(SIGNUP_REQUIRED_REDIRECT_URL, origin,
+                            jwtToken.getAccessToken(), jwtToken.getExpiresIn()));
         }
     }
 
