@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.QuestionnaireDto;
@@ -9,6 +10,7 @@ import com.inhabas.api.security.argumentResolver.Authenticated;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
+import com.inhabas.api.service.member.MajorInfoService;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
@@ -28,6 +30,7 @@ public class SignUpController {
     private final MemberService memberService;
     private final AnswerService answerService;
     private final AuthUserService authUserService;
+    private final MajorInfoService majorInfoService;
     private final QuestionnaireService questionnaireService;
 
     /* profile */
@@ -49,6 +52,11 @@ public class SignUpController {
         return ResponseEntity.ok(form);
     }
 
+    @GetMapping("/signUp/majorInfo")
+    @Operation(description = "회원가입에 필요한 전공 정보를 모두 불러온다.")
+    public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
+        return ResponseEntity.ok(majorInfoService.getAllMajorInfo());
+    }
 
     /* questionnaire */
 

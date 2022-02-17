@@ -2,6 +2,9 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.domain.member.MajorInfo;
+import com.inhabas.api.dto.member.MajorInfoDto;
+import com.inhabas.api.service.member.MajorInfoService;
 import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -25,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -51,6 +55,9 @@ public class SignUpControllerTest {
 
     @MockBean
     private AnswerService answerService;
+
+    @MockBean
+    private MajorInfoService majorInfoService;
 
     @DisplayName("회원가입 도중 개인정보를 저장한다.")
     @Test
@@ -243,7 +250,7 @@ public class SignUpControllerTest {
                 .andReturn();
     }
 
-    @DisplayName(" ")
+    @DisplayName("회원가입을 완료처리한다.")
     @Test
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 회원가입을_완료처리한다() throws Exception {
@@ -251,5 +258,31 @@ public class SignUpControllerTest {
         mvc.perform(put("/signUp/finish").with(csrf()))
                 .andExpect(status().isNoContent())
                 .andReturn();
+    }
+
+    @DisplayName("회원가입에 필요한 전공정보를 모두 가져온다.")
+    @Test
+    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    public void 회원가입에_필요한_전공정보를_모두_가져온다() throws Exception {
+        //given
+        MajorInfoDto majorInfo1 = new MajorInfoDto(1, "공과대학", "기계공학과");
+        MajorInfoDto majorInfo2 = new MajorInfoDto(2, "자연과학대학", "수학과");
+        MajorInfoDto majorInfo3 = new MajorInfoDto(3, "경영대학", "경영학과");
+        List<MajorInfoDto> majorInfos = new ArrayList<>() {{
+            add(majorInfo1);
+            add(majorInfo2);
+            add(majorInfo3);
+        }};
+        given(majorInfoService.getAllMajorInfo()).willReturn(majorInfos);
+
+        //when
+        String response = mvc.perform(get("/signUp/majorInfo"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        //then
+        assertThat(response).isEqualTo(jsonOf(majorInfos));
     }
 }

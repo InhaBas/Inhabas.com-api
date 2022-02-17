@@ -6,17 +6,17 @@ import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
-public class Major {
+public class College {
 
-    @Column(name = "major", length = 50)
+    @Column(name = "college", length = 20)
     private String value;
 
     @Transient
-    private final int MAX_LENGTH = 50;
+    private final int MAX_LENGTH = 20;
 
-    public Major() {}
+    public College() {}
 
-    public Major(String value) {
+    public College(String value) {
         if (validate(value))
             this.value = value;
         else
