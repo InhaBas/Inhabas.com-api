@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 
 import com.inhabas.testConfig.DefaultDataJpaTest;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static com.inhabas.api.domain.MemberTest.MEMBER2;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DefaultDataJpaTest
 public class MemberRepositoryTest {
@@ -107,6 +108,37 @@ public class MemberRepositoryTest {
         //then
         assertThrows(DataIntegrityViolationException.class,
                 () -> memberRepository.saveAndFlush(samePhoneMember));
+    }
+
+    @DisplayName("전화번호 중복검사 시 true 를 반환")
+    @Test
+    public void 전화번호가_존재한다() {
+        //given
+        Member member = Member.builder()
+                .id(12171652)
+                .phone("010-0000-0000")
+                .name("유동현")
+                .picture("")
+                .schoolInformation(new SchoolInformation("공간정보공학과", 1, 1))
+                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+                .build();
+        memberRepository.save(member);
+
+        //when
+        boolean isExist = memberRepository.existsByPhone(new Phone("010-0000-0000"));
+
+        //then
+        assertTrue(isExist);
+    }
+
+    @DisplayName("전화번호 중복검사 시 false 를 반환")
+    @Test
+    public void 전화번호가_존재하지_않는다() {
+        //when
+        boolean isExist = memberRepository.existsByPhone(new Phone("010-0000-0000"));
+
+        //then
+        assertFalse(isExist);
     }
 
 }

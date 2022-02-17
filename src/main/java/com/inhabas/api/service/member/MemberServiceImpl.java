@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
@@ -105,5 +106,18 @@ public class MemberServiceImpl implements MemberService {
 
         member.setRole(role);
         memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDuplicatedId(Integer memberId) {
+
+        return memberRepository.existsById(memberId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDuplicatedPhoneNumber(Phone phoneNumber) {
+        return memberRepository.existsByPhone(phoneNumber);
     }
 }

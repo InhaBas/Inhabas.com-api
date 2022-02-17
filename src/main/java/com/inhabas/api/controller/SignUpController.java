@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;
@@ -7,7 +8,6 @@ import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.QuestionnaireDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.security.argumentResolver.Authenticated;
-import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.service.member.MajorInfoService;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,6 +57,31 @@ public class SignUpController {
     @Operation(description = "회원가입에 필요한 전공 정보를 모두 불러온다.")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
         return ResponseEntity.ok(majorInfoService.getAllMajorInfo());
+    }
+
+    @GetMapping("/signUp/isDuplicated")
+    @Operation(description = "회원가입 시 필요한 중복검사를 진행한다.")
+    public ResponseEntity<?> validateDuplication(
+            @RequestParam(required = false) Integer memberId,
+            @RequestParam(required = false) Phone phone) {
+
+        /* 학번, 핸드폰번호 동시에 넘어오거나, 하나도 안들어오는경우 */
+        if (Objects.isNull(memberId) && Objects.isNull(phone)
+                || Objects.nonNull(memberId) && Objects.nonNull(phone)) {
+            return ResponseEntity.badRequest().build();
+        }
+        else {
+            boolean isDuplicated;
+
+            if (Objects.nonNull(memberId)) {
+                isDuplicated = memberService.isDuplicatedId(memberId);
+            }
+            else {
+                isDuplicated = memberService.isDuplicatedPhoneNumber(phone);
+            }
+
+            return ResponseEntity.ok(isDuplicated);
+        }
     }
 
     /* questionnaire */

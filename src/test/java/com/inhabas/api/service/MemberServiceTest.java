@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
@@ -215,5 +216,65 @@ public class MemberServiceTest {
         //when
         assertThrows(MemberNotExistException.class,
                 () -> memberService.changeRole(12171652, Role.BASIC_MEMBER));
+    }
+
+    @DisplayName("중복되는 학번이 존재한다.")
+    @Test
+    public void 중복되는_Id가_있다() {
+
+        //given
+        given(memberRepository.existsById(anyInt())).willReturn(true);
+
+        //when
+        boolean result = memberService.isDuplicatedId(12171652);
+
+        //then
+        then(memberRepository).should(times(1)).existsById(anyInt());
+        assertTrue(result);
+    }
+
+    @DisplayName("중복되는 학번이 없다")
+    @Test
+    public void 중복되는_Id가_없다() {
+
+        //given
+        given(memberRepository.existsById(anyInt())).willReturn(false);
+
+        //when
+        boolean result = memberService.isDuplicatedId(12171652);
+
+        //then
+        then(memberRepository).should(times(1)).existsById(anyInt());
+        assertFalse(result);
+    }
+
+    @DisplayName("중복되는 핸드폰 번호가 있다.")
+    @Test
+    public void 중복되는_핸드폰_번호가_있다() {
+
+        //given
+        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
+
+        //when
+        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
+
+        //then
+        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
+        assertTrue(result);
+    }
+
+    @DisplayName("중복되는 핸드폰 번호가 없다.")
+    @Test
+    public void 중복되는_핸드폰_번호가_없다() {
+
+        //given
+        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(false);
+
+        //when
+        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
+
+        //then
+        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
+        assertFalse(result);
     }
 }

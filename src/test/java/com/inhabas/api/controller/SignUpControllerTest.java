@@ -2,7 +2,7 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.domain.member.MajorInfo;
+import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.service.member.MajorInfoService;
 import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
@@ -31,10 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(SignUpController.class)
@@ -284,5 +286,102 @@ public class SignUpControllerTest {
 
         //then
         assertThat(response).isEqualTo(jsonOf(majorInfos));
+    }
+
+    @DisplayName("학번 중복 검사 결과, 중복된다")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void ID_중복_검사_중복됨() throws Exception {
+        //given
+        given(memberService.isDuplicatedId(anyInt())).willReturn(true);
+
+        //when
+        mvc.perform(get("/signUp/isDuplicated")
+                .param("memberId", "12171652"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"))
+                .andReturn();
+    }
+
+    @DisplayName("학번 중복 검사 결과, 중복되지 않는다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void ID_중복_검사_중복되지_않는다() throws Exception {
+        //given
+        given(memberService.isDuplicatedId(anyInt())).willReturn(false);
+
+        //when
+        mvc.perform(get("/signUp/isDuplicated")
+                        .param("memberId", "12171652"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"))
+                .andReturn();
+    }
+
+    @DisplayName("핸드폰 중복 검사 결과, 중복된다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 핸드폰_중복_검사_중복된다() throws Exception {
+        //given
+        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(true);
+
+        //when
+        mvc.perform(get("/signUp/isDuplicated")
+                        .param("phone", "010-0000-0000"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"))
+                .andReturn();
+    }
+
+    @DisplayName("핸드폰 중복 검사 결과, 중복되지 않는다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 핸드폰_중복_검사_중복되지_않는다() throws Exception {
+        //given
+        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+
+        //when
+        mvc.perform(get("/signUp/isDuplicated")
+                        .param("phone", "010-0000-0000"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"))
+                .andReturn();
+    }
+
+
+    @DisplayName("핸드폰 중복 검사 결과, 번호 형식이 잘못되면 400 반환")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 핸드폰_양식이_잘못된_경우_400() throws Exception {
+        //given
+        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+
+        //when
+        mvc.perform(get("/signUp/isDuplicated")
+                        .param("phone", "0101-0000-0000"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @DisplayName("중복 검사 시 핸드폰과 학번이 동시에 넘어오면 400 반환")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 중복_검사_시_핸드폰과_학번이_동시에_넘어오면_400_에러() throws Exception {
+
+        mvc.perform(get("/signUp/isDuplicated")
+                        .param("phone", "010-0000-0000")
+                        .param("memberId", "12171652"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @DisplayName("중복 검사 시 핸드폰과 학번 중 하나라도 안넘어오면 400 반환")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 중복_검사_시_핸드폰과_학번_중_하나라도_없으면_400_에러() throws Exception {
+
+        mvc.perform(get("/signUp/isDuplicated"))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 }
