@@ -7,8 +7,8 @@ import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
+import com.inhabas.api.dto.signUp.ProfessorSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
-import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
 import com.inhabas.api.service.member.MemberNotExistException;
 import com.inhabas.api.service.member.MemberServiceImpl;
@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -42,9 +41,9 @@ public class MemberServiceTest {
     @Mock
     MemberRepository memberRepository;
 
-    @DisplayName("회원가입을 성공한다.")
+    @DisplayName("학생 회원가입을 성공한다.")
     @Test
-    public void 회원가입() {
+    public void 학생_회원가입() {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
@@ -52,15 +51,11 @@ public class MemberServiceTest {
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .studentId(12345678)
-                .isProfessor(false)
+                .memberId(12345678)
                 .build();
 
-        AuthUser currentSignUpUser = new AuthUser("google", "my@email.com");
-        ReflectionTestUtils.setField(currentSignUpUser, "id", 1);
-
         Member expected = Member.builder()
-                .id(signUpForm.getStudentId())
+                .id(signUpForm.getMemberId())
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
@@ -78,7 +73,39 @@ public class MemberServiceTest {
                 .usingRecursiveComparison()
                 .ignoringFields("joined")
                 .isEqualTo(expected);
-        System.out.println(newMember.getIbasInformation());
+        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
+    }
+
+    @DisplayName("교수 회원가입을 성공한다.")
+    @Test
+    public void 교수_회원가입() {
+        //given
+        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+                .name("유동현")
+                .major("컴퓨터공학과")
+                .phoneNumber("010-0000-1111")
+                .memberId(12345678)
+                .build();
+
+        Member expected = Member.builder()
+                .id(signUpForm.getMemberId())
+                .phone(signUpForm.getPhoneNumber())
+                .name(signUpForm.getName())
+                .picture("")
+                .schoolInformation(new SchoolInformation(signUpForm.getMajor(), 1, 1))
+                .ibasInformation(new IbasInformation(Role.PROFESSOR, "", 0))
+                .build();
+        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
+        given(memberRepository.save(any(Member.class))).willReturn(expected);
+
+        //when
+        Member newMember = memberService.saveSignUpForm(signUpForm);
+
+        //then
+        assertThat(newMember)
+                .usingRecursiveComparison()
+                .ignoringFields("joined")
+                .isEqualTo(expected);
         assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
     }
 
@@ -87,10 +114,7 @@ public class MemberServiceTest {
     public void 같은_학번_저장_예외() {
         //given
         Integer sameStudentId = MEMBER1.getId();
-        given(memberRepository.findById(anyInt())).willReturn(Optional.of(MEMBER1));
-
-        AuthUser currentSignUpUser = new AuthUser("google", "my@email.com");
-        ReflectionTestUtils.setField(currentSignUpUser, "id", 1);
+        given(memberRepository.existsById(anyInt())).willReturn(true);
 
         //when
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
@@ -99,8 +123,7 @@ public class MemberServiceTest {
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .studentId(sameStudentId)
-                .isProfessor(false)
+                .memberId(sameStudentId)
                 .build();
 
         //then
@@ -112,11 +135,7 @@ public class MemberServiceTest {
     @Test
     public void 같은_전화번호_저장_예외() {
         //given
-        AuthUser currentSignUpUser = new AuthUser("google", "my@email.com");
-        ReflectionTestUtils.setField(currentSignUpUser, "id", 1);
-
-        given(memberRepository.save(any(Member.class)))
-                .willThrow(DataIntegrityViolationException.class);
+        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
 
         //when
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
@@ -125,8 +144,7 @@ public class MemberServiceTest {
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .studentId(12345678)
-                .isProfessor(false)
+                .memberId(12345678)
                 .build();
 
         //then

@@ -25,8 +25,8 @@ public class StudentSignUpDto {
     @Email
     private String email;
 
-    @NotNull
-    private Integer studentId;
+    @NotNull @Positive
+    private Integer memberId;
 
     @NotNull
     @Max(5) @Min(1)
@@ -36,18 +36,14 @@ public class StudentSignUpDto {
     @Max(2) @Min(1)
     private Integer semester;
 
-    @NotNull
-    private boolean isProfessor;
-
     @Builder
-    public StudentSignUpDto(String name, String major, String phoneNumber, String email, Integer studentId, Integer grade, Integer semester, boolean isProfessor) {
+    public StudentSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.studentId = studentId;
+        this.memberId = memberId;
         this.grade = grade;
         this.semester = semester;
-        this.isProfessor = isProfessor;
     }
 }

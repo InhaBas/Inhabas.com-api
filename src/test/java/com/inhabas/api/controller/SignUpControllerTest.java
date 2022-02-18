@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.member.MajorInfoDto;
+import com.inhabas.api.dto.signUp.*;
 import com.inhabas.api.service.member.MajorInfoService;
 import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Answer;
-import com.inhabas.api.dto.signUp.AnswerDto;
-import com.inhabas.api.dto.signUp.DetailSignUpDto;
-import com.inhabas.api.dto.signUp.QuestionnaireDto;
-import com.inhabas.api.dto.signUp.StudentSignUpDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
@@ -36,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,10 +59,10 @@ public class SignUpControllerTest {
     @MockBean
     private MajorInfoService majorInfoService;
 
-    @DisplayName("회원가입 도중 개인정보를 저장한다.")
+    @DisplayName("학생 회원가입 도중 개인정보를 저장한다.")
     @Test
     @WithMockJwtAuthenticationToken
-    public void 회원가입_도중_개인정보를_저장한다() throws Exception {
+    public void 학생_회원가입_도중_개인정보를_저장한다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
@@ -73,8 +71,7 @@ public class SignUpControllerTest {
                 .email("my@email.com")
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .studentId(11112222)
-                .isProfessor(false)
+                .memberId(11112222)
                 .build();
 
         mvc.perform(post("/signUp/student")
@@ -89,10 +86,10 @@ public class SignUpControllerTest {
         return objectMapper.writeValueAsString(response);
     }
 
-    @DisplayName("개인정보를 빈칸으로 제출하면 안된다.")
+    @DisplayName("학생 개인정보를 빈칸으로 제출하면 안된다.")
     @Test
     @WithMockJwtAuthenticationToken
-    public void 개인정보를_빈칸으로_제출하면_안된다() throws Exception {
+    public void 학생_개인정보를_빈칸으로_제출하면_안된다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("")
@@ -101,8 +98,7 @@ public class SignUpControllerTest {
                 .email("")
                 .major("")
                 .phoneNumber("")
-                .studentId(null)
-                .isProfessor(false)
+                .memberId(null)
                 .build();
 
         String response = mvc.perform(post("/signUp/student")
@@ -114,7 +110,7 @@ public class SignUpControllerTest {
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
         assertThat(response).contains(
-                "[studentId](은)는 must not be null",
+                "[memberId](은)는 must not be null",
                 "[grade](은)는 must not be null",
                 "[name](은)는 must not be blank",
                 "[major](은)는 must not be blank",
@@ -122,9 +118,10 @@ public class SignUpControllerTest {
                 "[semester](은)는 must not be null");
     }
 
+    @DisplayName("학생 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
     @Test
     @WithMockJwtAuthenticationToken
-    public void 개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
+    public void 학생_개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("홍길동만세".repeat(5) + ".") // 25자까지만 가능
@@ -133,8 +130,7 @@ public class SignUpControllerTest {
                 .email("") // 상관없음.
                 .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
                 .phoneNumber("8210-1111-1111")
-                .studentId(-1)
-                .isProfessor(false)
+                .memberId(-1)
                 .build();
 
         String response = mvc.perform(post("/signUp/student")
@@ -180,6 +176,83 @@ public class SignUpControllerTest {
 
         //then
         assertThat(response).isEqualTo(jsonOf(expectedSavedForm));
+    }
+
+    @DisplayName("교수 회원가입 도중 개인정보를 저장한다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 교수_회원가입_도중_개인정보를_저장한다() throws Exception {
+        //given
+        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+                .name("유동현")
+                .email("my@email.com")
+                .major("컴퓨터공학과")
+                .phoneNumber("010-0000-1111")
+                .memberId(11112222)
+                .build();
+
+        mvc.perform(post("/signUp/professor")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(signUpForm)))
+                .andExpect(status().isNoContent())
+                .andReturn();
+    }
+
+    @DisplayName("교수 개인정보를 빈칸으로 제출하면 안된다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 교수_개인정보를_빈칸으로_제출하면_안된다() throws Exception {
+        //given
+        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+                .name("")
+                .email("")
+                .major("")
+                .phoneNumber("")
+                .memberId(null)
+                .build();
+
+        String response = mvc.perform(post("/signUp/professor")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(signUpForm)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(response).contains(
+                "[memberId](은)는 must not be null",
+                "[name](은)는 must not be blank",
+                "[major](은)는 must not be blank",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"");
+    }
+
+    @DisplayName("교수 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
+    @Test
+    @WithMockJwtAuthenticationToken
+    public void 교수_개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
+        //given
+        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+                .name("홍길동만세".repeat(5) + ".") // 25자까지만 가능
+                .email("") // 상관없음.
+                .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
+                .phoneNumber("8210-1111-1111")
+                .memberId(-1)
+                .build();
+
+        String response = mvc.perform(post("/signUp/student")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(signUpForm)))
+                .andExpect(status().isBadRequest())
+                .andDo(print()) // 지울것
+                .andReturn()
+                .getResponse().getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(response).contains(
+                "[name](은)는 length must be between 0 and 25",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
+                "[major](은)는 length must be between 0 and 15");
     }
 
     @DisplayName("회원가입에 필요한 질문들을 가져온다.")

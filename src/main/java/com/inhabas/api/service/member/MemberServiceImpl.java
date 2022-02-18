@@ -7,11 +7,10 @@ import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
+import com.inhabas.api.dto.signUp.ProfessorSignUpDto;
 import com.inhabas.api.dto.signUp.StudentSignUpDto;
-import com.inhabas.api.security.domain.AuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,33 +27,51 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member saveSignUpForm(StudentSignUpDto signUpForm) {
-        IbasInformation ibasInformation = new IbasInformation(getDefaultRole(signUpForm.isProfessor()), "", 0);
+        IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
         SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
         Member member = Member.builder()
-                .id(signUpForm.getStudentId())
+                .id(signUpForm.getMemberId())
                 .name(signUpForm.getName())
                 .phone(signUpForm.getPhoneNumber())
                 .ibasInformation(ibasInformation)
                 .schoolInformation(schoolInformation)
                 .build();
 
-        checkDuplicatedStudentId(signUpForm);
+        checkDuplicatedMemberId(signUpForm.getMemberId());
+        checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
 
-        try {
-            return memberRepository.save(member);
-        } catch (DataIntegrityViolationException e) {
-            throw new DuplicatedMemberFieldException("전화번호");
+        return memberRepository.save(member);
+    }
+
+    @Override
+    @Transactional
+    public Member saveSignUpForm(ProfessorSignUpDto signUpForm) {
+        IbasInformation ibasInformation = new IbasInformation(Role.PROFESSOR, "", 0);
+        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), 1, 1);
+        Member member = Member.builder()
+                .id(signUpForm.getMemberId())
+                .name(signUpForm.getName())
+                .phone(signUpForm.getPhoneNumber())
+                .ibasInformation(ibasInformation)
+                .schoolInformation(schoolInformation)
+                .build();
+
+        checkDuplicatedMemberId(signUpForm.getMemberId());
+        checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
+
+        return memberRepository.save(member);
+    }
+
+    private void checkDuplicatedMemberId(Integer memberId) {
+        if (memberRepository.existsById(memberId)) {
+            throw new DuplicatedMemberFieldException("학번");
         }
     }
 
-    private void checkDuplicatedStudentId(StudentSignUpDto signUpForm) {
-        memberRepository.findById(signUpForm.getStudentId()).ifPresent(__ -> {
-            throw new DuplicatedMemberFieldException("학번");
-        });
-    }
-
-    private Role getDefaultRole(boolean isProfessor) {
-            return isProfessor ? Role.PROFESSOR : Role.ANONYMOUS;
+    private void checkDuplicatedMemberPhoneNumber(String phoneNumber) {
+        if (memberRepository.existsByPhone(new Phone(phoneNumber))) {
+            throw new DuplicatedMemberFieldException("전화번호");
+        }
     }
 
     @Override
