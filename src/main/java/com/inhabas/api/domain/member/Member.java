@@ -3,6 +3,7 @@ package com.inhabas.api.domain.member;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.member.type.wrapper.Name;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
+import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -11,7 +12,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique_phone", columnNames = "phone")})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -33,6 +34,7 @@ public class Member {
     @Embedded
     private IbasInformation ibasInformation;
 
+    @Builder
     public Member(Integer id, String name, String phone, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
         this.name = new Name(name);
@@ -48,6 +50,10 @@ public class Member {
 
     public String getPhone() {
         return this.phone.getValue();
+    }
+
+    public void setRole(Role role) {
+        this.ibasInformation.setRole(role);
     }
 
 

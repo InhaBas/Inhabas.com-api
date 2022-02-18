@@ -1,7 +1,5 @@
 package com.inhabas.api.domain;
 
-
-import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
@@ -10,28 +8,23 @@ import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
-import org.assertj.core.api.Assertions;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+@DefaultDataJpaTest
 public class ContestBoardRepositoryTest {
     @Autowired
     private ContestBoardRepository contestBoardRepository;

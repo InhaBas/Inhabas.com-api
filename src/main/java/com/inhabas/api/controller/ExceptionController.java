@@ -35,7 +35,7 @@ public class ExceptionController {
             builder.append(fieldError.getDefaultMessage());
             builder.append(" 입력된 값: [");
             builder.append(fieldError.getRejectedValue());
-            builder.append("]");
+            builder.append("]\n");
         }
 
         return ResponseEntity.badRequest().body(builder.toString());

@@ -1,16 +1,15 @@
 package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.api.dto.comment.CommentSaveDto;
 import com.inhabas.api.dto.comment.CommentUpdateDto;
 import com.inhabas.api.service.comment.CommentServiceImpl;
+import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(CommentController.class)
+@DefaultWebMvcTest(CommentController.class)
 public class CommentControllerTest {
 
     private MockMvc mockMvc;
@@ -58,9 +57,9 @@ public class CommentControllerTest {
     void getCommentList() throws Exception {
         //given
         List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
-                new CommentDetailDto(1, "contents1", 12171652, "유동현", Major.간호학과, LocalDateTime.now()),
-                new CommentDetailDto(2, "contents2", 12171652, "유동현", Major.간호학과, LocalDateTime.now()),
-                new CommentDetailDto(3, "contents3", 12171652, "유동현", Major.간호학과, LocalDateTime.now())
+                new CommentDetailDto(1, "contents1", 12171652, "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(2, "contents2", 12171652, "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(3, "contents3", 12171652, "유동현", "간호학과", LocalDateTime.now())
         });
         given(commentService.getComments(anyInt())).willReturn(commentList);
 

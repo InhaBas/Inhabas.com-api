@@ -1,24 +1,21 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.domain.menu.MenuType;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DataJpaTest
-@Import(JpaConfig.class)
+@DefaultDataJpaTest
 public class MenuRepositoryTest {
 
     @Autowired

@@ -22,13 +22,7 @@ public class MemberController {
     @Operation(description = "멤버 조회")
     @GetMapping
     public Member member(@RequestParam Integer id) {
-        return memberService.findOne(id).get();
-    }
-
-    @Operation(description = "신규 회원가입")
-    @PostMapping
-    public Member join(@ModelAttribute Member member) {
-        return memberService.join(member).get();
+        return memberService.findById(id);
     }
 
     @Operation(description = "모든 유저 조회")

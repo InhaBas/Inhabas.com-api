@@ -12,7 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchoolInformation {
 
-    @Enumerated(EnumType.STRING)
+    @Embedded
     private Major major;
 
     @Embedded
@@ -21,14 +21,14 @@ public class SchoolInformation {
     @Embedded
     private Semester gen;
 
-    public SchoolInformation(Major major, Integer grade, Integer semester) {
-        this.major = major;
+    public SchoolInformation(String major, Integer grade, Integer semester) {
+        this.major = new Major(major);
         this.grade = new Grade(grade);
         this.gen = new Semester(semester);
     }
 
-    public Major getMajor() {
-        return major;
+    public String getMajor() {
+        return major.getValue();
     }
 
     public Integer getGrade() {
@@ -44,7 +44,7 @@ public class SchoolInformation {
         if (this == o) return true;
         if (!(o instanceof SchoolInformation)) return false;
         SchoolInformation that = (SchoolInformation) o;
-        return getMajor() == that.getMajor()
+        return Objects.equals(getMajor(), that.getMajor())
                 && getGrade().equals(that.getGrade())
                 && getGen().equals(that.getGen());
     }

@@ -1,4 +1,5 @@
 package com.inhabas.api.security.oauth2;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
@@ -7,20 +8,14 @@ import java.util.Map;
 
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private final Integer authUserId;
-    private final boolean alreadyJoined;
+    private final AuthUserDetail authUserDetail;
 
-    public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, String nameAttributeKey, Integer authUserId, boolean alreadyJoined) {
+    public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, String nameAttributeKey, AuthUserDetail authUserDetail) {
         super(authorities, attributes, nameAttributeKey);
-        this.authUserId = authUserId;
-        this.alreadyJoined = alreadyJoined;
+        this.authUserDetail = authUserDetail;
     }
 
-    public Integer getAuthUserId() {
-        return authUserId;
-    }
-
-    public boolean isAlreadyJoined() {
-        return alreadyJoined;
+    public AuthUserDetail getAuthUserDetail() {
+        return authUserDetail;
     }
 }

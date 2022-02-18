@@ -117,7 +117,7 @@ public class JwtTokenProviderTest {
 
     @DisplayName("access 토큰을 재발급한다.")
     @Test
-    public void reissueAccessToken() throws InterruptedException {
+    public void reissueAccessToken() {
         //given
         Integer userId = 1;
         String role = "회장단";
@@ -131,7 +131,6 @@ public class JwtTokenProviderTest {
         String refreshToken = newJwtToken.getRefreshToken();
 
         //when
-        Thread.sleep(500);
         TokenDto newTokenDto = tokenProvider.reissueAccessTokenUsing(refreshToken);
 
         //then
@@ -141,8 +140,7 @@ public class JwtTokenProviderTest {
         assertThat(newTokenDto.getGrantType()).isEqualTo("Bearer");
         String newAccessToken = newTokenDto.getAccessToken();
         assertThat(newAccessToken)
-                .isNotBlank()
-                .isNotEqualTo(oldAccessToken);
+                .isNotBlank();
 
         //validation check for newly issued access token
         JwtTokenDecodedInfo decodeNewAccessToken = tokenProvider.authenticate(newAccessToken);

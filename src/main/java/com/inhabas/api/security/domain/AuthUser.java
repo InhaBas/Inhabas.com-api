@@ -1,8 +1,6 @@
 package com.inhabas.api.security.domain;
 
-import com.inhabas.api.domain.member.Member;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -21,9 +19,8 @@ public class AuthUser {
 
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member profile;
+    @Column(name = "profile_id")
+    private Integer profileId;
 
     private boolean hasJoined;
 
@@ -36,7 +33,7 @@ public class AuthUser {
         this.email = email;
         this.hasJoined = false;
         this.isActive = true;
-        this.profile = null;
+        this.profileId = null;
         lastLogin = LocalDateTime.now();
     }
 
@@ -57,8 +54,8 @@ public class AuthUser {
         return email;
     }
 
-    public Member getProfile() {
-        return profile;
+    public Integer getProfileId() {
+        return profileId;
     }
 
     public boolean isActive() {
@@ -67,5 +64,13 @@ public class AuthUser {
 
     public boolean hasJoined() {
         return this.hasJoined;
+    }
+
+    public void setProfileId(Integer profileId) {
+        this.profileId = profileId;
+    }
+
+    public void setJoinFlag() {
+        this.hasJoined = true;
     }
 }

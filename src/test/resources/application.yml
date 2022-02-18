@@ -22,9 +22,6 @@ spring:
     properties:
       hibernate.format_sql: true
     database: sql_server
-  sql:
-    init:
-      mode: embedded
 file:
   dir: ../../../../files/
 
