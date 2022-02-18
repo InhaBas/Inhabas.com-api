@@ -40,7 +40,7 @@ public class LoginControllerTest {
 
         //given
         TokenDto expectedReturnToken
-                = new TokenDto("Bearer", "test access token", "test refresh token", 180000L);
+                = new TokenDto("Bearer", "test.access.token", "test.refresh.token", 180000L);
         given(tokenProvider.createJwtToken(anyInt(), anyString(), any())).willReturn(expectedReturnToken);
         given(memberService.findById(anyInt())).willReturn(MemberTest.MEMBER1);
 
@@ -52,7 +52,7 @@ public class LoginControllerTest {
         //then
         String redirectedUrl = response.getResponse().getRedirectedUrl();
         Assertions.assertThat(redirectedUrl)
-                .contains("/login/success", "accessToken=", "refreshToken=", "expiresIn=");
+                .contains("/login/success", "accessToken=", "refreshToken=", "expiresIn=", "profileImageUrl=http");
     }
 
     @Test

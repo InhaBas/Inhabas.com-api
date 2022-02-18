@@ -40,6 +40,8 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
             } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
                 authenticatedUser = ((CustomOAuth2User) authentication.getPrincipal()).getAuthUserDetail();
+                authenticatedUser.setProfileImageUrl(
+                        ((CustomOAuth2User) authentication.getPrincipal()).getAttribute("picture"));
             }
         }
 

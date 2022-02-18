@@ -29,6 +29,8 @@ public class AuthUserDetail {
 
     private boolean isActive;
 
+    private String profileImageUrl;
+
     @Builder
     public AuthUserDetail(Integer id, String provider, String email, Integer profileId, boolean hasJoined, boolean isActive) {
         this.id = id;
@@ -52,5 +54,9 @@ public class AuthUserDetail {
 
     public boolean hasJoined() {
         return hasJoined;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

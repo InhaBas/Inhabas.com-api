@@ -8,13 +8,11 @@ import com.inhabas.api.security.domain.RefreshToken;
 import com.inhabas.api.security.domain.RefreshTokenService;
 import com.inhabas.api.security.jwtUtils.TokenDto;
 import com.inhabas.api.security.jwtUtils.TokenProvider;
-import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import com.inhabas.api.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +25,7 @@ import java.util.Map;
 @RestController
 public class LoginController {
 
-    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d";
+    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d&profileImageUrl=%s";
     private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?accessToken=%s&expiresIn=%d";
 
     private final RefreshTokenService refreshTokenService;
@@ -62,7 +60,7 @@ public class LoginController {
 
             response.sendRedirect(
                     String.format(LOGIN_SUCCESS_REDIRECT_URL, origin,
-                            jwtToken.getAccessToken(), jwtToken.getRefreshToken(), jwtToken.getExpiresIn()));
+                            jwtToken.getAccessToken(), jwtToken.getRefreshToken(), jwtToken.getExpiresIn(), authUserDetail.getProfileImageUrl()));
         }
         else {
 
