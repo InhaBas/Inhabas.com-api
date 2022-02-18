@@ -161,7 +161,6 @@ public class SignUpControllerTest {
                 .semester(1)
                 .major("의예과")
                 .phoneNumber("010-1234-5678")
-                .isProfessor(false)
                 .email("my@email.com")
                 .build();
 

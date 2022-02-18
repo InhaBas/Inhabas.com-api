@@ -88,7 +88,6 @@ public class MemberServiceImpl implements MemberService {
                 .major(member.getSchoolInformation().getMajor())
                 .grade(member.getSchoolInformation().getGrade())
                 .semester(member.getSchoolInformation().getGen())
-                .isProfessor(member.getIbasInformation().getRole() == Role.PROFESSOR)
                 .build();
     }
 

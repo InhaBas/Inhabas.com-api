@@ -20,10 +20,8 @@ public class DetailSignUpDto {
 
     private Integer semester;
 
-    private boolean isProfessor;
-
     @Builder
-    public DetailSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester, boolean isProfessor) {
+    public DetailSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
@@ -31,6 +29,5 @@ public class DetailSignUpDto {
         this.memberId = memberId;
         this.grade = grade;
         this.semester = semester;
-        this.isProfessor = isProfessor;
     }
 }

@@ -40,9 +40,8 @@ public class SignUpController {
     @PostMapping("/student")
     @Operation(summary = "학생 회원가입 시 개인정보를 저장한다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터"),
-            @ApiResponse(responseCode = "403", description = "권한없는경우")
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
     })
     public ResponseEntity<?> saveStudentProfile(
             @Authenticated AuthUserDetail authUser, @Valid @RequestBody StudentSignUpDto form) {
@@ -54,6 +53,7 @@ public class SignUpController {
 
     @GetMapping("/student")
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<DetailSignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
         DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
 
@@ -62,6 +62,10 @@ public class SignUpController {
 
     @PostMapping("/professor")
     @Operation(summary = "교수 회원가입시 개인정보를 저장한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
+    })
     public ResponseEntity<?> saveProfessorProfile(
             @Authenticated AuthUserDetail authUser, @Valid @RequestBody ProfessorSignUpDto form) {
         memberService.saveSignUpForm(form);
@@ -72,12 +76,17 @@ public class SignUpController {
 
     @GetMapping("/majorInfo")
     @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
         return ResponseEntity.ok(majorInfoService.getAllMajorInfo());
     }
 
     @GetMapping("/isDuplicated")
     @Operation(summary = "회원가입 시 필요한 중복검사를 진행한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", description = "둘 중 하나만 넘겨야함.")
+    })
     public ResponseEntity<?> validateDuplication(
             @RequestParam(required = false) Integer memberId,
             @RequestParam(required = false) Phone phone) {
@@ -105,6 +114,7 @@ public class SignUpController {
 
     @GetMapping("/questionnaire")
     @Operation(summary = "회원가입에 필요한 질문들을 불러온다.")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<List<QuestionnaireDto>> loadQuestionnaire() {
 
         return ResponseEntity.ok(questionnaireService.getQuestionnaire());
@@ -114,6 +124,7 @@ public class SignUpController {
 
     @GetMapping("/answer")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
+    @ApiResponse(responseCode = "200")
     public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated AuthUserDetail signUpUser) {
         List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfileId());
 
@@ -121,7 +132,11 @@ public class SignUpController {
     }
 
     @PostMapping("/answer")
-    @Operation(summary = "회원가입 시 작성한 질문을 저장한다.")
+    @Operation(summary = "회원가입 시 작성한 답변을 저장한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우")
+    })
     public ResponseEntity<?> saveAnswers(
             @Authenticated AuthUserDetail signUpUser,
             @Valid @RequestBody List<AnswerDto> answers) {
@@ -133,6 +148,7 @@ public class SignUpController {
     /* finish signUp */
     @PutMapping("/finish")
     @Operation(summary = "회원가입을 완료한다")
+    @ApiResponse(responseCode = "204")
     public ResponseEntity<?> finishSignUp(@Authenticated AuthUserDetail signUpUser) {
         authUserService.finishSignUp(signUpUser.getId());
         memberService.changeRole(signUpUser.getProfileId(), Role.NOT_APPROVED_MEMBER);

@@ -180,7 +180,6 @@ public class MemberServiceTest {
                         .email(email)
                         .grade(3)
                         .semester(1)
-                        .isProfessor(false)
                         .major("전자공학과")
                         .name("유동현")
                         .phoneNumber("010-0000-0000")
