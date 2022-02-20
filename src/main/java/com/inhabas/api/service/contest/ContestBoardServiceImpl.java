@@ -61,8 +61,8 @@ public class ContestBoardServiceImpl implements ContestBoardService{
     }
 
     @Override
-    public DetailContestBoardDto getBoard(Integer id) {
-        return  contestBoardRepository.findDtoById(id)
+    public DetailContestBoardDto getBoard(Integer menuId, Integer id) {
+        return  contestBoardRepository.findDtoById(menuId, id)
                 .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
     }
 

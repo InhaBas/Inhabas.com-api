@@ -50,7 +50,6 @@ public class NormalBoard extends BaseEntity {
     protected Set<BoardFile> files = new HashSet<>();
 
     /* constructor */
-
     public NormalBoard(Integer id, String title, String contents) {
         this.id = id;
         this.title = new Title(title);

@@ -28,7 +28,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<DetailContestBoardDto> findDtoById(Integer id) {
+    public Optional<DetailContestBoardDto> findDtoById(Integer menuId, Integer id) {
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(DetailContestBoardDto.class,
                             Expressions.asNumber(id).as("id"),

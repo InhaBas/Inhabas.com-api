@@ -37,7 +37,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,6 +78,7 @@ public class ContestBoardControllerTest {
         // when
         mvc.perform(post("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId", "1")
                         .content(objectMapper.writeValueAsString(saveContestBoardDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
@@ -92,9 +92,10 @@ public class ContestBoardControllerTest {
         given(contestBoardService.update(any(UpdateContestBoardDto.class))).willReturn(1);
 
         // when
-        contestBoardController.updateBoard(updateContestBoardDto);
+        contestBoardController.updateBoard(2, updateContestBoardDto);
         mvc.perform(put("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId", "1")
                         .content(objectMapper.writeValueAsString(updateContestBoardDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
@@ -148,11 +149,12 @@ public class ContestBoardControllerTest {
     public void getContestBoardDetail() throws Exception{
         //given
         DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "contents", "association","topic",  LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29), LocalDateTime.now(), null);
-        given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
+        given(contestBoardService.getBoard(anyInt(), anyInt())).willReturn(contestBoardDto);
 
         // when
         String responseBody = mvc.perform(get("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","1")
                         .param("id", "1"))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -172,6 +174,7 @@ public class ContestBoardControllerTest {
         // when
         String errorMessage = mvc.perform(post("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .content(objectMapper.writeValueAsString(saveContestBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
@@ -191,6 +194,7 @@ public class ContestBoardControllerTest {
         // when
         String errorMessage = mvc.perform(post("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","1")
                         .content(objectMapper.writeValueAsString(saveContestBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()

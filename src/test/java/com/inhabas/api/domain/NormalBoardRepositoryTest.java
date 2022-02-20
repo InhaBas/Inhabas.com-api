@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityNotFoundException;
@@ -48,7 +47,7 @@ public class NormalBoardRepositoryTest {
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(1)
-                        .type(MenuType.LIST)
+                        .type(MenuType.list)
                         .name("공지사항")
                         .description("부원이 알아야 할 내용을 게시합니다.")
                         .build());
@@ -56,7 +55,7 @@ public class NormalBoardRepositoryTest {
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(2)
-                        .type(MenuType.LIST)
+                        .type(MenuType.list)
                         .name("자유게시판")
                         .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
                         .build());

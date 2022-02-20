@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RestController
 @RequestMapping("/board/contest")
 @RequiredArgsConstructor
-public class ContestBoardController {
+@RestController
+public class ContestBoardController implements BoardController <DetailContestBoardDto, ListContestBoardDto, SaveContestBoardDto, UpdateContestBoardDto> {
 
     private final ContestBoardService boardService;
 
     @Operation(description = "공모전 게시판의 게시글 단일 조회")
     @GetMapping
-    public DetailContestBoardDto getBoard(@RequestParam Integer id) {
-        return boardService.getBoard(id);
+    public DetailContestBoardDto getBoard(@RequestParam Integer menuId, @RequestParam Integer id) {
+        return boardService.getBoard(menuId, id);
     }
 
     @Operation(description = "공모전 게시판의 모든 게시글 조회")
@@ -34,13 +34,13 @@ public class ContestBoardController {
 
     @Operation(description = "공모전 게시판 게시글 추가")
     @PostMapping
-    public Integer addBoard(@Valid @RequestBody SaveContestBoardDto dto) {
+    public Integer addBoard(@RequestParam Integer menuId, @Valid @RequestBody SaveContestBoardDto dto) {
         return boardService.write(dto);
     }
 
     @Operation(description = "공모전 게시판의 게시글 수정")
     @PutMapping
-    public Integer updateBoard(@Valid @RequestBody UpdateContestBoardDto dto) {
+    public Integer updateBoard(@RequestParam Integer menuId, @Valid @RequestBody UpdateContestBoardDto dto) {
         return boardService.update(dto);
     }
 
@@ -49,4 +49,5 @@ public class ContestBoardController {
     public void deleteBoard(@RequestParam Integer id) {
         boardService.delete(id);
     }
+
 }

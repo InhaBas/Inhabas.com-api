@@ -106,13 +106,13 @@ public class ContestBoardServiceTest {
     public void getDetailBoard() {
         //given
         DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "contents", "association","topic",  LocalDate.of(2022,01,01), LocalDate.of(2022, 01, 29), LocalDateTime.now(), null);
-        given(contestBoardRepository.findDtoById(any())).willReturn(Optional.of(contestBoardDto));
+        given(contestBoardRepository.findDtoById(any(), any())).willReturn(Optional.of(contestBoardDto));
 
         // when
-        contestBoardService.getBoard(1);
+        contestBoardService.getBoard(1,1);
 
         // then
-        then(contestBoardRepository).should(times(1)).findDtoById(any());
+        then(contestBoardRepository).should(times(1)).findDtoById(any(), any());
     }
 
 

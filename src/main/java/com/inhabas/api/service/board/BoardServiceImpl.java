@@ -12,6 +12,7 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ import javax.transaction.Transactional;
 public class BoardServiceImpl implements BoardService {
 
     private final NormalBoardRepository boardRepository;
-    private final MenuRepository menuRepository;
     private final MemberRepository memberRepository;
+    private final MenuRepository menuRepository;
 
     @Override
     public Integer write(SaveBoardDto saveBoardDto) {

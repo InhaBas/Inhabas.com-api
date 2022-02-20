@@ -14,7 +14,7 @@ public interface ContestBoardService {
 
     void delete(Integer id);
 
-    DetailContestBoardDto getBoard(Integer id);
+    DetailContestBoardDto getBoard(Integer menuId, Integer id);
 
     Page<ListContestBoardDto> getBoardList(Integer menuId, Pageable pageable);
 

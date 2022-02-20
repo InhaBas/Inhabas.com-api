@@ -6,6 +6,7 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
+import com.inhabas.api.service.menu.MenuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,12 +36,11 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BoardController.class)
-public class BoardControllerTest {
+@WebMvcTest(NormalBoardController.class)
+public class NormalBoardControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -49,7 +49,7 @@ public class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    BoardController boardController;
+    NormalBoardController normalBoardController;
 
     @MockBean
     BoardService boardService;
@@ -60,10 +60,13 @@ public class BoardControllerTest {
     @MockBean
     NormalBoard normalBoard;
 
+    @MockBean
+    MenuService menuService;
+
     @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders
-                .standaloneSetup(boardController)
+                .standaloneSetup(normalBoardController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers(new ViewResolver() {
                     @Override
@@ -84,6 +87,7 @@ public class BoardControllerTest {
         // when
         mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
@@ -97,9 +101,10 @@ public class BoardControllerTest {
         given(boardService.update(any(UpdateBoardDto.class))).willReturn(1);
 
         // when
-        boardController.updateBoard(updateBoardDto);
+        normalBoardController.updateBoard(2, updateBoardDto);
         mvc.perform(put("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .content(objectMapper.writeValueAsString(updateBoardDto)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
@@ -158,6 +163,7 @@ public class BoardControllerTest {
         // when
         String responseBody = mvc.perform(get("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .param("id", "1"))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -177,6 +183,7 @@ public class BoardControllerTest {
         // when
         String errorMessage = mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
@@ -196,6 +203,7 @@ public class BoardControllerTest {
         // when
         String errorMessage = mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()

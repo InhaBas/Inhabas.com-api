@@ -10,7 +10,6 @@ import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,14 +20,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Import(JpaConfig.class)
@@ -52,7 +49,7 @@ public class ContestBoardRepositoryTest {
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(1)
-                        .type(MenuType.LIST)
+                        .type(MenuType.list)
                         .name("공모전게시판")
                         .description("공모전 정보를 알려주는 게시판입니다.")
                         .build());
@@ -83,7 +80,7 @@ public class ContestBoardRepositoryTest {
                         .build();
 
         // when
-        Optional<DetailContestBoardDto> returnedDto = contestBoardRepository.findDtoById(savedContestBoard.getId());
+        Optional<DetailContestBoardDto> returnedDto = contestBoardRepository.findDtoById(1, savedContestBoard.getId());
 
         // then
         assertThat(expectedDto)
