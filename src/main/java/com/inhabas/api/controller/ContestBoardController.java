@@ -27,7 +27,7 @@ public class ContestBoardController implements BoardController <DetailContestBoa
     }
 
     @Operation(description = "공모전 게시판의 모든 게시글 조회")
-    @GetMapping("all")
+    @GetMapping("/all")
     public Page<ListContestBoardDto> getBoardList(@RequestParam Integer menuId, Pageable pageable) {
         return boardService.getBoardList(menuId, pageable);
     }
@@ -49,5 +49,4 @@ public class ContestBoardController implements BoardController <DetailContestBoa
     public void deleteBoard(@RequestParam Integer id) {
         boardService.delete(id);
     }
-
 }

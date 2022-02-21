@@ -15,6 +15,6 @@ public interface BoardService {
 
     BoardDto getBoard(Integer boardId);
 
-    Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
+    Page<Object> getBoardList(Integer menuId, Pageable pageable);
 
 }

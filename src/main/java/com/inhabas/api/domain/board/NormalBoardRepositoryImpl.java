@@ -21,8 +21,8 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<BoardDto> findAllByMenuId(Integer menuId, Pageable pageable) {
-        List<BoardDto> results = queryFactory.select(Projections.constructor(BoardDto.class,
+    public Page<Object> findAllByMenuId(Integer menuId, Pageable pageable) {
+        List<Object> results = queryFactory.select(Projections.constructor(Object.class,
                         normalBoard.id,
                         normalBoard.title.value,
                         Expressions.asString("").as("contents"),

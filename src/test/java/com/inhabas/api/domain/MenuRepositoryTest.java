@@ -15,6 +15,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
@@ -39,9 +42,9 @@ public class MenuRepositoryTest {
     @Test
     public void CreateNewMenu() {
         //given
-        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.list, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
-        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.list, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
-        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.list, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
+        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
 
         //when
         Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
@@ -49,7 +52,7 @@ public class MenuRepositoryTest {
         Menu saveFreeMenu = menuRepository.save(freeBoardMenu);
 
         //then
-        Assertions.assertThat(saveActivityMenu)
+        assertThat(saveActivityMenu)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(activityBoardMenu);
@@ -59,7 +62,7 @@ public class MenuRepositoryTest {
     @Test
     public void UpdateMenuName() {
         //given
-        Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.list, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
+        Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
         em.flush();em.clear();
 
         //when
@@ -68,7 +71,7 @@ public class MenuRepositoryTest {
                 new Menu(noticeMenu.getId(), noticeMenu.getMenuGroup(), noticeMenu.getPriority(), noticeMenu.getType(), newName, noticeMenu.getDescription()));
 
         //then
-        Assertions.assertThat(updated.getName()).isEqualTo(newName);
+        assertThat(updated.getName()).isEqualTo(newName);
     }
 
     @DisplayName("한 메뉴그룹에, priority 가 중복될 시 오류")
@@ -81,18 +84,31 @@ public class MenuRepositoryTest {
          */
 
         //given
-        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.list, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
-        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.list, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
-        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.list, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
+        Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
         menuRepository.save(activityBoardMenu);
         menuRepository.save(noticeBoardMenu);
         menuRepository.save(freeBoardMenu);
 
         //when
         assertThrows(DataIntegrityViolationException.class,
-                () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.list, "질문게시판", "궁금한 점을 질문하는 게시판입니다.")));
+                () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.LIST, "질문게시판", "궁금한 점을 질문하는 게시판입니다.")));
     }
 
 
+    @DisplayName("메뉴 ID로 메뉴 타입 조회")
+    @Test
+    public void findMenuTypeTest() {
+        // given
+        Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
+        menuRepository.save(noticeBoardMenu);
+
+        // when
+        Optional<MenuType> menuType = menuRepository.findMenuTypeByMenuId(noticeBoardMenu.getId());
+
+        // then
+        assertThat(menuType.get()).isEqualTo(MenuType.LIST);
+    }
 
 }

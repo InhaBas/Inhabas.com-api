@@ -25,7 +25,7 @@ public class MenuServiceImpl implements MenuService {
         MenuType menuType = menuRepository.findMenuTypeByMenuId(menuId).get();
 
         switch(menuType){
-            case contest:
+            case CONTEST:
                 return Optional.of(context.getBean(ContestBoardController.class));
             default:
                 return Optional.empty(); // NormalBoardController

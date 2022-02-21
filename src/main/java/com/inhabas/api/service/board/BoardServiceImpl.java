@@ -12,7 +12,6 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<BoardDto> getBoardList(Integer menuId, Pageable pageable) {
+    public Page<Object> getBoardList(Integer menuId, Pageable pageable) {
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
 }

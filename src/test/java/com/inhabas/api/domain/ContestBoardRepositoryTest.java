@@ -49,7 +49,7 @@ public class ContestBoardRepositoryTest {
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(1)
-                        .type(MenuType.list)
+                        .type(MenuType.LIST)
                         .name("공모전게시판")
                         .description("공모전 정보를 알려주는 게시판입니다.")
                         .build());

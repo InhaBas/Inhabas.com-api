@@ -45,7 +45,7 @@ public class CommentRepositoryTest {
                 Menu.builder()
                 .menuGroup(boardMenuGroup)
                 .priority(2)
-                .type(MenuType.list)
+                .type(MenuType.LIST)
                 .name("자유게시판")
                 .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
                 .build());

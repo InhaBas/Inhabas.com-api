@@ -27,7 +27,7 @@ public class Menu extends BaseEntity {
     private Integer priority;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "board_type")
+    @Column(name = "menu_type")
     private MenuType type;
 
     @Embedded

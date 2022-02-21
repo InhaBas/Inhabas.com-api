@@ -13,5 +13,4 @@ public interface BoardController <DetailDto, ListDto, SaveDto, UpdateDto> {
      Integer updateBoard(Integer menuId, UpdateDto updateDto);
 
      void deleteBoard(Integer id);
-
 }

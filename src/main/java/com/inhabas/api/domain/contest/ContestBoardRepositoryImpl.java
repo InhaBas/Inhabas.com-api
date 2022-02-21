@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.contest.QContestBoard.contestBoard;
+import static com.inhabas.api.domain.board.QNormalBoard.normalBoard;
 
 @RequiredArgsConstructor
 public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom {
@@ -32,7 +33,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(DetailContestBoardDto.class,
                             Expressions.asNumber(id).as("id"),
-                            contestBoard.writer.name.value,
+                            contestBoard.writer.name.value, 
                             contestBoard.title.value,
                             contestBoard.contents.value,
                             contestBoard.association.value,
@@ -43,7 +44,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             contestBoard.updated
                         ))
                 .from(contestBoard)
-                .innerJoin(contestBoard.writer).on(contestBoard.id.eq(id))
+                .innerJoin(contestBoard.writer)
                 .limit(1)
                 .fetchOne());
     }
