@@ -10,6 +10,8 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,6 +24,9 @@ public class SaveContestBoardDto {
 
     @NotBlank(message = "본문을 입력하세요.")
     private String contents;
+
+    @NotNull(message = "메뉴를 선택해주세요.")
+    private Integer menuId;
 
     @Length(max = 100, message = "100자 이내로 작성해주세요.")
     @NotBlank(message = "협회기관을 입력하세요.")
@@ -40,4 +45,15 @@ public class SaveContestBoardDto {
 
     @NotNull(message = "로그인 후 이용해주세요.")
     private Integer loginedUser;
+
+    public SaveContestBoardDto(Map<String, Object> saveBoard) {
+        this.title = saveBoard.get("title").toString();
+        this.contents = saveBoard.get("contents").toString();
+        this.menuId = (Integer) saveBoard.get("menuId");
+        this.loginedUser = (Integer) saveBoard.get("loginedUser");
+        this.association = saveBoard.get("association").toString();
+        this.topic = saveBoard.get("topic").toString();
+        this.start = LocalDate.parse(saveBoard.get("start").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.deadline = LocalDate.parse(saveBoard.get("deadline").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
 }

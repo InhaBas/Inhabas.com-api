@@ -12,11 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RequestMapping("/board/contest")
 @RequiredArgsConstructor
 @RestController
-public class ContestBoardController implements BoardController <DetailContestBoardDto, ListContestBoardDto, SaveContestBoardDto, UpdateContestBoardDto> {
+public class ContestBoardController implements BoardController <DetailContestBoardDto, ListContestBoardDto> {
 
     private final ContestBoardService boardService;
 
@@ -34,14 +35,14 @@ public class ContestBoardController implements BoardController <DetailContestBoa
 
     @Operation(description = "공모전 게시판 게시글 추가")
     @PostMapping
-    public Integer addBoard(@RequestParam Integer menuId, @Valid @RequestBody SaveContestBoardDto dto) {
-        return boardService.write(dto);
+    public Integer addBoard(@RequestParam Integer menuId, @Valid @RequestBody Map<String, Object> saveBoard) {
+        return boardService.write(menuId, new SaveContestBoardDto(saveBoard));
     }
 
     @Operation(description = "공모전 게시판의 게시글 수정")
     @PutMapping
-    public Integer updateBoard(@RequestParam Integer menuId, @Valid @RequestBody UpdateContestBoardDto dto) {
-        return boardService.update(dto);
+    public Integer updateBoard(@RequestParam Integer menuId, @Valid @RequestBody Map<String, Object> updateBoard) {
+        return boardService.update(menuId, new UpdateContestBoardDto(updateBoard));
     }
 
     @Operation(description = "공모전 게시판의 게시글 삭제")

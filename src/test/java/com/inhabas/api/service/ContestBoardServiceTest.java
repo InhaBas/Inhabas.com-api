@@ -4,6 +4,10 @@ import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuRepository;
+import com.inhabas.api.domain.menu.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -46,6 +50,9 @@ public class ContestBoardServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+    @Mock
+    MenuRepository menuRepository;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -57,15 +64,24 @@ public class ContestBoardServiceTest {
     @Test
     public void createContestBoard() {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) , 12201863);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents",9,  "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) , 12201863);
         ContestBoard contestBoard = new ContestBoard(1, "title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
-        Member writer = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
+        Member writer = new Member(1, "mingyeom", "010-0000-0000", "picture", null, null);
+        MenuGroup boardMenuGroup = new MenuGroup("게시판");
+        Menu NoticeBoardMenu = Menu.builder()
+                        .menuGroup(boardMenuGroup)
+                        .priority(1)
+                        .type(MenuType.LIST)
+                        .name("공지사항")
+                        .description("부원이 알아야 할 내용을 게시합니다.")
+                        .build();
 
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
         given(memberRepository.getById(anyInt())).willReturn(writer);
+        given(menuRepository.getById(anyInt())).willReturn(NoticeBoardMenu);
 
         // when
-        Integer returnedId = contestBoardService.write(saveContestBoardDto);
+        Integer returnedId = contestBoardService.write(9, saveContestBoardDto);
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());
@@ -139,10 +155,10 @@ public class ContestBoardServiceTest {
 
         given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
 
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) ,12201863);
 
         // when
-        Integer returnedId = contestBoardService.update(updateContestBoardDto);
+        Integer returnedId = contestBoardService.update(9, updateContestBoardDto);
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());

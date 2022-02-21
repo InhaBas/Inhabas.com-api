@@ -154,7 +154,7 @@ public class NormalBoardRepositoryTest {
         assertThat(boards.size()).isEqualTo(2);
     }
 
-    @DisplayName("메뉴 id 에 해당하는 게시글들을 갖고 온다.")
+    @DisplayName("메뉴 id 에 해당하는 게시글들을 조회한다.")
     @Test
     public void findAllByMenuId() {
         //given
@@ -165,17 +165,17 @@ public class NormalBoardRepositoryTest {
         Integer noticeBoardId = NOTICE_BOARD.getMenu().getId();
 
         //when
-        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardId, Pageable.ofSize(5));
-        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, Pageable.ofSize(5));
+        Page<Object> freeBoards = boardRepository.findAllByMenuId(freeBoardId, Pageable.ofSize(5));
+        Page<Object> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, Pageable.ofSize(5));
 
         //then
         assertThat(freeBoards.getTotalElements()).isEqualTo(1);
         freeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(freeBoardId));
+                board->assertThat(((BoardDto)board).getMenuId()).isEqualTo(freeBoardId));
 
         assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
         noticeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardId));
+                board->assertThat(((BoardDto)board).getMenuId()).isEqualTo(noticeBoardId));
     }
 
 }

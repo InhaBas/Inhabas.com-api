@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,7 +23,7 @@ public class SaveBoardDto {
     @NotNull
     private Integer menuId;
 
-    @NotNull
+    @NotNull(message = "로그인 후 이용해주세요.")
     private Integer loginedUser;
 
     public SaveBoardDto(String title, String contents, Integer menuId, Integer loginedUser) {
@@ -31,4 +32,11 @@ public class SaveBoardDto {
         this.menuId = menuId;
         this.loginedUser = loginedUser;
     }
+
+    public SaveBoardDto(Map<String, Object> saveBoard) {
+        this.title = saveBoard.get("title").toString();
+        this.contents = saveBoard.get("contents").toString();
+        this.menuId = (Integer) saveBoard.get("menuId");
+        this.loginedUser = (Integer) saveBoard.get("loginedUser");
+}
 }

@@ -4,6 +4,8 @@ import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -23,10 +25,12 @@ public class ContestBoardServiceImpl implements ContestBoardService{
 
     private final ContestBoardRepository contestBoardRepository;
     private final MemberRepository memberRepository;
+    private final MenuRepository menuRepository;
 
     @Override
-    public Integer write(SaveContestBoardDto dto) {
+    public Integer write(Integer menuId, SaveContestBoardDto dto) {
         Member writer = memberRepository.getById(dto.getLoginedUser());
+        Menu menu = menuRepository.getById(menuId);
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
                 .contents(dto.getContents())
@@ -35,12 +39,15 @@ public class ContestBoardServiceImpl implements ContestBoardService{
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
                 .build()
-                        .writtenBy(writer);
+                .writtenBy(writer)
+                .inMenu(menu);
         return contestBoardRepository.save(contestBoard).getId();
     }
 
     @Override
-    public Integer update(UpdateContestBoardDto dto) {
+    public Integer update(Integer menuId, UpdateContestBoardDto dto) {
+        Member writer = memberRepository.getById(dto.getLoginedUser());
+        Menu menu = menuRepository.getById(menuId);
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
@@ -49,8 +56,9 @@ public class ContestBoardServiceImpl implements ContestBoardService{
                 .topic(dto.getTopic())
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
-                .build();
-        // em.merge() 호출되는 지 확인할 것
+                .build()
+                .writtenBy(writer)
+                .inMenu(menu);
         return contestBoardRepository.save(entity).getId();
     }
 

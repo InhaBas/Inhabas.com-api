@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -21,7 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
-public class NormalBoardController implements BoardController<Object, Object, SaveBoardDto, UpdateBoardDto>{
+public class NormalBoardController implements BoardController<Object, Object>{
 
     private final BoardService boardService;
 
@@ -32,7 +33,7 @@ public class NormalBoardController implements BoardController<Object, Object, Sa
     public Object getBoard(@RequestParam Integer menuId, @RequestParam Integer id) {
         Optional<BoardController> controller = menuService.findControllerByMenuId(menuId);
         if(!controller.isEmpty())
-            return controller.get().getBoard(menuId, id);
+            return controller.get().getBoard(menuId, id); // 자동으로 Object 리턴
         return boardService.getBoard(id);
     }
 
@@ -47,20 +48,20 @@ public class NormalBoardController implements BoardController<Object, Object, Sa
 
     @Operation(description = "게시글 추가")
     @PostMapping
-    public Integer addBoard(@RequestParam Integer menuId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
+    public Integer addBoard(@RequestParam Integer menuId, @Valid @RequestBody Map<String, Object> saveBoard) {
         Optional<BoardController> controller = menuService.findControllerByMenuId(menuId);
         if(!controller.isEmpty())
-            return controller.get().addBoard(menuId, saveBoardDto);
-        return boardService.write(saveBoardDto);
+            return controller.get().addBoard(menuId, saveBoard);
+        return boardService.write(new SaveBoardDto(saveBoard));
     }
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public Integer updateBoard(@RequestParam Integer menuId, @Valid @RequestBody UpdateBoardDto updateBoardDto) {
+    public Integer updateBoard(@RequestParam Integer menuId, @Valid @RequestBody Map<String, Object> updateBoard) {
         Optional<BoardController> controller = menuService.findControllerByMenuId(menuId);
         if(!controller.isEmpty())
-            return controller.get().updateBoard(menuId, updateBoardDto);
-        return boardService.update(updateBoardDto);
+            return controller.get().updateBoard(menuId, updateBoard);
+        return boardService.update(new UpdateBoardDto(updateBoard));
     }
 
     @Operation(description = "게시글 삭제")

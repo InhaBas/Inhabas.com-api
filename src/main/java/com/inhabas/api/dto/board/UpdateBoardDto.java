@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Map;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -25,6 +26,12 @@ public class UpdateBoardDto {
         this.id = id;
         this.title = title;
         this.contents = contents;
+    }
+
+    public UpdateBoardDto(Map<String, Object> updateBoard){
+        this.id = (Integer) updateBoard.get("id");
+        this.title = updateBoard.get("title").toString();
+        this.contents = updateBoard.get("contents").toString();
     }
 
 }

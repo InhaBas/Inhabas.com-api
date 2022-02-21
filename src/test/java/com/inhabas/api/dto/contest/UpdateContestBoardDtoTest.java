@@ -41,7 +41,7 @@ public class UpdateContestBoardDtoTest {
     public void FieldsAreNullError() {
         // given
         UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(
-            null, null, null, null, null, null, null );
+            null, null, null, null, null, null, null, null );
 
         // when
         Set<ConstraintViolation<UpdateContestBoardDto>> violations = validator.validate(updateContestBoardDto);
@@ -64,7 +64,7 @@ public class UpdateContestBoardDtoTest {
     public void FieldsAreBlankError() {
         // given
         UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(
-                1, " ", " ", " ", " ", LocalDate.of(2022, 01, 01), LocalDate.of(2023, 02, 10));
+                1, " ", " ", " ", " ", LocalDate.of(2022, 01, 01), LocalDate.of(2023, 02, 10), 12201863);
 
         // when
         Set<ConstraintViolation<UpdateContestBoardDto>> violations = validator.validate(updateContestBoardDto);
@@ -90,7 +90,9 @@ public class UpdateContestBoardDtoTest {
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
                 LocalDate.of(2022, 01, 01),
-                LocalDate.of(2022, 03, 03));
+                LocalDate.of(2022, 03, 03),
+                12201863
+        );
 
         // when
         Set<ConstraintViolation<UpdateContestBoardDto>> violations = validator.validate(updateContestBoardDto);

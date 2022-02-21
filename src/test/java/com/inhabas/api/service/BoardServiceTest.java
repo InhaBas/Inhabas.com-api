@@ -83,18 +83,18 @@ public class BoardServiceTest {
         //given
         PageRequest pageable = PageRequest.of(0,10, Sort.Direction.ASC, "created");
 
-        BoardDto boardDto1 = new BoardDto(1, "title", "contents", "mingyeom",1, LocalDateTime.now(), LocalDateTime.now() );
-        BoardDto boardDto2 = new BoardDto(2, "title", "contents", "minji",1, LocalDateTime.now(), LocalDateTime.now() );
+        Object boardDto1 = (Object) new BoardDto(1, "title", "contents", "mingyeom",1, LocalDateTime.now(), LocalDateTime.now() );
+        Object boardDto2 = (Object) new BoardDto(2, "title", "contents", "minji",1, LocalDateTime.now(), LocalDateTime.now() );
 
-        List<BoardDto> results = new ArrayList<>();
+        List<Object> results = new ArrayList<>();
         results.add(boardDto1);
         results.add(boardDto2);
-        Page<BoardDto> expectedBoardDto = new PageImpl<> (results, pageable, results.size());
+        Page<Object> expectedBoardDto = new PageImpl<> (results, pageable, results.size());
 
         given(boardRepository.findAllByMenuId(any(), any())).willReturn(expectedBoardDto);
 
         //when
-        Page<BoardDto> returnedBoardList = boardService.getBoardList(1, pageable);
+        Page<Object> returnedBoardList = boardService.getBoardList(1, pageable);
 
         //then
         then(boardRepository).should(times(1)).findAllByMenuId(any(), any());

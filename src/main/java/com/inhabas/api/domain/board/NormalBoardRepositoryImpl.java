@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
 
     @Override
     public Page<Object> findAllByMenuId(Integer menuId, Pageable pageable) {
-        List<Object> results = queryFactory.select(Projections.constructor(Object.class,
+        List<BoardDto> results = queryFactory.select(Projections.constructor(BoardDto.class,
                         normalBoard.id,
                         normalBoard.title.value,
                         Expressions.asString("").as("contents"),
@@ -37,7 +38,12 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(results, pageable, results.size());
+        List<Object> castToObject = new ArrayList<>();
+        for (BoardDto result : results){
+            castToObject.add((Object) result);
+        }
+
+        return new PageImpl<>(castToObject, pageable, castToObject.size());
     }
 
     private BooleanExpression menuEq(Integer categoryId) {

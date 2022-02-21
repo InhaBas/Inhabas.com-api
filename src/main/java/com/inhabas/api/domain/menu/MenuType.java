@@ -2,12 +2,12 @@ package com.inhabas.api.domain.menu;
 
 public enum MenuType {
     LIST, // 리스트형 게시판 메뉴
-    CARD,       // 카드형 게시판 메뉴
     CONTEST,    // 공모전형 게시판 메뉴
     INTRODUCE,
     ALBUM,
-    ACCOUNT,
-    APPLY,
+    BUDGET_ACCOUNT,
+    BUDGET_SUPPORT,
+    GRADUATED,
     HONOR,
     LECTURE,
     STUDY,

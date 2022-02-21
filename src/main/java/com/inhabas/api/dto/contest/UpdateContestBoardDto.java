@@ -11,6 +11,8 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,4 +42,18 @@ public class UpdateContestBoardDto {
     @NotNull(message = "공모전 모집 마감일을 등록해주세요.")
     @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
     private LocalDate deadline;
+
+    @NotNull(message = "로그인 후 이용해주세요.")
+    private Integer loginedUser;
+
+    public UpdateContestBoardDto(Map<String, Object> updateBoard) {
+        this.id = (Integer) updateBoard.get("id");
+        this.title = updateBoard.get("title").toString();
+        this.contents = updateBoard.get("contents").toString();
+        this.association = updateBoard.get("association").toString();
+        this.topic = updateBoard.get("topic").toString();
+        this.start = LocalDate.parse(updateBoard.get("start").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.deadline = LocalDate.parse(updateBoard.get("deadline").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.loginedUser = (Integer) updateBoard.get("loginedUser");
+    }
 }

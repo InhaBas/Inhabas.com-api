@@ -26,9 +26,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,8 +70,8 @@ public class ContestBoardControllerTest {
     @Test
     public void addNewContestBoard() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 03,26) , 12201863);
-        given(contestBoardService.write(any(SaveContestBoardDto.class))).willReturn(1);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", 9, "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 03,26) , 12201863);
+        given(contestBoardService.write(anyInt(), any(SaveContestBoardDto.class))).willReturn(1);
 
         // when
         mvc.perform(post("/board/contest")
@@ -88,15 +86,24 @@ public class ContestBoardControllerTest {
     @Test
     public void updateContestBoard() throws Exception{
         //given
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 01, 01), LocalDate.of(2022, 03,26) );
-        given(contestBoardService.update(any(UpdateContestBoardDto.class))).willReturn(1);
+        Map<String, Object> updateBoard = Map.of(
+                "id", 1,
+                "title", "수정된 제목",
+                "contents", "수정된 내용",
+                "association", "수정된 협회기관 명",
+                "topic", "수정된 공모전 주제",
+                "start",LocalDate.of(2022, 01, 01),
+                "deadline", LocalDate.of(2022, 03,26)
+        );
+
+        given(contestBoardService.update(anyInt(), any(UpdateContestBoardDto.class))).willReturn(1);
 
         // when
-        contestBoardController.updateBoard(2, updateContestBoardDto);
+        contestBoardController.updateBoard(2, updateBoard);
         mvc.perform(put("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId", "1")
-                        .content(objectMapper.writeValueAsString(updateContestBoardDto)))
+                        .content(objectMapper.writeValueAsString(updateBoard)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
     }
@@ -164,45 +171,4 @@ public class ContestBoardControllerTest {
         assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(contestBoardDto));
 
     }
-
-    @DisplayName("공모전 게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
-    @Test
-    public void TitleIsTooLongError() throws Exception {
-        //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) , 12201863);
-
-        // when
-        String errorMessage = mvc.perform(post("/board/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("menuId","2")
-                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException().getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("제목은 최대 100자입니다.");
-    }
-
-    @DisplayName("공모전 게시글 작성 시 Contents가 null인 경우 오류 발생")
-    @Test
-    public void ContentIsNullError() throws Exception {
-        //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title",  " ", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) , 12201863);
-
-        // when
-        String errorMessage = mvc.perform(post("/board/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("menuId","1")
-                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException().getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("본문을 입력하세요.");
-    }
-
 }

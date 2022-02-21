@@ -26,10 +26,12 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -97,11 +99,10 @@ public class NormalBoardControllerTest {
     @Test
     public void updateBoard() throws Exception{
         //given
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "제목을 수정하였습니다.", "내용을 수정하였습니다.");
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
         given(boardService.update(any(UpdateBoardDto.class))).willReturn(1);
 
         // when
-        normalBoardController.updateBoard(2, updateBoardDto);
         mvc.perform(put("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId","2")
@@ -128,12 +129,12 @@ public class NormalBoardControllerTest {
     public void getBoardList() throws Exception {
         PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
 
-        List<BoardDto> results = new ArrayList<>();
-        results.add(new BoardDto(1, "Shown Title1", null, "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(2, "Shown Title2", null, "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(3, "Shown Title3", null, "Mingyeom", 2, LocalDateTime.now(), null));
+        List<Object> results = new ArrayList<>();
+        results.add((Object)(new BoardDto(1, "Shown Title1", null, "Mingyeom", 2, LocalDateTime.now(), null)));
+        results.add((Object)(new BoardDto(2, "Shown Title2", null, "Mingyeom", 2, LocalDateTime.now(), null)));
+        results.add((Object)(new BoardDto(3, "Shown Title3", null, "Mingyeom", 2, LocalDateTime.now(), null)));
 
-        Page<BoardDto> expectedBoardDto = new PageImpl<>(results,pageable, results.size());
+        Page<Object> expectedBoardDto = new PageImpl<>(results,pageable, results.size());
 
         given(boardService.getBoardList(anyInt(), any())).willReturn(expectedBoardDto);
 
@@ -172,45 +173,5 @@ public class NormalBoardControllerTest {
         // then
         assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(boardDto));
 
-    }
-
-    @DisplayName("게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
-    @Test
-    public void TitleIsTooLongError() throws Exception {
-        //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
-
-        // when
-        String errorMessage = mvc.perform(post("/board")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("menuId","2")
-                        .content(objectMapper.writeValueAsString(saveBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException().getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("제목은 최대 100자입니다.");
-    }
-
-    @DisplayName("게시글 작성 시 Contents가 null인 경우 오류 발생")
-    @Test
-    public void ContentIsNullError() throws Exception {
-        //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1, 12201863);
-
-        // when
-        String errorMessage = mvc.perform(post("/board")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("menuId","2")
-                        .content(objectMapper.writeValueAsString(saveBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException().getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("본문을 입력하세요.");
     }
 }
