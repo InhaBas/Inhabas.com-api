@@ -47,7 +47,7 @@ public class ContestBoardController implements BoardController <DetailContestBoa
 
     @Operation(description = "공모전 게시판의 게시글 삭제")
     @DeleteMapping
-    public void deleteBoard(@RequestParam Integer id) {
+    public void deleteBoard(@RequestParam Integer menuId, @RequestParam Integer id) {
         boardService.delete(id);
     }
 }

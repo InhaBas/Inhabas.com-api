@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Map;
 
 public interface BoardController <DetailDto, ListDto> {
+
      DetailDto getBoard(Integer menuId, Integer id);
 
      Page<ListDto> getBoardList(Integer menuId, Pageable pageable);
@@ -14,5 +15,5 @@ public interface BoardController <DetailDto, ListDto> {
 
      Integer updateBoard(Integer menuId, Map<String, Object> updateDto);
 
-     void deleteBoard(Integer id);
+     void deleteBoard(Integer menuId, Integer id);
 }

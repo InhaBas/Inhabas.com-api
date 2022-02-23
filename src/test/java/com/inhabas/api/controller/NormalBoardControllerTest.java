@@ -87,7 +87,7 @@ public class NormalBoardControllerTest {
         given(boardService.write(any(SaveBoardDto.class))).willReturn(1);
 
         // when
-        mvc.perform(post("/board")
+        mvc.perform(post("/board/normal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId","2")
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
@@ -103,7 +103,7 @@ public class NormalBoardControllerTest {
         given(boardService.update(any(UpdateBoardDto.class))).willReturn(1);
 
         // when
-        mvc.perform(put("/board")
+        mvc.perform(put("/board/normal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId","2")
                         .content(objectMapper.writeValueAsString(updateBoardDto)))
@@ -118,8 +118,9 @@ public class NormalBoardControllerTest {
         doNothing().when(boardService).delete(anyInt());
 
         // when
-        mvc.perform(delete("/board")
+        mvc.perform(delete("/board/normal")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId","2")
                         .param("id", "1"))
                 .andExpect(status().isOk());
     }
@@ -139,7 +140,7 @@ public class NormalBoardControllerTest {
         given(boardService.getBoardList(anyInt(), any())).willReturn(expectedBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/board/all")
+        String responseBody = mvc.perform(get("/board/normal/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId", "2")
                         .param("page", "2")
@@ -162,7 +163,7 @@ public class NormalBoardControllerTest {
         given(boardService.getBoard(anyInt())).willReturn(boardDto);
 
         // when
-        String responseBody = mvc.perform(get("/board")
+        String responseBody = mvc.perform(get("/board/normal")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId","2")
                         .param("id", "1"))

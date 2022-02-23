@@ -117,6 +117,7 @@ public class ContestBoardControllerTest {
         // when
         mvc.perform(delete("/board/contest")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("menuId", "9")
                         .param("id", "1"))
                 .andExpect(status().isOk());
     }

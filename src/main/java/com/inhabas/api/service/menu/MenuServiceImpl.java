@@ -2,6 +2,7 @@ package com.inhabas.api.service.menu;
 
 import com.inhabas.api.controller.BoardController;
 import com.inhabas.api.controller.ContestBoardController;
+import com.inhabas.api.controller.NormalBoardController;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.domain.menu.MenuType;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class MenuServiceImpl implements MenuService {
             case CONTEST:
                 return Optional.of(context.getBean(ContestBoardController.class));
             default:
-                return Optional.empty(); // NormalBoardController
+                return Optional.of(context.getBean(NormalBoardController.class));
         }
     }
 }
