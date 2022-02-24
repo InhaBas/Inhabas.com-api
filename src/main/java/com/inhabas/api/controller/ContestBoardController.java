@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/board/contest")
+@RequestMapping("/contest")
 @RequiredArgsConstructor
 public class ContestBoardController {
 

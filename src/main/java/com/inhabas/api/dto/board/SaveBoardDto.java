@@ -22,13 +22,9 @@ public class SaveBoardDto {
     @NotNull
     private Integer menuId;
 
-    @NotNull
-    private Integer loginedUser;
-
-    public SaveBoardDto(String title, String contents, Integer menuId, Integer loginedUser) {
+    public SaveBoardDto(String title, String contents, Integer menuId) {
         this.title = title;
         this.contents = contents;
         this.menuId = menuId;
-        this.loginedUser = loginedUser;
     }
 }

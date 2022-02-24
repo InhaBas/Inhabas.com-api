@@ -1,7 +1,5 @@
 package com.inhabas.api.dto.board;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -32,7 +30,7 @@ public class SaveBoardDtoTest {
     @Test
     public void SaveBoardDto_is_OK(){
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1);
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -45,7 +43,7 @@ public class SaveBoardDtoTest {
     @Test
     public void Contents_is_null() {
         // given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, 1);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -62,7 +60,7 @@ public class SaveBoardDtoTest {
         String title = "title".repeat(20) + ".";
         String contents = "그냥 본문 내용입니다.";
 
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, 1);
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
