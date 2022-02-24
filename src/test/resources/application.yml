@@ -8,10 +8,13 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MariaDB;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
     username: sa
     password:
     driver-class-name: org.h2.Driver
+  output:
+    ansi:
+      enabled: always
   jpa:
     show-sql: true
     defer-datasource-initialization: false
@@ -21,8 +24,17 @@ spring:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     properties:
       hibernate.format_sql: true
-  sql:
-    init:
-      mode: embedded
+    database: sql_server
+
+logging:
+  level:
+    org.springframwork.web.client: DEBUG
+#    org.hibernate.type: trace
 file:
   dir: ../../../../files/
+
+authenticate:
+  oauth2-success-handle-url: /login/test-success
+  oauth2-failure-handle-url: /login/test-fail
+  invalid-jwt-token-handle-url: /jwt/test-invalid-token
+  reissue-access-token-url: /jwt/test-reissue-token

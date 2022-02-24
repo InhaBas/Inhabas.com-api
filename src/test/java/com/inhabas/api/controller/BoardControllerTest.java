@@ -6,11 +6,11 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
+import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,25 +21,22 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BoardController.class)
+@DefaultWebMvcTest(BoardController.class)
 public class BoardControllerTest {
 
     @Autowired
@@ -65,12 +62,7 @@ public class BoardControllerTest {
         mvc = MockMvcBuilders
                 .standaloneSetup(boardController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setViewResolvers(new ViewResolver() {
-                    @Override
-                    public View resolveViewName(String viewName, Locale locale) throws Exception {
-                        return new MappingJackson2JsonView();
-                    }
-                })
+                .setViewResolvers((viewName, locale) -> new MappingJackson2JsonView())
                 .build();
     }
 
@@ -115,8 +107,7 @@ public class BoardControllerTest {
         mvc.perform(delete("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @DisplayName("게시글 목록 조회를 요청한다.")
@@ -142,7 +133,6 @@ public class BoardControllerTest {
                         .param("sort", "ASC")
                         .param("properties", "id"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andReturn()
                 .getResponse().getContentAsString();
 
@@ -177,12 +167,14 @@ public class BoardControllerTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
 
         // when
-        String errorMessage = mvc.perform(post("/board")
+        String errorMessage = Objects.requireNonNull(
+                mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
-                .getResolvedException().getMessage();
+                .getResolvedException())
+                .getMessage();
 
         // then
         assertThat(errorMessage).isNotBlank();
@@ -196,12 +188,14 @@ public class BoardControllerTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1, 12201863);
 
         // when
-        String errorMessage = mvc.perform(post("/board")
+        String errorMessage = Objects.requireNonNull(
+                mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
-                .getResolvedException().getMessage();
+                .getResolvedException())
+                .getMessage();
 
         // then
         assertThat(errorMessage).isNotBlank();

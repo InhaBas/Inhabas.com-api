@@ -4,3 +4,17 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+      discovery:
+        enabled: false

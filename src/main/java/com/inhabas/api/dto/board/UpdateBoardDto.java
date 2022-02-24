@@ -1,6 +1,5 @@
 package com.inhabas.api.dto.board;
 
-import com.inhabas.api.domain.board.NormalBoard;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +7,6 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.NotEmpty;
 
 @Getter @Setter
 @NoArgsConstructor

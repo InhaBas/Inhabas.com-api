@@ -35,18 +35,22 @@ dependencies {
 			'org.springdoc:springdoc-openapi-ui:1.6.0',
 			'com.querydsl:querydsl-jpa',
 
+			// cloud config
 			'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
 			'org.springframework.boot:spring-boot-starter-actuator:2.6.2',
-			'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0'
+			'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0',
+
+			// security
+			'org.springframework.boot:spring-boot-starter-security',
+			'org.springframework.boot:spring-boot-starter-oauth2-client',
+			'javax.xml.bind:jaxb-api',
 	)
 
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',
+			'org.springframework.security:spring-security-test'
 	)
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude group: "junit", module: "junit"
-	}
 
 	compileOnly(
 			'org.projectlombok:lombok'
@@ -56,6 +60,13 @@ dependencies {
 			'org.mariadb.jdbc:mariadb-java-client',
 			'com.h2database:h2'
 	)
+
+	// jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+			//'org.bouncycastle:bcprov-jdk15on:1.60',
+			'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 }
 
 test {
