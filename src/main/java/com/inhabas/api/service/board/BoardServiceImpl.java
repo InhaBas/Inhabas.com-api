@@ -30,7 +30,7 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(SaveBoardDto saveBoardDto) {
+    public Integer write(Integer loginedUser, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
         Member writer = memberRepository.getById(saveBoardDto.getLoginedUser());
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())

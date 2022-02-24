@@ -38,6 +38,4 @@ public class SaveContestBoardDto {
     @Future (message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
     private LocalDate deadline;
 
-    @NotNull(message = "로그인 후 이용해주세요.")
-    private Integer loginedUser;
 }

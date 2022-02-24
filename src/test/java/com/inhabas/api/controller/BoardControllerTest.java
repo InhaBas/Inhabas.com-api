@@ -70,7 +70,7 @@ public class BoardControllerTest {
     @Test
     public void addNewBoard() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", 1);
         given(boardService.write(any(SaveBoardDto.class))).willReturn(1);
 
         // when
@@ -164,7 +164,7 @@ public class BoardControllerTest {
     @Test
     public void TitleIsTooLongError() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1);
 
         // when
         String errorMessage = Objects.requireNonNull(
@@ -185,7 +185,7 @@ public class BoardControllerTest {
     @Test
     public void ContentIsNullError() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1);
 
         // when
         String errorMessage = Objects.requireNonNull(

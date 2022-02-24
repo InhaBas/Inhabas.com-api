@@ -60,7 +60,7 @@ public class BoardServiceTest {
     @Test
     public void createBoard() {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1, 12201863);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1);
         NormalBoard normalBoard = new NormalBoard(1, "title", "contents");
         Menu menu = new Menu(null, 1, null, "name", "description");
         Member member = new Member(1, "mingyeom", "010-0000-0000","picture", null, null);
