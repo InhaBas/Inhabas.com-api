@@ -4,8 +4,10 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
+import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +59,9 @@ public class BoardControllerTest {
     @MockBean
     NormalBoard normalBoard;
 
+    @MockBean
+    private AuthUserArgumentResolver authUserArgumentResolver;
+
     @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders
@@ -68,28 +73,29 @@ public class BoardControllerTest {
 
     @DisplayName("게시글 저장을 요청한다.")
     @Test
+    @WithMockJwtAuthenticationToken
     public void addNewBoard() throws Exception {
         //given
         SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", 1);
-        given(boardService.write(any(SaveBoardDto.class))).willReturn(1);
+        given(boardService.write(any(), any(SaveBoardDto.class))).willReturn(1);
 
         // when
         mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
     }
 
     @DisplayName("게시글 수정을 요청한다.")
     @Test
+    @WithMockJwtAuthenticationToken
     public void updateBoard() throws Exception{
         //given
         UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "제목을 수정하였습니다.", "내용을 수정하였습니다.");
-        given(boardService.update(any(UpdateBoardDto.class))).willReturn(1);
+        given(boardService.update(any(), any(UpdateBoardDto.class))).willReturn(1);
 
         // when
-        boardController.updateBoard(updateBoardDto);
         mvc.perform(put("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateBoardDto)))
@@ -107,7 +113,7 @@ public class BoardControllerTest {
         mvc.perform(delete("/board")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
-                .andExpect(status().isOk());
+                    .andExpect(status().isNoContent());
     }
 
     @DisplayName("게시글 목록 조회를 요청한다.")
@@ -162,6 +168,7 @@ public class BoardControllerTest {
 
     @DisplayName("게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
     @Test
+    @WithMockJwtAuthenticationToken
     public void TitleIsTooLongError() throws Exception {
         //given
         SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1);
@@ -183,6 +190,7 @@ public class BoardControllerTest {
 
     @DisplayName("게시글 작성 시 Contents가 null인 경우 오류 발생")
     @Test
+    @WithMockJwtAuthenticationToken
     public void ContentIsNullError() throws Exception {
         //given
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1);

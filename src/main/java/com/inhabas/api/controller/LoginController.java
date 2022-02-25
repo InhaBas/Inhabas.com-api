@@ -11,6 +11,7 @@ import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class LoginController {
 
-    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d&profileImageUrl=%s";
+    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/api/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d&profileImageUrl=%s";
     private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?accessToken=%s&expiresIn=%d";
 
     private final RefreshTokenService refreshTokenService;

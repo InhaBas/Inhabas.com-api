@@ -20,6 +20,7 @@ import java.util.Objects;
 @Table(name = "contest_board")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DiscriminatorValue("Contest")
 public class ContestBoard extends NormalBoard {
 
     @Embedded

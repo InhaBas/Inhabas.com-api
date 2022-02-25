@@ -19,14 +19,14 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ContestBoardServiceImpl implements ContestBoardService{
+public class ContestBoardServiceImpl implements ContestBoardService {
 
     private final ContestBoardRepository contestBoardRepository;
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(SaveContestBoardDto dto) {
-        Member writer = memberRepository.getById(dto.getLoginedUser());
+    public Integer write(Integer userId, SaveContestBoardDto dto) {
+        Member writer = memberRepository.getById(userId);
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
                 .contents(dto.getContents())
@@ -40,7 +40,10 @@ public class ContestBoardServiceImpl implements ContestBoardService{
     }
 
     @Override
-    public Integer update(UpdateContestBoardDto dto) {
+    public Integer update(Integer userId, UpdateContestBoardDto dto) {
+        contestBoardRepository.findById(dto.getId())
+                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+        Member writer = memberRepository.getById(userId);
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
@@ -49,8 +52,8 @@ public class ContestBoardServiceImpl implements ContestBoardService{
                 .topic(dto.getTopic())
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
-                .build();
-        // em.merge() 호출되는 지 확인할 것
+                .build()
+                .writtenBy(writer);
         return contestBoardRepository.save(entity).getId();
     }
 

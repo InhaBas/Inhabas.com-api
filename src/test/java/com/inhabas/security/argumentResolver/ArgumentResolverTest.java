@@ -3,7 +3,6 @@ package com.inhabas.security.argumentResolver;
 import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import org.junit.jupiter.api.AfterEach;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class ArgumentResolverTest {
