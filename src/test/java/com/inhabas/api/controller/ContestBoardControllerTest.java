@@ -5,7 +5,11 @@ import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
+import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
+import com.inhabas.api.security.domain.AuthUser;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.service.contest.ContestBoardService;
+import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,10 +51,13 @@ public class ContestBoardControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    ContestBoardController contestBoardController;
+    private ContestBoardController contestBoardController;
 
     @MockBean
-    ContestBoardService contestBoardService;
+    private ContestBoardService contestBoardService;
+
+    @MockBean
+    private AuthUserArgumentResolver authUserArgumentResolver;
 
     @BeforeEach
     public void setUp() {
@@ -63,29 +70,30 @@ public class ContestBoardControllerTest {
 
     @DisplayName("공모전 게시글 저장을 요청한다.")
     @Test
+    @WithMockJwtAuthenticationToken
     public void addNewContestBoard() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3,26) , 12201863);
-        given(contestBoardService.write(any(SaveContestBoardDto.class))).willReturn(1);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3, 26));
+        given(contestBoardService.write(any(), any(SaveContestBoardDto.class))).willReturn(1);
 
         // when
-        mvc.perform(post("/board/contest")
+        mvc.perform(post("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
     }
 
     @DisplayName("공모전 게시글 수정을 요청한다.")
     @Test
+    @WithMockJwtAuthenticationToken
     public void updateContestBoard() throws Exception{
         //given
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3,26) );
-        given(contestBoardService.update(any(UpdateContestBoardDto.class))).willReturn(1);
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3, 26));
+        given(contestBoardService.update(any(), any(UpdateContestBoardDto.class))).willReturn(1);
 
         // when
-        contestBoardController.updateBoard(updateContestBoardDto);
-        mvc.perform(put("/board/contest")
+        mvc.perform(put("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateContestBoardDto)))
                 .andExpect(status().isOk())
@@ -99,10 +107,10 @@ public class ContestBoardControllerTest {
         doNothing().when(contestBoardService).delete(anyInt());
 
         // when
-        mvc.perform(delete("/board/contest")
+        mvc.perform(delete("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @DisplayName("공모전 게시판 목록 조회를 요청한다.")
@@ -120,7 +128,7 @@ public class ContestBoardControllerTest {
         given(contestBoardService.getBoardList(anyInt(), any())).willReturn(expectedContestBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/board/contest/all")
+        String responseBody = mvc.perform(get("/contest/all")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId", "9")
                         .param("page", "0")
@@ -143,7 +151,7 @@ public class ContestBoardControllerTest {
         given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/board/contest")
+        String responseBody = mvc.perform(get("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("id", "1"))
                 .andExpect(status().isOk())
@@ -157,15 +165,17 @@ public class ContestBoardControllerTest {
 
     @DisplayName("공모전 게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
     @Test
+    @WithMockJwtAuthenticationToken
     public void TitleIsTooLongError() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26) , 12201863);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
+
 
         // when
         String errorMessage = Objects.requireNonNull(
-                mvc.perform(post("/board/contest")
+                mvc.perform(post("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
+                                .content(objectMapper.writeValueAsString(saveContestBoardDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResolvedException())
@@ -178,13 +188,14 @@ public class ContestBoardControllerTest {
 
     @DisplayName("공모전 게시글 작성 시 Contents가 null인 경우 오류 발생")
     @Test
+    @WithMockJwtAuthenticationToken
     public void ContentIsNullError() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title",  " ", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26) , 12201863);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title",  " ", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
 
         // when
         String errorMessage = Objects.requireNonNull(
-                mvc.perform(post("/board/contest")
+                mvc.perform(post("/contest")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(saveContestBoardDto)))
                 .andExpect(status().isBadRequest())

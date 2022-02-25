@@ -7,9 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BoardService {
-    Integer write(SaveBoardDto saveBoardDto);
+    Integer write(Integer userId, SaveBoardDto saveBoardDto);
 
-    Integer update(UpdateBoardDto updateBoardDto);
+    Integer update(Integer userId, UpdateBoardDto updateBoardDto);
 
     void delete(Integer id);
 

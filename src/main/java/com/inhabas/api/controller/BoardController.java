@@ -5,7 +5,6 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 
 import com.inhabas.api.security.argumentResolver.Authenticated;
-import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

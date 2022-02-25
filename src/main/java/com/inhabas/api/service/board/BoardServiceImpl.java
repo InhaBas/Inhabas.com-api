@@ -30,9 +30,9 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer loginedUser, SaveBoardDto saveBoardDto) {
+    public Integer write(Integer userId, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.getById(saveBoardDto.getLoginedUser());
+        Member writer = memberRepository.getById(userId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -40,8 +40,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
+    public Integer update(Integer userId, UpdateBoardDto updateBoardDto) {
+        Member writer = memberRepository.getById(userId);
+        NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
+                .writtenBy(writer);
         return boardRepository.save(entity).getId();
     }
 
