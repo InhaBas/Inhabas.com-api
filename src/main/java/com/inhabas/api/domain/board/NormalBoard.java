@@ -23,6 +23,7 @@ import java.util.*;
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "TYPE", length = 15)
+@DiscriminatorValue("Normal")
 public class NormalBoard extends BaseEntity {
 
     @Id
