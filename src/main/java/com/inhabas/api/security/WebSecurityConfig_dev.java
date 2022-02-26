@@ -17,36 +17,48 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class WebSecurityConfig_dev {
 
     @Order(0)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"dev"})
+    @Profile({"local", "dev"})
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final CustomOAuth2UserService customOAuth2UserService;
         private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
+        /** 소셜 로그인 api <br><br>
+         *
+         * 진행과정은 아래와 같다.<br>
+         * <ol>
+         *      <li>소셜로그인 진행</li>
+         *      <li>소셜 계정으로 인증이 완료되면 OAuth2LoginController 로 리다이렉트</li>
+         *      <ol style="list-style-type:lower-alpha">
+         *          <li>기존회원이면 3으로 이동</li>
+         *          <li>신규회원이면 회원가입을 위한 리다이렉트, 회원가입 후 3으로 이동</li>
+         *      </ol>
+         *      <li>jwt 토큰 발급 및 로그인 처리</li>
+         * </ol>
+         *
+         * 회원가입이나, jwt 토큰 발급을 위한 url 로 함부로 접근할 수 없게 하기 위해
+         * jwt 토근이 발급되기 이전까지는 OAuth2 인증 결과를 세션을 통해서 유지함.
+         * 따라서 critical 한 url 에 대해서 OAuth2 인증이 완료된 세션에 한해서만 허용.
+         */
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            /* 소셜 로그인 api
-             *
-             * 진행과정은 아래와 같다.
-             *   - 1. 소셜로그인 진행
-             *   - 2. 소셜 계정으로 인증이 완료되면 OAuth2LoginController 로 리다이렉트
-             *       2-1. 기존회원이면 3으로 이동
-             *       2-2. 신규회원이면 회원가입을 위한 리다이렉트, 회원가입 후 3으로 이동
-             *   - 3. jwt 토큰 발급 및 로그인 처리
-             *
-             * 회원가입이나, jwt 토큰 발급을 위한 url 로 함부로 접근할 수 없게 하기 위해
-             * jwt 토근이 발급되기 이전까지는 OAuth2 인증 결과를 세션을 통해서 유지함.
-             * 따라서 critical 한 url 에 대해서 OAuth2 인증이 완료된 세션에 한해서만 허용.
-             * */
+
             http
                     .antMatcher("/login/**")
                     .sessionManagement()
@@ -77,7 +89,7 @@ public class WebSecurityConfig_dev {
     @Order(1)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"dev"})
+    @Profile({"local", "dev"})
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
