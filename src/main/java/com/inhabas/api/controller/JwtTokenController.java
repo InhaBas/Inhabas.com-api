@@ -32,8 +32,8 @@ public class JwtTokenController {
         return new ResponseEntity<>(message, HttpStatus.UNAUTHORIZED);
     }
 
-    @PostMapping("${authenticate.reissue-access-token-url}")
-    @Operation(description = "access token 재발급을 요청한다.")
+    @PostMapping("/jwt/reissue-token")
+    @Operation(summary = "access token 재발급을 요청한다.")
     public ResponseEntity<TokenDto> reissueAccessToken(HttpServletRequest request) {
         String refreshToken = tokenProvider.resolveToken(request);
 

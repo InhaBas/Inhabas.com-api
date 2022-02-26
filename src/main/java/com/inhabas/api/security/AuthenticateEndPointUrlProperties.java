@@ -19,5 +19,4 @@ public class AuthenticateEndPointUrlProperties {
     private String oauth2SuccessHandleUrl;
     private String oauth2FailureHandleUrl;
     private String invalidJwtTokenHandleUrl;
-    private String reissueAccessTokenUrl;
 }
