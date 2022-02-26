@@ -1,6 +1,10 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.MemberTest;
+import com.inhabas.api.service.login.LoginService;
+import com.inhabas.api.service.login.LoginServiceImpl;
+import com.inhabas.api.service.login.OriginProviderForDevelopment;
+import com.inhabas.api.service.login.OriginProviderForProduction;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.api.security.domain.RefreshTokenService;
@@ -11,15 +15,20 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Collection;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DefaultWebMvcTest(LoginController.class)
+@Import({LoginServiceImpl.class, OriginProviderForDevelopment.class})
 public class LoginControllerTest {
 
     @Autowired
@@ -46,13 +55,13 @@ public class LoginControllerTest {
 
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isSeeOther())  // 303
+                .andExpect(header().string("location", "http://localhost/login/success"))
                 .andReturn();
 
         //then
-        String redirectedUrl = response.getResponse().getRedirectedUrl();
-        Assertions.assertThat(redirectedUrl)
-                .contains("/login/success", "accessToken=", "refreshToken=", "expiresIn=", "profileImageUrl=http");
+        Collection<String> headerNames = response.getResponse().getHeaderNames();
+        assertThat(headerNames).contains("accessToken", "refreshToken", "expiresIn", "profileImageUrl");
     }
 
     @Test
@@ -66,13 +75,13 @@ public class LoginControllerTest {
 
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isSeeOther())  // 303
+                .andExpect(header().string("location", "http://localhost/signUp"))
                 .andReturn();
 
         //then
-        String redirectedUrl = response.getResponse().getRedirectedUrl();
-        Assertions.assertThat(redirectedUrl)
-                .contains("/signUp", "accessToken=", "expiresIn=");
+        Collection<String> headerNames = response.getResponse().getHeaderNames();
+        assertThat(headerNames).contains("accessToken", "expiresIn");
     }
 
 }
