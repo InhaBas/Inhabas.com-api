@@ -5,7 +5,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.RefreshTokenService;
+import com.inhabas.api.security.domain.TokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.service.login.LoginServiceImpl;
 import com.inhabas.api.service.login.OriginProviderForProduction;
@@ -40,7 +40,7 @@ public class LoginServiceTest {
     private LoginServiceImpl loginService;
 
     @Mock
-    private RefreshTokenService refreshTokenService;
+    private TokenService tokenService;
 
     @Mock
     private MemberService memberService;

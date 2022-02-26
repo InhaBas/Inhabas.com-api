@@ -4,7 +4,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.RefreshToken;
-import com.inhabas.api.security.domain.RefreshTokenService;
+import com.inhabas.api.security.domain.TokenService;
 import com.inhabas.api.security.jwtUtils.TokenDto;
 import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.service.member.MemberService;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -26,7 +25,7 @@ public class LoginServiceImpl implements LoginService {
     private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success";
     private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp";
 
-    private final RefreshTokenService refreshTokenService;
+    private final TokenService tokenService;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
     private final HttpOriginProvider originProvider;
@@ -61,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
     private HttpHeaders prepareLoginRedirectHeader(HttpServletRequest request, AuthUserDetail authUserDetail, String memberRole) throws URISyntaxException {
 
         TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), memberRole, null); // 추후 팀 작업 시 변경해야함.
-        refreshTokenService.save(new RefreshToken(jwtToken.getRefreshToken()));
+        tokenService.saveRefreshToken(new RefreshToken(jwtToken.getRefreshToken()));
 
         return getRedirectHttpHeaders(LOGIN_SUCCESS_REDIRECT_URL, originProvider.getOrigin(request),
                 jwtToken.getAccessToken(), jwtToken.getRefreshToken(), String.valueOf(jwtToken.getExpiresIn()), authUserDetail.getProfileImageUrl());

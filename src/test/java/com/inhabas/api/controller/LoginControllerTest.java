@@ -1,17 +1,14 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.MemberTest;
-import com.inhabas.api.service.login.LoginService;
 import com.inhabas.api.service.login.LoginServiceImpl;
 import com.inhabas.api.service.login.OriginProviderForDevelopment;
-import com.inhabas.api.service.login.OriginProviderForProduction;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
-import com.inhabas.api.security.domain.RefreshTokenService;
+import com.inhabas.api.security.domain.TokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.jwtUtils.TokenDto;
 import com.inhabas.testConfig.DefaultWebMvcTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,7 +35,7 @@ public class LoginControllerTest {
     private JwtTokenProvider tokenProvider;
 
     @MockBean
-    private RefreshTokenService refreshTokenService;
+    private TokenService tokenService;
 
     @MockBean
     private MemberService memberService;
