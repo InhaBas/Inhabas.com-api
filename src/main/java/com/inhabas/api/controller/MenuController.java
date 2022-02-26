@@ -2,7 +2,7 @@ package com.inhabas.api.controller;
 
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.dto.menu.MenuGroupDto;
-import com.inhabas.api.service.menu.MenuServiceImpl;
+import com.inhabas.api.service.menu.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuController {
 
-    private final MenuServiceImpl menuService;
+    private final MenuService menuService;
 
     @GetMapping("/menu/all")
     @Operation(summary = "모든 메뉴 정보를 가져온다.")

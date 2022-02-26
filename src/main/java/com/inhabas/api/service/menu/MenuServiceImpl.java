@@ -22,6 +22,8 @@ public class MenuServiceImpl implements MenuService {
         return menuRepository.findAllMenuByMenuGroup();
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public MenuDto getMenuInfoById(Integer menuId) {
 
         Menu menu = menuRepository.findById(menuId)
