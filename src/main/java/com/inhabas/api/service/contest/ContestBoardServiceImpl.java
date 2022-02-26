@@ -1,5 +1,6 @@
 package com.inhabas.api.service.contest;
 
+import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
@@ -8,6 +9,7 @@ import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
+import com.inhabas.api.security.argumentResolver.Authenticated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +27,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer userId, SaveContestBoardDto dto) {
+    public Integer write(@Authenticated Integer userId, SaveContestBoardDto dto) {
         Member writer = memberRepository.getById(userId);
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
@@ -40,9 +42,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     }
 
     @Override
-    public Integer update(Integer userId, UpdateContestBoardDto dto) {
+    public Integer update(@Authenticated Integer userId, UpdateContestBoardDto dto) {
         contestBoardRepository.findById(dto.getId())
-                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(()-> new BoardNotFoundException());
         Member writer = memberRepository.getById(userId);
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
@@ -66,7 +68,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     @Override
     public DetailContestBoardDto getBoard(Integer id) {
         return  contestBoardRepository.findDtoById(id)
-                .orElseThrow(()-> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(()-> new BoardNotFoundException());
     }
 
     @Override

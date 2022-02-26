@@ -4,6 +4,8 @@ import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -30,18 +32,26 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        authenticatedUser = getAuthUserDetail(parameter, webRequest, authentication);
+        authenticatedUser = getAuthUserDetail(authentication);
 
-//        if (parameter.getClass().isInstance(Integer.class)) {
-//             return authenticatedUser.getProfileId();
-//        } else if(parameter.getClass().isInstance(AuthUserDetail.class)) {
-//            return authenticatedUser;
-//        }
+
+        if (parameter.getParameterType().equals(Integer.class)) {
+            try{
+                Integer profileId = authenticatedUser.getProfileId();
+                if(profileId.toString().isEmpty())
+                    throw new InvalidAuthUserException();
+                return profileId;
+            } catch(InvalidAuthUserException e){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        } else if(parameter.getParameterType().equals(AuthUserDetail.class)) {
+            return authenticatedUser;
+        }
 
         return authenticatedUser;
     }
 
-    private AuthUserDetail getAuthUserDetail(MethodParameter parameter, NativeWebRequest webRequest, Authentication authentication) {
+    private AuthUserDetail getAuthUserDetail(Authentication authentication) {
         if (Objects.nonNull(authentication)) {
 
             if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후

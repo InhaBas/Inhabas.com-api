@@ -10,6 +10,7 @@ import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardServiceImpl;
+import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -132,10 +133,12 @@ public class BoardServiceTest {
     @Test
     public void updateBoard() {
         //given
-        Member entityMember = new Member(12201863, "mingyeom", "010-0000-0000","picture", null, null);
-        NormalBoard entityNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
+        Member entityMember = new Member(12201863, "mingyeom", "010-0000-0000", "picture", null, null);
+        NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(entityMember);
+        NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
 
-        given(boardRepository.save(any())).willReturn(entityNormalBoard);
+        given(boardRepository.findById(anyInt())).willReturn(Optional.of(savedNormalBoard));
+        given(boardRepository.save(any())).willReturn(updatedNormalBoard);
 
         UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
 
@@ -145,7 +148,7 @@ public class BoardServiceTest {
         // then
         then(boardRepository).should(times(1)).save(any());
         assertThat(returnedId).isNotNull();
-        assertThat(returnedId).isEqualTo(entityNormalBoard.getId());
+        assertThat(returnedId).isEqualTo(updatedNormalBoard.getId());
     }
 
     @DisplayName("게시글을 생성한 유저와 일치하지 않아 게시글 수정에 실패한다.")

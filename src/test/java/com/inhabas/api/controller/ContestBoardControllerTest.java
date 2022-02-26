@@ -56,9 +56,6 @@ public class ContestBoardControllerTest {
     @MockBean
     private ContestBoardService contestBoardService;
 
-    @MockBean
-    private AuthUserArgumentResolver authUserArgumentResolver;
-
     @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders

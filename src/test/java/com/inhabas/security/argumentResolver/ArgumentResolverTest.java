@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class ArgumentResolverTest {
@@ -46,6 +47,9 @@ public class ArgumentResolverTest {
     @DisplayName("인증이 이루어지지 않았으면, null을 반환한다.")
     @Test
     public void returnNullIfNotAuthenticated() {
+        //given
+        doReturn(AuthUserDetail.class).when(parameter).getParameterType();
+
         //when
         AuthUserDetail invalidUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
 
@@ -68,6 +72,8 @@ public class ArgumentResolverTest {
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        doReturn(AuthUserDetail.class).when(parameter).getParameterType();
 
         //when
         AuthUserDetail authenticatedUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
@@ -112,6 +118,8 @@ public class ArgumentResolverTest {
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(token);
 
+        doReturn(AuthUserDetail.class).when(parameter).getParameterType();
+
         //when
         AuthUserDetail authenticatedUser = (AuthUserDetail) authUserArgumentResolver.resolveArgument(parameter, null, request, null);
 
@@ -123,4 +131,45 @@ public class ArgumentResolverTest {
     }
 
 
+    @DisplayName("Integer 클래스를 받아온 경우 Profile Id를 반환한다.")
+    @Test
+    public void successToInjectIntegerIdIntoArgumentsAndReturnProfileId() {
+        //given
+        //기존 회원 정보
+        Integer authUserId = 1;
+        HashMap<String, Object> attributes = new HashMap<>() {{
+            put("name", "김아무개");
+            put("email", "my@email.com");
+            put("picture", "https://my_photo.com");
+        }};
+        //OAuth2 인증 결과
+        CustomOAuth2User principal = new CustomOAuth2User(
+                List.of(new SimpleGrantedAuthority("ROLE_USER")),
+                attributes,
+                "email",
+                AuthUserDetail.builder()
+                        .id(authUserId)
+                        .email("my@email.com")
+                        .profileId(12171652)
+                        .provider("google")
+                        .hasJoined(true)
+                        .isActive(true)
+                        .build());
+        //OAuth2 인증결과를 authentication 객체에 담는다.
+        OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
+                principal,
+                principal.getAuthorities(),
+                "google");
+        //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        doReturn(Integer.class).when(parameter).getParameterType();
+
+        // when
+        Object profileId = authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+
+        // then
+        assertThat(profileId).isNotNull();
+        assertThat(profileId).isEqualTo(principal.getAuthUserDetail().getProfileId());
+    }
 }

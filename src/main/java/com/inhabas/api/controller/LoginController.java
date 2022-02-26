@@ -27,7 +27,7 @@ import java.util.Map;
 @RestController
 public class LoginController {
 
-    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/api/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d&profileImageUrl=%s";
+    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success?accessToken=%s&refreshToken=%s&expiresIn=%d&profileImageUrl=%s";
     private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp?accessToken=%s&expiresIn=%d";
 
     private final RefreshTokenService refreshTokenService;

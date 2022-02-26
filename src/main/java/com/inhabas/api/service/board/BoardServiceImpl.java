@@ -1,5 +1,6 @@
 package com.inhabas.api.service.board;
 
+import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.Member;
@@ -10,6 +11,7 @@ import com.inhabas.api.dto.board.BoardDto;
 
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+import com.inhabas.api.security.argumentResolver.Authenticated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,7 +32,7 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer userId, SaveBoardDto saveBoardDto) {
+    public Integer write(@Authenticated Integer userId, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
         Member writer = memberRepository.getById(userId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
@@ -40,8 +42,10 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer update(Integer userId, UpdateBoardDto updateBoardDto) {
+    public Integer update(@Authenticated Integer userId, UpdateBoardDto updateBoardDto) {
         Member writer = memberRepository.getById(userId);
+        boardRepository.findById(updateBoardDto.getId())
+                .orElseThrow(()-> new BoardNotFoundException());
         NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
                 .writtenBy(writer);
         return boardRepository.save(entity).getId();
@@ -55,7 +59,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDto getBoard(Integer id) {
         return boardRepository.findDtoById(id)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BoardNotFoundException());
     }
 
     @Override

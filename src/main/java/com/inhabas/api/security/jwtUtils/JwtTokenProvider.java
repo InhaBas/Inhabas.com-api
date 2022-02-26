@@ -102,7 +102,7 @@ public class JwtTokenProvider implements TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
         } catch (JwtException e) {
-            log.warn(e.getMessage());
+            log.debug(e.getMessage());
             throw new InvalidJwtTokenException();
         }
     }

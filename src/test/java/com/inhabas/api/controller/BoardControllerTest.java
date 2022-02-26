@@ -59,9 +59,6 @@ public class BoardControllerTest {
     @MockBean
     NormalBoard normalBoard;
 
-    @MockBean
-    private AuthUserArgumentResolver authUserArgumentResolver;
-
     @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders
@@ -82,6 +79,7 @@ public class BoardControllerTest {
         // when
         mvc.perform(post("/board")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", "1")
                         .content(objectMapper.writeValueAsString(saveBoardDto)))
                 .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
