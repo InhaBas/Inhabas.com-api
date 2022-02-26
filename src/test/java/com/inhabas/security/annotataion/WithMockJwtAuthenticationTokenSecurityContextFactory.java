@@ -37,7 +37,10 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
                     .picture("")
                     .name(principalInfo.memberName())
                     .phone(principalInfo.memberPhone())
-                    .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()))
+                    .schoolInformation(
+                            principalInfo.isProfessor() ?
+                            SchoolInformation.ofStudent(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()) :
+                            SchoolInformation.ofProfessor(principalInfo.memberMajor()))
                     .ibasInformation(new IbasInformation(principalInfo.memberRole(), "", 0))
                     .build();
 

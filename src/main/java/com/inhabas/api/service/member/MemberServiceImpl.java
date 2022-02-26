@@ -28,17 +28,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member saveSignUpForm(StudentSignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
-        Member member = Member.builder()
-                .id(signUpForm.getMemberId())
-                .name(signUpForm.getName())
-                .phone(signUpForm.getPhoneNumber())
-                .ibasInformation(ibasInformation)
-                .schoolInformation(schoolInformation)
-                .build();
+        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
+
+        Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
 
         return memberRepository.save(member);
     }
@@ -46,18 +41,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member saveSignUpForm(ProfessorSignUpDto signUpForm) {
-        IbasInformation ibasInformation = new IbasInformation(Role.PROFESSOR, "", 0);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), 1, 1);
-        Member member = Member.builder()
-                .id(signUpForm.getMemberId())
-                .name(signUpForm.getName())
-                .phone(signUpForm.getPhoneNumber())
-                .ibasInformation(ibasInformation)
-                .schoolInformation(schoolInformation)
-                .build();
+        IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
+        SchoolInformation schoolInformation = SchoolInformation.ofProfessor(signUpForm.getMajor());
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
+
+        Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
 
         return memberRepository.save(member);
     }
@@ -72,6 +62,16 @@ public class MemberServiceImpl implements MemberService {
         if (memberRepository.existsByPhone(new Phone(phoneNumber))) {
             throw new DuplicatedMemberFieldException("전화번호");
         }
+    }
+
+    private Member createMember(IbasInformation ibasInformation, SchoolInformation schoolInformation, Integer memberId, String name, String phoneNumber) {
+        return Member.builder()
+                .id(memberId)
+                .name(name)
+                .phone(phoneNumber)
+                .ibasInformation(ibasInformation)
+                .schoolInformation(schoolInformation)
+                .build();
     }
 
     @Override

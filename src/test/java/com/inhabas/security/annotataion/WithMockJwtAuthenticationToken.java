@@ -38,5 +38,5 @@ public @interface WithMockJwtAuthenticationToken {
 
     Role memberRole() default Role.ANONYMOUS;
 
-
+    boolean isProfessor() default false;
 }
