@@ -12,8 +12,8 @@ public class WebSecurityCors_dev implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080", "https://dev.inhabas.com")
-                .allowedMethods("PUT", "GET", "POST", "DELETE", "OPTIONS")
-                .allowedHeaders("Access-Control-Allow-Origin");
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
     }
 }
