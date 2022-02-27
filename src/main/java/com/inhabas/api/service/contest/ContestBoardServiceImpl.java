@@ -27,8 +27,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(@Authenticated Integer userId, SaveContestBoardDto dto) {
-        Member writer = memberRepository.getById(userId);
+    public Integer write(Integer memberId, SaveContestBoardDto dto) {
+        Member writer = memberRepository.getById(memberId);
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
                 .contents(dto.getContents())
@@ -42,10 +42,10 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     }
 
     @Override
-    public Integer update(@Authenticated Integer userId, UpdateContestBoardDto dto) {
-        contestBoardRepository.findById(dto.getId())
-                .orElseThrow(()-> new BoardNotFoundException());
-        Member writer = memberRepository.getById(userId);
+    public Integer update(Integer memberId, UpdateContestBoardDto dto) {
+        ContestBoard savedContestBoard = contestBoardRepository.findById(dto.getId())
+                .orElseThrow(() -> new BoardNotFoundException());
+        Member writer = memberRepository.getById(memberId);
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
@@ -55,7 +55,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
                 .build()
-                .writtenBy(writer);
+                .writtenBy(writer)
+                .inMenu(savedContestBoard.getMenu());
         return contestBoardRepository.save(entity).getId();
     }
 

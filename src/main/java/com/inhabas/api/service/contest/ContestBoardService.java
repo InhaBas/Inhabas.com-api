@@ -8,9 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ContestBoardService {
-    Integer write(Integer userId, SaveContestBoardDto dto);
+    Integer write(Integer memberId, SaveContestBoardDto dto);
 
-    Integer update(Integer userId, UpdateContestBoardDto dto);
+    Integer update(Integer memberId, UpdateContestBoardDto dto);
 
     void delete(Integer id);
 

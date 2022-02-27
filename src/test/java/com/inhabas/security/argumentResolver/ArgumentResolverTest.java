@@ -22,6 +22,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -130,8 +131,48 @@ public class ArgumentResolverTest {
         assertThat(authenticatedUser.getProvider()).isEqualTo("google");
     }
 
+    @DisplayName("Integer Id를 받아온 경우, 인증이 이루어지지 않았으면 null을 반환한다.")
+    @Test
+    public void returnNullIfNotAuthenticatedWhenIntegerParameter() {
+        //given
+        doReturn(Integer.class).when(parameter).getParameterType();
 
-    @DisplayName("Integer 클래스를 받아온 경우 Profile Id를 반환한다.")
+        //when
+        Object invalidUser = authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+
+        //then
+        assertThat(invalidUser).isNull();
+    }
+
+    @DisplayName("Jwt 토큰 인증된 authUser에 대한 Id를 받아온 경우 Profile Id를 반환한다.")
+    @Test
+    public void successToInjectJwtTokenIntegerIdIntoArguments() {
+        //given
+        //기존 회원 정보
+        Integer authUserId = 1;
+        AuthUser expectedUser = new AuthUser("google", "my@email.com");
+        expectedUser.setProfileId(12201863);
+        ReflectionTestUtils.setField(expectedUser, "id", authUserId);
+
+        // jwt 토큰 인증 결과
+        JwtAuthenticationToken authentication =
+                new JwtAuthenticationToken(AuthUserDetail.convert(expectedUser), Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+
+        //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        doReturn(Integer.class).when(parameter).getParameterType();
+
+        //when
+        Object profileId = authUserArgumentResolver.resolveArgument(parameter, null, request, null);
+
+        // then
+        assertThat(profileId).isNotNull();
+        assertThat(profileId).isEqualTo(expectedUser.getProfileId());
+        assertThat(profileId).isInstanceOf(Integer.class);
+    }
+
+    @DisplayName("OAuth2 인증된 authUser에 대한 Id를 받아온 경우 Profile Id를 반환한다.")
     @Test
     public void successToInjectIntegerIdIntoArgumentsAndReturnProfileId() {
         //given
@@ -171,5 +212,6 @@ public class ArgumentResolverTest {
         // then
         assertThat(profileId).isNotNull();
         assertThat(profileId).isEqualTo(principal.getAuthUserDetail().getProfileId());
+        assertThat(profileId).isInstanceOf(Integer.class);
     }
 }

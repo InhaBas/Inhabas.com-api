@@ -37,14 +37,14 @@ public class ContestBoardController {
 
     @Operation(description = "공모전 게시판 게시글 추가")
     @PostMapping
-    public ResponseEntity<Integer> addBoard(@Authenticated Integer userId, @Valid @RequestBody SaveContestBoardDto dto) {
-        return new ResponseEntity<>(boardService.write(userId, dto), HttpStatus.CREATED);
+    public ResponseEntity<Integer> addBoard(@Authenticated Integer memberId, @Valid @RequestBody SaveContestBoardDto dto) {
+        return new ResponseEntity<>(boardService.write(memberId, dto), HttpStatus.CREATED);
     }
 
     @Operation(description = "공모전 게시판의 게시글 수정")
     @PutMapping
-    public ResponseEntity<Integer> updateBoard(@Authenticated Integer userId , @Valid @RequestBody UpdateContestBoardDto dto) {
-        return new ResponseEntity<>( boardService.update(userId, dto), HttpStatus.OK);
+    public ResponseEntity<Integer> updateBoard(@Authenticated Integer memberId , @Valid @RequestBody UpdateContestBoardDto dto) {
+        return new ResponseEntity<>( boardService.update(memberId, dto), HttpStatus.OK);
     }
 
     @Operation(description = "공모전 게시판의 게시글 삭제")

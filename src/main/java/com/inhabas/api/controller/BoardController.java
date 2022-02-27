@@ -44,14 +44,14 @@ public class BoardController {
 
     @Operation(description = "게시글 추가")
     @PostMapping
-    public ResponseEntity<Integer> addBoard(@Authenticated Integer userId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
-        return new ResponseEntity<>(boardService.write(userId, saveBoardDto), HttpStatus.CREATED);
+    public ResponseEntity<Integer> addBoard(@Authenticated Integer memberId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
+        return new ResponseEntity<>(boardService.write(memberId, saveBoardDto), HttpStatus.CREATED);
     }
 
     @Operation(description = "게시글 수정")
     @PutMapping
-    public ResponseEntity<Integer> updateBoard(@Authenticated Integer userId ,@Valid @RequestBody UpdateBoardDto updateBoardDto) {
-        return new ResponseEntity<>(boardService.update(userId, updateBoardDto), HttpStatus.OK);
+    public ResponseEntity<Integer> updateBoard(@Authenticated Integer memberId ,@Valid @RequestBody UpdateBoardDto updateBoardDto) {
+        return new ResponseEntity<>(boardService.update(memberId, updateBoardDto), HttpStatus.OK);
     }
 
     @Operation(description = "게시글 삭제")

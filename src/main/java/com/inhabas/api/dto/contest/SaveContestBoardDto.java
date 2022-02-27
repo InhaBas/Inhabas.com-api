@@ -37,5 +37,4 @@ public class SaveContestBoardDto {
     @NotNull(message = "공모전 모집 마감일을 등록해주세요.")
     @Future (message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
     private LocalDate deadline;
-
 }

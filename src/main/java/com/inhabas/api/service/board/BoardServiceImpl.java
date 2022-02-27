@@ -32,9 +32,9 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(@Authenticated Integer userId, SaveBoardDto saveBoardDto) {
+    public Integer write(Integer memberId, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.getById(userId);
+        Member writer = memberRepository.getById(memberId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -42,13 +42,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer update(@Authenticated Integer userId, UpdateBoardDto updateBoardDto) {
-        Member writer = memberRepository.getById(userId);
-        boardRepository.findById(updateBoardDto.getId())
-                .orElseThrow(()-> new BoardNotFoundException());
-        NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
-                .writtenBy(writer);
-        return boardRepository.save(entity).getId();
+    public Integer update(Integer memberId, UpdateBoardDto updateBoardDto) {
+        Member writer = memberRepository.getById(memberId);
+        NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
+                .orElseThrow(() -> new BoardNotFoundException());
+        NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
+                .writtenBy(writer)
+                .inMenu(savedBoard.getMenu());
+        return boardRepository.save(updatedBoard).getId();
     }
 
     @Override
