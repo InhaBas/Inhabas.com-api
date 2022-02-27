@@ -17,23 +17,6 @@ public class OriginProviderForDevelopment implements HttpOriginProvider {
     @Override
     public StringBuffer getOrigin(HttpServletRequest request) {
 
-        StringBuffer url = new StringBuffer();
-        String scheme = request.getScheme();
-        int port = request.getRemotePort();
-        if (port < 0) {
-            // Work around java.net.URL bug
-            port = 80;
-        }
-
-        url.append(scheme);
-        url.append("://");
-        url.append(request.getRemoteHost());
-        if ((scheme.equals("http") && (port != 80))
-                || (scheme.equals("https") && (port != 443))) {
-            url.append(':');
-            url.append(port);
-        }
-
-        return url;
+        return new StringBuffer("http://localhost:8080");  // 프론트엔드 로컬 개발환경으로 리다이렉트
     }
 }
