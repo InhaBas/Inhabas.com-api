@@ -116,7 +116,7 @@ public class WebSecurityConfig_dev {
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/menu/**").permitAll()
-                    .antMatchers("/api/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                    .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                     .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
 

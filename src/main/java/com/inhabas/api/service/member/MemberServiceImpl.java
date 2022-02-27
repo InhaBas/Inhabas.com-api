@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -77,18 +78,31 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public DetailSignUpDto loadSignUpForm(Integer memberId, String email) {
+
+        if (Objects.isNull(memberId)) {
+            return DetailSignUpDto.builder()
+                    .memberId(null)
+                    .phoneNumber(null)
+                    .email(email)
+                    .name(null)
+                    .major(null)
+                    .grade(null)
+                    .semester(null)
+                    .build();
+        }
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotExistException::new);
 
         return DetailSignUpDto.builder()
-                .memberId(memberId)
-                .phoneNumber(member.getPhone())
-                .email(email)
-                .name(member.getName())
-                .major(member.getSchoolInformation().getMajor())
-                .grade(member.getSchoolInformation().getGrade())
-                .semester(member.getSchoolInformation().getGen())
-                .build();
+                        .memberId(memberId)
+                        .phoneNumber(member.getPhone())
+                        .email(email)
+                        .name(member.getName())
+                        .major(member.getSchoolInformation().getMajor())
+                        .grade(member.getSchoolInformation().getGrade())
+                        .semester(member.getSchoolInformation().getGen())
+                        .build();
     }
 
     @Override

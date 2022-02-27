@@ -2,7 +2,6 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.WebSecurityConfig;
 import com.inhabas.api.security.domain.TokenService;
 import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.security.jwtUtils.TokenDto;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;

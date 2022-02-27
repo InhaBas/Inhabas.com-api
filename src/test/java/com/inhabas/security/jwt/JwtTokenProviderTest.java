@@ -86,13 +86,12 @@ public class JwtTokenProviderTest {
     public void decodeToken() {
         //given
         Integer userId = 1;
-        String role = "회장단";
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
             add("IT팀");}
         };
 
-        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, role, teams);
+        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, "회장단", teams);
         String accessToken = newJwtToken.getAccessToken();
         String refreshToken = newJwtToken.getRefreshToken();
 
@@ -105,13 +104,13 @@ public class JwtTokenProviderTest {
         assertThat(accessTokenDecodeInfo.getAuthUserId()).isEqualTo(userId);
         assertThat(accessTokenDecodeInfo.getGrantedAuthorities())
                 .extracting("role")
-                .contains(role)
+                .contains("ROLE_회장단")
                 .containsAll(teams);
         //refresh token
         assertThat(refreshTokenDecodeInfo.getAuthUserId()).isEqualTo(userId);
         assertThat(refreshTokenDecodeInfo.getGrantedAuthorities())
                 .extracting("role")
-                .contains(role)
+                .contains("ROLE_회장단")
                 .containsAll(teams);
     }
 
@@ -120,14 +119,12 @@ public class JwtTokenProviderTest {
     public void reissueAccessToken() {
         //given
         Integer userId = 1;
-        String role = "회장단";
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
             add("IT팀");}
         };
 
-        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, role, teams);
-        String oldAccessToken = newJwtToken.getAccessToken();
+        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, "회장단", teams);
         String refreshToken = newJwtToken.getRefreshToken();
 
         //when
@@ -147,7 +144,7 @@ public class JwtTokenProviderTest {
         assertThat(decodeNewAccessToken.getAuthUserId()).isEqualTo(userId);
         assertThat(decodeNewAccessToken.getGrantedAuthorities())
                 .extracting("role")
-                .contains(role)
+                .contains("ROLE_회장단")
                 .containsAll(teams);
     }
 

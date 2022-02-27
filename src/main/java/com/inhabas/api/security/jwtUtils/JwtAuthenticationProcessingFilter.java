@@ -79,7 +79,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authResult);
         this.logger.trace("jwt token authentication success!");
         this.logger.debug(
-                LogMessage.format("jwt filtering!! : {}", ((AuthUser) authResult.getPrincipal()).getEmail()));
+                LogMessage.format("jwt filtering!! : {}", ((AuthUserDetail) authResult.getPrincipal()).getEmail()));
 
         if (this.successHandler != null) {
             this.logger.trace("Handling authentication failure success");

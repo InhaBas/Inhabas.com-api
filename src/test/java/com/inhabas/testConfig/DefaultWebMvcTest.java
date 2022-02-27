@@ -1,5 +1,7 @@
 package com.inhabas.testConfig;
 
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
@@ -22,7 +24,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @ActiveProfiles("test") // for disable cloud config & security filter chain
-@WebMvcTest
+@WebMvcTest(excludeAutoConfiguration = {OAuth2ClientAutoConfiguration.class}) // disable autoload OAuth2-Client-Components from test properties
 public @interface DefaultWebMvcTest {
     @AliasFor(annotation = WebMvcTest.class, attribute = "value")
     Class<?>[] value() default {};

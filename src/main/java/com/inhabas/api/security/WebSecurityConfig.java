@@ -113,7 +113,7 @@ public class WebSecurityConfig {
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .antMatchers("/jwt/**").permitAll()
                     .antMatchers(HttpMethod.GET, "/menu/**").permitAll()
-                    .antMatchers("/api/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                    .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                     .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
     }
