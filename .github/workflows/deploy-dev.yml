@@ -29,5 +29,5 @@ jobs:
           cd ./Inhabas.com-api && git checkout dev && git pull 
           chmod u+x gradlew && ./gradlew build
           kill -9 $(cat application.pid)
-          nohup java -jar -Dspring.profiles.active=dev build/libs/api-0.0.1-SNAPSHOT.jar > dev.log&
+          nohup java -jar -Dspring.profiles.active=dev build/libs/api-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
           exit
