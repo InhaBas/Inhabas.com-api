@@ -72,9 +72,7 @@ logging:
   level:
     org.springframwork.web.client: DEBUG
     #    org.hibernate.type: trace
-  config: classpath:log4j2.xml
 
 authenticate:
   oauth2-success-handle-url: /login/test-success
   oauth2-failure-handle-url: /login/test-fail
-  invalid-jwt-token-handle-url: /jwt/test-invalid-token
