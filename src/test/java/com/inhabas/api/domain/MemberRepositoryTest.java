@@ -81,7 +81,7 @@ public class MemberRepositoryTest {
         Member member = memberRepository.save(MEMBER1);
 
         //when
-        Member param = new Member(MEMBER1.getId(), "유동현", "010-1111-2222", "", new SchoolInformation("건축공학과", 2, 2), member.getIbasInformation());
+        Member param = new Member(MEMBER1.getId(), "유동현", "010-1111-2222", "", SchoolInformation.ofStudent("건축공학과", 2, 2), member.getIbasInformation());
         Member updated = memberRepository.save(param);
 
         //then
@@ -102,7 +102,7 @@ public class MemberRepositoryTest {
                 .phone(MEMBER1.getPhone()) // 같은 전화번호
                 .picture("")
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
-                .schoolInformation(new SchoolInformation("전자공학과", 3, 1))
+                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 3, 1))
                 .build();
 
         //then
@@ -119,7 +119,7 @@ public class MemberRepositoryTest {
                 .phone("010-0000-0000")
                 .name("유동현")
                 .picture("")
-                .schoolInformation(new SchoolInformation("공간정보공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofStudent("공간정보공학과", 1, 1))
                 .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
                 .build();
         memberRepository.save(member);

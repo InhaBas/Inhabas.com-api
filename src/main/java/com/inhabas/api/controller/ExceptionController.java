@@ -1,7 +1,12 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.security.domain.NoTokenInRequestHeaderException;
+import com.inhabas.api.security.domain.RefreshTokenNotFoundException;
+import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +16,27 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
+
+    @ExceptionHandler(NoTokenInRequestHeaderException.class)
+    public ResponseEntity<String> corruptedTokenException(final NoTokenInRequestHeaderException e) {
+        log.warn("no token in header: ", e);
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<String> corruptedTokenException(final RefreshTokenNotFoundException e) {
+        log.warn("invalid refresh token: ", e);
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> notAllowedException(final AccessDeniedException e) {
+        log.warn("access denied: ", e);
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
 
     //400
     @ExceptionHandler(RuntimeException.class)

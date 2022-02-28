@@ -61,7 +61,7 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 회원가입 도중 개인정보를 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 학생_회원가입_도중_개인정보를_저장한다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
@@ -88,7 +88,7 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 개인정보를 빈칸으로 제출하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 학생_개인정보를_빈칸으로_제출하면_안된다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
@@ -120,7 +120,7 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 학생_개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
@@ -179,7 +179,7 @@ public class SignUpControllerTest {
 
     @DisplayName("교수 회원가입 도중 개인정보를 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 교수_회원가입_도중_개인정보를_저장한다() throws Exception {
         //given
         ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
@@ -200,7 +200,7 @@ public class SignUpControllerTest {
 
     @DisplayName("교수 개인정보를 빈칸으로 제출하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 교수_개인정보를_빈칸으로_제출하면_안된다() throws Exception {
         //given
         ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
@@ -228,7 +228,7 @@ public class SignUpControllerTest {
 
     @DisplayName("교수 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 교수_개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
         //given
         ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
@@ -336,7 +336,7 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입에 필요한 전공정보를 모두 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 회원가입에_필요한_전공정보를_모두_가져온다() throws Exception {
         //given
         MajorInfoDto majorInfo1 = new MajorInfoDto(1, "공과대학", "기계공학과");
@@ -362,7 +362,7 @@ public class SignUpControllerTest {
 
     @DisplayName("학번 중복 검사 결과, 중복된다")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복됨() throws Exception {
         //given
         given(memberService.isDuplicatedId(anyInt())).willReturn(true);
@@ -377,7 +377,7 @@ public class SignUpControllerTest {
 
     @DisplayName("학번 중복 검사 결과, 중복되지 않는다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복되지_않는다() throws Exception {
         //given
         given(memberService.isDuplicatedId(anyInt())).willReturn(false);
@@ -392,7 +392,7 @@ public class SignUpControllerTest {
 
     @DisplayName("핸드폰 중복 검사 결과, 중복된다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복된다() throws Exception {
         //given
         given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(true);
@@ -407,7 +407,7 @@ public class SignUpControllerTest {
 
     @DisplayName("핸드폰 중복 검사 결과, 중복되지 않는다.")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복되지_않는다() throws Exception {
         //given
         given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
@@ -423,7 +423,7 @@ public class SignUpControllerTest {
 
     @DisplayName("핸드폰 중복 검사 결과, 번호 형식이 잘못되면 400 반환")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_양식이_잘못된_경우_400() throws Exception {
         //given
         given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
@@ -437,7 +437,7 @@ public class SignUpControllerTest {
 
     @DisplayName("중복 검사 시 핸드폰과 학번이 동시에 넘어오면 400 반환")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 중복_검사_시_핸드폰과_학번이_동시에_넘어오면_400_에러() throws Exception {
 
         mvc.perform(get("/signUp/isDuplicated")
@@ -449,7 +449,7 @@ public class SignUpControllerTest {
 
     @DisplayName("중복 검사 시 핸드폰과 학번 중 하나라도 안넘어오면 400 반환")
     @Test
-    @WithMockJwtAuthenticationToken
+    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 중복_검사_시_핸드폰과_학번_중_하나라도_없으면_400_에러() throws Exception {
 
         mvc.perform(get("/signUp/isDuplicated"))
