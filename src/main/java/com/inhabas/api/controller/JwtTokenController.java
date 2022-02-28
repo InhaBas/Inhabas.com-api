@@ -20,13 +20,6 @@ public class JwtTokenController {
 
     private final TokenService tokenService;
 
-    @GetMapping("${authenticate.invalid-jwt-token-handle-url}")
-    @Operation(summary = "토큰 유효성 검사에 실패했다.", hidden = true)
-    public ResponseEntity<String> invalidToken() {
-
-        return new ResponseEntity<>("invalid_token", HttpStatus.UNAUTHORIZED);
-    }
-
     @PostMapping("/jwt/reissue-token")
     @Operation(summary = "access token 재발급을 요청한다.", description = "request 헤더 Authenticate 에 refreshToken 넣어서 보내줘야함.")
     @ApiResponses({

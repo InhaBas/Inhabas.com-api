@@ -109,7 +109,7 @@ public class WebSecurityConfig_dev {
                     .addFilterAfter(new JwtAuthenticationProcessingFilter(
                             authUserService,
                             jwtTokenProvider,
-                            new InvalidJwtTokenHandler(authenticateEndPointUrlProperties.getInvalidJwtTokenHandleUrl())), LogoutFilter.class
+                            new InvalidJwtTokenHandler()), LogoutFilter.class
                     )
 
                     .authorizeRequests()

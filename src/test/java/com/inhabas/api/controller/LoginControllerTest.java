@@ -53,7 +53,7 @@ public class LoginControllerTest {
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
                 .andExpect(status().isSeeOther())  // 303
-                .andExpect(header().string("location", "http://localhost/login/success"))
+                .andExpect(header().string("location", "http://localhost:8080/login/success"))
                 .andReturn();
 
         //then
@@ -73,7 +73,7 @@ public class LoginControllerTest {
         //when
         MvcResult response = mockMvc.perform(get("/login/test-success"))
                 .andExpect(status().isSeeOther())  // 303
-                .andExpect(header().string("location", "http://localhost/signUp"))
+                .andExpect(header().string("location", "http://localhost:8080/signUp"))
                 .andReturn();
 
         //then

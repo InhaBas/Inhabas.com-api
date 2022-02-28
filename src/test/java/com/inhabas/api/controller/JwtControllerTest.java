@@ -36,14 +36,6 @@ public class JwtControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @DisplayName("유효하지 않은 토큰 엔드포인트는, 401")
-    @Test
-    public void invalidTokenTest() throws Exception {
-        //when
-        mockMvc.perform(get("/jwt/test-invalid-token"))
-                .andExpect(status().isUnauthorized())
-                .andReturn();
-    }
 
     @DisplayName("accessToken 재발급")
     @Test
