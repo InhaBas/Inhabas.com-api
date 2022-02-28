@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -28,17 +29,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member saveSignUpForm(StudentSignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
-        Member member = Member.builder()
-                .id(signUpForm.getMemberId())
-                .name(signUpForm.getName())
-                .phone(signUpForm.getPhoneNumber())
-                .ibasInformation(ibasInformation)
-                .schoolInformation(schoolInformation)
-                .build();
+        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
+
+        Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
 
         return memberRepository.save(member);
     }
@@ -46,18 +42,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Member saveSignUpForm(ProfessorSignUpDto signUpForm) {
-        IbasInformation ibasInformation = new IbasInformation(Role.PROFESSOR, "", 0);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), 1, 1);
-        Member member = Member.builder()
-                .id(signUpForm.getMemberId())
-                .name(signUpForm.getName())
-                .phone(signUpForm.getPhoneNumber())
-                .ibasInformation(ibasInformation)
-                .schoolInformation(schoolInformation)
-                .build();
+        IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
+        SchoolInformation schoolInformation = SchoolInformation.ofProfessor(signUpForm.getMajor());
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
+
+        Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
 
         return memberRepository.save(member);
     }
@@ -74,21 +65,44 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    private Member createMember(IbasInformation ibasInformation, SchoolInformation schoolInformation, Integer memberId, String name, String phoneNumber) {
+        return Member.builder()
+                .id(memberId)
+                .name(name)
+                .phone(phoneNumber)
+                .ibasInformation(ibasInformation)
+                .schoolInformation(schoolInformation)
+                .build();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public DetailSignUpDto loadSignUpForm(Integer memberId, String email) {
+
+        if (Objects.isNull(memberId)) {
+            return DetailSignUpDto.builder()
+                    .memberId(null)
+                    .phoneNumber(null)
+                    .email(email)
+                    .name(null)
+                    .major(null)
+                    .grade(null)
+                    .semester(null)
+                    .build();
+        }
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotExistException::new);
 
         return DetailSignUpDto.builder()
-                .memberId(memberId)
-                .phoneNumber(member.getPhone())
-                .email(email)
-                .name(member.getName())
-                .major(member.getSchoolInformation().getMajor())
-                .grade(member.getSchoolInformation().getGrade())
-                .semester(member.getSchoolInformation().getGen())
-                .build();
+                        .memberId(memberId)
+                        .phoneNumber(member.getPhone())
+                        .email(email)
+                        .name(member.getName())
+                        .major(member.getSchoolInformation().getMajor())
+                        .grade(member.getSchoolInformation().getGrade())
+                        .semester(member.getSchoolInformation().getGen())
+                        .build();
     }
 
     @Override

@@ -36,7 +36,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     String memberPhone() default "010-1234-5678";
 
-    Role memberRole() default Role.ANONYMOUS;
+    Role memberRole() default Role.BASIC_MEMBER;
 
-
+    boolean isProfessor() default false;
 }

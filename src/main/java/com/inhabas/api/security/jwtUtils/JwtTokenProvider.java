@@ -23,6 +23,7 @@ public class JwtTokenProvider implements TokenProvider {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String ROLE = "role";
     private static final String TEAM = "teams";
+    private static final String ROLE_PREFIX = "ROLE_";
 
     @Override
     public TokenDto createJwtToken(Integer authUserId, String role, Set<String> teams) {
@@ -30,7 +31,7 @@ public class JwtTokenProvider implements TokenProvider {
         assert StringUtils.hasText(role);
 
         Claims claims = Jwts.claims().setSubject(String.valueOf(authUserId));
-        claims.put(ROLE, role);
+        claims.put(ROLE, ROLE_PREFIX + role);
         claims.put(TEAM, teams);
 
         Date now = new Date();
