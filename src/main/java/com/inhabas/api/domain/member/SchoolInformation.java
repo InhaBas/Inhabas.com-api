@@ -21,10 +21,30 @@ public class SchoolInformation {
     @Embedded
     private Semester gen;
 
-    public SchoolInformation(String major, Integer grade, Integer semester) {
+    private Boolean isProfessor;
+
+    /* for creating student information*/
+    private SchoolInformation(String major, Integer grade, Integer semester) {
         this.major = new Major(major);
         this.grade = new Grade(grade);
         this.gen = new Semester(semester);
+        this.isProfessor = false;
+    }
+
+    /* for creating professor information */
+    private SchoolInformation(String major) {
+        this.major = new Major(major);
+        this.grade = null;
+        this.gen = null;
+        this.isProfessor = true;
+    }
+
+    public static SchoolInformation ofStudent(String major, Integer grade, Integer semester) {
+        return new SchoolInformation(major, grade, semester);
+    }
+
+    public static SchoolInformation ofProfessor(String major) {
+        return new SchoolInformation(major);
     }
 
     public String getMajor() {

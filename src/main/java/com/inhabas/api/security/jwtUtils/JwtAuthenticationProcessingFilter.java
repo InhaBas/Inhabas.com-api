@@ -65,6 +65,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             } catch (InvalidJwtTokenException e) {
                 // Authentication failed redirection
                 this.unsuccessfulAuthentication(request, response, e);
+                return;
             }
         }
 

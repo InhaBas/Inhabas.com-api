@@ -45,6 +45,7 @@ public class SignUpController {
     })
     public ResponseEntity<?> saveStudentProfile(
             @Authenticated AuthUserDetail authUser, @Valid @RequestBody StudentSignUpDto form) {
+
         memberService.saveSignUpForm(form);
         authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
 
@@ -55,6 +56,7 @@ public class SignUpController {
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<DetailSignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
+
         DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
 
         return ResponseEntity.ok(form);
@@ -68,6 +70,7 @@ public class SignUpController {
     })
     public ResponseEntity<?> saveProfessorProfile(
             @Authenticated AuthUserDetail authUser, @Valid @RequestBody ProfessorSignUpDto form) {
+
         memberService.saveSignUpForm(form);
         authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
 
@@ -78,6 +81,7 @@ public class SignUpController {
     @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
+
         return ResponseEntity.ok(majorInfoService.getAllMajorInfo());
     }
 
@@ -88,8 +92,7 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "둘 중 하나만 넘겨야함.")
     })
     public ResponseEntity<?> validateDuplication(
-            @RequestParam(required = false) Integer memberId,
-            @RequestParam(required = false) Phone phone) {
+            @RequestParam(required = false) Integer memberId, @RequestParam(required = false) Phone phone) {
 
         /* 학번, 핸드폰번호 동시에 넘어오거나, 하나도 안들어오는경우 */
         if (Objects.isNull(memberId) && Objects.isNull(phone)
@@ -126,8 +129,9 @@ public class SignUpController {
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated AuthUserDetail signUpUser) {
-        List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfileId());
 
+        List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfileId());
+        System.out.println("answer!!:" + answers);
         return ResponseEntity.ok(answers);
     }
 
@@ -138,8 +142,8 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우")
     })
     public ResponseEntity<?> saveAnswers(
-            @Authenticated AuthUserDetail signUpUser,
-            @Valid @RequestBody List<AnswerDto> answers) {
+            @Authenticated AuthUserDetail signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
+
         answerService.saveAnswers(answers, signUpUser.getProfileId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -150,6 +154,11 @@ public class SignUpController {
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<?> finishSignUp(@Authenticated AuthUserDetail signUpUser) {
+
+        if (Objects.isNull(signUpUser.getProfileId())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         authUserService.finishSignUp(signUpUser.getId());
         memberService.changeRole(signUpUser.getProfileId(), Role.NOT_APPROVED_MEMBER);
 

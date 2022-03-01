@@ -59,7 +59,7 @@ public class MemberServiceTest {
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
-                .schoolInformation(new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester()))
+                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester()))
                 .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
                 .build();
         ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
@@ -92,8 +92,8 @@ public class MemberServiceTest {
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
-                .schoolInformation(new SchoolInformation(signUpForm.getMajor(), 1, 1))
-                .ibasInformation(new IbasInformation(Role.PROFESSOR, "", 0))
+                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
+                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
                 .build();
         ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
         given(memberRepository.save(any(Member.class))).willReturn(expected);
@@ -164,7 +164,7 @@ public class MemberServiceTest {
                 .phone("010-0000-0000")
                 .picture("")
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
-                .schoolInformation(new SchoolInformation("전자공학과", 3, 1))
+                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 3, 1))
                 .build();
         given(memberRepository.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
@@ -197,7 +197,7 @@ public class MemberServiceTest {
                 .picture("")
                 .name("유동현")
                 .phone("010-0000-0000")
-                .schoolInformation(new SchoolInformation("정보통신공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofStudent("정보통신공학과", 1, 1))
                 .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
                 .build();
         given(memberRepository.findById(anyInt()))

@@ -30,14 +30,17 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
         ReflectionTestUtils.setField(authUser, "id", principalInfo.authUserId());
         ReflectionTestUtils.setField(authUser, "hasJoined", principalInfo.joined());
 
-        String role = principalInfo.memberRole().toString(); // 기본은 ANONYMOUS.
+        String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
             Member profile = Member.builder()
                     .id(principalInfo.memberId())
                     .picture("")
                     .name(principalInfo.memberName())
                     .phone(principalInfo.memberPhone())
-                    .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()))
+                    .schoolInformation(
+                            principalInfo.isProfessor() ?
+                            SchoolInformation.ofStudent(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()) :
+                            SchoolInformation.ofProfessor(principalInfo.memberMajor()))
                     .ibasInformation(new IbasInformation(principalInfo.memberRole(), "", 0))
                     .build();
 

@@ -38,4 +38,5 @@ public @interface WithMockJwtAuthenticationToken {
 
     Role memberRole() default Role.BASIC_MEMBER;
 
+    boolean isProfessor() default false;
 }
