@@ -3,6 +3,7 @@ package com.inhabas.api.security.argumentResolver;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,9 +41,9 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         authenticatedUser = getAuthUserDetail(authentication);
 
         if (parameter.getParameterType().equals(Integer.class)) {
-            if(authenticatedUser == null) return null;
+            if(ObjectUtils.isEmpty(authenticatedUser)) return null;
             Integer profileId = authenticatedUser.getProfileId();
-            if(profileId == null) return null;
+            if(ObjectUtils.isEmpty(profileId)) return null;
             return profileId;
         } else if (parameter.getParameterType().equals(AuthUserDetail.class)) {
             return authenticatedUser;

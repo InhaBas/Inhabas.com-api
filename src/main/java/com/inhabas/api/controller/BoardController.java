@@ -7,6 +7,8 @@ import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.security.argumentResolver.Authenticated;
 import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +32,22 @@ public class BoardController {
 
     @Operation(description = "게시글 조회")
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", description = "잘못된 게시글 조회 URL 요청"),
+            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+    })
     public ResponseEntity<BoardDto> getBoard(@RequestParam Integer id) {
         return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
     }
 
     @Operation(description = "모든 게시글 조회")
     @GetMapping("/all")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", description = "잘못된 게시글 목록 조회 URL 요청"),
+            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+        })
     public ResponseEntity<Page<BoardDto>> getBoardList(
             Pageable pageable,
             @RequestParam Integer menuId) {
@@ -44,18 +56,33 @@ public class BoardController {
 
     @Operation(description = "게시글 추가")
     @PostMapping
+    @ApiResponses({
+            @ApiResponse(responseCode = "201"),
+            @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
+            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+    })
     public ResponseEntity<Integer> addBoard(@Authenticated Integer memberId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
         return new ResponseEntity<>(boardService.write(memberId, saveBoardDto), HttpStatus.CREATED);
     }
 
     @Operation(description = "게시글 수정")
     @PutMapping
+    @ApiResponses({
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
+            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+    })
     public ResponseEntity<Integer> updateBoard(@Authenticated Integer memberId ,@Valid @RequestBody UpdateBoardDto updateBoardDto) {
         return new ResponseEntity<>(boardService.update(memberId, updateBoardDto), HttpStatus.OK);
     }
 
     @Operation(description = "게시글 삭제")
     @DeleteMapping
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
+            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+    })
     public ResponseEntity deleteBoard(@RequestParam Integer id) {
         boardService.delete(id);
         return new ResponseEntity(HttpStatus.NO_CONTENT);

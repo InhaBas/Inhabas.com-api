@@ -59,4 +59,5 @@ public class AuthUserDetail {
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+
 }
