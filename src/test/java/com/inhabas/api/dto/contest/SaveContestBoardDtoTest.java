@@ -37,7 +37,7 @@ public class SaveContestBoardDtoTest {
     @Test
     public void FieldsAreNullError() {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(null, null, null, null, null, null, null);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(null, null, null, null, null, null);
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
@@ -50,8 +50,7 @@ public class SaveContestBoardDtoTest {
                 "협회기관을 입력하세요.",
                 "공모전 주제를 입력하세요.",
                 "공모전 모집 시작일을 등록해주세요.",
-                "공모전 모집 마감일을 등록해주세요.",
-                "로그인 후 이용해주세요."
+                "공모전 모집 마감일을 등록해주세요."
         );
     }
 
@@ -59,7 +58,7 @@ public class SaveContestBoardDtoTest {
     @Test
     public void FieldsAreBlankedError() {
         // given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(" ", " ", " ", " ", null, null, null);
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(" ", " ", " ", " ", null, null);
 
         //when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
@@ -72,8 +71,7 @@ public class SaveContestBoardDtoTest {
                 "협회기관을 입력하세요.",
                 "공모전 주제를 입력하세요.",
                 "공모전 모집 시작일을 등록해주세요.",
-                "공모전 모집 마감일을 등록해주세요.",
-                "로그인 후 이용해주세요."
+                "공모전 모집 마감일을 등록해주세요."
         );
     }
 
@@ -87,8 +85,7 @@ public class SaveContestBoardDtoTest {
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
                 LocalDate.of(2022, 01, 01),
-                LocalDate.of(2022, 03, 03),
-                12201863 );
+                LocalDate.of(2022, 03, 03));
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
@@ -108,7 +105,7 @@ public class SaveContestBoardDtoTest {
     public void DeadlineIsOutdatedError() {
         //given
         SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic",
-                LocalDate.of(2022, 01, 01), LocalDate.of(2022, 02, 01), 12201863);
+                LocalDate.of(2022, 01, 01), LocalDate.of(2022, 02, 01));
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);

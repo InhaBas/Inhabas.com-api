@@ -1,10 +1,9 @@
 package com.inhabas.api.security.argumentResolver;
 
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.security.oauth2.CustomOAuth2User;
-import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,9 +15,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Objects;
+import java.util.Optional;
+
 
 @Component
-@RequiredArgsConstructor
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
@@ -26,15 +26,35 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         return parameter.hasParameterAnnotation(Authenticated.class);
     }
 
+    /**
+     * SecurityContextHolder에서 받아온 authentication을 기준으로 AuthUserDetail을 찾아 반환한다.
+     * @param parameter @Authenticated 어노테이션에 의해 받아온 파라미터.
+     * @return Integer / AuthUserDetail - 파라미터의 타입에 따라 다른 형태로 반환.
+     * memberId에 의해 조회한 profileId가 null일 경우 null을 반환할 수 있음.
+     */
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         AuthUserDetail authenticatedUser = null;
+        authenticatedUser = getAuthUserDetail(authentication);
 
+        if (parameter.getParameterType().equals(Integer.class)) {
+            if(ObjectUtils.isEmpty(authenticatedUser)) return null;
+            Integer profileId = authenticatedUser.getProfileId();
+            if(ObjectUtils.isEmpty(profileId)) return null;
+            return profileId;
+        } else if (parameter.getParameterType().equals(AuthUserDetail.class)) {
+            return authenticatedUser;
+        }
+
+        return authenticatedUser;
+    }
+
+    private AuthUserDetail getAuthUserDetail(Authentication authentication) {
+        AuthUserDetail authenticatedUser = null;
         if (Objects.nonNull(authentication)) {
-
             if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후
                 authenticatedUser = (AuthUserDetail) authentication.getPrincipal();
 
@@ -44,7 +64,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
                         ((CustomOAuth2User) authentication.getPrincipal()).getAttribute("picture"));
             }
         }
-
         return authenticatedUser;
     }
 }
