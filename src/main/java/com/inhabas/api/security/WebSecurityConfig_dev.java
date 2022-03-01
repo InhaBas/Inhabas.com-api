@@ -9,7 +9,6 @@ import com.inhabas.api.security.oauth2.CustomAuthenticationFailureHandler;
 import com.inhabas.api.security.oauth2.CustomAuthenticationSuccessHandler;
 import com.inhabas.api.security.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;

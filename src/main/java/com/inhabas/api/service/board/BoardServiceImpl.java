@@ -1,5 +1,6 @@
 package com.inhabas.api.service.board;
 
+import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.Member;
@@ -10,6 +11,7 @@ import com.inhabas.api.dto.board.BoardDto;
 
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+import com.inhabas.api.security.argumentResolver.Authenticated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,9 +32,9 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(SaveBoardDto saveBoardDto) {
+    public Integer write(Integer memberId, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.getById(saveBoardDto.getLoginedUser());
+        Member writer = memberRepository.getById(memberId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
                 .writtenBy(writer);
@@ -40,9 +42,14 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer update(UpdateBoardDto updateBoardDto) {
-        NormalBoard entity = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents());
-        return boardRepository.save(entity).getId();
+    public Integer update(Integer memberId, UpdateBoardDto updateBoardDto) {
+        Member writer = memberRepository.getById(memberId);
+        NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
+                .orElseThrow(() -> new BoardNotFoundException());
+        NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
+                .writtenBy(writer)
+                .inMenu(savedBoard.getMenu());
+        return boardRepository.save(updatedBoard).getId();
     }
 
     @Override
@@ -53,7 +60,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDto getBoard(Integer id) {
         return boardRepository.findDtoById(id)
-                .orElseThrow(() -> new EntityNotFoundException("게시글을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BoardNotFoundException());
     }
 
     @Override
