@@ -2,7 +2,7 @@ name: Gradle Build
 
 on:
   pull_request:
-    branches: [dev, master, feature/* ]
+    branches: [dev, master, feature/*, refactor/* ]
 
 jobs:
   build:
