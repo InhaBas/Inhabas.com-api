@@ -5,32 +5,29 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.service.login.LoginServiceImpl;
-import com.inhabas.api.service.login.OriginProviderForProduction;
+import com.inhabas.api.service.login.*;
 import com.inhabas.api.service.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.servlet.http.HttpServletRequest;
-
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -40,37 +37,39 @@ public class LoginServiceTest {
     private LoginServiceImpl loginService;
 
     @Mock
-    private TokenService tokenService;
-
-    @Mock
     private MemberService memberService;
 
     @Mock
     private HttpServletRequest request;
 
     @Mock
-    private OriginProviderForProduction originProvider;
+    private LoginRedirectHeaderProvider loginRedirectHeaderProvider;
 
-    @Spy
-    private JwtTokenProvider tokenProvider;
-
-
-    @DisplayName("로그인 성공 시 리다이렉트 url 을 점검")
+    @DisplayName("OAuth2 인증 후 프론트가 임시 처리해야 할 페이지 url 점검")
     @Test
-    public void loginSuccessRedirectUrlTest() {
+    public void temporaryRedirectUrlTest() {
 
-        String login_success_redirect_url = (String) ReflectionTestUtils.getField(loginService, "LOGIN_SUCCESS_REDIRECT_URL");
+        String login_success_redirect_url = (String) ReflectionTestUtils.getField(loginService, "TEMPORARY_REDIRECT_URL");
 
         assertThat(login_success_redirect_url).isEqualTo("%s/login/success");
     }
 
-    @DisplayName("회원가입 필요 시 리다이렉트 url 을 점검")
+    @DisplayName("로그인 성공 시 최종 리다이렉트 url 을 점검")
+    @Test
+    public void loginSuccessRedirectUrlTest() {
+
+        String login_success_redirect_url = (String) ReflectionTestUtils.getField(loginService, "LOGIN_SUCCESS_REDIRECT_URI");
+
+        assertThat(login_success_redirect_url).isEqualTo("/");
+    }
+
+    @DisplayName("회원가입 필요 시 최종 리다이렉트 url 을 점검")
     @Test
     public void signUpRedirectUrlTest() {
 
-        String login_success_redirect_url = (String) ReflectionTestUtils.getField(loginService, "SIGNUP_REQUIRED_REDIRECT_URL");
+        String login_success_redirect_url = (String) ReflectionTestUtils.getField(loginService, "SIGNUP_REQUIRED_REDIRECT_URI");
 
-        assertThat(login_success_redirect_url).isEqualTo("%s/signUp");
+        assertThat(login_success_redirect_url).isEqualTo("/signUp");
     }
 
     @DisplayName("회원가입 리다이렉트를 위한 헤더가 잘 만들어지는지 테스트")
@@ -79,21 +78,17 @@ public class LoginServiceTest {
 
         //given
         AuthUserDetail authUserDetail = new AuthUserDetail(2, "google", "my@gmail.com", null, false, true);
-        given(originProvider.getOrigin(any())).willReturn(new StringBuffer("https://inhabas.com"));
+
+        HttpHeaders expectedHttpHeaders = new HttpHeaders();
+        expectedHttpHeaders.setLocation(URI.create("https://inhabas.com/login/success?access_token=123.345.789&refresh_token=&profile_image_url=&expires_in=3600"));
+        given(loginRedirectHeaderProvider.prepareSignUpRedirectHeader(any(), any(), any(), any())).willReturn(expectedHttpHeaders);
 
         //when
         HttpHeaders httpHeaders = loginService.prepareRedirectHeader(request, authUserDetail);
 
         //then
-        assertThat(httpHeaders.keySet())
-                .contains("accessToken", "expiresIn", "Location", "refreshToken", "profileImageUrl");
-
-        assertThat(httpHeaders.getFirst("accessToken")).hasSizeGreaterThan(2); // jwt 토큰은 못해도 점 두개는 있어야함.
-        assertThat(httpHeaders.getFirst("expiresIn")).isNotBlank();
-        assertThat(Objects.requireNonNull(httpHeaders.getLocation()).getPath()).isEqualTo("/signUp");
-
-        assertThat(httpHeaders.getFirst("refreshToken")).isBlank();
-        assertThat(httpHeaders.getFirst("profileImageUrl")).isBlank();
+        assertThat(httpHeaders.keySet()).containsOnly("Location");
+        then(loginRedirectHeaderProvider).should(times(1)).prepareSignUpRedirectHeader(any(), any(), any(), any());
     }
 
     @DisplayName("로그인 리다이렉트를 위한 헤더가 잘 만들어지는지 테스트")
@@ -103,7 +98,11 @@ public class LoginServiceTest {
         //given
         AuthUserDetail authUserDetail = new AuthUserDetail(2, "google", "my@gmail.com", 12171652, true, true);
         authUserDetail.setProfileImageUrl("https://googlestatic.com/blahblah");
-        given(originProvider.getOrigin(any())).willReturn(new StringBuffer("https://inhabas.com"));
+
+        HttpHeaders expectedHttpHeaders = new HttpHeaders();
+        expectedHttpHeaders.setLocation(URI.create("https://inhabas.com/login/success?access_token=123.345.789&refresh_token=&profile_image_url=&expires_in=3600"));
+        given(loginRedirectHeaderProvider.prepareLoginRedirectHeader(any(), any(), any(), any(), any())).willReturn(expectedHttpHeaders);
+
         given(memberService.findById(anyInt())).willReturn(
                 Member.builder()
                         .id(12171652)
@@ -119,14 +118,9 @@ public class LoginServiceTest {
         HttpHeaders httpHeaders = loginService.prepareRedirectHeader(request, authUserDetail);
 
         //then
-        assertThat(httpHeaders.keySet())
-                .contains("accessToken", "expiresIn", "Location", "refreshToken", "profileImageUrl");
-
-        assertThat(httpHeaders.getFirst("accessToken")).hasSizeGreaterThan(2); // jwt 토큰은 못해도 점 두개는 있어야함.
-        assertThat(httpHeaders.getFirst("refreshToken")).hasSizeGreaterThan(2); // jwt 토큰은 못해도 점 두개는 있어야함.
-        assertThat(httpHeaders.getFirst("expiresIn")).isNotBlank();
-        assertThat(httpHeaders.getFirst("profileImageUrl")).isNotBlank();
-        assertThat(Objects.requireNonNull(httpHeaders.getLocation()).getPath()).isEqualTo("/login/success");
+        assertThat(httpHeaders.keySet()).containsOnly("Location");
+        then(memberService).should(times(1)).findById(anyInt());
+        then(loginRedirectHeaderProvider).should(times(1)).prepareLoginRedirectHeader(any(), any(), any(), any(), any());
     }
 
     @DisplayName("OAuth2 인증을 거치지 않고 url jumping 시도하는 경우, AccessDenyException 발생")

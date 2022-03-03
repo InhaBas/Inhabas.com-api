@@ -20,4 +20,5 @@ public interface LoginService {
      * @throws AccessDeniedException AuthUserDetail 이 null 인 경우, OAuth2 인증을 거치지 않았다고 판단.
      */
     HttpHeaders prepareRedirectHeader(HttpServletRequest request, AuthUserDetail authUserDetail) throws URISyntaxException;
+
 }

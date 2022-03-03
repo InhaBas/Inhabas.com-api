@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 @Profile("!production")
-public class OriginProviderForDevelopment implements HttpOriginProvider {
+public class HttpOriginProviderForDevelopment implements HttpOriginProvider {
 
     @Override
     public StringBuffer getOrigin(HttpServletRequest request) {
 
-        return new StringBuffer("http://localhost:8080");  // 프론트엔드 로컬 개발환경으로 리다이렉트
+        return new StringBuffer(request.getHeader("Referer"));  // 프론트엔드 로컬 개발환경으로 리다이렉트
     }
 }
