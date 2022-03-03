@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 @Profile("production")
-public class OriginProviderForProduction implements HttpOriginProvider {
+public class HttpOriginProviderForProduction implements HttpOriginProvider {
 
     @Override
     public StringBuffer getOrigin(HttpServletRequest request) {

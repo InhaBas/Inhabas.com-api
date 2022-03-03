@@ -1,12 +1,7 @@
 package com.inhabas.api.service.login;
 
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.RefreshToken;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.TokenDto;
-import com.inhabas.api.security.jwtUtils.TokenProvider;
 import com.inhabas.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +9,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -22,13 +16,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private static final String LOGIN_SUCCESS_REDIRECT_URL = "%s/login/success";
-    private static final String SIGNUP_REQUIRED_REDIRECT_URL = "%s/signUp";
+    private static final String TEMPORARY_REDIRECT_URL = "%s/login/success";
+    private static final String LOGIN_SUCCESS_REDIRECT_URI = "/";
+    private static final String SIGNUP_REQUIRED_REDIRECT_URI = "/signUp";
 
-    private final TokenService tokenService;
-    private final TokenProvider tokenProvider;
     private final MemberService memberService;
-    private final HttpOriginProvider originProvider;
+    private final LoginRedirectHeaderProvider redirectHeaderProvider;
 
     @Override
     public HttpHeaders prepareRedirectHeader(HttpServletRequest request, AuthUserDetail authUserDetail) throws URISyntaxException {
@@ -48,48 +41,13 @@ public class LoginServiceImpl implements LoginService {
             String role = member.getIbasInformation().getRole().toString();
             // List<String> teams = member.getIbasInformation().getTeams().stream().map(t-> t.toString()).collect(Collections.toCollect);
 
-            httpHeaders = this.prepareLoginRedirectHeader(request, authUserDetail, role);
+            httpHeaders = redirectHeaderProvider.prepareLoginRedirectHeader(request, TEMPORARY_REDIRECT_URL, LOGIN_SUCCESS_REDIRECT_URI, authUserDetail, role);
         }
         else {
-            httpHeaders = this.prepareSignUpRedirectHeader(request, authUserDetail);
+            httpHeaders = redirectHeaderProvider.prepareSignUpRedirectHeader(request, TEMPORARY_REDIRECT_URL, SIGNUP_REQUIRED_REDIRECT_URI, authUserDetail);
         }
 
         return httpHeaders;
     }
-
-    private HttpHeaders prepareLoginRedirectHeader(HttpServletRequest request, AuthUserDetail authUserDetail, String memberRole) throws URISyntaxException {
-
-        TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), memberRole, null); // 추후 팀 작업 시 변경해야함.
-        tokenService.saveRefreshToken(new RefreshToken(jwtToken.getRefreshToken()));
-
-        return getRedirectHttpHeaders(LOGIN_SUCCESS_REDIRECT_URL, originProvider.getOrigin(request),
-                jwtToken.getAccessToken(), jwtToken.getRefreshToken(), String.valueOf(jwtToken.getExpiresIn()), authUserDetail.getProfileImageUrl());
-    }
-
-    private HttpHeaders prepareSignUpRedirectHeader(HttpServletRequest request, AuthUserDetail authUserDetail) throws URISyntaxException {
-        /* 회원가입 필요 */
-
-        TokenDto jwtToken = tokenProvider.createJwtToken(authUserDetail.getId(), Role.ANONYMOUS.toString(), null);
-
-        return getRedirectHttpHeaders(SIGNUP_REQUIRED_REDIRECT_URL, originProvider.getOrigin(request),
-                jwtToken.getAccessToken(), "", String.valueOf(jwtToken.getExpiresIn()), "");
-    }
-
-    /**
-     * service 단에서 개발환경에 따라 origin 갖고 오는거 분리하기.
-     */
-    private HttpHeaders getRedirectHttpHeaders(String redirectUrl, StringBuffer origin, String accessToken, String refreshToken, String expiresIn, String profileImageUrl) throws URISyntaxException {
-        URI redirectUri = new URI(String.format(redirectUrl, origin));
-        HttpHeaders httpHeaders = new HttpHeaders();
-
-        httpHeaders.setLocation(redirectUri);
-        httpHeaders.set("accessToken", accessToken);
-        httpHeaders.set("refreshToken", refreshToken);
-        httpHeaders.set("expiresIn", expiresIn);
-        httpHeaders.set("profileImageUrl", profileImageUrl);
-
-        return httpHeaders;
-    }
-
 }
 

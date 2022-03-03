@@ -18,14 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SaveContestBoardDtoTest {
     private static ValidatorFactory validatorFactory;
     private static Validator validator;
-    private static List<String> errorMessage;
 
     @BeforeAll
     public static void init() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
 
-        errorMessage = new ArrayList<>();
     }
 
     @AfterAll
@@ -41,9 +39,11 @@ public class SaveContestBoardDtoTest {
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
-        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
+        List<String> errorMessage = new ArrayList<>();
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
+
         assertThat(errorMessage).contains(
                 "제목을 입력하세요.",
                 "본문을 입력하세요.",
@@ -62,9 +62,11 @@ public class SaveContestBoardDtoTest {
 
         //when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
-        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
+        List<String> errorMessage = new ArrayList<>();
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
+
         assertThat(errorMessage).contains(
                 "제목을 입력하세요.",
                 "본문을 입력하세요.",
@@ -84,16 +86,18 @@ public class SaveContestBoardDtoTest {
                 "contents! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
-                LocalDate.of(2022, 01, 01),
-                LocalDate.of(2022, 03, 03));
+                LocalDate.of(2022, 1, 1),
+                LocalDate.of(9999, 3, 3));
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
-        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
+        List<String> errorMessage = new ArrayList<>();
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
+
         assertEquals(3, violations.size());
-        assertThat(errorMessage).contains(
+        assertThat(errorMessage).containsOnly(
                 "제목은 최대 100자입니다.",
                 "100자 이내로 작성해주세요.",
                 "500자 이내로 작성해주세요."
@@ -105,14 +109,16 @@ public class SaveContestBoardDtoTest {
     public void DeadlineIsOutdatedError() {
         //given
         SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic",
-                LocalDate.of(2022, 01, 01), LocalDate.of(2022, 02, 01));
+                LocalDate.of(2022, 1, 1), LocalDate.of(2022, 2, 1));
 
         // when
         Set<ConstraintViolation<SaveContestBoardDto>> violations = validator.validate(saveContestBoardDto);
-        violations.forEach(error -> errorMessage.add(error.getMessage()));
 
         // then
-        assertThat(errorMessage).contains(
+        List<String> errorMessage = new ArrayList<>();
+        violations.forEach(error -> errorMessage.add(error.getMessage()));
+
+        assertThat(errorMessage).containsOnly(
                 "이미 모집기간이 종료된 공모전은 등록할 수 없습니다."
         );
     }

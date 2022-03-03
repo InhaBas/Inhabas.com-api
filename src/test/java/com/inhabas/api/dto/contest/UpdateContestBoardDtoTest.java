@@ -64,7 +64,7 @@ public class UpdateContestBoardDtoTest {
     public void FieldsAreBlankError() {
         // given
         UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(
-                1, " ", " ", " ", " ", LocalDate.of(2022, 01, 01), LocalDate.of(2023, 02, 10));
+                1, " ", " ", " ", " ", LocalDate.of(2022, 1, 1), LocalDate.of(2023, 2, 10));
 
         // when
         Set<ConstraintViolation<UpdateContestBoardDto>> violations = validator.validate(updateContestBoardDto);
@@ -89,8 +89,8 @@ public class UpdateContestBoardDtoTest {
                 "contents! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
-                LocalDate.of(2022, 01, 01),
-                LocalDate.of(2022, 03, 03));
+                LocalDate.of(2022, 1, 1),
+                LocalDate.of(9999, 3, 3));
 
         // when
         Set<ConstraintViolation<UpdateContestBoardDto>> violations = validator.validate(updateContestBoardDto);
@@ -98,7 +98,7 @@ public class UpdateContestBoardDtoTest {
 
         // then
         assertEquals(3, violations.size());
-        assertThat(errorMessage).contains(
+        assertThat(errorMessage).containsOnly(
                 "제목은 최대 100자입니다.",
                 "100자 이내로 작성해주세요.",
                 "500자 이내로 작성해주세요."
