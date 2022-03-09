@@ -1,0 +1,84 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'com.inhabas'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
+
+dependencies {
+    annotationProcessor(
+            'org.projectlombok:lombok',
+            'org.springframework.boot:spring-boot-configuration-processor',
+            'jakarta.persistence:jakarta.persistence-api',
+            'jakarta.annotation:jakarta.annotation-api',
+            "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa",
+    )
+
+    implementation(
+            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-data-jpa',
+            'org.springframework.boot:spring-boot-starter-validation',
+            'org.springdoc:springdoc-openapi-ui:1.6.0',
+            'com.querydsl:querydsl-jpa',
+
+            // cloud config
+            'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
+            'org.springframework.boot:spring-boot-starter-actuator:2.6.2',
+            'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0',
+
+            // security
+            'org.springframework.boot:spring-boot-starter-security',
+            'org.springframework.boot:spring-boot-starter-oauth2-client',
+            'javax.xml.bind:jaxb-api',
+    )
+
+    testImplementation(
+            'org.springframework.boot:spring-boot-starter-test',
+            'org.springframework.security:spring-security-test'
+    )
+
+
+    compileOnly(
+            'org.projectlombok:lombok'
+    )
+
+    runtimeOnly(
+            'org.mariadb.jdbc:mariadb-java-client',
+            'com.h2database:h2'
+    )
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+            //'org.bouncycastle:bcprov-jdk15on:1.60',
+            'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
+}
+
+test {
+    useJUnitPlatform()
+}
+
+clean {
+    delete file('src/main/generated')
+}
+
+task cleanGeneratedDir(type: Delete) {
+    delete file('src/main/generated')
+}
+
+
