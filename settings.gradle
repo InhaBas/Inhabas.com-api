@@ -1,1 +1,4 @@
 rootProject.name = 'api'
+include 'resource-server'
+include 'file-server'
+
