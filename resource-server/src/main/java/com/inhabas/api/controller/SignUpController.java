@@ -12,7 +12,6 @@ import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -37,14 +36,14 @@ public class SignUpController {
 
     /* profile */
 
-    @PostMapping("/student")
-    @Operation(summary = "학생 회원가입 시 개인정보를 저장한다.")
+    @PostMapping
+    @Operation(summary = "회원가입 시 개인정보를 저장한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
     })
     public ResponseEntity<?> saveStudentProfile(
-            @Authenticated AuthUserDetail authUser, @Valid @RequestBody StudentSignUpDto form) {
+            @Authenticated AuthUserDetail authUser, @Valid @RequestBody SignUpDto form) {
 
         memberService.saveSignUpForm(form);
         authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
@@ -52,7 +51,7 @@ public class SignUpController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/student")
+    @GetMapping
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<DetailSignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
@@ -62,20 +61,6 @@ public class SignUpController {
         return ResponseEntity.ok(form);
     }
 
-    @PostMapping("/professor")
-    @Operation(summary = "교수 회원가입시 개인정보를 저장한다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
-    })
-    public ResponseEntity<?> saveProfessorProfile(
-            @Authenticated AuthUserDetail authUser, @Valid @RequestBody ProfessorSignUpDto form) {
-
-        memberService.saveSignUpForm(form);
-        authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @GetMapping("/majorInfo")
     @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")

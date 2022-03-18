@@ -7,8 +7,7 @@ import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
-import com.inhabas.api.dto.signUp.ProfessorSignUpDto;
-import com.inhabas.api.dto.signUp.StudentSignUpDto;
+import com.inhabas.api.dto.signUp.SignUpDto;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
 import com.inhabas.api.service.member.MemberNotExistException;
 import com.inhabas.api.service.member.MemberServiceImpl;
@@ -45,9 +44,8 @@ public class MemberServiceTest {
     @Test
     public void 학생_회원가입() {
         //given
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
+        SignUpDto signUpForm = SignUpDto.builder()
                 .name("유동현")
-                .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
                 .memberId(12345678)
@@ -58,7 +56,7 @@ public class MemberServiceTest {
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
-                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getSemester()))
+                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), 1))
                 .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
                 .build();
         ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
@@ -75,38 +73,38 @@ public class MemberServiceTest {
         assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
     }
 
-    @DisplayName("교수 회원가입을 성공한다.")
-    @Test
-    public void 교수_회원가입() {
-        //given
-        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
-                .name("유동현")
-                .major("컴퓨터공학과")
-                .phoneNumber("010-0000-1111")
-                .memberId(12345678)
-                .build();
-
-        Member expected = Member.builder()
-                .id(signUpForm.getMemberId())
-                .phone(signUpForm.getPhoneNumber())
-                .name(signUpForm.getName())
-                .picture("")
-                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
-                .build();
-        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
-        given(memberRepository.save(any(Member.class))).willReturn(expected);
-
-        //when
-        Member newMember = memberService.saveSignUpForm(signUpForm);
-
-        //then
-        assertThat(newMember)
-                .usingRecursiveComparison()
-                .ignoringFields("joined")
-                .isEqualTo(expected);
-        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
-    }
+//    @DisplayName("교수 회원가입을 성공한다.")
+//    @Test
+//    public void 교수_회원가입() {
+//        //given
+//        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+//                .name("유동현")
+//                .major("컴퓨터공학과")
+//                .phoneNumber("010-0000-1111")
+//                .memberId(12345678)
+//                .build();
+//
+//        Member expected = Member.builder()
+//                .id(signUpForm.getMemberId())
+//                .phone(signUpForm.getPhoneNumber())
+//                .name(signUpForm.getName())
+//                .picture("")
+//                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
+//                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+//                .build();
+//        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
+//        given(memberRepository.save(any(Member.class))).willReturn(expected);
+//
+//        //when
+//        Member newMember = memberService.saveSignUpForm(signUpForm);
+//
+//        //then
+//        assertThat(newMember)
+//                .usingRecursiveComparison()
+//                .ignoringFields("joined")
+//                .isEqualTo(expected);
+//        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
+//    }
 
     @DisplayName("같은 학번 저장 시 DuplicatedMemberFiledException 예외")
     @Test
@@ -116,9 +114,8 @@ public class MemberServiceTest {
         given(memberRepository.existsById(anyInt())).willReturn(true);
 
         //when
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
+        SignUpDto signUpForm = SignUpDto.builder()
                 .name("유동현")
-                .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
                 .memberId(sameStudentId)
@@ -136,9 +133,8 @@ public class MemberServiceTest {
         given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
 
         //when
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
+        SignUpDto signUpForm = SignUpDto.builder()
                 .name("유동현")
-                .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
                 .memberId(12345678)
@@ -175,7 +171,6 @@ public class MemberServiceTest {
                 .isEqualTo(DetailSignUpDto.builder()
                         .memberId(studentId)
                         .email(email)
-                        .semester(1)
                         .major("전자공학과")
                         .name("유동현")
                         .phoneNumber("010-0000-0000")

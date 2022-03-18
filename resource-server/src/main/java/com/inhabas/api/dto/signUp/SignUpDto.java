@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
-public class StudentSignUpDto {
+public class SignUpDto {
 
     @NotBlank
     @Length(max = 25)
@@ -28,17 +28,12 @@ public class StudentSignUpDto {
     @NotNull @Positive
     private Integer memberId;
 
-    @NotNull
-    @Max(2) @Min(1)
-    private Integer semester;
-
     @Builder
-    public StudentSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer semester) {
+    public SignUpDto(String name, String major, String phoneNumber, String email, Integer memberId) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.memberId = memberId;
-        this.semester = semester;
     }
 }

@@ -7,8 +7,7 @@ import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.DetailSignUpDto;
-import com.inhabas.api.dto.signUp.ProfessorSignUpDto;
-import com.inhabas.api.dto.signUp.StudentSignUpDto;
+import com.inhabas.api.dto.signUp.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,23 +26,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member saveSignUpForm(StudentSignUpDto signUpForm) {
+    public Member saveSignUpForm(SignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getSemester());
-
-        checkDuplicatedMemberId(signUpForm.getMemberId());
-        checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
-
-        Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
-
-        return memberRepository.save(member);
-    }
-
-    @Override
-    @Transactional
-    public Member saveSignUpForm(ProfessorSignUpDto signUpForm) {
-        IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = SchoolInformation.ofProfessor(signUpForm.getMajor());
+        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), 1);
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
@@ -86,7 +71,6 @@ public class MemberServiceImpl implements MemberService {
                     .email(email)
                     .name(null)
                     .major(null)
-                    .semester(null)
                     .build();
         }
 
@@ -99,7 +83,6 @@ public class MemberServiceImpl implements MemberService {
                         .email(email)
                         .name(member.getName())
                         .major(member.getSchoolInformation().getMajor())
-                        .semester(member.getSchoolInformation().getGeneration())
                         .build();
     }
 
