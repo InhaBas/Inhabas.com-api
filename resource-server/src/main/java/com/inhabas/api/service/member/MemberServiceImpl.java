@@ -1,9 +1,6 @@
 package com.inhabas.api.service.member;
 
-import com.inhabas.api.domain.member.IbasInformation;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.SignUpDto;
@@ -22,6 +19,7 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberDuplicationChecker duplicationChecker;
 
     @Override
     @Transactional
@@ -29,24 +27,12 @@ public class MemberServiceImpl implements MemberService {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
         SchoolInformation schoolInformation = SchoolInformation.ofUnderGraduate(signUpForm.getMajor(), 1);
 
-        checkDuplicatedMemberId(signUpForm.getMemberId());
-        checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
-
         Member member = createMember(ibasInformation, schoolInformation, signUpForm.getMemberId(), signUpForm.getName(), signUpForm.getPhoneNumber());
+        if (duplicationChecker.isDuplicatedMember(member)) {
+            throw new DuplicatedMemberFieldException("학번 또는 전화번호");
+        }
 
         return memberRepository.save(member);
-    }
-
-    private void checkDuplicatedMemberId(Integer memberId) {
-        if (memberRepository.existsById(memberId)) {
-            throw new DuplicatedMemberFieldException("학번");
-        }
-    }
-
-    private void checkDuplicatedMemberPhoneNumber(String phoneNumber) {
-        if (memberRepository.existsByPhone(new Phone(phoneNumber))) {
-            throw new DuplicatedMemberFieldException("전화번호");
-        }
     }
 
     private Member createMember(IbasInformation ibasInformation, SchoolInformation schoolInformation, Integer memberId, String name, String phoneNumber) {
@@ -116,18 +102,5 @@ public class MemberServiceImpl implements MemberService {
 
         member.setRole(role);
         memberRepository.save(member);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isDuplicatedId(Integer memberId) {
-
-        return memberRepository.existsById(memberId);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean isDuplicatedPhoneNumber(Phone phoneNumber) {
-        return memberRepository.existsByPhone(phoneNumber);
     }
 }

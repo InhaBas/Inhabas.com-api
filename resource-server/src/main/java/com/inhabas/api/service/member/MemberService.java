@@ -21,8 +21,4 @@ public interface MemberService {
     Optional<Member> updateMember(Member member);
 
     void changeRole(Integer memberId, Role role);
-
-    boolean isDuplicatedId(Integer memberId);
-
-    boolean isDuplicatedPhoneNumber(Phone phoneNumber);
 }

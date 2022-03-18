@@ -1,4 +1,4 @@
-package com.inhabas.api.service.member;
+package com.inhabas.api.domain.member;
 
 public class DuplicatedMemberFieldException extends RuntimeException {
 
@@ -9,6 +9,6 @@ public class DuplicatedMemberFieldException extends RuntimeException {
     }
 
     public DuplicatedMemberFieldException(String field) {
-        super(String.format("중복된 %s 이(가) 입력되었습니다.", field));
+        super(String.format("%s 이(가) 중복됩니다.", field));
     }
 }

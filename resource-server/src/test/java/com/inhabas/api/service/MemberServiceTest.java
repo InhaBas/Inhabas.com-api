@@ -1,13 +1,9 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.IbasInformation;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.SignUpDto;
-import com.inhabas.api.service.member.DuplicatedMemberFieldException;
 import com.inhabas.api.service.member.MemberNotExistException;
 import com.inhabas.api.service.member.MemberServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -35,6 +31,9 @@ public class MemberServiceTest {
 
     @InjectMocks
     MemberServiceImpl memberService;
+
+    @Mock
+    MemberDuplicationChecker memberDuplicationChecker;
 
     @Mock
     MemberRepository memberRepository;
@@ -233,7 +232,7 @@ public class MemberServiceTest {
         given(memberRepository.existsById(anyInt())).willReturn(true);
 
         //when
-        boolean result = memberService.isDuplicatedId(12171652);
+        boolean result = memberDuplicationChecker.isDuplicatedId(12171652);
 
         //then
         then(memberRepository).should(times(1)).existsById(anyInt());
@@ -248,7 +247,7 @@ public class MemberServiceTest {
         given(memberRepository.existsById(anyInt())).willReturn(false);
 
         //when
-        boolean result = memberService.isDuplicatedId(12171652);
+        boolean result = memberDuplicationChecker.isDuplicatedId(12171652);
 
         //then
         then(memberRepository).should(times(1)).existsById(anyInt());
@@ -263,7 +262,7 @@ public class MemberServiceTest {
         given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
 
         //when
-        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
+        boolean result = memberDuplicationChecker.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
 
         //then
         then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
@@ -278,7 +277,7 @@ public class MemberServiceTest {
         given(memberRepository.existsByPhone(any(Phone.class))).willReturn(false);
 
         //when
-        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
+        boolean result = memberDuplicationChecker.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
 
         //then
         then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));

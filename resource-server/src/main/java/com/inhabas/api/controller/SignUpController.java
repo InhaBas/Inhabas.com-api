@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.member.MemberDuplicationChecker;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.MajorInfoDto;
@@ -29,6 +30,7 @@ import java.util.Objects;
 public class SignUpController {
 
     private final MemberService memberService;
+    private final MemberDuplicationChecker memberDuplicationChecker;
     private final AnswerService answerService;
     private final AuthUserService authUserService;
     private final MajorInfoService majorInfoService;
@@ -88,10 +90,10 @@ public class SignUpController {
             boolean isDuplicated;
 
             if (Objects.nonNull(memberId)) {
-                isDuplicated = memberService.isDuplicatedId(memberId);
+                isDuplicated = memberDuplicationChecker.isDuplicatedId(memberId);
             }
             else {
-                isDuplicated = memberService.isDuplicatedPhoneNumber(phone);
+                isDuplicated = memberDuplicationChecker.isDuplicatedPhoneNumber(phone);
             }
 
             return ResponseEntity.ok(isDuplicated);

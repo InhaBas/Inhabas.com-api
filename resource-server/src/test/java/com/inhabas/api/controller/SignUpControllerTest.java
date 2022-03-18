@@ -2,6 +2,7 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.domain.member.MemberDuplicationChecker;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.member.MajorInfoDto;
@@ -50,6 +51,9 @@ public class SignUpControllerTest {
 
     @MockBean
     private MemberService memberService;
+
+    @MockBean
+    private MemberDuplicationChecker memberDuplicationChecker;
 
     @MockBean
     private QuestionnaireService questionnaireService;
@@ -361,7 +365,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복됨() throws Exception {
         //given
-        given(memberService.isDuplicatedId(anyInt())).willReturn(true);
+        given(memberDuplicationChecker.isDuplicatedId(anyInt())).willReturn(true);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -376,7 +380,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복되지_않는다() throws Exception {
         //given
-        given(memberService.isDuplicatedId(anyInt())).willReturn(false);
+        given(memberDuplicationChecker.isDuplicatedId(anyInt())).willReturn(false);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -391,7 +395,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복된다() throws Exception {
         //given
-        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(true);
+        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(true);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -406,7 +410,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복되지_않는다() throws Exception {
         //given
-        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -422,7 +426,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_양식이_잘못된_경우_400() throws Exception {
         //given
-        given(memberService.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
