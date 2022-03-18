@@ -2,7 +2,7 @@ package com.inhabas.api.domain.member;
 
 import com.inhabas.api.domain.member.type.wrapper.Grade;
 import com.inhabas.api.domain.member.type.wrapper.Major;
-import com.inhabas.api.domain.member.type.wrapper.Semester;
+import com.inhabas.api.domain.member.type.wrapper.Generation;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,15 +19,15 @@ public class SchoolInformation {
     private Grade grade;
 
     @Embedded
-    private Semester gen;
+    private Generation generation;
 
     private Boolean isProfessor;
 
     /* for creating student information*/
-    private SchoolInformation(String major, Integer grade, Integer semester) {
+    private SchoolInformation(String major, Integer grade, Integer generation) {
         this.major = new Major(major);
         this.grade = new Grade(grade);
-        this.gen = new Semester(semester);
+        this.generation = new Generation(generation);
         this.isProfessor = false;
     }
 
@@ -35,12 +35,12 @@ public class SchoolInformation {
     private SchoolInformation(String major) {
         this.major = new Major(major);
         this.grade = null;
-        this.gen = null;
+        this.generation = null;
         this.isProfessor = true;
     }
 
-    public static SchoolInformation ofStudent(String major, Integer grade, Integer semester) {
-        return new SchoolInformation(major, grade, semester);
+    public static SchoolInformation ofStudent(String major, Integer grade, Integer generation) {
+        return new SchoolInformation(major, grade, generation);
     }
 
     public static SchoolInformation ofProfessor(String major) {
@@ -51,12 +51,8 @@ public class SchoolInformation {
         return major.getValue();
     }
 
-    public Integer getGrade() {
-        return grade.getValue();
-    }
-
-    public Integer getGen() {
-        return gen.getValue();
+    public Integer getGeneration() {
+        return generation.getValue();
     }
 
     @Override
@@ -65,13 +61,7 @@ public class SchoolInformation {
         if (!(o instanceof SchoolInformation)) return false;
         SchoolInformation that = (SchoolInformation) o;
         return Objects.equals(getMajor(), that.getMajor())
-                && getGrade().equals(that.getGrade())
-                && getGen().equals(that.getGen());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getMajor(), getGrade(), getGen());
+                && getGeneration().equals(that.getGeneration());
     }
 
 }

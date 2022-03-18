@@ -6,16 +6,20 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
+/**
+ * 회원의 재학중인 학기가 아니라, 동아리 운영 상의 기수를 의미함.
+ * 2020-2학기부터 1기, 2021-1학기가 2기,,
+ */
 @Embeddable
 @Getter
-public class Semester {
+public class Generation {
 
     @Column(name = "gen")
     private int value;
 
-    public Semester() {}
+    public Generation() {}
 
-    public Semester(int value) {
+    public Generation(int value) {
         if (validate(value))
             this.value = value;
         else
@@ -26,6 +30,6 @@ public class Semester {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof Integer)) return false;
         int o = (Integer) value;
-        return o == 1 || o == 2;  // 1학기 또는 2학기 밖에 없음.
+        return o > 0;
     }
 }
