@@ -54,9 +54,9 @@ public class SignUpController {
     @GetMapping
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<DetailSignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
+    public ResponseEntity<SignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
 
-        DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
+        SignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
 
         return ResponseEntity.ok(form);
     }

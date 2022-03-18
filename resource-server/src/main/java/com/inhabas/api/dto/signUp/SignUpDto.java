@@ -1,5 +1,7 @@
 package com.inhabas.api.dto.signUp;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.inhabas.api.domain.member.type.MemberType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.*;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 public class SignUpDto {
 
@@ -28,12 +31,16 @@ public class SignUpDto {
     @NotNull @Positive
     private Integer memberId;
 
+    @NotNull
+    private MemberType memberType;
+
     @Builder
-    public SignUpDto(String name, String major, String phoneNumber, String email, Integer memberId) {
+    public SignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, MemberType memberType) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.memberId = memberId;
+        this.memberType = memberType;
     }
 }

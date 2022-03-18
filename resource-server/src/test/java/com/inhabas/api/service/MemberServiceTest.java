@@ -6,7 +6,6 @@ import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
 import com.inhabas.api.service.member.DuplicatedMemberFieldException;
 import com.inhabas.api.service.member.MemberNotExistException;
@@ -56,7 +55,7 @@ public class MemberServiceTest {
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
-                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate(signUpForm.getMajor(), 1))
                 .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
                 .build();
         ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
@@ -157,18 +156,18 @@ public class MemberServiceTest {
                 .phone("010-0000-0000")
                 .picture("")
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
-                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
                 .build();
         given(memberRepository.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
         //when
-        DetailSignUpDto savedForm = memberService.loadSignUpForm(studentId, email);
+        SignUpDto savedForm = memberService.loadSignUpForm(studentId, email);
 
         //then
         then(memberRepository).should(times(1)).findById(anyInt());
         assertThat(savedForm)
                 .usingRecursiveComparison()
-                .isEqualTo(DetailSignUpDto.builder()
+                .isEqualTo(SignUpDto.builder()
                         .memberId(studentId)
                         .email(email)
                         .major("전자공학과")
@@ -188,7 +187,7 @@ public class MemberServiceTest {
                 .picture("")
                 .name("유동현")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofStudent("정보통신공학과", 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
                 .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
                 .build();
         given(memberRepository.findById(anyInt()))

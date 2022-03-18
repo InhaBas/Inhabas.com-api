@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.member;
 
-import com.inhabas.api.domain.member.type.wrapper.Grade;
+import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.domain.member.type.wrapper.Generation;
 import lombok.*;
@@ -18,28 +18,36 @@ public class SchoolInformation {
     @Embedded
     private Generation generation;
 
-    private Boolean isProfessor;
+    @Enumerated(EnumType.STRING)
+    private MemberType memberType;
 
-    /* for creating student information*/
-    private SchoolInformation(String major, Integer generation) {
+    private SchoolInformation(String major, Integer generation, MemberType memberType) {
         this.major = new Major(major);
         this.generation = new Generation(generation);
-        this.isProfessor = false;
+        this.memberType = memberType;
     }
 
-    /* for creating professor information */
-    private SchoolInformation(String major) {
-        this.major = new Major(major);
-        this.generation = null;
-        this.isProfessor = true;
+
+    /* factory methods */
+
+    public static SchoolInformation ofUnderGraduate(String major, Integer generation) {
+        return new SchoolInformation(major, generation, MemberType.UNDERGRADUATE);
     }
 
-    public static SchoolInformation ofStudent(String major, Integer generation) {
-        return new SchoolInformation(major, generation);
+    public static SchoolInformation ofProfessor(String major, Integer generation) {
+        return new SchoolInformation(major, generation, MemberType.PROFESSOR);
     }
 
-    public static SchoolInformation ofProfessor(String major) {
-        return new SchoolInformation(major);
+    public static SchoolInformation ofGraduated(String major, Integer generation) {
+        return new SchoolInformation(major, generation, MemberType.GRADUATED);
+    }
+
+    public static SchoolInformation ofBachelor(String major, Integer generation) {
+        return new SchoolInformation(major, generation, MemberType.BACHELOR);
+    }
+
+    public static SchoolInformation ofOther(String major, Integer generation) {
+        return new SchoolInformation(major, generation, MemberType.OTHER);
     }
 
     public String getMajor() {
@@ -48,6 +56,10 @@ public class SchoolInformation {
 
     public Integer getGeneration() {
         return generation.getValue();
+    }
+
+    public MemberType getMemberType() {
+        return this.memberType;
     }
 
     @Override

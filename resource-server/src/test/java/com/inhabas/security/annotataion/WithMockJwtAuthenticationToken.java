@@ -1,5 +1,6 @@
 package com.inhabas.security.annotataion;
 
+import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
@@ -36,5 +37,5 @@ public @interface WithMockJwtAuthenticationToken {
 
     Role memberRole() default Role.BASIC_MEMBER;
 
-    boolean isProfessor() default false;
+    MemberType memberType() default MemberType.UNDERGRADUATE;
 }

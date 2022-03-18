@@ -6,7 +6,6 @@ import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.DetailSignUpDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member saveSignUpForm(SignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), 1);
+        SchoolInformation schoolInformation = SchoolInformation.ofUnderGraduate(signUpForm.getMajor(), 1);
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
@@ -62,10 +61,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public DetailSignUpDto loadSignUpForm(Integer memberId, String email) {
+    public SignUpDto loadSignUpForm(Integer memberId, String email) {
 
         if (Objects.isNull(memberId)) {
-            return DetailSignUpDto.builder()
+            return SignUpDto.builder()
                     .memberId(null)
                     .phoneNumber(null)
                     .email(email)
@@ -77,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotExistException::new);
 
-        return DetailSignUpDto.builder()
+        return SignUpDto.builder()
                         .memberId(memberId)
                         .phoneNumber(member.getPhone())
                         .email(email)

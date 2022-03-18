@@ -2,6 +2,7 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.*;
@@ -70,6 +71,7 @@ public class SignUpControllerTest {
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
                 .memberId(11112222)
+                .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
         mvc.perform(post("/signUp")
@@ -95,6 +97,7 @@ public class SignUpControllerTest {
                 .major("")
                 .phoneNumber("")
                 .memberId(null)
+                .memberType(null)
                 .build();
 
         String response = mvc.perform(post("/signUp")
@@ -105,11 +108,12 @@ public class SignUpControllerTest {
                 .andReturn()
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(response).contains(
-                "[memberId](은)는 must not be null",
-                "[name](은)는 must not be blank",
-                "[major](은)는 must not be blank",
-                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"");
+        assertThat(response.split("\n")).containsExactlyInAnyOrder(
+                "[memberId](은)는 must not be null 입력된 값: [null]",
+                "[major](은)는 must not be blank 입력된 값: []",
+                "[name](은)는 must not be blank 입력된 값: []",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\" 입력된 값: []",
+                "[memberType](은)는 must not be null 입력된 값: [null]");
     }
 
     @DisplayName("학생 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
@@ -123,6 +127,7 @@ public class SignUpControllerTest {
                 .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
                 .phoneNumber("8210-1111-1111")
                 .memberId(-1)
+                .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
         String response = mvc.perform(post("/signUp")
@@ -133,10 +138,12 @@ public class SignUpControllerTest {
                 .andReturn()
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(response).contains(
-                "[name](은)는 length must be between 0 and 25",
-                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
-                "[major](은)는 length must be between 0 and 15");
+        assertThat(response.split("\n")).containsExactlyInAnyOrder(
+                "[memberId](은)는 must be greater than 0 입력된 값: [-1]",
+                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\" 입력된 값: [8210-1111-1111]",
+                "[name](은)는 length must be between 0 and 25 입력된 값: [홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세.]",
+                "[major](은)는 length must be between 0 and 15 입력된 값: [금융데이터처리, 블록체인학과.]",
+                "[memberType](은)는 must not be null 입력된 값: [null]");
     }
 
     @DisplayName("임시 저장했던 개인정보를 불러온다.")
@@ -144,12 +151,13 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
-        DetailSignUpDto expectedSavedForm = DetailSignUpDto.builder()
+        SignUpDto expectedSavedForm = SignUpDto.builder()
                 .memberId(12171652)
                 .name("홍길동")
                 .major("의예과")
                 .phoneNumber("010-1234-5678")
                 .email("my@email.com")
+                .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
         given(memberService.loadSignUpForm(12171652, "my@email.com")).willReturn(expectedSavedForm);
