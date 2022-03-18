@@ -28,9 +28,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     String memberName() default "홍길동";
 
-    int memberGrade() default 1;
-
-    int memberSemester() default 1;
+    int memberGeneration() default 1;
 
     String memberMajor() default "의예과";
 

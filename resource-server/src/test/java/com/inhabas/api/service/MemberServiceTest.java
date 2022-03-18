@@ -47,7 +47,6 @@ public class MemberServiceTest {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
-                .grade(3)
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
@@ -59,7 +58,7 @@ public class MemberServiceTest {
                 .phone(signUpForm.getPhoneNumber())
                 .name(signUpForm.getName())
                 .picture("")
-                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester()))
+                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getSemester()))
                 .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
                 .build();
         ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
@@ -119,7 +118,6 @@ public class MemberServiceTest {
         //when
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
-                .grade(3)
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
@@ -140,7 +138,6 @@ public class MemberServiceTest {
         //when
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
-                .grade(3)
                 .semester(2)
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
@@ -164,7 +161,7 @@ public class MemberServiceTest {
                 .phone("010-0000-0000")
                 .picture("")
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
-                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 3, 1))
+                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 1))
                 .build();
         given(memberRepository.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
 
@@ -178,7 +175,6 @@ public class MemberServiceTest {
                 .isEqualTo(DetailSignUpDto.builder()
                         .memberId(studentId)
                         .email(email)
-                        .grade(3)
                         .semester(1)
                         .major("전자공학과")
                         .name("유동현")
@@ -197,7 +193,7 @@ public class MemberServiceTest {
                 .picture("")
                 .name("유동현")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofStudent("정보통신공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofStudent("정보통신공학과", 1))
                 .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
                 .build();
         given(memberRepository.findById(anyInt()))

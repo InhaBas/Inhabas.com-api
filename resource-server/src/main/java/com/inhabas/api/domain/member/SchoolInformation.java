@@ -16,17 +16,13 @@ public class SchoolInformation {
     private Major major;
 
     @Embedded
-    private Grade grade;
-
-    @Embedded
     private Generation generation;
 
     private Boolean isProfessor;
 
     /* for creating student information*/
-    private SchoolInformation(String major, Integer grade, Integer generation) {
+    private SchoolInformation(String major, Integer generation) {
         this.major = new Major(major);
-        this.grade = new Grade(grade);
         this.generation = new Generation(generation);
         this.isProfessor = false;
     }
@@ -34,13 +30,12 @@ public class SchoolInformation {
     /* for creating professor information */
     private SchoolInformation(String major) {
         this.major = new Major(major);
-        this.grade = null;
         this.generation = null;
         this.isProfessor = true;
     }
 
-    public static SchoolInformation ofStudent(String major, Integer grade, Integer generation) {
-        return new SchoolInformation(major, grade, generation);
+    public static SchoolInformation ofStudent(String major, Integer generation) {
+        return new SchoolInformation(major, generation);
     }
 
     public static SchoolInformation ofProfessor(String major) {

@@ -18,18 +18,15 @@ public class DetailSignUpDto {
 
     private Integer memberId;
 
-    private Integer grade;
-
     private Integer semester;
 
     @Builder
-    public DetailSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer grade, Integer semester) {
+    public DetailSignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, Integer semester) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.memberId = memberId;
-        this.grade = grade;
         this.semester = semester;
     }
 }

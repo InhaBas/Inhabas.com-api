@@ -120,7 +120,6 @@ public class SignUpIntegrationTest {
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
-                                .grade(3)
                                 .semester(2)
                                 .build())))
                 .andExpect(status().isNoContent());

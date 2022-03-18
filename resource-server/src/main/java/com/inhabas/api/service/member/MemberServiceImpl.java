@@ -29,7 +29,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member saveSignUpForm(StudentSignUpDto signUpForm) {
         IbasInformation ibasInformation = new IbasInformation(Role.ANONYMOUS, "", 0);
-        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester());
+        SchoolInformation schoolInformation = SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getSemester());
 
         checkDuplicatedMemberId(signUpForm.getMemberId());
         checkDuplicatedMemberPhoneNumber(signUpForm.getPhoneNumber());
@@ -86,7 +86,6 @@ public class MemberServiceImpl implements MemberService {
                     .email(email)
                     .name(null)
                     .major(null)
-                    .grade(null)
                     .semester(null)
                     .build();
         }
@@ -100,8 +99,7 @@ public class MemberServiceImpl implements MemberService {
                         .email(email)
                         .name(member.getName())
                         .major(member.getSchoolInformation().getMajor())
-                        .grade(member.getSchoolInformation().getGrade())
-                        .semester(member.getSchoolInformation().getGen())
+                        .semester(member.getSchoolInformation().getGeneration())
                         .build();
     }
 

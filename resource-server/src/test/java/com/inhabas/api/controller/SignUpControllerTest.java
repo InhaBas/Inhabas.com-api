@@ -66,7 +66,6 @@ public class SignUpControllerTest {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("유동현")
-                .grade(3)
                 .semester(2)
                 .email("my@email.com")
                 .major("컴퓨터공학과")
@@ -93,7 +92,6 @@ public class SignUpControllerTest {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("")
-                .grade(null)
                 .semester(null)
                 .email("")
                 .major("")
@@ -111,7 +109,6 @@ public class SignUpControllerTest {
 
         assertThat(response).contains(
                 "[memberId](은)는 must not be null",
-                "[grade](은)는 must not be null",
                 "[name](은)는 must not be blank",
                 "[major](은)는 must not be blank",
                 "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
@@ -125,7 +122,6 @@ public class SignUpControllerTest {
         //given
         StudentSignUpDto signUpForm = StudentSignUpDto.builder()
                 .name("홍길동만세".repeat(5) + ".") // 25자까지만 가능
-                .grade(6) // 5학년까지만 가능
                 .semester(3) // 2학기가지만 가능
                 .email("") // 상관없음.
                 .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
@@ -143,7 +139,6 @@ public class SignUpControllerTest {
 
         assertThat(response).contains(
                 "[semester](은)는 must be less than or equal to 2",
-                "[grade](은)는 must be less than or equal to 5",
                 "[name](은)는 length must be between 0 and 25",
                 "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\"",
                 "[major](은)는 length must be between 0 and 15");
@@ -157,7 +152,6 @@ public class SignUpControllerTest {
         DetailSignUpDto expectedSavedForm = DetailSignUpDto.builder()
                 .memberId(12171652)
                 .name("홍길동")
-                .grade(1)
                 .semester(1)
                 .major("의예과")
                 .phoneNumber("010-1234-5678")
