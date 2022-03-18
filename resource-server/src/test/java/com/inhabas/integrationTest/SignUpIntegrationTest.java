@@ -16,7 +16,7 @@ import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserNotFoundException;
 import com.inhabas.api.security.domain.AuthUserRepository;
 import com.inhabas.api.security.jwtUtils.TokenProvider;
-import com.inhabas.api.service.member.MemberNotExistException;
+import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.testConfig.CustomSpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -156,7 +156,7 @@ public class SignUpIntegrationTest {
 
 
         //then
-        Member 유동현 = memberRepository.findById(12171652).orElseThrow(MemberNotExistException::new);
+        Member 유동현 = memberRepository.findById(12171652).orElseThrow(MemberNotFoundException::new);
         assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
         AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
         assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(12171652);

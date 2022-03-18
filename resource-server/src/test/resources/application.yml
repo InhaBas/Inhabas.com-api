@@ -21,10 +21,12 @@ spring:
     hibernate:
       ddl-auto: create
       naming:
-        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
-      hibernate.format_sql: true
-    database: sql_server
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
   security:
     oauth2:
       client:
@@ -72,7 +74,7 @@ spring:
 logging:
   level:
     org.springframwork.web.client: DEBUG
-    #    org.hibernate.type: trace
+    org.hibernate.type: trace
 
 authenticate:
   oauth2-success-handle-url: /login/test-success

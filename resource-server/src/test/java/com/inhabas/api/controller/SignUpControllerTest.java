@@ -7,7 +7,10 @@ import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.*;
+import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.service.member.MajorInfoService;
+import com.inhabas.api.service.signup.NoQueryParameterException;
+import com.inhabas.api.service.signup.SignUpService;
 import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -50,19 +54,8 @@ public class SignUpControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private MemberService memberService;
+    private SignUpService signUpService;
 
-    @MockBean
-    private MemberDuplicationChecker memberDuplicationChecker;
-
-    @MockBean
-    private QuestionnaireService questionnaireService;
-
-    @MockBean
-    private AnswerService answerService;
-
-    @MockBean
-    private MajorInfoService majorInfoService;
 
     @DisplayName("학생 회원가입 도중 개인정보를 저장한다.")
     @Test
@@ -146,8 +139,7 @@ public class SignUpControllerTest {
                 "[memberId](은)는 must be greater than 0 입력된 값: [-1]",
                 "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\" 입력된 값: [8210-1111-1111]",
                 "[name](은)는 length must be between 0 and 25 입력된 값: [홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세.]",
-                "[major](은)는 length must be between 0 and 15 입력된 값: [금융데이터처리, 블록체인학과.]",
-                "[memberType](은)는 must not be null 입력된 값: [null]");
+                "[major](은)는 length must be between 0 and 15 입력된 값: [금융데이터처리, 블록체인학과.]");
     }
 
     @DisplayName("임시 저장했던 개인정보를 불러온다.")
@@ -155,6 +147,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
+        AuthUserDetail authUserDetail = (AuthUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SignUpDto expectedSavedForm = SignUpDto.builder()
                 .memberId(12171652)
                 .name("홍길동")
@@ -164,7 +157,7 @@ public class SignUpControllerTest {
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
-        given(memberService.loadSignUpForm(12171652, "my@email.com")).willReturn(expectedSavedForm);
+        given(signUpService.loadSignUpForm(authUserDetail)).willReturn(expectedSavedForm);
 
         //when
         String response = mvc.perform(get("/signUp"))
@@ -266,7 +259,7 @@ public class SignUpControllerTest {
             add(new QuestionnaireDto(4, "추후 희망하는 진로가 무엇이며, 동아리 활동이 진로에 어떠한 영향을 줄 것이라고 생각하나요?"));
             add(new QuestionnaireDto(5, "어떤 경로로 IBAS를 알게 되셨나요?"));
         }};
-        given(questionnaireService.getQuestionnaire()).willReturn(questionnaireInDatabase);
+        given(signUpService.getQuestionnaire()).willReturn(questionnaireInDatabase);
 
         //when
         String response = mvc.perform(get("/signUp/questionnaire"))
@@ -290,7 +283,7 @@ public class SignUpControllerTest {
             add(new AnswerDto(3, "외주를 받아 진행했던 적이 있는데, 아주 잘 되어 스타트업 창업을 진행했습니다."));
             add(new AnswerDto(4, "이 동아리에 입부한다면, 말하는 대로 코딩해주는 인공지능 모델을 개발하고 싶습니다."));
         }};
-        given(answerService.getAnswers(anyInt())).willReturn(savedDTOs);
+        given(signUpService.getAnswers(any())).willReturn(savedDTOs);
 
         //when
         String response = mvc.perform(get("/signUp/answer"))
@@ -347,7 +340,7 @@ public class SignUpControllerTest {
             add(majorInfo2);
             add(majorInfo3);
         }};
-        given(majorInfoService.getAllMajorInfo()).willReturn(majorInfos);
+        given(signUpService.getMajorInfo()).willReturn(majorInfos);
 
         //when
         String response = mvc.perform(get("/signUp/majorInfo"))
@@ -365,7 +358,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복됨() throws Exception {
         //given
-        given(memberDuplicationChecker.isDuplicatedId(anyInt())).willReturn(true);
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -380,7 +373,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void ID_중복_검사_중복되지_않는다() throws Exception {
         //given
-        given(memberDuplicationChecker.isDuplicatedId(anyInt())).willReturn(false);
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(false);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
@@ -395,11 +388,11 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복된다() throws Exception {
         //given
-        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(true);
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
-                        .param("phone", "010-0000-0000"))
+                        .param("phoneNumber", "010-0000-0000"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andReturn();
@@ -410,11 +403,11 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_중복_검사_중복되지_않는다() throws Exception {
         //given
-        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(false);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
-                        .param("phone", "010-0000-0000"))
+                        .param("phoneNumber", "010-0000-0000"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"))
                 .andReturn();
@@ -426,31 +419,34 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 핸드폰_양식이_잘못된_경우_400() throws Exception {
         //given
-        given(memberDuplicationChecker.isDuplicatedPhoneNumber(any(Phone.class))).willReturn(false);
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
         mvc.perform(get("/signUp/isDuplicated")
-                        .param("phone", "0101-0000-0000"))
+                        .param("phoneNumber", "0101-0000-0000"))
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
 
-    @DisplayName("중복 검사 시 핸드폰과 학번이 동시에 넘어오면 400 반환")
+    @DisplayName("핸드폰과 학번이 동시에 중복검사")
     @Test
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
-    public void 중복_검사_시_핸드폰과_학번이_동시에_넘어오면_400_에러() throws Exception {
+    public void 핸드폰과_학번이_동시에_중복검사() throws Exception {
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         mvc.perform(get("/signUp/isDuplicated")
-                        .param("phone", "010-0000-0000")
+                        .param("phoneNumber", "010-0000-0000")
                         .param("memberId", "12171652"))
-                .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
     }
 
-    @DisplayName("중복 검사 시 핸드폰과 학번 중 하나라도 안넘어오면 400 반환")
+    @DisplayName("중복 검사 시 핸드폰과 학번 둘 다 안넘어오면 400 반환")
     @Test
     @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
-    public void 중복_검사_시_핸드폰과_학번_중_하나라도_없으면_400_에러() throws Exception {
+    public void 중복_검사_시_핸드폰과_학번_둘_다_안넘어오면_400_에러() throws Exception {
+        given(signUpService.validateFieldsDuplication(any(MemberDuplicationQueryCondition.class)))
+                .willThrow(NoQueryParameterException.class);
 
         mvc.perform(get("/signUp/isDuplicated"))
                 .andExpect(status().isBadRequest())

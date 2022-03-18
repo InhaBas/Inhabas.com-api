@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.member;
 
 import com.inhabas.api.domain.member.type.wrapper.Phone;
+import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +13,8 @@ public class MemberDuplicationCheckerImpl implements MemberDuplicationChecker {
     private final MemberRepository memberRepository;
 
     @Override
-    @Transactional(readOnly = true)
-    public Boolean isDuplicatedPhoneNumber(Phone phone) {
-        return memberRepository.existsByPhone(phone);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Boolean isDuplicatedId(Integer memberId) {
-        return memberRepository.existsById(memberId);
+    public Boolean isDuplicatedMember(MemberDuplicationQueryCondition condition) {
+        return memberRepository.isDuplicated(condition);
     }
 
     @Override

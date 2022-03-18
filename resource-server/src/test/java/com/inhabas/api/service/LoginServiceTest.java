@@ -110,7 +110,7 @@ public class LoginServiceTest {
                         .phone("010-0000-0000")
                         .picture("")
                         .schoolInformation(SchoolInformation.ofUnderGraduate("컴퓨터공학과", 3))
-                        .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
+                        .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
                         .build()
         );
 

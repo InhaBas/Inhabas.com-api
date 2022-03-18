@@ -18,6 +18,7 @@ public class SchoolInformation {
     @Embedded
     private Generation generation;
 
+    @Column(name = "usertype")
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 

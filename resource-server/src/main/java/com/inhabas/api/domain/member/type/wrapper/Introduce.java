@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.member.type.wrapper;
 
-import lombok.Getter;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;

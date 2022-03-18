@@ -1,18 +1,14 @@
 package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.SignUpDto;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberService {
 
-    Member saveSignUpForm(SignUpDto signUpForm);
-
-    SignUpDto loadSignUpForm(Integer memberId, String email);
+    void save(Member member);
 
     List<Member> findMembers();
 

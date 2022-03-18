@@ -7,12 +7,16 @@ import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 
+import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
+import com.inhabas.api.service.signup.NoQueryParameterException;
 import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +105,7 @@ public class MemberRepositoryTest {
                 .name("홍길동")
                 .phone(MEMBER1.getPhone()) // 같은 전화번호
                 .picture("")
-                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
+                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
                 .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 3))
                 .build();
 
@@ -120,7 +124,7 @@ public class MemberRepositoryTest {
                 .name("유동현")
                 .picture("")
                 .schoolInformation(SchoolInformation.ofUnderGraduate("공간정보공학과", 1))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+                .ibasInformation(new IbasInformation(Role.ANONYMOUS))
                 .build();
         memberRepository.save(member);
 
@@ -140,5 +144,82 @@ public class MemberRepositoryTest {
         //then
         assertFalse(isExist);
     }
+
+    @DisplayName("전화번호 중복검사")
+    @Test
+    public void validatePhoneNumber() {
+        //when
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(null, "010-1111-1111"));
+
+        //then
+        assertFalse(result);
+    }
+
+    @DisplayName("회원 id 중복검사")
+    @Test
+    public void validateMemberId() {
+        //when
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171652, null));
+
+        //then
+        assertFalse(result);
+    }
+
+    @DisplayName("중복 검사 쿼리 아무것도 없는 경우")
+    @Test
+    public void validateNoneFields() {
+        //given
+        memberRepository.save(MEMBER1);
+
+        //then
+        InvalidDataAccessApiUsageException e = assertThrows(InvalidDataAccessApiUsageException.class,
+                () -> memberRepository.isDuplicated(new MemberDuplicationQueryCondition(null, null)));
+
+        assertThat(e.getCause().getClass()).isEqualTo(NoQueryParameterException.class);
+    }
+
+    @DisplayName("모든 필드 중 학번이 중복되는 경우")
+    @Test
+    public void validateAllFieldsOnlyDuplicatedId() {
+        //given
+        memberRepository.save(MEMBER1);
+
+        //when
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1234"));
+
+        //then
+        assertTrue(result);
+    }
+
+    @DisplayName("모든 필드 중 전화번호가 중복되는 경우")
+    @Test
+    public void validateAllFieldsOnlyDuplicatedPhoneNumber() {
+        //given
+        memberRepository.save(MEMBER1);
+
+        //when
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171111, "010-1111-1111"));
+
+        //then
+        assertTrue(result);
+    }
+
+    @DisplayName("모든 필드 중복되는 경우")
+    @Test
+    public void validateAllFields() {
+        //given
+        memberRepository.save(MEMBER1);
+
+        //when
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1111"));
+
+        //then
+        assertTrue(result);
+    }
+
+
+
+
+
 
 }

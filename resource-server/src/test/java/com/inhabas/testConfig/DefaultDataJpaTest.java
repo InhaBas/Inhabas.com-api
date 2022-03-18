@@ -1,6 +1,7 @@
 package com.inhabas.testConfig;
 
 import com.inhabas.api.config.JpaConfig;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,5 +29,6 @@ import java.lang.annotation.Target;
 @DataJpaTest
 @ActiveProfiles("test")
 @Import(JpaConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public @interface DefaultDataJpaTest {
 }

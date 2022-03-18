@@ -7,4 +7,6 @@ import java.util.List;
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
 
     List<Answer> findByMember_Id(Integer memberId);
+
+    boolean existsByMember_id(Integer memberId);
 }

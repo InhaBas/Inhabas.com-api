@@ -27,10 +27,10 @@ public class IbasInformation {
     @Column(name = "USER_APPLY_PUBLISH", nullable = false)
     private Integer applyPublish = 0;
 
-    public IbasInformation(Role role, String introduce, Integer applyPublish) {
+    public IbasInformation(Role role) {
         this.role = role;
-        this.introduce = new Introduce(introduce);
-        this.applyPublish = applyPublish;
+        this.introduce = new Introduce();
+        this.applyPublish = 0;
     }
 
     public String getIntroduce() {

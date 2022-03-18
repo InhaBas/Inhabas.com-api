@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberDuplicationCheckerImpl;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
+import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,11 +33,11 @@ public class MemberDuplicationCheckerTest {
     @Test
     public void nonDuplicatedMemberTest() {
         //given
-        given(memberRepository.existsByPhoneAndId(any(Phone.class), anyInt())).willReturn(false);
+        given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(false);
 
         //when
         Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(MEMBER1));
-        then(memberRepository).should(times(1)).existsByPhoneAndId(any(Phone.class), anyInt());
+        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
     }
 
 
@@ -44,11 +45,11 @@ public class MemberDuplicationCheckerTest {
     @Test
     public void duplicatedMemberTest() {
         //given
-        given(memberRepository.existsByPhoneAndId(any(Phone.class), anyInt())).willReturn(true);
+        given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(true);
 
         //when
         Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(MEMBER1));
-        then(memberRepository).should(times(1)).existsByPhoneAndId(any(Phone.class), anyInt());
+        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
     }
 
 
@@ -56,44 +57,41 @@ public class MemberDuplicationCheckerTest {
     @Test
     public void notDuplicatedIdTest() {
         //given
-        given(memberRepository.existsById(anyInt())).willReturn(false);
+        given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(false);
 
         //when
-        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedId(12171652));
-        then(memberRepository).should(times(1)).existsById(anyInt());
+        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(12171652, null)));
+        then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 
     @DisplayName("db 에 존재하는 회원 id 를 중복검사한다.")
     @Test
     public void duplicatedIdTest() {
-        //given
-        given(memberRepository.existsById(anyInt())).willReturn(true);
+        given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
-        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedId(12171652));
-        then(memberRepository).should(times(1)).existsById(anyInt());
+        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(12171652, null)));
+        then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 
     @DisplayName("db 에 존재하지 않는 핸드폰번호를 중복검사한다.")
     @Test
     public void notDuplicatedPhoneNumberTest() {
-        //given
-        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(false);
+        given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(false);
 
         //when
-        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedPhoneNumber(new Phone("010-1111-1111")));
-        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
+        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(null, "010-1111-1111")));
+        then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 
     @DisplayName("db 에 존재하는 핸드폰번호를 중복검사한다.")
     @Test
     public void duplicatedPhoneNumberTest() {
-        //given
-        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
+        given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
-        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedPhoneNumber(new Phone("010-1111-1111")));
-        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
+        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(null, "010-1111-1111")));
+        then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 
 }
