@@ -16,6 +16,7 @@ import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,7 @@ public class SignUpServiceImpl implements SignUpService {
     public void saveSignUpForm(SignUpDto signUpForm, AuthUserDetail authUserDetail) {
 
         IbasInformation ibasInformation = new IbasInformation(DEFAULT_ROLE_BEFORE_FINISH_SIGNUP);
-        SchoolInformation schoolInformation = SchoolInformation.ofUnderGraduate(signUpForm.getMajor(), 1);  // 변경해야함.
+        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), 1, signUpForm.getMemberType());
 
         Member member = Member.builder()
                 .id(signUpForm.getMemberId())
@@ -118,7 +119,7 @@ public class SignUpServiceImpl implements SignUpService {
                     .memberType(member.getSchoolInformation().getMemberType())
                     .build();
         }
-        catch (MemberNotFoundException | IllegalArgumentException e) {
+        catch (MemberNotFoundException | InvalidDataAccessApiUsageException | IllegalArgumentException e) {
             return SignUpDto.builder()
                     .memberId(null)
                     .phoneNumber(null)

@@ -22,7 +22,7 @@ public class SchoolInformation {
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
-    private SchoolInformation(String major, Integer generation, MemberType memberType) {
+    public SchoolInformation(String major, Integer generation, MemberType memberType) {
         this.major = new Major(major);
         this.generation = new Generation(generation);
         this.memberType = memberType;

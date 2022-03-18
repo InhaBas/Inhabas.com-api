@@ -7,6 +7,7 @@ import com.inhabas.api.domain.member.MajorInfo;
 import com.inhabas.api.domain.member.MajorInfoRepository;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Questionnaire;
 import com.inhabas.api.domain.questionaire.QuestionnaireRepository;
@@ -88,9 +89,9 @@ public class SignUpIntegrationTest {
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
         신규회원 가입이기 때문에, 소셜 이메일을 제외하고는 아무것도 받지 못한다. */
-        mockMvc.perform(get("/signUp/student").with(accessToken(token)))
+        mockMvc.perform(get("/signUp").with(accessToken(token)))
                         .andExpect(status().isOk())
-                        .andExpect(content().string("{\"email\":\"my@gmail.com\"}"));
+                        .andExpect(content().string("{\"email\":\"my@gmail.com\",\"memberType\":\"UNDERGRADUATE\"}"));
 
         /* 개인정보 입력을 위해, 전공 정보들이 로딩된다. */
         mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
@@ -106,12 +107,12 @@ public class SignUpIntegrationTest {
         /* 프로필 입력 중에 전화번호가 중복되는 지 검사한다.
         중복되는 전화번호가 없다고 응답한다. */
         mockMvc.perform(get("/signUp/isDuplicated")
-                        .param("phone", "010-0000-0000"))
+                        .param("phoneNumber", "010-0000-0000"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("false"));
 
         /* 프로필 입력을 완료하여 다음 버튼을 누르면, 개인정보가 임시저장된다. */
-        mockMvc.perform(post("/signUp/student").with(accessToken(token))
+        mockMvc.perform(post("/signUp").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
                                 .email("my@gmail.com")
@@ -119,6 +120,7 @@ public class SignUpIntegrationTest {
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
+                                .memberType(MemberType.UNDERGRADUATE)
                                 .build())))
                 .andExpect(status().isNoContent());
 
@@ -163,67 +165,68 @@ public class SignUpIntegrationTest {
         assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
     }
 
-//    @Test
-//    public void OAuth2_인증_후_비회원_신규_교수_회원가입() throws Exception {
-//
-//        //given
-//        전공정보_설정();
-//
-//        /* 유동현 교수는 IBAS 에 회원 가입하기 위해
-//        소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-//        String token = tokenProvider.createJwtToken(authUserId, Role.ANONYMOUS.toString(), null).getAccessToken();
-//
-//        /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다. */
-//
-//        /* 개인정보 입력을 위해, 전공 정보들이 로딩된다. */
-//        String majorList = mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
-//                .andExpect(status().isOk())
-//                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-//        assertThat(majorList).isEqualTo("[" +
-//                "{\"id\":1,\"college\":\"공과대학\",\"major\":\"기계공학과\"}," +
-//                "{\"id\":2,\"college\":\"자연과학대학\",\"major\":\"수학과\"}," +
-//                "{\"id\":3,\"college\":\"경영대학\",\"major\":\"경영학과\"}" +
-//                "]");
-//
-//        /* 프로필 입력 중에 학번이 중복되는 지 검사한다.
-//        중복되는 학번이 없다고 응답한다. */
-//        mockMvc.perform(get("/signUp/isDuplicated")
-//                        .param("memberId", "228761"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("false"));
-//
-//        /* 프로필 입력 중에 전화번호가 중복되는 지 검사한다.
-//        중복되는 전화번호가 없다고 응답한다. */
-//        mockMvc.perform(get("/signUp/isDuplicated")
-//                        .param("phone", "010-0000-0000"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("false"));
-//
-//        /* 프로필 입력을 완료하여 다음 버튼을 누르면, 개인정보가 임시저장된다. */
-//        mockMvc.perform(post("/signUp/professor").with(accessToken(token))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonOf(ProfessorSignUpDto.builder()
-//                                .email("my@gmail.com")
-//                                .memberId(228761)
-//                                .name("유동현")
-//                                .phoneNumber("010-0000-0000")
-//                                .major("컴퓨터공학과")
-//                                .build())))
-//                .andExpect(status().isNoContent());
-//
-//
-//        /* 회원가입 신청을 완료한다. */
-//        mockMvc.perform(put("/signUp/finish").with(accessToken(token)))
-//                .andExpect(status().isNoContent());
-//
-//
-//        //then
-//        Member 유동현_교수 = memberRepository.findById(228761).orElseThrow(MemberNotExistException::new);
-//        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
-//        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
-//        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);
-//        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
-//    }
+    @Test
+    public void OAuth2_인증_후_비회원_신규_교수_회원가입() throws Exception {
+
+        //given
+        전공정보_설정();
+
+        /* 유동현 교수는 IBAS 에 회원 가입하기 위해
+        소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
+        String token = tokenProvider.createJwtToken(authUserId, Role.ANONYMOUS.toString(), null).getAccessToken();
+
+        /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다. */
+
+        /* 개인정보 입력을 위해, 전공 정보들이 로딩된다. */
+        String majorList = mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertThat(majorList).isEqualTo("[" +
+                "{\"id\":1,\"college\":\"공과대학\",\"major\":\"기계공학과\"}," +
+                "{\"id\":2,\"college\":\"자연과학대학\",\"major\":\"수학과\"}," +
+                "{\"id\":3,\"college\":\"경영대학\",\"major\":\"경영학과\"}" +
+                "]");
+
+        /* 프로필 입력 중에 학번이 중복되는 지 검사한다.
+        중복되는 학번이 없다고 응답한다. */
+        mockMvc.perform(get("/signUp/isDuplicated")
+                        .param("memberId", "228761"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+
+        /* 프로필 입력 중에 전화번호가 중복되는 지 검사한다.
+        중복되는 전화번호가 없다고 응답한다. */
+        mockMvc.perform(get("/signUp/isDuplicated")
+                        .param("phoneNumber", "010-0000-0000"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+
+        /* 프로필 입력을 완료하여 다음 버튼을 누르면, 개인정보가 임시저장된다. */
+        mockMvc.perform(post("/signUp").with(accessToken(token))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(SignUpDto.builder()
+                                .email("my@gmail.com")
+                                .memberId(228761)
+                                .name("유동현")
+                                .phoneNumber("010-0000-0000")
+                                .major("컴퓨터공학과")
+                                .memberType(MemberType.PROFESSOR)
+                                .build())))
+                .andExpect(status().isNoContent());
+
+
+        /* 회원가입 신청을 완료한다. */
+        mockMvc.perform(put("/signUp/finish").with(accessToken(token)))
+                .andExpect(status().isNoContent());
+
+
+        //then
+        Member 유동현_교수 = memberRepository.findById(228761).orElseThrow(MemberNotFoundException::new);
+        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
+        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
+        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);
+        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
+    }
 
     private void forbiddenWhenAccessEverySignUpApi(Role role) throws Exception {
         String token = tokenProvider.createJwtToken(authUserId, role.toString(), null).getAccessToken();
