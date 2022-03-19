@@ -31,6 +31,7 @@ public class SignUpServiceImpl implements SignUpService {
     private final MemberService memberService;
     private final MajorInfoService majorInfoService;
     private final QuestionnaireService questionnaireService;
+    private final SignUpScheduler signUpScheduler;
     private final MemberDuplicationChecker memberDuplicationChecker;
     private final AuthUserService authUserService;
 
@@ -42,9 +43,9 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     @Transactional
     public void saveSignUpForm(SignUpDto signUpForm, AuthUserDetail authUserDetail) {
-
+        Integer generation = signUpScheduler.getSchedule().getGeneration();
         IbasInformation ibasInformation = new IbasInformation(DEFAULT_ROLE_BEFORE_FINISH_SIGNUP);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), 1, signUpForm.getMemberType());
+        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), generation, signUpForm.getMemberType());
 
         Member member = Member.builder()
                 .id(signUpForm.getMemberId())

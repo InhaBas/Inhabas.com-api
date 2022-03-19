@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.signup.SignUpNotAvailableException;
 import com.inhabas.api.security.domain.NoTokenInRequestHeaderException;
 import com.inhabas.api.security.domain.RefreshTokenNotFoundException;
 import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
@@ -16,6 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
+
+    @ExceptionHandler(SignUpNotAvailableException.class)
+    public ResponseEntity<String> notAllowedSignUpException(final SignUpNotAvailableException e) {
+        log.warn("no token in header: ", e);
+
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(NoTokenInRequestHeaderException.class)
     public ResponseEntity<String> corruptedTokenException(final NoTokenInRequestHeaderException e) {

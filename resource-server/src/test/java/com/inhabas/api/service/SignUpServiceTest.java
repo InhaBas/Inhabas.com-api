@@ -7,6 +7,7 @@ import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import com.inhabas.api.dto.signUp.SignUpDto;
+import com.inhabas.api.dto.signUp.SignUpScheduleDto;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.domain.AuthUserService;
 import com.inhabas.api.service.member.MajorInfoService;
@@ -14,18 +15,18 @@ import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberServiceImpl;
 import com.inhabas.api.service.questionnaire.AnswerService;
 import com.inhabas.api.service.questionnaire.QuestionnaireService;
-import com.inhabas.api.service.signup.NoQueryParameterException;
-import com.inhabas.api.service.signup.NotWriteAnswersException;
-import com.inhabas.api.service.signup.NotWriteProfileException;
-import com.inhabas.api.service.signup.SignUpServiceImpl;
+import com.inhabas.api.service.signup.*;
 
+import org.aspectj.util.Reflection;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +62,9 @@ public class SignUpServiceTest {
     @Mock
     private MemberDuplicationCheckerImpl memberDuplicationChecker;
 
+    @Mock
+    private SignUpSchedulerStrict signUpSchedulerStrict;
+
     @DisplayName("회원가입폼이 제출되면 저장한다.")
     @Test
     public void saveSignUpFormTest() {
@@ -82,6 +86,10 @@ public class SignUpServiceTest {
                 .build();
         doNothing().when(memberService).save(any(Member.class));
         doNothing().when(authUserService).setProfileIdToSocialAccount(anyInt(), anyInt());
+
+        SignUpScheduleDto signUpScheduleDto = new SignUpScheduleDto();
+        ReflectionTestUtils.setField(signUpScheduleDto, "generation", 1);
+        given(signUpSchedulerStrict.getSchedule()).willReturn(signUpScheduleDto);
 
         //when
         signUpService.saveSignUpForm(signUpForm, authUserDetail);

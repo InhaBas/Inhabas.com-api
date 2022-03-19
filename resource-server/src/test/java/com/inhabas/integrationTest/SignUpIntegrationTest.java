@@ -11,6 +11,8 @@ import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Questionnaire;
 import com.inhabas.api.domain.questionaire.QuestionnaireRepository;
+import com.inhabas.api.domain.signup.SignUpSchedule;
+import com.inhabas.api.domain.signup.SignUpScheduleRepository;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
 import com.inhabas.api.security.domain.AuthUser;
@@ -26,6 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,6 +48,7 @@ public class SignUpIntegrationTest {
     @Autowired private QuestionnaireRepository questionnaireRepository;
     @Autowired private MajorInfoRepository majorInfoRepository;
     @Autowired private MemberRepository memberRepository;
+    @Autowired private SignUpScheduleRepository scheduleRepository;
 
     private Integer authUserId;
 
@@ -75,11 +79,27 @@ public class SignUpIntegrationTest {
     }
 
     @Test
+    public void 회원가입_기간이_아닙니다() throws Exception {
+        /* 유동현은 IBAS 에 회원 가입하기 위해
+        소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
+        String token = tokenProvider.createJwtToken(authUserId, Role.ANONYMOUS.toString(), null).getAccessToken();
+
+        /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
+        이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
+        신규회원 가입이기 때문에, 소셜 이메일을 제외하고는 아무것도 받지 못한다. */
+        String response = mockMvc.perform(get("/signUp").with(accessToken(token)))
+                .andExpect(status().isForbidden())
+                .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        assertThat(response).isEqualTo("회원가입 기간이 아닙니다.");
+    }
+
+    @Test
     public void OAuth2_인증_후_비회원_신규_학생_회원가입() throws Exception {
 
         //given
         면접질문_설정();
         전공정보_설정();
+        회원가입_가능한_기간();
 
 
         /* 유동현은 IBAS 에 회원 가입하기 위해
@@ -170,6 +190,7 @@ public class SignUpIntegrationTest {
 
         //given
         전공정보_설정();
+        회원가입_가능한_기간();
 
         /* 유동현 교수는 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
@@ -277,6 +298,12 @@ public class SignUpIntegrationTest {
 
     private String jsonOf(Object o) throws JsonProcessingException {
         return objectMapper.writeValueAsString(o);
+    }
+
+    private void 회원가입_가능한_기간() {
+        LocalDateTime now = LocalDateTime.now();
+        scheduleRepository.save(
+                new SignUpSchedule(1, now.minusDays(1L), now.plusDays(1L), now.plusDays(1L), now.plusDays(2L), now.plusDays(3L)));
     }
 
 }
