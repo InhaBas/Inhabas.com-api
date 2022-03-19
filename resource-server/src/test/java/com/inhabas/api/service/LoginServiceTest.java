@@ -108,6 +108,7 @@ public class LoginServiceTest {
                         .id(12171652)
                         .name("유동현")
                         .phone("010-0000-0000")
+                        .email("my@gmail.com")
                         .picture("")
                         .schoolInformation(SchoolInformation.ofUnderGraduate("컴퓨터공학과", 3))
                         .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))

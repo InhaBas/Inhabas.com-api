@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.dto.member.ContactDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.member.MemberTeamService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +41,10 @@ public class MemberController {
     @PutMapping()
     public Member updateMember(@RequestBody Member member) {
         return memberService.updateMember(member).get();
+    }
+
+    public ContactDto getChiefContact() {
+        return memberService.getChiefContact();
     }
 
     @Operation(summary = "회원을 팀에 포함시킨다.")

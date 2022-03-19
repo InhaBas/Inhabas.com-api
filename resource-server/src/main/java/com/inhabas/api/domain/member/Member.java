@@ -3,6 +3,7 @@ package com.inhabas.api.domain.member;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.SchoolInformation;
+import com.inhabas.api.domain.member.type.wrapper.Email;
 import com.inhabas.api.domain.member.type.wrapper.Name;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -27,6 +28,9 @@ public class Member {
     @Embedded
     private Phone phone;
 
+    @Embedded
+    private Email email;
+
     @Column(name = "picture", length = 500)
     private String picture;
 
@@ -37,10 +41,11 @@ public class Member {
     private IbasInformation ibasInformation;
 
     @Builder
-    public Member(Integer id, String name, String phone, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
+    public Member(Integer id, String name, String phone, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
         this.name = new Name(name);
         this.phone = new Phone(phone);
+        this.email = new Email(email);
         this.picture = picture;
         this.schoolInformation = schoolInformation;
         this.ibasInformation = ibasInformation;
@@ -52,6 +57,10 @@ public class Member {
 
     public String getPhone() {
         return this.phone.getValue();
+    }
+
+    public String getEmail() {
+        return this.email.getValue();
     }
 
     public void setRole(Role role) {

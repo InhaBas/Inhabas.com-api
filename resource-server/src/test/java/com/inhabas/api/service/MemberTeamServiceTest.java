@@ -33,7 +33,7 @@ public class MemberTeamServiceTest {
     @BeforeEach
     public void setUp() {
         member = memberRepository.save(new Member(
-                12171234, "유동현", "010-1111-1111", ""
+                12171234, "유동현", "010-1111-1111", "my@gmail.com", ""
                 , SchoolInformation.ofUnderGraduate("건축공학과", 3)
                 , new IbasInformation(Role.BASIC_MEMBER)));
         team = teamRepository.save(new Team("IT 부서"));

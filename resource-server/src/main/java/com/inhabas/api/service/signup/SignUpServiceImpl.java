@@ -53,6 +53,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .id(signUpForm.getMemberId())
                 .name(signUpForm.getName())
                 .phone(signUpForm.getPhoneNumber())
+                .email(authUserDetail.getEmail())
                 .ibasInformation(ibasInformation)
                 .schoolInformation(schoolInformation)
                 .build();

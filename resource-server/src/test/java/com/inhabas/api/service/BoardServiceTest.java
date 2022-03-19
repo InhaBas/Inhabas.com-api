@@ -64,7 +64,7 @@ public class BoardServiceTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1);
         NormalBoard normalBoard = new NormalBoard(1, "title", "contents");
         Menu menu = new Menu(null, 1, null, "name", "description");
-        Member member = new Member(12201863, "mingyeom", "010-0000-0000","picture", null, null);
+        Member member = new Member(12201863, "mingyeom", "010-0000-0000","my@gmail.com", "picture", null, null);
         given(boardRepository.save(any())).willReturn(normalBoard);
         given(menuRepository.getById(any())).willReturn(menu);
         given(memberRepository.getById(any())).willReturn(member);
@@ -133,7 +133,7 @@ public class BoardServiceTest {
     @Test
     public void updateBoard() {
         //given
-        Member entityMember = new Member(12201863, "mingyeom", "010-0000-0000", "picture", null, null);
+        Member entityMember = new Member(12201863, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
         NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(entityMember);
         NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
 

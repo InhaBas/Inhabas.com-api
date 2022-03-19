@@ -2,6 +2,7 @@ package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.member.ContactDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,10 @@ public class MemberServiceImpl implements MemberService {
 
         member.setRole(role);
         memberRepository.save(member);
+    }
+
+    @Override
+    public ContactDto getChiefContact() {
+        return null;
     }
 }

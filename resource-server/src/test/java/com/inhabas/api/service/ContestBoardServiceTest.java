@@ -59,7 +59,7 @@ public class ContestBoardServiceTest {
         //given
         SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
         ContestBoard contestBoard = new ContestBoard(1, "title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) );
-        Member writer = new Member(12201863, "mingyeom", "010-0000-0000","picture", null, null);
+        Member writer = new Member(12201863, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
 
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
         given(memberRepository.getById(anyInt())).willReturn(writer);
@@ -133,7 +133,7 @@ public class ContestBoardServiceTest {
     @Test
     public void updateContestBoard() {
         //given
-        Member writer = new Member(12201863, "mingyeom", "010-0000-0000","picture", null, null);
+        Member writer = new Member(12201863, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
         ContestBoard expectedContestBoard = new ContestBoard(1, "title", "contents", "association", "topic", LocalDate.of(2022, 01, 01), LocalDate.of(2022, 01,26) )
                 .writtenBy(writer);
 

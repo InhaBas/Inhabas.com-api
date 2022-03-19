@@ -36,7 +36,7 @@ public class MemberTeamTest {
         IT = entityManager.persist(new Team("IT 부서"));
 
         member = entityManager.persist(
-                new Member(12171652, "유동현", "010-0000-0000", "",
+                new Member(12171652, "유동현", "010-0000-0000", "my@gmail.com","",
                         SchoolInformation.ofUnderGraduate("건축공학과", 3),
                         new IbasInformation(Role.BASIC_MEMBER)));
 

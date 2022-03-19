@@ -19,7 +19,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     int authUserId() default 1;
 
-    String Email() default "my@email.com";
+    String email() default "my@email.com";
 
     String provider() default "google";
 
