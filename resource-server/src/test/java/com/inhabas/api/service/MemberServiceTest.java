@@ -1,7 +1,8 @@
 package com.inhabas.api.service;
 
 import com.inhabas.api.domain.member.*;
-import com.inhabas.api.domain.member.type.wrapper.Phone;
+import com.inhabas.api.domain.member.type.IbasInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberServiceImpl;
@@ -20,8 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {

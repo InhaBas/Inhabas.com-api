@@ -1,9 +1,8 @@
 package com.inhabas.security.annotataion;
 
-import com.inhabas.api.domain.member.IbasInformation;
+import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.SchoolInformation;
-import com.inhabas.api.domain.member.type.MemberType;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
@@ -13,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 
 /**

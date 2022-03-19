@@ -1,6 +1,5 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.type;
 
-import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Major;
 import com.inhabas.api.domain.member.type.wrapper.Generation;
 import lombok.*;

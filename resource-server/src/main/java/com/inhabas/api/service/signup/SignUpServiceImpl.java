@@ -1,7 +1,9 @@
 package com.inhabas.api.service.signup;
 
 import com.inhabas.api.domain.member.*;
+import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.MemberType;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;

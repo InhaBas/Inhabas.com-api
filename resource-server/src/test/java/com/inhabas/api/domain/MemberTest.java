@@ -1,6 +1,8 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.domain.member.*;
+import com.inhabas.api.domain.member.type.IbasInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.*;
 
 public class MemberTest {
