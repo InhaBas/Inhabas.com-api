@@ -35,25 +35,12 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
         String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
 
-            // reflection 을 이용하여 schoolInformation 의 private 생성자를 호출
-            Constructor<SchoolInformation> constructor;
-            SchoolInformation schoolInformation;
-            try {
-                constructor = SchoolInformation.class.getDeclaredConstructor(String.class, Integer.class, MemberType.class);
-                constructor.setAccessible(true);
-                schoolInformation = constructor.newInstance(principalInfo.memberMajor(), principalInfo.memberGeneration(), principalInfo.memberType());
-            } catch (Exception e) {
-                RuntimeException exception = new RuntimeException();
-                exception.addSuppressed(e);
-                throw exception;
-            }
-
             Member profile = Member.builder()
                     .id(principalInfo.memberId())
                     .picture("")
                     .name(principalInfo.memberName())
                     .phone(principalInfo.memberPhone())
-                    .schoolInformation(schoolInformation)
+                    .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGeneration(), principalInfo.memberType()))
                     .ibasInformation(new IbasInformation(principalInfo.memberRole()))
                     .build();
             ReflectionTestUtils.setField(authUser, "profileId", profile.getId());
