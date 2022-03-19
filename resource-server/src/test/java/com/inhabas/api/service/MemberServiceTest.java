@@ -4,6 +4,7 @@ import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.dto.member.ContactDto;
 import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -160,5 +162,28 @@ public class MemberServiceTest {
         //when
         assertThrows(MemberNotFoundException.class,
                 () -> memberService.changeRole(12171652, Role.BASIC_MEMBER));
+    }
+
+    @DisplayName("회장 연락처 불러오기")
+    @Test
+    public void getChiefContact() {
+        Member chief = Member.builder()
+                .id(12171652)
+                .picture("")
+                .name("유동현")
+                .email("my@gmail.com")
+                .phone("010-0000-0000")
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
+                .ibasInformation(new IbasInformation(Role.Chief))
+                .build();
+        given(memberRepository.searchByRoleLimit(any(), anyInt())).willReturn(List.of(chief));
+
+        //when
+        ContactDto chiefContact = memberService.getChiefContact();
+
+        //then
+        assertThat(chiefContact.getEmail()).isEqualTo(chief.getEmail());
+        assertThat(chiefContact.getPhone()).isEqualTo(chief.getPhone());
+        assertThat(chiefContact.getName()).isEqualTo(chief.getName());
     }
 }

@@ -65,6 +65,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public ContactDto getChiefContact() {
-        return null;
+        try {
+            Member chief = memberRepository.searchByRoleLimit(Role.Chief, 1).get(0);
+            return new ContactDto(chief.getName(), chief.getPhone(), chief.getEmail());
+        } catch (IndexOutOfBoundsException e) {
+            return new ContactDto("", "", "");
+        }
     }
 }

@@ -218,8 +218,18 @@ public class MemberRepositoryTest {
         assertTrue(result);
     }
 
+    @DisplayName("role 로 회원 검색")
+    @Test
+    public void searchByRole() {
+        //given
+        Member member = memberRepository.save(MEMBER1);
 
+        //when
+        List<Member> members = memberRepository.searchAllByRole(member.getIbasInformation().getRole());
 
+        //then
+        assertThat(members.size()).isEqualTo(1);
+    }
 
 
 
