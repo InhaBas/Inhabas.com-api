@@ -1,8 +1,8 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.IbasInformation;
+import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.service.login.*;
@@ -108,9 +108,10 @@ public class LoginServiceTest {
                         .id(12171652)
                         .name("유동현")
                         .phone("010-0000-0000")
+                        .email("my@gmail.com")
                         .picture("")
-                        .schoolInformation(SchoolInformation.ofStudent("컴퓨터공학과", 3, 2))
-                        .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
+                        .schoolInformation(SchoolInformation.ofUnderGraduate("컴퓨터공학과", 3))
+                        .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
                         .build()
         );
 

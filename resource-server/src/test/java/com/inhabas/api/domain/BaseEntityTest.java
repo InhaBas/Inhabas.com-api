@@ -5,10 +5,10 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
+import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DefaultDataJpaTest
 @Import(JpaConfig.class)
 public class BaseEntityTest {
 

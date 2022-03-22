@@ -1,37 +1,37 @@
 package com.inhabas.api.domain.wrapper;
 
-import com.inhabas.api.domain.member.type.wrapper.Semester;
+import com.inhabas.api.domain.member.type.wrapper.Generation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SemesterTest {
+public class GenerationTest {
 
-    @DisplayName("Semester 타입에 학기를 지정")
+    @DisplayName("Generation 타입에 기수를 지정")
     @Test
     public void Semester_is_OK() {
         //given
-        Semester firstSemester = new Semester(1);
-        Semester secondSemester = new Semester(2);
+        Generation firstGeneration = new Generation(1);
+        Generation secondGeneration = new Generation(2);
 
         //then
-        assertThat(firstSemester.getValue()).isEqualTo(1);
-        assertThat(secondSemester.getValue()).isEqualTo(2);
+        assertThat(firstGeneration.getValue()).isEqualTo(1);
+        assertThat(secondGeneration.getValue()).isEqualTo(2);
     }
 
-    @DisplayName("존재하지 않는 학기를 지정")
+    @DisplayName("존재할 수 없는 기수를 지정")
     @Test
     public void No_Such_Semester() {
         //when
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Semester(3)
+                () -> new Generation(-1)
         );
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Semester(0)
+                () -> new Generation(0)
         );
     }
 }

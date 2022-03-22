@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -99,5 +101,19 @@ public class AnswerServiceTest {
         assertThat(returnedDTOs)
                 .usingRecursiveComparison()
                 .isEqualTo(expectedConvertedDTOs);
+    }
+
+    @DisplayName("특정 회원이 작성한 답변이 있는지 확인한다.")
+    @Test
+    public void existAnswersWrittenByMemberTest() {
+        //given
+        given(answerRepository.existsByMember_id(anyInt())).willReturn(true);
+
+        //when
+        boolean result = answerService.existAnswersWrittenBy(12171652);
+
+        //then
+        assertTrue(result);
+        then(answerRepository).should(times(1)).existsByMember_id(anyInt());
     }
 }

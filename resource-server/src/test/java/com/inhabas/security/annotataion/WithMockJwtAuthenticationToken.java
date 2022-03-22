@@ -1,5 +1,6 @@
 package com.inhabas.security.annotataion;
 
+import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
@@ -18,7 +19,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     int authUserId() default 1;
 
-    String Email() default "my@email.com";
+    String email() default "my@email.com";
 
     String provider() default "google";
 
@@ -28,9 +29,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     String memberName() default "홍길동";
 
-    int memberGrade() default 1;
-
-    int memberSemester() default 1;
+    int memberGeneration() default 1;
 
     String memberMajor() default "의예과";
 
@@ -38,5 +37,5 @@ public @interface WithMockJwtAuthenticationToken {
 
     Role memberRole() default Role.BASIC_MEMBER;
 
-    boolean isProfessor() default false;
+    MemberType memberType() default MemberType.UNDERGRADUATE;
 }

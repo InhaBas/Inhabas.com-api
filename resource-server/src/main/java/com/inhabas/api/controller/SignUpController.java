@@ -1,20 +1,14 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.domain.member.type.wrapper.Phone;
-import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.*;
 import com.inhabas.api.security.argumentResolver.Authenticated;
 import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.AuthUserService;
-import com.inhabas.api.service.member.MajorInfoService;
-import com.inhabas.api.service.member.MemberService;
-import com.inhabas.api.service.questionnaire.AnswerService;
-import com.inhabas.api.service.questionnaire.QuestionnaireService;
+import com.inhabas.api.service.signup.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,95 +16,62 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
+@Tag(name = "회원가입", description = "회원가입 기간이 아니면 403 Forbidden")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/signUp")
 public class SignUpController {
 
-    private final MemberService memberService;
-    private final AnswerService answerService;
-    private final AuthUserService authUserService;
-    private final MajorInfoService majorInfoService;
-    private final QuestionnaireService questionnaireService;
+    private final SignUpService signUpService;
 
     /* profile */
 
-    @PostMapping("/student")
-    @Operation(summary = "학생 회원가입 시 개인정보를 저장한다.")
+    @PostMapping
+    @Operation(summary = "회원가입 시 개인정보를 저장한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
     })
     public ResponseEntity<?> saveStudentProfile(
-            @Authenticated AuthUserDetail authUser, @Valid @RequestBody StudentSignUpDto form) {
+            @Authenticated AuthUserDetail authUser, @Valid @RequestBody SignUpDto form) {
 
-        memberService.saveSignUpForm(form);
-        authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
+        signUpService.saveSignUpForm(form, authUser);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/student")
+    @GetMapping
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<DetailSignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
+    public ResponseEntity<SignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
 
-        DetailSignUpDto form = memberService.loadSignUpForm(signUpUser.getProfileId(), signUpUser.getEmail());
+        SignUpDto form = signUpService.loadSignUpForm(signUpUser);
 
         return ResponseEntity.ok(form);
     }
 
-    @PostMapping("/professor")
-    @Operation(summary = "교수 회원가입시 개인정보를 저장한다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
-    })
-    public ResponseEntity<?> saveProfessorProfile(
-            @Authenticated AuthUserDetail authUser, @Valid @RequestBody ProfessorSignUpDto form) {
-
-        memberService.saveSignUpForm(form);
-        authUserService.setProfileIdToSocialAccount(authUser.getId(), form.getMemberId());
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 
     @GetMapping("/majorInfo")
     @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
 
-        return ResponseEntity.ok(majorInfoService.getAllMajorInfo());
+        return ResponseEntity.ok(signUpService.getMajorInfo());
     }
 
     @GetMapping("/isDuplicated")
     @Operation(summary = "회원가입 시 필요한 중복검사를 진행한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "400", description = "둘 중 하나만 넘겨야함.")
+            @ApiResponse(responseCode = "400", description = "하나도 안넘기거나, 타입이 잘못된 경우")
     })
     public ResponseEntity<?> validateDuplication(
-            @RequestParam(required = false) Integer memberId, @RequestParam(required = false) Phone phone) {
+            MemberDuplicationQueryCondition condition) {
 
-        /* 학번, 핸드폰번호 동시에 넘어오거나, 하나도 안들어오는경우 */
-        if (Objects.isNull(memberId) && Objects.isNull(phone)
-                || Objects.nonNull(memberId) && Objects.nonNull(phone)) {
-            return ResponseEntity.badRequest().build();
-        }
-        else {
-            boolean isDuplicated;
-
-            if (Objects.nonNull(memberId)) {
-                isDuplicated = memberService.isDuplicatedId(memberId);
-            }
-            else {
-                isDuplicated = memberService.isDuplicatedPhoneNumber(phone);
-            }
+            boolean isDuplicated = signUpService.validateFieldsDuplication(condition);
 
             return ResponseEntity.ok(isDuplicated);
-        }
     }
 
     /* questionnaire */
@@ -120,7 +81,7 @@ public class SignUpController {
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<QuestionnaireDto>> loadQuestionnaire() {
 
-        return ResponseEntity.ok(questionnaireService.getQuestionnaire());
+        return ResponseEntity.ok(signUpService.getQuestionnaire());
     }
 
     /* answer */
@@ -130,8 +91,8 @@ public class SignUpController {
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated AuthUserDetail signUpUser) {
 
-        List<AnswerDto> answers = answerService.getAnswers(signUpUser.getProfileId());
-        System.out.println("answer!!:" + answers);
+        List<AnswerDto> answers = signUpService.getAnswers(signUpUser);
+
         return ResponseEntity.ok(answers);
     }
 
@@ -144,7 +105,7 @@ public class SignUpController {
     public ResponseEntity<?> saveAnswers(
             @Authenticated AuthUserDetail signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
 
-        answerService.saveAnswers(answers, signUpUser.getProfileId());
+        signUpService.saveAnswers(answers, signUpUser);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -155,13 +116,7 @@ public class SignUpController {
     @ApiResponse(responseCode = "204")
     public ResponseEntity<?> finishSignUp(@Authenticated AuthUserDetail signUpUser) {
 
-        if (Objects.isNull(signUpUser.getProfileId())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        authUserService.finishSignUp(signUpUser.getId());
-        memberService.changeRole(signUpUser.getProfileId(), Role.NOT_APPROVED_MEMBER);
-
+        signUpService.completeSignUp(signUpUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

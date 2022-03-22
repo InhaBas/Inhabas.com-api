@@ -1,5 +1,8 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.type;
 
+import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberTeam;
+import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.type.wrapper.Introduce;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.AccessLevel;
@@ -9,6 +12,9 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Embeddable
@@ -17,6 +23,9 @@ import java.util.Objects;
 public class IbasInformation {
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    private List<MemberTeam> teamList = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime joined;
@@ -27,10 +36,10 @@ public class IbasInformation {
     @Column(name = "USER_APPLY_PUBLISH", nullable = false)
     private Integer applyPublish = 0;
 
-    public IbasInformation(Role role, String introduce, Integer applyPublish) {
+    public IbasInformation(Role role) {
         this.role = role;
-        this.introduce = new Introduce(introduce);
-        this.applyPublish = applyPublish;
+        this.introduce = new Introduce();
+        this.applyPublish = 0;
     }
 
     public String getIntroduce() {
@@ -39,6 +48,10 @@ public class IbasInformation {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void addTeam(MemberTeam team) {
+        this.teamList.add(team);
     }
 
     @Override
@@ -51,14 +64,4 @@ public class IbasInformation {
                 && getIntroduce().equals(that.getIntroduce())
                 && getApplyPublish().equals(that.getApplyPublish());
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                getRole(),
-                getJoined(),
-                getIntroduce(),
-                getApplyPublish());
-    }
-
 }

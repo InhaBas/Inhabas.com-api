@@ -1,16 +1,11 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.IbasInformation;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.domain.member.SchoolInformation;
-import com.inhabas.api.domain.member.type.wrapper.Phone;
+import com.inhabas.api.domain.member.*;
+import com.inhabas.api.domain.member.type.IbasInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.dto.signUp.DetailSignUpDto;
-import com.inhabas.api.dto.signUp.ProfessorSignUpDto;
-import com.inhabas.api.dto.signUp.StudentSignUpDto;
-import com.inhabas.api.service.member.DuplicatedMemberFieldException;
-import com.inhabas.api.service.member.MemberNotExistException;
+import com.inhabas.api.dto.member.ContactDto;
+import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
@@ -29,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -39,152 +31,87 @@ public class MemberServiceTest {
     MemberServiceImpl memberService;
 
     @Mock
+    MemberDuplicationChecker memberDuplicationChecker;
+
+    @Mock
     MemberRepository memberRepository;
 
-    @DisplayName("학생 회원가입을 성공한다.")
-    @Test
-    public void 학생_회원가입() {
-        //given
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
-                .name("유동현")
-                .grade(3)
-                .semester(2)
-                .major("컴퓨터공학과")
-                .phoneNumber("010-0000-1111")
-                .memberId(12345678)
-                .build();
 
-        Member expected = Member.builder()
-                .id(signUpForm.getMemberId())
-                .phone(signUpForm.getPhoneNumber())
-                .name(signUpForm.getName())
-                .picture("")
-                .schoolInformation(SchoolInformation.ofStudent(signUpForm.getMajor(), signUpForm.getGrade(), signUpForm.getSemester()))
-                .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
-                .build();
-        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
-        given(memberRepository.save(any(Member.class))).willReturn(expected);
-
-        //when
-        Member newMember = memberService.saveSignUpForm(signUpForm);
-
-        //then
-        assertThat(newMember)
-                .usingRecursiveComparison()
-                .ignoringFields("joined")
-                .isEqualTo(expected);
-        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
-    }
-
-    @DisplayName("교수 회원가입을 성공한다.")
-    @Test
-    public void 교수_회원가입() {
-        //given
-        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
-                .name("유동현")
-                .major("컴퓨터공학과")
-                .phoneNumber("010-0000-1111")
-                .memberId(12345678)
-                .build();
-
-        Member expected = Member.builder()
-                .id(signUpForm.getMemberId())
-                .phone(signUpForm.getPhoneNumber())
-                .name(signUpForm.getName())
-                .picture("")
-                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
-                .build();
-        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
-        given(memberRepository.save(any(Member.class))).willReturn(expected);
-
-        //when
-        Member newMember = memberService.saveSignUpForm(signUpForm);
-
-        //then
-        assertThat(newMember)
-                .usingRecursiveComparison()
-                .ignoringFields("joined")
-                .isEqualTo(expected);
-        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
-    }
+//    @DisplayName("교수 회원가입을 성공한다.")
+//    @Test
+//    public void 교수_회원가입() {
+//        //given
+//        ProfessorSignUpDto signUpForm = ProfessorSignUpDto.builder()
+//                .name("유동현")
+//                .major("컴퓨터공학과")
+//                .phoneNumber("010-0000-1111")
+//                .memberId(12345678)
+//                .build();
+//
+//        Member expected = Member.builder()
+//                .id(signUpForm.getMemberId())
+//                .phone(signUpForm.getPhoneNumber())
+//                .name(signUpForm.getName())
+//                .picture("")
+//                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
+//                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+//                .build();
+//        ReflectionTestUtils.setField(expected.getIbasInformation(), "joined", LocalDateTime.now());
+//        given(memberRepository.save(any(Member.class))).willReturn(expected);
+//
+//        //when
+//        Member newMember = memberService.saveSignUpForm(signUpForm);
+//
+//        //then
+//        assertThat(newMember)
+//                .usingRecursiveComparison()
+//                .ignoringFields("joined")
+//                .isEqualTo(expected);
+//        assertThat(newMember.getIbasInformation().getJoined()).isNotNull();
+//    }
 
     @DisplayName("같은 학번 저장 시 DuplicatedMemberFiledException 예외")
     @Test
     public void 같은_학번_저장_예외() {
         //given
         Integer sameStudentId = MEMBER1.getId();
-        given(memberRepository.existsById(anyInt())).willReturn(true);
+        given(memberDuplicationChecker.isDuplicatedMember(any(Member.class))).willReturn(true);
 
         //when
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
+        Member newMember = Member.builder()
+                .id(12345678)
                 .name("유동현")
-                .grade(3)
-                .semester(2)
-                .major("컴퓨터공학과")
-                .phoneNumber("010-0000-1111")
-                .memberId(sameStudentId)
+                .phone("010-0000-0000")
+                .email("my@gmail.com")
+                .picture("")
+                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
                 .build();
 
         //then
         assertThrows(DuplicatedMemberFieldException.class,
-                () -> memberService.saveSignUpForm(signUpForm));
+                () -> memberService.save(newMember));
     }
 
     @DisplayName("같은 전화번호 저장 예외")
     @Test
     public void 같은_전화번호_저장_예외() {
         //given
-        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
+        given(memberDuplicationChecker.isDuplicatedMember(any(Member.class))).willReturn(true);
 
         //when
-        StudentSignUpDto signUpForm = StudentSignUpDto.builder()
-                .name("유동현")
-                .grade(3)
-                .semester(2)
-                .major("컴퓨터공학과")
-                .phoneNumber("010-0000-1111")
-                .memberId(12345678)
-                .build();
-
-        //then
-        assertThrows(DuplicatedMemberFieldException.class,
-                () -> memberService.saveSignUpForm(signUpForm));
-    }
-
-    @DisplayName("임시저장한_개인정보를_불러온다")
-    @Test
-    public void 임시저장한_개인정보를_불러온다() {
-        //given
-        Integer studentId = 12171652;
-        String email = "google@gmail.com";
-        Member savedMember = Member.builder()
-                .id(studentId)
+        Member newMember = Member.builder()
+                .id(12345678)
                 .name("유동현")
                 .phone("010-0000-0000")
+                .email("my@gmail.com")
                 .picture("")
-                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER, "", 0))
-                .schoolInformation(SchoolInformation.ofStudent("전자공학과", 3, 1))
+                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
                 .build();
-        given(memberRepository.findById(anyInt())).willReturn(Optional.ofNullable(savedMember));
-
-        //when
-        DetailSignUpDto savedForm = memberService.loadSignUpForm(studentId, email);
-
         //then
-        then(memberRepository).should(times(1)).findById(anyInt());
-        assertThat(savedForm)
-                .usingRecursiveComparison()
-                .isEqualTo(DetailSignUpDto.builder()
-                        .memberId(studentId)
-                        .email(email)
-                        .grade(3)
-                        .semester(1)
-                        .major("전자공학과")
-                        .name("유동현")
-                        .phoneNumber("010-0000-0000")
-                        .build()
-                );
+        assertThrows(DuplicatedMemberFieldException.class,
+                () -> memberService.save(newMember));
     }
 
     @DisplayName("회원의 권한을 변경한다.")
@@ -196,9 +123,10 @@ public class MemberServiceTest {
                 .id(memberId)
                 .picture("")
                 .name("유동현")
+                .email("my@gmail.com")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofStudent("정보통신공학과", 1, 1))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS, "", 0))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
+                .ibasInformation(new IbasInformation(Role.ANONYMOUS))
                 .build();
         given(memberRepository.findById(anyInt()))
                 .willReturn(Optional.ofNullable(targetMember));
@@ -208,9 +136,10 @@ public class MemberServiceTest {
                 .id(targetMember.getId())
                 .picture(targetMember.getPicture())
                 .name(targetMember.getName())
+                .email("my@gmail.com")
                 .phone(targetMember.getPhone())
                 .schoolInformation(targetMember.getSchoolInformation())
-                .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER, "", 0))
+                .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER))
                 .build();
         given(memberRepository.save(any(Member.class)))
                 .willReturn(result); // NOT care about this return-value of save() in Service logic
@@ -231,67 +160,30 @@ public class MemberServiceTest {
                 .willReturn(Optional.empty());
 
         //when
-        assertThrows(MemberNotExistException.class,
+        assertThrows(MemberNotFoundException.class,
                 () -> memberService.changeRole(12171652, Role.BASIC_MEMBER));
     }
 
-    @DisplayName("중복되는 학번이 존재한다.")
+    @DisplayName("회장 연락처 불러오기")
     @Test
-    public void 중복되는_Id가_있다() {
-
-        //given
-        given(memberRepository.existsById(anyInt())).willReturn(true);
+    public void getChiefContact() {
+        Member chief = Member.builder()
+                .id(12171652)
+                .picture("")
+                .name("유동현")
+                .email("my@gmail.com")
+                .phone("010-0000-0000")
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
+                .ibasInformation(new IbasInformation(Role.Chief))
+                .build();
+        given(memberRepository.searchByRoleLimit(any(), anyInt())).willReturn(List.of(chief));
 
         //when
-        boolean result = memberService.isDuplicatedId(12171652);
+        ContactDto chiefContact = memberService.getChiefContact();
 
         //then
-        then(memberRepository).should(times(1)).existsById(anyInt());
-        assertTrue(result);
-    }
-
-    @DisplayName("중복되는 학번이 없다")
-    @Test
-    public void 중복되는_Id가_없다() {
-
-        //given
-        given(memberRepository.existsById(anyInt())).willReturn(false);
-
-        //when
-        boolean result = memberService.isDuplicatedId(12171652);
-
-        //then
-        then(memberRepository).should(times(1)).existsById(anyInt());
-        assertFalse(result);
-    }
-
-    @DisplayName("중복되는 핸드폰 번호가 있다.")
-    @Test
-    public void 중복되는_핸드폰_번호가_있다() {
-
-        //given
-        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(true);
-
-        //when
-        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
-
-        //then
-        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
-        assertTrue(result);
-    }
-
-    @DisplayName("중복되는 핸드폰 번호가 없다.")
-    @Test
-    public void 중복되는_핸드폰_번호가_없다() {
-
-        //given
-        given(memberRepository.existsByPhone(any(Phone.class))).willReturn(false);
-
-        //when
-        boolean result = memberService.isDuplicatedPhoneNumber(new Phone("010-0000-0000"));
-
-        //then
-        then(memberRepository).should(times(1)).existsByPhone(any(Phone.class));
-        assertFalse(result);
+        assertThat(chiefContact.getEmail()).isEqualTo(chief.getEmail());
+        assertThat(chiefContact.getPhone()).isEqualTo(chief.getPhone());
+        assertThat(chiefContact.getName()).isEqualTo(chief.getName());
     }
 }

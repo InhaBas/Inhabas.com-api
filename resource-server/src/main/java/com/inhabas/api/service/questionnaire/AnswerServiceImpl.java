@@ -18,7 +18,7 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final MemberRepository memberRepository;
 
-    public List<Answer> saveAnswers(List<AnswerDto> submittedAnswers, Integer memberId) {
+    public void saveAnswers(List<AnswerDto> submittedAnswers, Integer memberId) {
 
         Member currentMember = memberRepository.getById(memberId);
 
@@ -26,7 +26,7 @@ public class AnswerServiceImpl implements AnswerService {
                 .map(a -> new Answer(currentMember, a.getQuestionNo(), a.getAnswer()))
                 .collect(Collectors.toList());
 
-        return answerRepository.saveAll(answers);
+        answerRepository.saveAll(answers);
     }
 
     public List<AnswerDto> getAnswers(Integer memberId) {
@@ -34,5 +34,10 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepository.findByMember_Id(memberId).stream()
                 .map(a-> new AnswerDto(a.getQuestionNo(), a.getAnswer()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean existAnswersWrittenBy(Integer memberId) {
+        return answerRepository.existsByMember_id(memberId);
     }
 }

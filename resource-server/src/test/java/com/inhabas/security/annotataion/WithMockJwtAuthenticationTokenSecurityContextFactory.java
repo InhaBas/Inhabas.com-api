@@ -1,8 +1,8 @@
 package com.inhabas.security.annotataion;
 
-import com.inhabas.api.domain.member.IbasInformation;
+import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.SchoolInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.security.domain.AuthUser;
 import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
@@ -26,24 +26,22 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockJwtAuthenticationToken principalInfo) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        AuthUser authUser = new AuthUser(principalInfo.provider(), principalInfo.Email());
+        AuthUser authUser = new AuthUser(principalInfo.provider(), principalInfo.email());
         ReflectionTestUtils.setField(authUser, "id", principalInfo.authUserId());
         ReflectionTestUtils.setField(authUser, "hasJoined", principalInfo.joined());
 
         String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
+
             Member profile = Member.builder()
                     .id(principalInfo.memberId())
                     .picture("")
                     .name(principalInfo.memberName())
+                    .email(principalInfo.email())
                     .phone(principalInfo.memberPhone())
-                    .schoolInformation(
-                            principalInfo.isProfessor() ?
-                            SchoolInformation.ofStudent(principalInfo.memberMajor(), principalInfo.memberGrade(), principalInfo.memberSemester()) :
-                            SchoolInformation.ofProfessor(principalInfo.memberMajor()))
-                    .ibasInformation(new IbasInformation(principalInfo.memberRole(), "", 0))
+                    .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGeneration(), principalInfo.memberType()))
+                    .ibasInformation(new IbasInformation(principalInfo.memberRole()))
                     .build();
-
             ReflectionTestUtils.setField(authUser, "profileId", profile.getId());
         }
 
