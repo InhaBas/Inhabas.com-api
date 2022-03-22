@@ -1,24 +1,20 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.security.argumentResolver.Authenticated;
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.utils.argumentResolver.Authenticated;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.service.login.LoginService;
-import com.inhabas.api.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,7 +1,7 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.security.domain.RefreshToken;
-import com.inhabas.api.security.domain.RefreshTokenRepository;
+import com.inhabas.api.security.domain.token.RefreshToken;
+import com.inhabas.api.security.domain.token.RefreshTokenRepository;
 import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

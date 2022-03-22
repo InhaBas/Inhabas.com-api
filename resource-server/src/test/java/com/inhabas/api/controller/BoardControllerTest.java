@@ -4,7 +4,6 @@ import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
-import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;

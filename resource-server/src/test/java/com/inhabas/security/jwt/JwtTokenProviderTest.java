@@ -1,9 +1,9 @@
 package com.inhabas.security.jwt;
 
-import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
-import com.inhabas.api.security.jwtUtils.JwtTokenDecodedInfo;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.jwtUtils.TokenDto;
+import com.inhabas.api.security.utils.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.security.utils.jwtUtils.JwtTokenDecodedInfo;
+import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.security.domain.token.TokenDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

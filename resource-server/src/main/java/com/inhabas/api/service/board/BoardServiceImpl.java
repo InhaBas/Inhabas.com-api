@@ -11,14 +11,12 @@ import com.inhabas.api.dto.board.BoardDto;
 
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
-import com.inhabas.api.security.argumentResolver.Authenticated;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Service
@@ -45,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
     public Integer update(Integer memberId, UpdateBoardDto updateBoardDto) {
         Member writer = memberRepository.getById(memberId);
         NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
-                .orElseThrow(() -> new BoardNotFoundException());
+                .orElseThrow(BoardNotFoundException::new);
         NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
                 .writtenBy(writer)
                 .inMenu(savedBoard.getMenu());
@@ -60,7 +58,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardDto getBoard(Integer id) {
         return boardRepository.findDtoById(id)
-                .orElseThrow(() -> new BoardNotFoundException());
+                .orElseThrow(BoardNotFoundException::new);
     }
 
     @Override

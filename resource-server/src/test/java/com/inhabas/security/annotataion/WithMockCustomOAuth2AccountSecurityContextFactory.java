@@ -1,7 +1,7 @@
 package com.inhabas.security.annotataion;
 
-import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.oauth2.CustomOAuth2User;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
+import com.inhabas.api.security.utils.oauth2.CustomOAuth2User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

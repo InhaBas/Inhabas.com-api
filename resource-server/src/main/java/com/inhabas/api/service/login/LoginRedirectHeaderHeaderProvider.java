@@ -1,13 +1,11 @@
 package com.inhabas.api.service.login;
 
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.RefreshToken;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.TokenDto;
-import com.inhabas.api.security.jwtUtils.TokenProvider;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
+import com.inhabas.api.security.domain.token.RefreshToken;
+import com.inhabas.api.security.service.TokenService;
+import com.inhabas.api.security.domain.token.TokenDto;
+import com.inhabas.api.security.domain.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 

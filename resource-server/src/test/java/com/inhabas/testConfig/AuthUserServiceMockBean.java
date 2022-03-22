@@ -1,6 +1,6 @@
 package com.inhabas.testConfig;
 
-import com.inhabas.api.security.domain.AuthUserService;
+import com.inhabas.api.security.domain.authUser.AuthUserService;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 

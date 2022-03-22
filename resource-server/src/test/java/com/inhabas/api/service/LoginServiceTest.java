@@ -4,7 +4,7 @@ import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.service.login.*;
 import com.inhabas.api.service.member.MemberService;
 import org.junit.jupiter.api.DisplayName;

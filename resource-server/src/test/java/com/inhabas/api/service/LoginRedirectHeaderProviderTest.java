@@ -1,9 +1,9 @@
 package com.inhabas.api.service;
 
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
+import com.inhabas.api.security.service.TokenService;
+import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.service.login.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

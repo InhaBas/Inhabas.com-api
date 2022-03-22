@@ -1,9 +1,8 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.signup.SignUpNotAvailableException;
-import com.inhabas.api.security.domain.NoTokenInRequestHeaderException;
-import com.inhabas.api.security.domain.RefreshTokenNotFoundException;
-import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.security.domain.token.NoTokenInRequestHeaderException;
+import com.inhabas.api.security.domain.token.RefreshTokenNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,10 @@
 package com.inhabas.security.argumentResolver;
 
-import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
-import com.inhabas.api.security.domain.AuthUser;
-import com.inhabas.api.security.domain.AuthUserDetail;
-import com.inhabas.api.security.jwtUtils.JwtAuthenticationToken;
-import com.inhabas.api.security.oauth2.CustomOAuth2User;
+import com.inhabas.api.security.utils.argumentResolver.AuthUserArgumentResolver;
+import com.inhabas.api.security.domain.authUser.AuthUser;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
+import com.inhabas.api.security.utils.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.security.utils.oauth2.CustomOAuth2User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;

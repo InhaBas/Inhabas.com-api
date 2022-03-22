@@ -2,9 +2,10 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.jwtUtils.TokenDto;
+import com.inhabas.api.security.controller.JwtTokenController;
+import com.inhabas.api.security.service.TokenService;
+import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.security.domain.token.TokenDto;
 import com.inhabas.testConfig.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

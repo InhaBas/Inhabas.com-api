@@ -4,7 +4,7 @@ import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 
-import com.inhabas.api.security.argumentResolver.Authenticated;
+import com.inhabas.api.security.utils.argumentResolver.Authenticated;
 import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -83,8 +83,8 @@ public class BoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity deleteBoard(@RequestParam Integer id) {
+    public ResponseEntity<?> deleteBoard(@RequestParam Integer id) {
         boardService.delete(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

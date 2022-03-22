@@ -9,13 +9,11 @@ import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
-import com.inhabas.api.security.argumentResolver.Authenticated;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Service
@@ -44,7 +42,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     @Override
     public Integer update(Integer memberId, UpdateContestBoardDto dto) {
         ContestBoard savedContestBoard = contestBoardRepository.findById(dto.getId())
-                .orElseThrow(() -> new BoardNotFoundException());
+                .orElseThrow(BoardNotFoundException::new);
         Member writer = memberRepository.getById(memberId);
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
@@ -69,7 +67,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     @Override
     public DetailContestBoardDto getBoard(Integer id) {
         return  contestBoardRepository.findDtoById(id)
-                .orElseThrow(()-> new BoardNotFoundException());
+                .orElseThrow(BoardNotFoundException::new);
     }
 
     @Override

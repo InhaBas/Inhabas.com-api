@@ -2,8 +2,8 @@ package com.inhabas.api.controller;
 
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.*;
-import com.inhabas.api.security.argumentResolver.Authenticated;
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.utils.argumentResolver.Authenticated;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.service.signup.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

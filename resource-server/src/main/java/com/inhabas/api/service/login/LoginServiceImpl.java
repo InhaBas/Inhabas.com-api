@@ -1,7 +1,7 @@
 package com.inhabas.api.service.login;
 
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +30,7 @@ public class LoginServiceImpl implements LoginService {
             throw new AccessDeniedException("Oauth2 인증에 성공했을때만 로그인 가능합니다.");
         }
 
-        HttpHeaders httpHeaders = null;
+        HttpHeaders httpHeaders;
 
         if (authUserDetail.hasJoined()) {
             /* 유저 권한 들고오기 (추후 작업이 필요함.)

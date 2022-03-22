@@ -4,7 +4,7 @@ import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
-import com.inhabas.api.security.argumentResolver.Authenticated;
+import com.inhabas.api.security.utils.argumentResolver.Authenticated;
 import com.inhabas.api.service.contest.ContestBoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -76,9 +76,9 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity deleteBoard(@RequestParam Integer id) {
+    public ResponseEntity<?> deleteBoard(@RequestParam Integer id) {
         boardService.delete(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

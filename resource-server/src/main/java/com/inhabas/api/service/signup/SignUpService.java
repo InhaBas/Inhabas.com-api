@@ -5,7 +5,7 @@ import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import com.inhabas.api.dto.signUp.QuestionnaireDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 
 import java.util.List;
 

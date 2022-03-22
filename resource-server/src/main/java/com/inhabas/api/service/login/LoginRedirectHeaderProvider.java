@@ -1,6 +1,6 @@
 package com.inhabas.api.service.login;
 
-import com.inhabas.api.security.domain.AuthUserDetail;
+import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
