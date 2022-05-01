@@ -27,7 +27,8 @@ public class JwtTokenProviderTest {
     @Test
     public void createJwtTokenTest() {
         //given
-        Integer userId = 1;
+        Integer memberId = 1;
+        Integer memberSocialAccountId = 21;
         String role = "회장단";
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
@@ -35,7 +36,7 @@ public class JwtTokenProviderTest {
         };
 
         //when
-        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, role, teams);
+        TokenDto newJwtToken = tokenProvider.createJwtToken(memberId, memberSocialAccountId, role, teams);
 
         //then
         assertThat(newJwtToken).isNotNull();
@@ -53,7 +54,8 @@ public class JwtTokenProviderTest {
     @Test
     public void nullRoleTokenTest() {
         //given
-        Integer userId = 1;
+        Integer memberId = 1;
+        Integer memberSocialAccountId = 21;
         String role = null;
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
@@ -62,14 +64,15 @@ public class JwtTokenProviderTest {
 
         //when
         assertThrows(AssertionError.class,
-                ()-> tokenProvider.createJwtToken(userId, role, teams));
+                ()-> tokenProvider.createJwtToken(memberId, memberSocialAccountId, role, teams));
     }
 
-    @DisplayName("토큰 생성 시 authUserId 은 필수로 주어져야 한다.")
+    @DisplayName("토큰 생성 시 memberId 은 필수로 주어져야 한다.")
     @Test
-    public void nullUserIdTokenTest() {
+    public void nullMemberIdTokenTest() {
         //given
-        Integer userId = null;
+        Integer memberId = null;
+        Integer memberSocialAccountId = 21;
         String role = "회장단";
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
@@ -78,20 +81,21 @@ public class JwtTokenProviderTest {
 
         //when
         assertThrows(AssertionError.class,
-                ()-> tokenProvider.createJwtToken(userId, role, teams));
+                ()-> tokenProvider.createJwtToken(memberId, memberSocialAccountId, role, teams));
     }
 
     @DisplayName("토큰을 정상적으로 decode")
     @Test
     public void decodeToken() {
         //given
-        Integer userId = 1;
+        Integer memberId = 1;
+        Integer memberSocialAccountId = 21;
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
             add("IT팀");}
         };
 
-        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, "회장단", teams);
+        TokenDto newJwtToken = tokenProvider.createJwtToken(memberId, memberSocialAccountId, "회장단", teams);
         String accessToken = newJwtToken.getAccessToken();
         String refreshToken = newJwtToken.getRefreshToken();
 
@@ -101,13 +105,15 @@ public class JwtTokenProviderTest {
 
         //then
         //access token
-        assertThat(accessTokenDecodeInfo.getAuthUserId()).isEqualTo(userId);
+        assertThat(accessTokenDecodeInfo.getMemberId()).isEqualTo(memberId);
+        assertThat(accessTokenDecodeInfo.getMemberSocialAccountId()).isEqualTo(memberSocialAccountId);
         assertThat(accessTokenDecodeInfo.getGrantedAuthorities())
                 .extracting("role")
                 .contains("ROLE_회장단")
                 .containsAll(teams);
         //refresh token
-        assertThat(refreshTokenDecodeInfo.getAuthUserId()).isEqualTo(userId);
+        assertThat(refreshTokenDecodeInfo.getMemberId()).isEqualTo(memberId);
+        assertThat(refreshTokenDecodeInfo.getMemberSocialAccountId()).isEqualTo(memberSocialAccountId);
         assertThat(refreshTokenDecodeInfo.getGrantedAuthorities())
                 .extracting("role")
                 .contains("ROLE_회장단")
@@ -119,12 +125,13 @@ public class JwtTokenProviderTest {
     public void reissueAccessToken() {
         //given
         Integer userId = 1;
+        Integer memberSocialAccountId = 21;
         Set<String> teams = new HashSet<>() {{
             add("운영팀");
             add("IT팀");}
         };
 
-        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, "회장단", teams);
+        TokenDto newJwtToken = tokenProvider.createJwtToken(userId, memberSocialAccountId, "회장단", teams);
         String refreshToken = newJwtToken.getRefreshToken();
 
         //when
@@ -141,7 +148,8 @@ public class JwtTokenProviderTest {
 
         //validation check for newly issued access token
         JwtTokenDecodedInfo decodeNewAccessToken = tokenProvider.authenticate(newAccessToken);
-        assertThat(decodeNewAccessToken.getAuthUserId()).isEqualTo(userId);
+        assertThat(decodeNewAccessToken.getMemberId()).isEqualTo(userId);
+        assertThat(decodeNewAccessToken.getMemberSocialAccountId()).isEqualTo(memberSocialAccountId);
         assertThat(decodeNewAccessToken.getGrantedAuthorities())
                 .extracting("role")
                 .contains("ROLE_회장단")

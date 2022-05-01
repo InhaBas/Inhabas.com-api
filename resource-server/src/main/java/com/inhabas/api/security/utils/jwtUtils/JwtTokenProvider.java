@@ -23,16 +23,18 @@ public class JwtTokenProvider implements TokenProvider {
     private static final Long accessTokenValidMilliSecond = 30 * 60 * 1000L; // 0.5 hour
     private static final Long refreshTokenValidMilliSecond = 7 * 24 * 60 * 60 * 1000L; // 7 days
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String MEMBER_SOCIAL_ACCOUNT_ID = "muId";
     private static final String ROLE = "role";
     private static final String TEAM = "teams";
     private static final String ROLE_PREFIX = "ROLE_";
 
     @Override
-    public TokenDto createJwtToken(Integer authUserId, String role, Set<String> teams) {
-        assert Objects.nonNull(authUserId);
+    public TokenDto createJwtToken(Integer mId, Integer muId, String role, Set<String> teams) {
+        assert Objects.nonNull(mId);
         assert StringUtils.hasText(role);
 
-        Claims claims = Jwts.claims().setSubject(String.valueOf(authUserId));
+        Claims claims = Jwts.claims().setSubject(String.valueOf(mId));
+        claims.put(MEMBER_SOCIAL_ACCOUNT_ID, muId);
         claims.put(ROLE, ROLE_PREFIX + role);
         claims.put(TEAM, teams);
 
@@ -71,6 +73,7 @@ public class JwtTokenProvider implements TokenProvider {
 
         Claims claims = this.parseClaims(token);
         Integer userId = Integer.parseInt(claims.getSubject());
+        Integer muId = (Integer) claims.get(MEMBER_SOCIAL_ACCOUNT_ID);
         String role = (String) claims.get(ROLE);
         List<String> teams = (ArrayList<String>) claims.get(TEAM);
 
@@ -81,7 +84,7 @@ public class JwtTokenProvider implements TokenProvider {
                     teamAuthority -> totalGrantedAuthorities.add(new SimpleGrantedAuthority(teamAuthority)));
         }
 
-        return new JwtTokenDecodedInfo(userId, totalGrantedAuthorities);
+        return new JwtTokenDecodedInfo(userId, muId, totalGrantedAuthorities);
     }
 
     /* request 헤더에 담긴 access 토큰을 가져옴. */

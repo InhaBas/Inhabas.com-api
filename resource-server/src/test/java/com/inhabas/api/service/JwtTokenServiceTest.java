@@ -59,7 +59,7 @@ public class JwtTokenServiceTest {
     @Test
     public void reissueAccessTokenTest() {
         //given
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         given(request.getHeader(anyString())).willReturn("Bearer " + refreshTokenString);
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
 
@@ -73,7 +73,7 @@ public class JwtTokenServiceTest {
     @Test
     public void refreshTokenNotFoundExceptionTest() {
         //given
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         given(request.getHeader(anyString())).willReturn("Bearer " + refreshTokenString);
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(false);
 
@@ -88,7 +88,7 @@ public class JwtTokenServiceTest {
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
 
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         int length = refreshTokenString.length();
         String corruptedToken = refreshTokenString.substring(0, length - 3) + "corruptChar" + refreshTokenString.substring(length - 3);
         given(request.getHeader(anyString())).willReturn("Bearer " + corruptedToken);

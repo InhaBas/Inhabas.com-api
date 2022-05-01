@@ -13,5 +13,5 @@ public interface TokenProvider {
 
     TokenDto reissueAccessTokenUsing(String refreshToken) throws JwtException;
 
-    TokenDto createJwtToken(Integer authUserId, String role, Set<String> teams);
+    TokenDto createJwtToken(Integer memberId, Integer muId, String role, Set<String> teams);
 }

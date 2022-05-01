@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class JwtTokenDecodedInfo extends TokenDecodedInfo {
 
-    public JwtTokenDecodedInfo(Integer memberId, Set<GrantedAuthority> grantedAuthorities) {
-        super(memberId, grantedAuthorities);
+    public JwtTokenDecodedInfo(Integer memberId, Integer muId, Set<GrantedAuthority> grantedAuthorities) {
+        super(memberId, muId, grantedAuthorities);
     }
 }

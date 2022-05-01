@@ -3,9 +3,9 @@ package com.inhabas.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.security.controller.JwtTokenController;
+import com.inhabas.api.security.domain.token.TokenDto;
 import com.inhabas.api.security.service.TokenService;
 import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.domain.token.TokenDto;
 import com.inhabas.testConfig.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,9 +18,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @NoSecureWebMvcTest(JwtTokenController.class)
 public class JwtControllerTest {
@@ -42,7 +41,7 @@ public class JwtControllerTest {
     @Test
     public void reissueAccessTokenTest() throws Exception {
         //given
-        TokenDto tmp = jwtTokenProvider.createJwtToken(1, Role.BASIC_MEMBER.toString(), null);
+        TokenDto tmp = jwtTokenProvider.createJwtToken(1, 21, Role.BASIC_MEMBER.toString(), null);
         TokenDto expectedNewTokenDto = new TokenDto(tmp.getGrantType(), tmp.getAccessToken(), null, tmp.getExpiresIn());
 
         given(tokenService.reissueAccessToken(any())).willReturn(expectedNewTokenDto);

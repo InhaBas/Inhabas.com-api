@@ -48,7 +48,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             try {
                 JwtTokenDecodedInfo decodedInfo = (JwtTokenDecodedInfo) tokenProvider.authenticate(token);
                 JwtAuthenticationToken authentication =
-                        new JwtAuthenticationToken(decodedInfo.getAuthUserId(), decodedInfo.getGrantedAuthorities());
+                        new JwtAuthenticationToken(decodedInfo.getMemberId(), decodedInfo.getGrantedAuthorities());
 
                 // Authentication success redirection
                 successfulAuthentication(request, response, filterChain, authentication);
