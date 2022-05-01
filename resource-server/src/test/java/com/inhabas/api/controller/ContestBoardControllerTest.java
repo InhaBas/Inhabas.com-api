@@ -67,7 +67,7 @@ public class ContestBoardControllerTest {
     @WithMockJwtAuthenticationToken
     public void addNewContestBoard() throws Exception {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3, 26));
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
         given(contestBoardService.write(any(), any(SaveContestBoardDto.class))).willReturn(1);
 
         // when
@@ -83,7 +83,7 @@ public class ContestBoardControllerTest {
     @WithMockJwtAuthenticationToken
     public void updateContestBoard() throws Exception{
         //given
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 3, 26));
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
         given(contestBoardService.update(any(), any(UpdateContestBoardDto.class))).willReturn(1);
 
         // when
