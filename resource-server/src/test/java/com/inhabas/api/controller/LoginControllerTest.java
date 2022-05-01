@@ -1,6 +1,6 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.security.annotataion.WithMockCustomOAuth2Account;
+import com.inhabas.annotataion.WithMockCustomOAuth2Account;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

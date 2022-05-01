@@ -22,7 +22,6 @@ import java.lang.annotation.Target;
  *  하지만 JPAQueryFactory 는 DataJpaTest 에 의해 자동 주입되지 않는다.
  *  DataJpaTest 는 spring-boot-start-data 패키지에 포함된 jpa 관련 컴포넌트만 가져온다.
  *  QueryDsl 은 다른 패키지에 속해있다. 따라서 JPAQueryFactory 를 수동으로 가져오기 위한 작업이다.
- * @see DefaultWebMvcTest
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

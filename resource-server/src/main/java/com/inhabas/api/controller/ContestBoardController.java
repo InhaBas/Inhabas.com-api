@@ -1,10 +1,10 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.auth.utils.argumentResolver.Authenticated;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
-import com.inhabas.api.security.utils.argumentResolver.Authenticated;
 import com.inhabas.api.service.contest.ContestBoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

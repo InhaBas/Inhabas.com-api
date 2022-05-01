@@ -1,13 +1,7 @@
 package com.inhabas.testConfig;
 
-import com.inhabas.api.config.CloudConfig;
-import com.inhabas.api.config.InterceptorConfig;
-import com.inhabas.api.config.JpaConfig;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,8 +17,6 @@ import java.lang.annotation.Target;
  * bootstrap.yml 에 test 환경을 따로 명시하여, 테스트 진행 시에는 바로 테스트를 진행하도록 설정.
  * 또 SecurityFilterChain 을 활성화하게 되면, web 관련 컴포넌트 뿐 아니라 연관된 의존성을 모두 불러와야 하므로,
  * test 환경을 명시하여 security 관련 설정을 읽어오지 못하게 하는 역할. (default FilterChain이 사용됨.)<br><br>
- *
- * @see DefaultDataJpaTest
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,5 +1,6 @@
 package com.inhabas.api.service.signup;
 
+import com.inhabas.api.auth.utils.argumentResolver.ResolvedAuthenticationResult;
 import com.inhabas.api.domain.member.LoginMember;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberDuplicationChecker;
@@ -12,7 +13,6 @@ import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import com.inhabas.api.dto.signUp.QuestionnaireDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
-import com.inhabas.api.security.utils.argumentResolver.ResolvedAuthenticationResult;
 import com.inhabas.api.service.member.MajorInfoService;
 import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberService;

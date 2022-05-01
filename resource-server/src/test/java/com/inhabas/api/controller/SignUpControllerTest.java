@@ -2,6 +2,7 @@ package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.LoginMember;
 import com.inhabas.api.domain.member.type.MemberType;
@@ -14,7 +15,6 @@ import com.inhabas.api.dto.signUp.QuestionnaireDto;
 import com.inhabas.api.dto.signUp.SignUpDto;
 import com.inhabas.api.service.signup.NoQueryParameterException;
 import com.inhabas.api.service.signup.SignUpService;
-import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

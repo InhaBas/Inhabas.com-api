@@ -1,10 +1,9 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.auth.utils.argumentResolver.Authenticated;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
-
-import com.inhabas.api.security.utils.argumentResolver.Authenticated;
 import com.inhabas.api.service.board.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

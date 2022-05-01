@@ -40,6 +40,7 @@ public class Member {
     @Embedded
     private IbasInformation ibasInformation;
 
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
     @Builder
@@ -63,6 +64,10 @@ public class Member {
 
     public String getEmail() {
         return this.email.getValue();
+    }
+
+    public boolean isDeleted() {
+        return this.isDeleted;
     }
 
     public void setRole(Role role) {

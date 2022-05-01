@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.member;
 
-import com.inhabas.api.security.domain.socialAccount.SocialAccount;
+import com.inhabas.api.auth.domain.socialAccount.SocialAccount;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +25,6 @@ public class MemberSocialAccount {
     public MemberSocialAccount(Member member, SocialAccount socialaccount) {
         this.member = member;
         this.socialAccount = socialaccount;
-        socialaccount.mappingTo(this);
     }
 
     public Integer getId() {

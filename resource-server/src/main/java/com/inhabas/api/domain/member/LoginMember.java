@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.member;
 
+import com.inhabas.api.auth.utils.argumentResolver.ResolvedAuthenticationResult;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.utils.argumentResolver.ResolvedAuthenticationResult;
 
 import java.util.List;
 import java.util.stream.Collectors;

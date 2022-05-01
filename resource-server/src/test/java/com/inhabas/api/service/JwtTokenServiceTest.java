@@ -1,13 +1,13 @@
 package com.inhabas.api.service;
 
+import com.inhabas.api.auth.domain.token.RefreshToken;
+import com.inhabas.api.auth.domain.token.RefreshTokenNotFoundException;
+import com.inhabas.api.auth.domain.token.RefreshTokenRepository;
+import com.inhabas.api.auth.domain.token.TokenDto;
+import com.inhabas.api.auth.service.TokenService;
+import com.inhabas.api.auth.utils.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.token.RefreshToken;
-import com.inhabas.api.security.domain.token.RefreshTokenNotFoundException;
-import com.inhabas.api.security.domain.token.RefreshTokenRepository;
-import com.inhabas.api.security.service.TokenService;
-import com.inhabas.api.security.utils.jwtUtils.InvalidJwtTokenException;
-import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.domain.token.TokenDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

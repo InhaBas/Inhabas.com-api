@@ -1,9 +1,12 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.auth.utils.argumentResolver.Authenticated;
 import com.inhabas.api.domain.member.LoginMember;
 import com.inhabas.api.dto.member.MajorInfoDto;
-import com.inhabas.api.dto.signUp.*;
-import com.inhabas.api.security.utils.argumentResolver.Authenticated;
+import com.inhabas.api.dto.signUp.AnswerDto;
+import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
+import com.inhabas.api.dto.signUp.QuestionnaireDto;
+import com.inhabas.api.dto.signUp.SignUpDto;
 import com.inhabas.api.service.signup.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
