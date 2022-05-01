@@ -1,19 +1,15 @@
 package com.inhabas.api.domain.member.type;
 
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberTeam;
-import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.type.wrapper.Introduce;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,8 +23,8 @@ public class IbasInformation {
     @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
     private List<MemberTeam> teamList = new ArrayList<>();
 
-    @CreatedDate
-    private LocalDateTime joined;
+    @Column(name = "joined")
+    private LocalDateTime joinedDate;
 
     @Embedded
     private Introduce introduce;
@@ -60,8 +56,16 @@ public class IbasInformation {
         if (!(o instanceof IbasInformation)) return false;
         IbasInformation that = (IbasInformation) o;
         return getRole() == that.getRole()
-                && getJoined().equals(that.getJoined())
+                && getJoinedDate().equals(that.getJoinedDate())
                 && getIntroduce().equals(that.getIntroduce())
                 && getApplyPublish().equals(that.getApplyPublish());
+    }
+
+    public boolean isCompleteToSignUp() {
+        return Objects.nonNull(this.joinedDate);
+    }
+
+    public void finishSignUp() {
+        this.joinedDate = LocalDateTime.now();
     }
 }

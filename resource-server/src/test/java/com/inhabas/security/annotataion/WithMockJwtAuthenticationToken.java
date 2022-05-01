@@ -17,8 +17,6 @@ import java.lang.annotation.RetentionPolicy;
 @WithSecurityContext(factory = WithMockJwtAuthenticationTokenSecurityContextFactory.class)
 public @interface WithMockJwtAuthenticationToken {
 
-    int authUserId() default 1;
-
     String email() default "my@email.com";
 
     String provider() default "google";

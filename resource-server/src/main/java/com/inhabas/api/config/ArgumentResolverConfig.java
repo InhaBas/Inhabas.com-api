@@ -1,6 +1,6 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.security.utils.argumentResolver.AuthUserArgumentResolver;
+import com.inhabas.api.security.utils.argumentResolver.LoginMemberArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -12,11 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArgumentResolverConfig implements WebMvcConfigurer {
 
-    private final AuthUserArgumentResolver authUserArgumentResolver;
+    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authUserArgumentResolver);
+        resolvers.add(loginMemberArgumentResolver);
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
     }
 }

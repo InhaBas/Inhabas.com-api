@@ -20,4 +20,6 @@ public interface MemberService {
     void changeRole(Integer memberId, Role role);
 
     ContactDto getChiefContact();
+
+    void finishSignUp(Integer memberId);
 }

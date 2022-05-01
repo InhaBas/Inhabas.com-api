@@ -1,6 +1,5 @@
 package com.inhabas.api.security.utils.jwtUtils;
 
-import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -8,11 +7,11 @@ import java.util.Collection;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final AuthUserDetail principal;
+    private final Integer authenticatedMember;
 
-    public JwtAuthenticationToken(AuthUserDetail authUser, Collection<? extends GrantedAuthority> authorities) {
+    public JwtAuthenticationToken(Integer authenticatedMember, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.principal = authUser;
+        this.authenticatedMember = authenticatedMember;
     }
 
     @Deprecated
@@ -23,6 +22,6 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return principal;
+        return authenticatedMember;
     }
 }

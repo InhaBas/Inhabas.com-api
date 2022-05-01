@@ -1,6 +1,5 @@
 package com.inhabas.api.security.data;
 
-import com.inhabas.api.security.domain.authUser.AuthUser;
 import com.inhabas.api.security.domain.socialAccount.SocialAccount;
 import com.inhabas.api.security.domain.socialAccount.SocialAccountRepository;
 import com.inhabas.api.security.domain.socialAccount.type.Provider;
@@ -9,7 +8,6 @@ import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;

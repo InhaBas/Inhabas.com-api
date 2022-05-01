@@ -1,15 +1,11 @@
 package com.inhabas.security.annotataion;
 
-import com.inhabas.api.security.domain.authUser.AuthUserDetail;
-import com.inhabas.api.security.utils.oauth2.CustomOAuth2User;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 /**
@@ -30,25 +26,26 @@ public class WithMockCustomOAuth2AccountSecurityContextFactory
         attributes.put("picture", customOAuth2Account.picture());
         attributes.put("role", customOAuth2Account.role());
 
-        CustomOAuth2User principal = new CustomOAuth2User(
-                List.of(new SimpleGrantedAuthority(customOAuth2Account.role())),
-                attributes,
-                "email",
-                AuthUserDetail.builder()
-                        .id(customOAuth2Account.authUserId())
-                        .email(customOAuth2Account.email())
-                        .provider(customOAuth2Account.provider())
-                        .profileId(customOAuth2Account.profileId())
-                        .hasJoined(customOAuth2Account.alreadyJoined())
-                        .isActive(customOAuth2Account.isActive())
-                        .build());
-
-        OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
-                principal,
-                principal.getAuthorities(),
-                customOAuth2Account.provider());
-
-        context.setAuthentication(token);
-        return context;
+        throw new NotImplementedException("로그인 다시 구현해야함");
+//        CustomOAuth2User principal = new CustomOAuth2User(
+//                List.of(new SimpleGrantedAuthority(customOAuth2Account.role())),
+//                attributes,
+//                "email",
+//                AuthUserDetail.builder()
+//                        .id(customOAuth2Account.authUserId())
+//                        .email(customOAuth2Account.email())
+//                        .provider(customOAuth2Account.provider())
+//                        .profileId(customOAuth2Account.profileId())
+//                        .hasJoined(customOAuth2Account.alreadyJoined())
+//                        .isActive(customOAuth2Account.isActive())
+//                        .build());
+//
+//        OAuth2AuthenticationToken token = new OAuth2AuthenticationToken(
+//                principal,
+//                principal.getAuthorities(),
+//                customOAuth2Account.provider());
+//
+//        context.setAuthentication(token);
+//        return context;
     }
 }

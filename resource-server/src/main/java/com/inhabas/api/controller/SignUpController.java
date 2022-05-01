@@ -1,9 +1,9 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.member.LoginMember;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.*;
 import com.inhabas.api.security.utils.argumentResolver.Authenticated;
-import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.service.signup.SignUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,7 +34,7 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
     })
     public ResponseEntity<?> saveStudentProfile(
-            @Authenticated AuthUserDetail authUser, @Valid @RequestBody SignUpDto form) {
+            @Authenticated LoginMember authUser, @Valid @RequestBody SignUpDto form) {
 
         signUpService.saveSignUpForm(form, authUser);
 
@@ -44,7 +44,7 @@ public class SignUpController {
     @GetMapping
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<SignUpDto> loadProfile(@Authenticated AuthUserDetail signUpUser) {
+    public ResponseEntity<SignUpDto> loadProfile(@Authenticated LoginMember signUpUser) {
 
         SignUpDto form = signUpService.loadSignUpForm(signUpUser);
 
@@ -89,7 +89,7 @@ public class SignUpController {
     @GetMapping("/answer")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated AuthUserDetail signUpUser) {
+    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated LoginMember signUpUser) {
 
         List<AnswerDto> answers = signUpService.getAnswers(signUpUser);
 
@@ -103,7 +103,7 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우")
     })
     public ResponseEntity<?> saveAnswers(
-            @Authenticated AuthUserDetail signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
+            @Authenticated LoginMember signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
 
         signUpService.saveAnswers(answers, signUpUser);
 
@@ -114,7 +114,7 @@ public class SignUpController {
     @PutMapping("/finish")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<?> finishSignUp(@Authenticated AuthUserDetail signUpUser) {
+    public ResponseEntity<?> finishSignUp(@Authenticated LoginMember signUpUser) {
 
         signUpService.completeSignUp(signUpUser);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

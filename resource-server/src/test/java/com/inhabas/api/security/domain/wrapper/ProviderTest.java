@@ -5,10 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ProviderTest {
 
@@ -17,7 +15,7 @@ public class ProviderTest {
     public void ProviderLengthMustNotBeGreaterThan30() {
         assertThat(
             Arrays.stream(Provider.values())
-                    .filter(provider -> provider.name().length() > 30)
+                    .filter(provider -> provider.toString().length() > 30)
                     .findAny()).isEmpty();
     }
 
@@ -26,7 +24,7 @@ public class ProviderTest {
     public void ProviderValueMustNotBeBlank() {
         assertThat(
                 Arrays.stream(Provider.values())
-                        .filter(provider -> provider.name().isBlank())
+                        .filter(provider -> provider.toString().isBlank())
                         .findAny()).isEmpty();
     }
 }

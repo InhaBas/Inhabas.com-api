@@ -1,13 +1,9 @@
 package com.inhabas.api.security.config;
 
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.authUser.AuthUserService;
 import com.inhabas.api.security.utils.jwtUtils.InvalidJwtTokenHandler;
 import com.inhabas.api.security.utils.jwtUtils.JwtAuthenticationProcessingFilter;
 import com.inhabas.api.security.utils.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.utils.oauth2.CustomAuthenticationFailureHandler;
-import com.inhabas.api.security.utils.oauth2.CustomAuthenticationSuccessHandler;
-import com.inhabas.api.security.utils.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -34,7 +30,6 @@ public class WebSecurityConfig {
     @Profile({"production"})
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
-        private final CustomOAuth2UserService customOAuth2UserService;
         private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         /** 소셜 로그인 api <br><br>
@@ -66,12 +61,6 @@ public class WebSecurityConfig {
                     .csrf()
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .and()
-                    .oauth2Login(oauth2Login ->
-                            oauth2Login
-                                    .failureHandler(new CustomAuthenticationFailureHandler(authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()))
-                                    .successHandler(new CustomAuthenticationSuccessHandler(authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl()))
-                                    .userInfoEndpoint().userService(customOAuth2UserService).and()
-                                    .authorizationEndpoint().baseUri("/login/oauth2/authorization"))
                     .authorizeRequests(request ->
                             request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                     .antMatchers(
@@ -89,7 +78,6 @@ public class WebSecurityConfig {
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
-        private final AuthUserService authUserService;
         private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         @Override
@@ -104,7 +92,6 @@ public class WebSecurityConfig {
                         .disable()
 
                     .addFilterAfter(new JwtAuthenticationProcessingFilter(
-                            authUserService,
                             jwtTokenProvider,
                             new InvalidJwtTokenHandler()), LogoutFilter.class
                     )

@@ -1,9 +1,7 @@
 package com.inhabas.api.security.utils.argumentResolver;
 
-import com.inhabas.api.security.domain.authUser.AuthUserDetail;
 import com.inhabas.api.security.utils.jwtUtils.JwtAuthenticationToken;
-import com.inhabas.api.security.utils.oauth2.CustomOAuth2User;
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +16,7 @@ import java.util.Objects;
 
 
 @Component
-public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -35,34 +33,38 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (Objects.isNull(authentication))
+            return null;  // login not processed, anonymous user!
 
-        AuthUserDetail authenticatedUser;
-        authenticatedUser = getAuthUserDetail(authentication);
+        ResolvedAuthenticationResult authenticatedMember = resolveAuthentication(authentication);
 
         if (parameter.getParameterType().equals(Integer.class)) {
-            if(ObjectUtils.isEmpty(authenticatedUser)) return null;
-            Integer profileId = authenticatedUser.getProfileId();
-            if(ObjectUtils.isEmpty(profileId)) return null;
-            return profileId;
-        } else if (parameter.getParameterType().equals(AuthUserDetail.class)) {
-            return authenticatedUser;
-        }
 
-        return authenticatedUser;
+            return authenticatedMember.getMemberId();
+        }
+        else if (ResolvedAuthenticationResult.class.isAssignableFrom(parameter.getParameterType())) {
+
+            return authenticatedMember;
+        }
+        else {
+            throw new IllegalArgumentException("지원하지 않는 타입입니다");
+        }
     }
 
-    private AuthUserDetail getAuthUserDetail(Authentication authentication) {
-        AuthUserDetail authenticatedUser = null;
-        if (Objects.nonNull(authentication)) {
-            if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후
-                authenticatedUser = (AuthUserDetail) authentication.getPrincipal();
+    private ResolvedAuthenticationResult resolveAuthentication(Authentication authentication) {
+        ResolvedAuthenticationResult authenticatedMember = null;
 
-            } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
-                authenticatedUser = ((CustomOAuth2User) authentication.getPrincipal()).getAuthUserDetail();
-                authenticatedUser.setProfileImageUrl(
-                        ((CustomOAuth2User) authentication.getPrincipal()).getAttribute("picture"));
-            }
+        if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후
+            //Integer memberId = (Integer) authentication.getPrincipal();
+            throw new NotImplementedException("jwt 인증 수정 후 작업해야함.");
+
+        } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
+            throw new NotImplementedException("소셜로그인 구현 완료 후에 작업해야됨!");
         }
-        return authenticatedUser;
+        else {
+            throw new RuntimeException("cannot resolve login member!");
+        }
+
+        //return authenticatedMember;
     }
 }
