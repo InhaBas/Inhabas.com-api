@@ -4,6 +4,10 @@ plugins {
     id 'java-library'
 }
 
+springBoot {
+    mainClass = 'com.inhabas.api.ApiApplication'
+}
+
 repositories {
     mavenCentral()
 }
@@ -88,6 +92,11 @@ project(':auth-module') {
         api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
     }
+}
+
+project(':file-server') {
+    bootJar {enabled = false}
+    jar {enabled = false}
 }
 
 
