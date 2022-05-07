@@ -40,6 +40,9 @@ public class Member {
     @Embedded
     private IbasInformation ibasInformation;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @Builder
     public Member(Integer id, String name, String phone, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
@@ -63,10 +66,13 @@ public class Member {
         return this.email.getValue();
     }
 
+    public boolean isDeleted() {
+        return this.isDeleted;
+    }
+
     public void setRole(Role role) {
         this.ibasInformation.setRole(role);
     }
-
 
     public void addTeam(MemberTeam team) {
         this.ibasInformation.addTeam(team);
@@ -105,9 +111,13 @@ public class Member {
         return this.schoolInformation.getMemberType() == MemberType.BACHELOR;
     }
 
+    public boolean isCompleteToSignUp() {
+        return this.ibasInformation.isCompleteToSignUp();
+    }
 
-
-
+    public void finishSignUp() {
+        this.ibasInformation.finishSignUp();
+    }
 }
 
 

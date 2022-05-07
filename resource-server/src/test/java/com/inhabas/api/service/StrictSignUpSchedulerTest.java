@@ -4,7 +4,6 @@ import com.inhabas.api.domain.signup.SignUpSchedule;
 import com.inhabas.api.domain.signup.SignUpScheduleRepository;
 import com.inhabas.api.service.signup.SignUpSchedulerStrict;
 import com.inhabas.api.dto.signUp.SignUpScheduleDto;
-import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -16,6 +16,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = Role.NOT_APPROVED_MEMBER;
+
     private final MemberRepository memberRepository;
     private final MemberDuplicationChecker duplicationChecker;
 
@@ -64,6 +66,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ContactDto getChiefContact() {
         try {
             Member chief = memberRepository.searchByRoleLimit(Role.Chief, 1).get(0);
@@ -71,5 +74,13 @@ public class MemberServiceImpl implements MemberService {
         } catch (IndexOutOfBoundsException e) {
             return new ContactDto("", "", "");
         }
+    }
+
+    @Override
+    @Transactional
+    public void finishSignUp(Integer memberId) {
+        Member member = findById(memberId);
+        member.finishSignUp();
+        this.changeRole(memberId, DEFAULT_ROLE_AFTER_FINISH_SIGNUP);
     }
 }

@@ -1,10 +1,10 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.ContactDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.member.MemberTeamService;
-import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

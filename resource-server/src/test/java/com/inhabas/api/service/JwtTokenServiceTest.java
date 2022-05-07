@@ -1,14 +1,13 @@
 package com.inhabas.api.service;
 
+import com.inhabas.api.auth.domain.token.RefreshToken;
+import com.inhabas.api.auth.domain.token.RefreshTokenNotFoundException;
+import com.inhabas.api.auth.domain.token.RefreshTokenRepository;
+import com.inhabas.api.auth.domain.token.TokenDto;
+import com.inhabas.api.auth.service.TokenService;
+import com.inhabas.api.auth.utils.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import com.inhabas.api.security.domain.RefreshToken;
-import com.inhabas.api.security.domain.RefreshTokenNotFoundException;
-import com.inhabas.api.security.domain.RefreshTokenRepository;
-import com.inhabas.api.security.domain.TokenService;
-import com.inhabas.api.security.jwtUtils.InvalidJwtTokenException;
-import com.inhabas.api.security.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.security.jwtUtils.TokenDto;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +59,7 @@ public class JwtTokenServiceTest {
     @Test
     public void reissueAccessTokenTest() {
         //given
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         given(request.getHeader(anyString())).willReturn("Bearer " + refreshTokenString);
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
 
@@ -74,7 +73,7 @@ public class JwtTokenServiceTest {
     @Test
     public void refreshTokenNotFoundExceptionTest() {
         //given
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         given(request.getHeader(anyString())).willReturn("Bearer " + refreshTokenString);
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(false);
 
@@ -89,7 +88,7 @@ public class JwtTokenServiceTest {
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
 
-        String refreshTokenString = tokenProvider.createJwtToken(1, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
+        String refreshTokenString = tokenProvider.createJwtToken(1, 21, String.valueOf(Role.BASIC_MEMBER), null).getRefreshToken();
         int length = refreshTokenString.length();
         String corruptedToken = refreshTokenString.substring(0, length - 3) + "corruptChar" + refreshTokenString.substring(length - 3);
         given(request.getHeader(anyString())).willReturn("Bearer " + corruptedToken);

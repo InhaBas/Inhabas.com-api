@@ -1,0 +1,116 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java-library'
+}
+
+springBoot {
+    mainClass = 'com.inhabas.api.ApiApplication'
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+
+
+    apply plugin: 'java-library'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'com.inhabas'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
+    }
+
+    dependencies {
+        // query dsl
+        annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+        implementation 'com.querydsl:querydsl-jpa'
+
+        annotationProcessor(
+                'org.projectlombok:lombok',
+                'org.springframework.boot:spring-boot-configuration-processor',
+                'jakarta.persistence:jakarta.persistence-api',
+                'jakarta.annotation:jakarta.annotation-api',
+        )
+
+        implementation (
+                'org.springframework.boot:spring-boot-starter-web',
+                'org.springframework.boot:spring-boot-starter-data-jpa',
+                'org.springframework.boot:spring-boot-starter-validation',
+                'org.springdoc:springdoc-openapi-ui:1.6.0',
+
+                // cloud config
+                'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
+                'org.springframework.boot:spring-boot-starter-actuator:2.6.2',
+                'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0',
+        )
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        compileOnly 'org.projectlombok:lombok'
+
+
+        runtimeOnly(
+                'org.mariadb.jdbc:mariadb-java-client',
+                'com.h2database:h2'
+        )
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+}
+
+project(':auth-module') {
+    bootJar {enabled = false}
+    jar {enabled = true}
+
+    dependencies {
+        // jwt
+        api 'io.jsonwebtoken:jjwt-api:0.11.2'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+                // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+                //'org.bouncycastle:bcprov-jdk15on:1.60',
+                'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
+
+        // security
+        api 'org.springframework.boot:spring-boot-starter-security'
+        api 'org.springframework.boot:spring-boot-starter-oauth2-client'
+        api 'javax.xml.bind:jaxb-api'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+}
+
+project(':file-server') {
+    bootJar {enabled = false}
+    jar {enabled = false}
+}
+
+
+project(':resource-server') {
+    dependencies {
+        api project(':auth-module')
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    clean {
+        delete file('src/main/generated')
+    }
+
+    task cleanGeneratedDir(type: Delete) {
+        delete file('src/main/generated')
+    }
+}

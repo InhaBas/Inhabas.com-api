@@ -1,15 +1,12 @@
 package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
-import com.inhabas.api.security.argumentResolver.AuthUserArgumentResolver;
-import com.inhabas.api.security.domain.AuthUser;
-import com.inhabas.api.security.domain.AuthUserDetail;
 import com.inhabas.api.service.contest.ContestBoardService;
-import com.inhabas.security.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.testConfig.DefaultWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +35,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
