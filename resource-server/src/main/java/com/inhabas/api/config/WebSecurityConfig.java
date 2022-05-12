@@ -1,6 +1,5 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.config.AuthenticateEndPointUrlProperties;
 import com.inhabas.api.auth.utils.jwtUtils.InvalidJwtTokenHandler;
 import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationProcessingFilter;
 import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
@@ -30,8 +29,6 @@ public class WebSecurityConfig {
     @RequiredArgsConstructor
     @Profile({"production"})
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
-
-        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         /** 소셜 로그인 api <br><br>
          *
@@ -64,9 +61,6 @@ public class WebSecurityConfig {
                         .and()
                     .authorizeRequests(request ->
                             request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                    .antMatchers(
-                                        authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
-                                        authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
                     );
         }
@@ -79,7 +73,6 @@ public class WebSecurityConfig {
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
-        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {

@@ -1,6 +1,8 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.config.AuthenticateEndPointUrlProperties;
+import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
+import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import com.inhabas.api.auth.utils.jwtUtils.InvalidJwtTokenHandler;
 import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationProcessingFilter;
 import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
@@ -25,7 +27,9 @@ public class WebSecurityConfig_dev {
     @Profile({"local", "dev"})
     public static class OAuth2AuthenticationApi extends WebSecurityConfigurerAdapter {
 
-        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
+        private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+        private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+        private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
         /** 소셜 로그인 api <br><br>
          *
@@ -50,17 +54,26 @@ public class WebSecurityConfig_dev {
             http
                     .antMatcher("/login/**")
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         .and()
                     .csrf()
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         .and()
                     .cors().and()
+                    .oauth2Login()
+                        .authorizationEndpoint()
+                            .baseUri("/login/oauth2/authorization")
+                            .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                            .and()
+//                        .userInfoEndpoint()
+//                            .userService(customOAuth2UserService)
+//                            .and()
+                        .failureHandler(oauth2AuthenticationFailureHandler)
+                        .successHandler(oauth2AuthenticationSuccessHandler)
+                        .and()
+
                     .authorizeRequests(request ->
                             request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                                    .antMatchers(
-                                            authenticateEndPointUrlProperties.getOauth2SuccessHandleUrl(),
-                                            authenticateEndPointUrlProperties.getOauth2FailureHandleUrl()).hasRole("USER")
                                     .anyRequest().permitAll()
                     );
         }
@@ -75,7 +88,6 @@ public class WebSecurityConfig_dev {
     public static class JwtAuthenticationApi extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
-        private final AuthenticateEndPointUrlProperties authenticateEndPointUrlProperties;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
