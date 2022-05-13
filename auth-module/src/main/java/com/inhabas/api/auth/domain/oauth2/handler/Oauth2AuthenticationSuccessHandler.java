@@ -1,14 +1,13 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
-import com.inhabas.api.auth.domain.AuthProperties;
-import com.inhabas.api.auth.domain.oauth2.BadRequestException;
+import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.exception.UnauthorizedRedirectUrlException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
@@ -19,7 +18,6 @@ import java.util.Optional;
 
 import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
-@Component
 @RequiredArgsConstructor
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -50,9 +48,13 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<String> redirectUri = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
-        // 허가된 redirect_uri 가 아님. (불법적인 시도)
         if (notAuthorized(redirectUri)) {
-            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+            /* 여기서 AuthenticationException 이 발생하면 예외는 AbstractAuthenticationProcessingFilter.doFilter 에서 처리된다.
+             *   - AbstractAuthenticationProcessingFilter.doFilter 안에서 try~ catch~ 에서 잡힘.
+             *   -    -> AbstractAuthenticationProcessingFilter.unsuccessfulAuthentication()
+             *   -    -> Oauth2AuthenticationFailureHandler().onAuthenticationFailure()
+             * */
+            throw new UnauthorizedRedirectUrlException();
         }
 
         String targetUrl = redirectUri.orElse(authProperties.getOauth2().getDefaultRedirectUri());

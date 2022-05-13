@@ -1,13 +1,11 @@
-package com.inhabas.api.auth.domain;
+package com.inhabas.api.auth;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @ConfigurationProperties(prefix = "auth")
 public class AuthProperties {
 
@@ -47,7 +45,8 @@ public class AuthProperties {
                         // Only validate host and port. Let the clients use different paths if they want to
                         URI authorizedURI = URI.create(authorizedRedirectUri);
                         return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-                                && authorizedURI.getPort() == clientRedirectUri.getPort();
+                                && authorizedURI.getPort() == clientRedirectUri.getPort()
+                                && authorizedURI.getScheme().equalsIgnoreCase(clientRedirectUri.getScheme());
                     });
         }
     }

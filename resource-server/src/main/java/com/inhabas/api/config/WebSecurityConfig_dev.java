@@ -71,7 +71,6 @@ public class WebSecurityConfig_dev {
                         .failureHandler(oauth2AuthenticationFailureHandler)
                         .successHandler(oauth2AuthenticationSuccessHandler)
                         .and()
-
                     .authorizeRequests(request ->
                             request.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                                     .anyRequest().permitAll()

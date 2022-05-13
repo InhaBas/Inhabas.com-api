@@ -3,7 +3,6 @@ package com.inhabas.api.auth.domain.oauth2.cookie;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
  * 따라서 Oauth2AuthorizationRequest 를 쿠키에 저장.
  * @see org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
  */
-@Component
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
