@@ -17,10 +17,6 @@ import java.util.Optional;
 
 import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
-/**
- * default url 을 지정하면, 해당 url 로 리다이렉트.
- * 지정하지 않으면 401 응답.
- */
 @RequiredArgsConstructor
 public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 

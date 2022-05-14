@@ -5,20 +5,19 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHan
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AuthConfig {
+@RequiredArgsConstructor
+public class AuthBeansConfig {
+
+    private final AuthProperties authProperties;
 
     @Bean
     public HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository() {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
-    }
-
-    @Bean
-    public AuthProperties authProperties() {
-        return new AuthProperties();
     }
 
     @Bean
@@ -29,12 +28,12 @@ public class AuthConfig {
     @Bean
     public Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
         return new Oauth2AuthenticationSuccessHandler(
-                this.tokenProvider(), this.authProperties(), this.httpCookieOAuth2AuthorizationRequestRepository());
+                this.tokenProvider(), this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
     }
 
     @Bean
     public Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler() {
         return new Oauth2AuthenticationFailureHandler(
-                this.authProperties(), this.httpCookieOAuth2AuthorizationRequestRepository());
+                this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
     }
 }

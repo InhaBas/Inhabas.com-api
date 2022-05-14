@@ -42,7 +42,7 @@ public class AuthProperties {
             return this.authorizedRedirectUris
                     .stream()
                     .anyMatch(authorizedRedirectUri -> {
-                        // Only validate host and port. Let the clients use different paths if they want to
+                        // scheme, host, port 가 동일해야 함.
                         URI authorizedURI = URI.create(authorizedRedirectUri);
                         return authorizedURI.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
                                 && authorizedURI.getPort() == clientRedirectUri.getPort()
