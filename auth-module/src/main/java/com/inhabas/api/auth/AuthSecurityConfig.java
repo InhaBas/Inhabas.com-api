@@ -1,5 +1,6 @@
 package com.inhabas.api.auth;
 
+import com.inhabas.api.auth.domain.oauth2.CustomOAuth2UserService;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
@@ -19,6 +20,7 @@ import org.springframework.web.cors.CorsUtils;
 @Profile({"!test"}) // 테스트에는 포함시키지 않음.
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final CustomOAuth2UserService customOAuth2UserService;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -63,9 +65,9 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                         .baseUri("/login/oauth2/authorization")
                         .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
                         .and()
-//                        .userInfoEndpoint()
-//                            .userService(customOAuth2UserService)
-//                            .and()
+                        .userInfoEndpoint()
+                            .userService(customOAuth2UserService)
+                            .and()
                     .failureHandler(oauth2AuthenticationFailureHandler)
                     .successHandler(oauth2AuthenticationSuccessHandler)
                     .and()

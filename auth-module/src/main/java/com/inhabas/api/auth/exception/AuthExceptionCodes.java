@@ -49,4 +49,6 @@ public interface AuthExceptionCodes {
      * unauthorized.
      */
     String UNAUTHORIZED_REDIRECT_URI = "unauthorized_redirect_uri";
+
+    String UNSUPPORTED_OAUTH2_PROVIDER = "unsupported_oauth2_provider";
 }
