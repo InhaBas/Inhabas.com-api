@@ -1,9 +1,9 @@
 package com.inhabas.api.domain;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.socialAccount.NoSuchSocialAccountException;
 import com.inhabas.api.auth.domain.socialAccount.SocialAccount;
 import com.inhabas.api.auth.domain.socialAccount.SocialAccountRepository;
-import com.inhabas.api.auth.domain.socialAccount.type.Provider;
 import com.inhabas.api.auth.domain.socialAccount.type.UID;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberSocialAccount;
@@ -38,7 +38,7 @@ public class MemberSocialAccountRepositoryTest {
     @BeforeEach
     public void setUp() {
         member = em.persist(MEMBER1);
-        socialaccount = socialAccountRepository.save(new SocialAccount(Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(),""));
+        socialaccount = socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(),""));
         mappingObj = memberSocialAccountRepository.save(new MemberSocialAccount(member, socialaccount));
     }
 
@@ -47,7 +47,7 @@ public class MemberSocialAccountRepositoryTest {
     @Test
     public void returnWithMappingObject() {
 
-        SocialAccount socialAccount = socialAccountRepository.findWithMemberIdByUidAndProvider(new UID("1234"), Provider.GOOGLE)
+        SocialAccount socialAccount = socialAccountRepository.findWithMemberIdByUidAndProvider(new UID("1234"), OAuth2Provider.GOOGLE)
                 .orElseThrow(NoSuchSocialAccountException::new);
 
         //assertTrue(Hibernate.isInitialized(socialAccount.getMemberSocialAccount()));

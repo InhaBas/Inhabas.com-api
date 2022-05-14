@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.wrapper;
+package com.inhabas.api.auth.domain.socialaccount.wrapper;
 
 import com.inhabas.api.auth.domain.socialAccount.type.UID;
 import org.junit.jupiter.api.DisplayName;

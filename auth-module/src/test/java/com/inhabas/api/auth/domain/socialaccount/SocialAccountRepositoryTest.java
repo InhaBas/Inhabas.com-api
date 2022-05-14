@@ -1,8 +1,8 @@
-package com.inhabas.api.auth.domain.data;
+package com.inhabas.api.auth.domain.socialaccount;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.socialAccount.SocialAccount;
 import com.inhabas.api.auth.domain.socialAccount.SocialAccountRepository;
-import com.inhabas.api.auth.domain.socialAccount.type.Provider;
 import com.inhabas.api.auth.domain.socialAccount.type.UID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,16 +28,16 @@ public class SocialAccountRepositoryTest {
     public void findBySocialAccountByUidAndProvider() {
         //given
         SocialAccount socialAccount =
-                new SocialAccount(Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
+                new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
         socialAccountRepository.save(socialAccount);
 
         //when
-        SocialAccount find = socialAccountRepository.findByUidAndProvider(new UID("1234"), Provider.GOOGLE)
+        SocialAccount find = socialAccountRepository.findByUidAndProvider(new UID("1234"), OAuth2Provider.GOOGLE)
                 .orElseThrow(EntityNotFoundException::new);
 
         //then
         assertThat(find.getUid()).isEqualTo("1234");
-        assertThat(find.getProvider()).isEqualTo(Provider.GOOGLE);
+        assertThat(find.getProvider()).isEqualTo(OAuth2Provider.GOOGLE);
     }
 
     @Test
@@ -45,11 +45,11 @@ public class SocialAccountRepositoryTest {
     public void failToSaveTheSameSocialAccount() {
         //given
         SocialAccount socialAccount =
-                new SocialAccount(Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
+                new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
         socialAccountRepository.save(socialAccount);
 
         //when
         assertThrows(DataIntegrityViolationException.class,
-                () -> socialAccountRepository.save(new SocialAccount(Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "")));
+                () -> socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "")));
     }
 }

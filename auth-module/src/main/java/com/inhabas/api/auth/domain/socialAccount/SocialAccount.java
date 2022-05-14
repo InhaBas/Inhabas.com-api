@@ -1,7 +1,10 @@
 package com.inhabas.api.auth.domain.socialAccount;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.socialAccount.type.UID;
-import com.inhabas.api.auth.domain.socialAccount.type.Provider;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,7 @@ public class SocialAccount {
     private Integer id;
 
     @Enumerated(value = EnumType.STRING)
-    private Provider provider;
+    private OAuth2Provider provider;
 
     @Embedded
     private UID uid;
@@ -36,7 +39,7 @@ public class SocialAccount {
     @Column(length = 1000)
     private String profileImageUrl;
 
-    public SocialAccount(Provider provider, UID uid, LocalDateTime lastLogin, LocalDateTime dateJoined, String extraData) {
+    public SocialAccount(OAuth2Provider provider, UID uid, LocalDateTime lastLogin, LocalDateTime dateJoined, String extraData) {
         this.provider = provider;
         this.uid = uid;
         this.lastLogin = lastLogin;
@@ -52,7 +55,7 @@ public class SocialAccount {
         return uid.getValue();
     }
 
-    public Provider getProvider() {
+    public OAuth2Provider getOAuth2Provider() {
         return provider;
     }
 
