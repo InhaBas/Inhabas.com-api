@@ -38,7 +38,7 @@ public class MemberSocialAccountRepositoryTest {
     @BeforeEach
     public void setUp() {
         member = em.persist(MEMBER1);
-        socialaccount = socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(),""));
+        socialaccount = socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, "1234", LocalDateTime.now(), LocalDateTime.now(),""));
         mappingObj = memberSocialAccountRepository.save(new MemberSocialAccount(member, socialaccount));
     }
 

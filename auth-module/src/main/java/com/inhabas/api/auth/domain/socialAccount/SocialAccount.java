@@ -8,7 +8,6 @@ import com.inhabas.api.auth.domain.socialAccount.type.UID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -31,6 +30,7 @@ public class SocialAccount {
 
     private LocalDateTime lastLogin;
 
+    // 최초 로그인 날짜
     private LocalDateTime dateJoined;
 
     @Lob
@@ -39,17 +39,25 @@ public class SocialAccount {
     @Column(length = 1000)
     private String profileImageUrl;
 
-    public SocialAccount(OAuth2Provider provider, UID uid, LocalDateTime lastLogin, LocalDateTime dateJoined, String extraData) {
+    public SocialAccount(OAuth2Provider provider, String uid, LocalDateTime lastLogin, LocalDateTime dateJoined, String extraData) {
         this.provider = provider;
-        this.uid = uid;
+        this.uid = new UID(uid);
         this.lastLogin = lastLogin;
         this.dateJoined = dateJoined;
         this.extraData = extraData;
     }
 
-    public SocialAccount(OAuth2UserRequest request) {
+    public SocialAccount(OAuth2UserInfo userInfo) {
+        this.provider = userInfo.getProvider();
+        this.uid =  new UID(userInfo.getId());
+        this.lastLogin = LocalDateTime.now();
+        this.dateJoined = LocalDateTime.now();
 
+        try {
+            this.extraData = new ObjectMapper().writeValueAsString(userInfo.getExtraData());
+        } catch (JsonProcessingException ignored) {}
     }
+
 
     public String getUid() {
         return uid.getValue();

@@ -2,6 +2,8 @@ package com.inhabas.api.auth.domain.oauth2;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
+import com.inhabas.api.auth.domain.socialAccount.SocialAccountService;
+import com.inhabas.api.auth.exception.InvalidUserInfoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -13,6 +15,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private SocialAccountService socialAccountService;
+
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -23,12 +27,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // 필수값 받아왔는지 확인
         if(!oAuth2UserInfo.validateNecessaryFields()) {
-            //throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+            throw new InvalidUserInfoException();
         }
 
         // db 에 소셜 계정 정보 update
-
-
+        socialAccountService.updateSocialAccountInfo(oAuth2UserInfo);
 
         // 기존 회원인지 확인.
 

@@ -50,5 +50,17 @@ public interface AuthExceptionCodes {
      */
     String UNAUTHORIZED_REDIRECT_URI = "unauthorized_redirect_uri";
 
+    /**
+     * {@code unsupported_oauth2_provider} - 지원하지 않는 소셜로그인
+     */
     String UNSUPPORTED_OAUTH2_PROVIDER = "unsupported_oauth2_provider";
+
+
+    /**
+     * {@code invalid_user_info} - 인증에 필수적인 정보가 Oauth provider 로부터 전달되지 않았음.
+     * 사용자가 개인정보 제공에 비동의했거나, 제대로 계정 정보를 설정하지 않은 경우 발생
+     */
+    String INVALID_USER_INFO = "invalid_user_info";
+
+
 }

@@ -28,7 +28,7 @@ public class SocialAccountRepositoryTest {
     public void findBySocialAccountByUidAndProvider() {
         //given
         SocialAccount socialAccount =
-                new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
+                new SocialAccount(OAuth2Provider.GOOGLE, "1234", LocalDateTime.now(), LocalDateTime.now(), "");
         socialAccountRepository.save(socialAccount);
 
         //when
@@ -45,11 +45,11 @@ public class SocialAccountRepositoryTest {
     public void failToSaveTheSameSocialAccount() {
         //given
         SocialAccount socialAccount =
-                new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "");
+                new SocialAccount(OAuth2Provider.GOOGLE, "1234", LocalDateTime.now(), LocalDateTime.now(), "");
         socialAccountRepository.save(socialAccount);
 
         //when
         assertThrows(DataIntegrityViolationException.class,
-                () -> socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, new UID("1234"), LocalDateTime.now(), LocalDateTime.now(), "")));
+                () -> socialAccountRepository.save(new SocialAccount(OAuth2Provider.GOOGLE, "1234", LocalDateTime.now(), LocalDateTime.now(), "")));
     }
 }
