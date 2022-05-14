@@ -1,8 +1,8 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.utils.jwtUtils.InvalidJwtTokenHandler;
-import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationProcessingFilter;
-import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenHandler;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProcessingFilter;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

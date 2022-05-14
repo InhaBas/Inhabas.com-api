@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2;
 
-import com.inhabas.api.auth.exception.UnsupportedOAuth2ProviderException;
+import com.inhabas.api.auth.domain.exception.UnsupportedOAuth2ProviderException;
 
 import java.util.Arrays;
 

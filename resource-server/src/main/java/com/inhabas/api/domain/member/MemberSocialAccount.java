@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.member;
 
-import com.inhabas.api.auth.domain.socialAccount.SocialAccount;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccount;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

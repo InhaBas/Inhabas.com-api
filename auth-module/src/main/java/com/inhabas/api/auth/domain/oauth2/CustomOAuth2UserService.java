@@ -2,8 +2,8 @@ package com.inhabas.api.auth.domain.oauth2;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
-import com.inhabas.api.auth.domain.socialAccount.SocialAccountService;
-import com.inhabas.api.auth.exception.InvalidUserInfoException;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccountService;
+import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

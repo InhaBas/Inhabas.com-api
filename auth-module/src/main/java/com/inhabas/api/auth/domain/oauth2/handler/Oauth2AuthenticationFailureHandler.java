@@ -3,7 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.handler;
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.inhabas.api.auth.exception.UnauthorizedRedirectUrlException;
+import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;

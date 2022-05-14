@@ -4,7 +4,7 @@ import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRe
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.auth.utils.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

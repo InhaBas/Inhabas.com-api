@@ -4,7 +4,7 @@ import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.auth.exception.UnauthorizedRedirectUrlException;
+import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

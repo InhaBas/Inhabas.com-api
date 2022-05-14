@@ -1,6 +1,6 @@
 package com.inhabas.annotataion;
 
-import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;

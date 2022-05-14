@@ -1,10 +1,10 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.socialAccount.NoSuchSocialAccountException;
-import com.inhabas.api.auth.domain.socialAccount.SocialAccount;
-import com.inhabas.api.auth.domain.socialAccount.SocialAccountRepository;
-import com.inhabas.api.auth.domain.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.NoSuchSocialAccountException;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccount;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccountRepository;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberSocialAccount;
 import com.inhabas.api.domain.member.MemberSocialAccountRepository;

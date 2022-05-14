@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.utils.argumentResolver;
 
-import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
