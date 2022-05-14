@@ -1,5 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+
 import java.util.Map;
 
 
@@ -12,7 +14,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
     private static final String KEY_EXTRA_DATA = "kakao_account";
 
     public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
-        super(attributes);
+        super(OAuth2Provider.KAKAO, attributes);
     }
 
     @Override

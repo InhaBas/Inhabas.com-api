@@ -1,5 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+
 import java.util.Map;
 
 public class NaverOAuth2UserInfo extends OAuth2UserInfo {
@@ -11,7 +13,7 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     private static final String KEY_EXTRA_DATA = "response";
 
     public NaverOAuth2UserInfo(Map<String, Object> attributes) {
-        super(attributes);
+        super(OAuth2Provider.NAVER, attributes);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import org.springframework.util.StringUtils;
 
 import java.util.Map;
@@ -7,8 +8,13 @@ import java.util.Map;
 public abstract class OAuth2UserInfo {
 
     protected Map<String, Object> attributes;
-    public OAuth2UserInfo(Map<String, Object> attributes) {
+    protected OAuth2Provider provider;
+    public OAuth2UserInfo(OAuth2Provider provider, Map<String, Object> attributes) {
+        this.provider = provider;
         this.attributes = attributes;
+    }
+    public OAuth2Provider getProvider() {
+        return provider;
     }
     public Map<String, Object> getAttributes() {
         return attributes;
