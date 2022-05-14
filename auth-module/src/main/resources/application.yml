@@ -2,6 +2,13 @@ spring:
   config:
     activate:
       on-profile: local
+  output:
+    ansi:
+      enabled: always
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
 auth:
   oauth2:
     authorizedRedirectUris:

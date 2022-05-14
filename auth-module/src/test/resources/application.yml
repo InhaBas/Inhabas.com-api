@@ -1,4 +1,0 @@
-auth:
-  oauth2:
-    authorizedRedirectUris:
-      - https://www.inhabas.com
