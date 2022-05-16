@@ -69,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public ContactDto getChiefContact() {
         try {
-            Member chief = memberRepository.searchByRoleLimit(Role.Chief, 1).get(0);
+            Member chief = memberRepository.searchByRoleLimit(Role.CHIEF, 1).get(0);
             return new ContactDto(chief.getName(), chief.getPhone(), chief.getEmail());
         } catch (IndexOutOfBoundsException e) {
             return new ContactDto("", "", "");

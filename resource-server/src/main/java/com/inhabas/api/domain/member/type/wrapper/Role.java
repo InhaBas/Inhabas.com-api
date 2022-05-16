@@ -5,7 +5,7 @@ package com.inhabas.api.domain.member.type.wrapper;
  */
 public enum Role {
     ADMIN, // 사이트 관리자
-    Chief, // 회장
+    CHIEF, // 회장
     EXECUTIVES, // 회장단
     BASIC_MEMBER, // 일반회원
     DEACTIVATED_MEMBER, // 비활동회원

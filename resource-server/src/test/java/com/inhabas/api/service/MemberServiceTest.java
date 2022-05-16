@@ -174,7 +174,7 @@ public class MemberServiceTest {
                 .email("my@gmail.com")
                 .phone("010-0000-0000")
                 .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
-                .ibasInformation(new IbasInformation(Role.Chief))
+                .ibasInformation(new IbasInformation(Role.CHIEF))
                 .build();
         given(memberRepository.searchByRoleLimit(any(), anyInt())).willReturn(List.of(chief));
 
