@@ -4,6 +4,7 @@ import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ public class SocialAccountServiceImpl implements SocialAccountService {
     private final SocialAccountRepository socialAccountRepository;
 
     @Override
+    @Transactional
     public void updateSocialAccountInfo(OAuth2UserInfo oAuth2UserInfo) {
 
         SocialAccount socialAccount = socialAccountRepository
