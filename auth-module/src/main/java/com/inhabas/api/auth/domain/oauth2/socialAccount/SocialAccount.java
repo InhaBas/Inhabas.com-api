@@ -52,7 +52,7 @@ public class SocialAccount {
         this.uid =  new UID(userInfo.getId());
         this.lastLogin = LocalDateTime.now();
         this.dateJoined = LocalDateTime.now();
-
+        this.profileImageUrl = userInfo.getImageUrl();
         try {
             this.extraData = new ObjectMapper().writeValueAsString(userInfo.getExtraData());
         } catch (JsonProcessingException ignored) {}

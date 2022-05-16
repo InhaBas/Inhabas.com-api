@@ -3,6 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.userInfo;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
@@ -10,7 +11,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "nickname";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_IMAGE_URL = "profile_image";
+    private static final String KEY_IMAGE_URL = "profile_image_url";
     private static final String KEY_EXTRA_DATA = "kakao_account";
 
     public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
@@ -20,7 +21,7 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
     @Override
     public String getId() {
 
-        return (String) attributes.get(KEY_ID);
+        return Objects.toString(attributes.get(KEY_ID));
     }
 
     @Override

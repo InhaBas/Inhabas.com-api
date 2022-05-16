@@ -3,6 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.userInfo;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
@@ -18,7 +19,7 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
     @Override
     public String getId() {
-        return (String) this.getExtraData().get(KEY_ID);
+        return Objects.toString(this.getExtraData().get(KEY_ID));
     }
 
     @Override
