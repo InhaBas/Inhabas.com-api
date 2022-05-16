@@ -16,13 +16,14 @@ import java.util.*;
 public class MemberAuthorityProvider implements UserAuthorityProvider {
 
     private final MemberSocialAccountRepository memberSocialAccountRepository;
+    private static final String ROLE_PREFIX = "ROLE_";
+    private static final String TEAM_PREFIX = "TEAM_";
 
     @Override
     @Transactional
     public Collection<SimpleGrantedAuthority> determineAuthorities(OAuth2UserInfo oAuth2UserInfo) {
 
         // provider 와 id 로 조회되는 memberSocialAccount 가 있으면 기존회원임.
-        // member - memberSocialAccount 조인 쿼리 -> 역할, 팀, 회원 id..?
         UID uid = new UID(oAuth2UserInfo.getId());
         Optional<MemberSocialAccount> memberSocialAccount =
                 memberSocialAccountRepository.findByUidAndProviderWithRoleAndTeam(uid, oAuth2UserInfo.getProvider());
@@ -33,12 +34,12 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
             Collection<Team> teamList = member.getTeamList();
 
             return new HashSet<>() {{
-                add(new SimpleGrantedAuthority(role.toString()));
-                teamList.forEach(team -> add(new SimpleGrantedAuthority(team.getName())));
+                add(new SimpleGrantedAuthority(ROLE_PREFIX + role.toString()));
+                teamList.forEach(team -> add(new SimpleGrantedAuthority(TEAM_PREFIX + team.getName())));
             }};
 
         } else {
-            return Collections.singleton(new SimpleGrantedAuthority(Role.ANONYMOUS.toString()));
+            return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + Role.ANONYMOUS));
         }
     }
 }
