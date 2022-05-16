@@ -20,11 +20,16 @@ public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRep
     public Optional<MemberSocialAccount> findByUidAndProviderWithRoleAndTeam(UID uid, OAuth2Provider provider) {
 
         return Optional.ofNullable(jpaQueryFactory
-                .from(memberSocialAccount)
+                .selectFrom(memberSocialAccount)
                 .join(memberSocialAccount.member).fetchJoin()
                 .leftJoin(QMemberTeam.memberTeam).on(memberEqMemberTeam()).fetchJoin()
                 .leftJoin(team).on(memberTeamEqTeam()).fetchJoin()
-                        .select(memberSocialAccount).fetchOne());
+                .where(eqSocialAccount(uid, provider))
+                .fetchOne());
+    }
+
+    private BooleanExpression eqSocialAccount(UID uid, OAuth2Provider provider) {
+        return memberSocialAccount.uid.eq(uid).and(memberSocialAccount.provider.eq(provider));
     }
 
     private BooleanExpression memberTeamEqTeam() {
