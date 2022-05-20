@@ -1,7 +1,7 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenHandler;
-import com.inhabas.api.auth.domain.token.jwtUtils.TokenAuthenticationProcessingFilter;
+import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
+import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import com.inhabas.api.domain.member.type.wrapper.Role;

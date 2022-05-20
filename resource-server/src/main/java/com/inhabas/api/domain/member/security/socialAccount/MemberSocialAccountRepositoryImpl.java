@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.security.socialAccount;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
-import static com.inhabas.api.domain.member.QMemberSocialAccount.memberSocialAccount;
 import static com.inhabas.api.domain.member.QTeam.team;
+import static com.inhabas.api.domain.member.security.socialAccount.QMemberSocialAccount.memberSocialAccount;
 
 @RequiredArgsConstructor
 public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRepositoryCustom {

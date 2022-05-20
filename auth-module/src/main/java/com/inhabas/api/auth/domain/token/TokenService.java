@@ -2,6 +2,7 @@ package com.inhabas.api.auth.domain.token;
 
 import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenNotFoundException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

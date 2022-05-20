@@ -3,6 +3,7 @@ package com.inhabas.api.auth.domain.token;
 import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenNotFoundException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

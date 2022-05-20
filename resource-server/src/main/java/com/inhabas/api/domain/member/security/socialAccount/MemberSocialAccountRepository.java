@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.security.socialAccount;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

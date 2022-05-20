@@ -4,6 +4,8 @@ import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.NoSuchSocialAccountException;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.domain.member.*;
+import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccount;
+import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.testConfig.DefaultDataJpaTest;
 import org.hibernate.Hibernate;
 import org.junit.jupiter.api.DisplayName;

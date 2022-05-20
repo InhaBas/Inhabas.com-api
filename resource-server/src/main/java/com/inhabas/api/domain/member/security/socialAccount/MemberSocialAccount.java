@@ -1,7 +1,8 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.security.socialAccount;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.wrapper.Email;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class MemberSocialAccount {
     @JoinColumn(name = "user_id")
     private Member member;
 
+    @Embedded
     private Email email;
 
     @Embedded
@@ -29,6 +31,14 @@ public class MemberSocialAccount {
     @Column(name = "provider")
     @Enumerated(EnumType.STRING)
     private OAuth2Provider provider;
+
+    public UID getUid() {
+        return uid;
+    }
+
+    public Email getEmail() {
+        return email;
+    }
 
 
     public MemberSocialAccount(Member member, String email, String uid, OAuth2Provider provider) {
