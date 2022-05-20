@@ -20,7 +20,7 @@ public class IbasInformation {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<MemberTeam> teamList = new ArrayList<>();
 
     @Column(name = "joined")

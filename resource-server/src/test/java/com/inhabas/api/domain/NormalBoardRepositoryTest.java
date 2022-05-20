@@ -38,7 +38,7 @@ public class NormalBoardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Member saveMember = em.persist(MEMBER1);
+        Member saveMember = em.persist(MEMBER1());
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
         Menu NoticeBoardMenu = em.persist(
                 Menu.builder()
@@ -69,7 +69,7 @@ public class NormalBoardRepositoryTest {
     @DisplayName("저장 후 반환값이 처음과 같다.")
     @Test
     public void save() {
-        Member saveMember = em.find(Member.class, MEMBER1.getId());
+        Member saveMember = em.find(Member.class, MEMBER1().getId());
 
         //when
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
@@ -108,7 +108,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void update() {
         //given
-        Member saveMember = em.find(Member.class, MEMBER1.getId());
+        Member saveMember = em.find(Member.class, MEMBER1().getId());
         boardRepository.save(FREE_BOARD);
 
         //when

@@ -37,21 +37,21 @@ public class MemberRepositoryTest {
     @Test
     public void save() {
         //when
-        Member saveMember = memberRepository.save(MEMBER1);
+        Member saveMember = memberRepository.save(MEMBER1());
 
         //then
         assertThat(saveMember)
                 .usingRecursiveComparison()
                 .ignoringFields("ibasInformation.joined")
-                .isEqualTo(MEMBER1);
+                .isEqualTo(MEMBER1());
     }
 
     @DisplayName("학번으로 사용자를 찾을 수 있다.")
     @Test
     public void find_by_id() {
         //given
-        Member save1 = memberRepository.save(MEMBER1);
-        Member save2 = memberRepository.save(MEMBER2);
+        Member save1 = memberRepository.save(MEMBER1());
+        Member save2 = memberRepository.save(MEMBER2());
 
         //when
         Optional<Member> find1 = memberRepository.findById(save1.getId());
@@ -66,8 +66,8 @@ public class MemberRepositoryTest {
     @Test
     public void findAll() {
         //given
-        Member save1 = memberRepository.save(MEMBER1);
-        Member save2 = memberRepository.save(MEMBER2);
+        Member save1 = memberRepository.save(MEMBER1());
+        Member save2 = memberRepository.save(MEMBER2());
 
         //when
         List<Member> members = memberRepository.findAll();
@@ -81,14 +81,14 @@ public class MemberRepositoryTest {
     @Test
     public void update() {
         //given
-        Member member = memberRepository.save(MEMBER1);
+        Member member = memberRepository.save(MEMBER1());
 
         //when
-        Member param = new Member(MEMBER1.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2), member.getIbasInformation());
+        Member param = new Member(member.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2), member.getIbasInformation());
         Member updated = memberRepository.save(param);
 
         //then
-        Member findMember = memberRepository.findById(MEMBER1.getId()).orElse(null);
+        Member findMember = memberRepository.findById(member.getId()).orElse(null);
         assertThat(findMember).isEqualTo(updated);
     }
 
@@ -96,13 +96,13 @@ public class MemberRepositoryTest {
     @Test
     public void 같은_전화번호_저장_예외() {
         //given
-        memberRepository.save(MEMBER1);
+        Member member = memberRepository.save(MEMBER1());
 
         //when
         Member samePhoneMember = Member.builder()
                 .id(99999999)
                 .name("홍길동")
-                .phone(MEMBER1.getPhone()) // 같은 전화번호
+                .phone(member.getPhone()) // 같은 전화번호
                 .email("my@gmail.com")
                 .picture("")
                 .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
@@ -170,7 +170,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateNoneFields() {
         //given
-        memberRepository.save(MEMBER1);
+        memberRepository.save(MEMBER1());
 
         //then
         InvalidDataAccessApiUsageException e = assertThrows(InvalidDataAccessApiUsageException.class,
@@ -183,7 +183,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFieldsOnlyDuplicatedId() {
         //given
-        memberRepository.save(MEMBER1);
+        memberRepository.save(MEMBER1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1234"));
@@ -196,7 +196,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFieldsOnlyDuplicatedPhoneNumber() {
         //given
-        memberRepository.save(MEMBER1);
+        memberRepository.save(MEMBER1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171111, "010-1111-1111"));
@@ -209,7 +209,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFields() {
         //given
-        memberRepository.save(MEMBER1);
+        memberRepository.save(MEMBER1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1111"));
@@ -222,7 +222,7 @@ public class MemberRepositoryTest {
     @Test
     public void searchByRole() {
         //given
-        Member member = memberRepository.save(MEMBER1);
+        Member member = memberRepository.save(MEMBER1());
 
         //when
         List<Member> members = memberRepository.searchAllByRole(member.getIbasInformation().getRole());

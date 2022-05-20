@@ -3,8 +3,8 @@ package com.inhabas.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
-import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.LoginMember;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Answer;
@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -295,11 +296,12 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 회원가입을_위한_답변을_저장한다() throws Exception {
         //given
+        Member member = MEMBER1();
         ArrayList<Answer> submittedAnswers = new ArrayList<>() {{
-            add(new Answer(MemberTest.MEMBER1, 1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
-            add(new Answer(MemberTest.MEMBER1, 2, "어렸을적부터 빅데이터를 발가락으로 전처리하며 놀았습니다."));
-            add(new Answer(MemberTest.MEMBER1, 3, "외주를 받아 진행했던 적이 있는데, 아주 잘 되어 스타트업 창업을 진행했습니다."));
-            add(new Answer(MemberTest.MEMBER1, 4, "이 동아리에 입부한다면, 말하는 대로 코딩해주는 인공지능 모델을 개발하고 싶습니다."));
+            add(new Answer(member, 1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
+            add(new Answer(member, 2, "어렸을적부터 빅데이터를 발가락으로 전처리하며 놀았습니다."));
+            add(new Answer(member, 3, "외주를 받아 진행했던 적이 있는데, 아주 잘 되어 스타트업 창업을 진행했습니다."));
+            add(new Answer(member, 4, "이 동아리에 입부한다면, 말하는 대로 코딩해주는 인공지능 모델을 개발하고 싶습니다."));
         }};
 
         //when then

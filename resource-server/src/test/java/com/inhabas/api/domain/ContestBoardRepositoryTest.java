@@ -40,7 +40,7 @@ public class ContestBoardRepositoryTest {
     @BeforeEach
     public void settingContestBoard(){
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        Member savedMember = em.persist(MEMBER1);
+        Member savedMember = em.persist(MEMBER1());
         menu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)

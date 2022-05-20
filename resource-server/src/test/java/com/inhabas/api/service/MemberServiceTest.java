@@ -1,6 +1,9 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.*;
+import com.inhabas.api.domain.member.DuplicatedMemberFieldException;
+import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberDuplicationChecker;
+import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -17,9 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -74,7 +76,6 @@ public class MemberServiceTest {
     @Test
     public void 같은_학번_저장_예외() {
         //given
-        Integer sameStudentId = MEMBER1.getId();
         given(memberDuplicationChecker.isDuplicatedMember(any(Member.class))).willReturn(true);
 
         //when

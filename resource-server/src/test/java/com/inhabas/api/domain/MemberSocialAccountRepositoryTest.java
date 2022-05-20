@@ -35,7 +35,7 @@ public class MemberSocialAccountRepositoryTest {
         //given
         Team IT = em.persist(new Team("IT 부서"));
         Team EXEC = em.persist(new Team("운영"));
-        Member member = em.persist(MEMBER1);
+        Member member = em.persist(MEMBER1());
         em.persist(new MemberTeam(member, IT));
         em.persist(new MemberTeam(member, EXEC));
         memberSocialAccountRepository.save(new MemberSocialAccount(member, "my@gmail.com", "1234", OAuth2Provider.GOOGLE));
@@ -56,7 +56,7 @@ public class MemberSocialAccountRepositoryTest {
     @Test
     public void getMemberIdBySocialAccount() {
         //given
-        Member member = em.persist(MEMBER1);
+        Member member = em.persist(MEMBER1());
         memberSocialAccountRepository.save(new MemberSocialAccount(member, "my@gmail.com", "1234", OAuth2Provider.GOOGLE));
 
         //when
@@ -64,6 +64,6 @@ public class MemberSocialAccountRepositoryTest {
 
         //then
         assertTrue(id.isPresent());
-        assertThat(id.get()).isEqualTo(MEMBER1.getId());
+        assertThat(id.get()).isEqualTo(member.getId());
     }
 }

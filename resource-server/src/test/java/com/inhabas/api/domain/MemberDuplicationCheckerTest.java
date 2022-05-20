@@ -1,6 +1,5 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberDuplicationCheckerImpl;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
@@ -36,7 +35,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(false);
 
         //when
-        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(MEMBER1));
+        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
         then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
     }
 
@@ -48,7 +47,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(true);
 
         //when
-        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(MEMBER1));
+        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
         then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
     }
 
