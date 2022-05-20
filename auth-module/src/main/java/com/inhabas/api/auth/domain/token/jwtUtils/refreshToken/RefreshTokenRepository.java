@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.token;
+package com.inhabas.api.auth.domain.token.jwtUtils.refreshToken;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

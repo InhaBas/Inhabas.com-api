@@ -1,9 +1,9 @@
 package com.inhabas.api.auth.domain.token;
 
 import io.jsonwebtoken.JwtException;
+import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
 
 public interface TokenProvider {
 
@@ -13,5 +13,21 @@ public interface TokenProvider {
 
     TokenDto reissueAccessTokenUsing(String refreshToken) throws JwtException;
 
-    TokenDto createJwtToken(Integer memberId, Integer muId, String role, Set<String> teams);
+    /**
+     * @param authentication the result of OAuth 2.0 authentication
+     * @return jwt token string
+     */
+    String createAccessToken(Authentication authentication);
+
+    /**
+     * Some transactions may occur here whenever need to save refresh tokens.
+     * @param authentication the result of OAuth 2.0 authentication
+     * @return jwt token string
+     */
+    String createRefreshToken(Authentication authentication);
+
+    /**
+     * @return get {@code expires_in} response parameter value of the access token in seconds
+     */
+    Long getExpiration();
 }

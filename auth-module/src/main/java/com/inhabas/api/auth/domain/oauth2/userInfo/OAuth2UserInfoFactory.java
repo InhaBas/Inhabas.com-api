@@ -2,6 +2,7 @@ package com.inhabas.api.auth.domain.oauth2.userInfo;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.exception.UnsupportedOAuth2ProviderException;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.Map;
 
@@ -25,5 +26,12 @@ public interface OAuth2UserInfoFactory {
         }
 
         return userInfo;
+    }
+
+    static OAuth2UserInfo getOAuth2UserInfo(OAuth2AuthenticationToken auth2AuthenticationToken) {
+        return OAuth2UserInfoFactory.getOAuth2UserInfo(
+                auth2AuthenticationToken.getAuthorizedClientRegistrationId(),
+                auth2AuthenticationToken.getPrincipal().getAttributes()
+        );
     }
 }

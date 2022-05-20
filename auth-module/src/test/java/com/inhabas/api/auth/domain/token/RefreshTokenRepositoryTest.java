@@ -1,5 +1,7 @@
 package com.inhabas.api.auth.domain.token;
 
+import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

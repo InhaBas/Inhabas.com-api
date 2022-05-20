@@ -3,10 +3,12 @@ package com.inhabas.api.auth.domain.oauth2.handler;
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -41,7 +43,8 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     /**
      * @param authentication 인증 완료된 결과
-     * @return 인증 결과를 사용해서 access 토큰을 발급하고, 쿠키에 저장되어 있던 redirect_uri(프론트에서 적어준 것)와 합쳐서 반환. 명시되지 않으면 default 값 적용
+     * @return 인증 결과를 사용해서 access 토큰을 발급하고, 쿠키에 저장되어 있던 redirect_uri(프론트에서 적어준 것)와 합쳐서 반환.
+     * 명시되지 않으면 설정파일({@link AuthProperties})에 명시된 default redirect url 값 적용
      */
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -58,9 +61,14 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         String targetUrl = redirectUri.orElse(authProperties.getOauth2().getDefaultRedirectUri());
-//        String token = tokenProvider.createToken(authentication);
+        String imageUrl = OAuth2UserInfoFactory.getOAuth2UserInfo((OAuth2AuthenticationToken) authentication)
+                .getImageUrl();
+
         return UriComponentsBuilder.fromUriString(targetUrl)
-//                .queryParam("token", token)
+                .queryParam("access_token", tokenProvider.createAccessToken(authentication))
+                .queryParam("refresh_token", tokenProvider.createRefreshToken(authentication))
+                .queryParam("expires_in", tokenProvider.getExpiration())
+                .queryParam("image_url", imageUrl)
                 .build().toUriString();
     }
 

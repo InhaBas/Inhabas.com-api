@@ -7,6 +7,7 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHan
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -26,14 +27,14 @@ public class AuthBeansConfig {
     }
 
     @Bean
-    public TokenProvider tokenProvider() {
-        return new JwtTokenProvider();
+    public TokenProvider tokenProvider(RefreshTokenRepository refreshTokenRepository) {
+        return new JwtTokenProvider(refreshTokenRepository);
     }
 
     @Bean
-    public Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler() {
+    public Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler(RefreshTokenRepository refreshTokenRepository) {
         return new Oauth2AuthenticationSuccessHandler(
-                this.tokenProvider(), this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
+                this.tokenProvider(refreshTokenRepository), this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
     }
 
     @Bean
