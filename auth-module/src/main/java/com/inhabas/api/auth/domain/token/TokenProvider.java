@@ -3,13 +3,11 @@ package com.inhabas.api.auth.domain.token;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.core.Authentication;
 
-import javax.servlet.http.HttpServletRequest;
-
 public interface TokenProvider {
 
-    TokenDecodedInfo authenticate(String token) throws JwtException;
+    boolean validate(String token);
 
-    String resolveToken(HttpServletRequest request) ;
+    TokenAuthenticationResult decode(String token);
 
     TokenDto reissueAccessTokenUsing(String refreshToken) throws JwtException;
 

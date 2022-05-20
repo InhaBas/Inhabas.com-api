@@ -1,8 +1,6 @@
 package com.inhabas.api.auth.utils.argumentResolver;
 
-import com.inhabas.api.auth.utils.argumentResolver.LoginMemberArgumentResolver;
-import com.inhabas.api.auth.utils.argumentResolver.ResolvedAuthenticationResult;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -56,11 +54,11 @@ public class ArgumentResolverTest {
     public void successToInjectJwtTokenAuthenticatedAuthUserIntoArguments() {
         //given
         //기존 회원 정보
-        Integer memberId = 1;
+        String uid = "12943275193";
 
         // jwt 토큰 인증 결과
-        JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(memberId, Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+        JwtAuthenticationResult authentication =
+                new JwtAuthenticationResult(uid, "google", Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -72,7 +70,7 @@ public class ArgumentResolverTest {
 
         //then
         assertThat(authenticatedUser).isNotNull();
-        assertThat(authenticatedUser.getMemberId()).isEqualTo(memberId);
+        assertThat(authenticatedUser.getMemberId()).isEqualTo(uid);
         assertThat(authenticatedUser.getRoleString()).isEqualTo("ROLE_MEMBER");
     }
 
@@ -127,12 +125,11 @@ public class ArgumentResolverTest {
     @Test
     public void successToInjectJwtTokenIntegerIdIntoArguments() {
         //given
-        //기존 회원 정보
-        Integer memberId = 1;
+        String uid = "12943275193";
 
         // jwt 토큰 인증 결과
-        JwtAuthenticationToken authentication =
-                new JwtAuthenticationToken(memberId, Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+        JwtAuthenticationResult authentication =
+                new JwtAuthenticationResult(uid, "google", Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -144,7 +141,7 @@ public class ArgumentResolverTest {
 
         // then
         Assertions.assertThat(profileId).isNotNull();
-        Assertions.assertThat(profileId).isEqualTo(memberId);
+        Assertions.assertThat(profileId).isEqualTo(uid);
         Assertions.assertThat(profileId).isInstanceOf(Integer.class);
     }
 

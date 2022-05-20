@@ -1,13 +1,15 @@
 package com.inhabas.api.auth;
 
-import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.DefaultUserAuthorityProvider;
-import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
+import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.DefaultUserAuthorityProvider;
+import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
+import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
+import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +45,6 @@ public class AuthBeansConfig {
                 this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
     }
 
-    @Bean
     @ConditionalOnMissingBean
     public UserAuthorityProvider userAuthorityService() {
         return new DefaultUserAuthorityProvider();
@@ -53,4 +54,10 @@ public class AuthBeansConfig {
     public OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository() {
         return new HttpSessionOAuth2AuthorizedClientRepository();
     }
+
+    @ConditionalOnMissingBean
+    public UserPrincipalService userPrincipalService() {
+        return new DefaultUserPrincipalService();
+    }
+
 }

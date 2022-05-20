@@ -2,6 +2,7 @@ package com.inhabas.api.domain.member;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.domain.member.QMemberTeam;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,15 @@ public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRep
                 .leftJoin(QMemberTeam.memberTeam).on(memberEqMemberTeam()).fetchJoin()
                 .leftJoin(team).on(memberTeamEqTeam()).fetchJoin()
                 .where(eqSocialAccount(uid, provider))
+                .fetchOne());
+    }
+
+    @Override
+    public Optional<Integer> findMemberIdByUidAndProvider(UID uid, OAuth2Provider provider) {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(memberSocialAccount.member.id)
+                .where(eqSocialAccount(uid, provider))
+                .from(memberSocialAccount)
                 .fetchOne());
     }
 

@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.token;
 
-import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import org.junit.jupiter.api.Disabled;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtTokenProviderTest {
@@ -36,12 +36,12 @@ public class JwtTokenProviderTest {
         List<SimpleGrantedAuthority> authorities =
                 List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"), new SimpleGrantedAuthority("TEAM_IT"));
         Map<String, Object> attributes = new HashMap<>() {{
-                put("sub", "1249846925629348");
-                put("name", "유동현");
-                put("picture", "blahblah");
-                put("email", "my@gmail.com");
-                put("locale", "ko");
-            }};
+            put("sub", "1249846925629348");
+            put("name", "유동현");
+            put("picture", "blahblah");
+            put("email", "my@gmail.com");
+            put("locale", "ko");
+        }};
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
                 new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
 
@@ -57,50 +57,40 @@ public class JwtTokenProviderTest {
     }
 
 
-
     @DisplayName("토큰 생성 시 인증결과객체는 필수로 주어져야 한다.")
     @Test
     public void nullMemberIdTokenTest() {
-        //when
+
         assertThrows(AssertionError.class,
-                ()-> tokenProvider.createAccessToken(null));
+                () -> tokenProvider.createAccessToken(null));
     }
 
-    @Disabled
+
     @DisplayName("토큰을 정상적으로 decode")
     @Test
     public void decodeToken() {
         //given
-        Integer memberId = 1;
-        Integer memberSocialAccountId = 21;
-        Set<String> teams = new HashSet<>() {{
-            add("운영팀");
-            add("IT팀");}
-        };
+        List<SimpleGrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"), new SimpleGrantedAuthority("TEAM_IT"));
+        Map<String, Object> attributes = new HashMap<>() {{
+            put("sub", "1249846925629348");
+            put("name", "유동현");
+            put("picture", "blahblah");
+            put("email", "my@gmail.com");
+            put("locale", "ko");
+        }};
+        OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
+                new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
 
-//        TokenDto newJwtToken = tokenProvider.createAccessToken(memberId, memberSocialAccountId, "회장단", teams);
-//        String accessToken = newJwtToken.getAccessToken();
-//        String refreshToken = newJwtToken.getRefreshToken();
-//
-//        //when
-//        JwtTokenDecodedInfo accessTokenDecodeInfo = tokenProvider.authenticate(accessToken);
-//        JwtTokenDecodedInfo refreshTokenDecodeInfo = tokenProvider.authenticate(refreshToken);
-//
-//        //then
-//        //access token
-//        assertThat(accessTokenDecodeInfo.getMemberId()).isEqualTo(memberId);
-//        assertThat(accessTokenDecodeInfo.getMemberSocialAccountId()).isEqualTo(memberSocialAccountId);
-//        assertThat(accessTokenDecodeInfo.getGrantedAuthorities())
-//                .extracting("role")
-//                .contains("ROLE_회장단")
-//                .containsAll(teams);
-//        //refresh token
-//        assertThat(refreshTokenDecodeInfo.getMemberId()).isEqualTo(memberId);
-//        assertThat(refreshTokenDecodeInfo.getMemberSocialAccountId()).isEqualTo(memberSocialAccountId);
-//        assertThat(refreshTokenDecodeInfo.getGrantedAuthorities())
-//                .extracting("role")
-//                .contains("ROLE_회장단")
-//                .containsAll(teams);
+        String accessToken = tokenProvider.createAccessToken(authentication);
+
+        //when
+        JwtAuthenticationResult authenticationToken = tokenProvider.decode(accessToken);
+
+        //then
+        assertThat(authenticationToken.getProvider()).isEqualTo("google");
+        assertThat(authenticationToken.getUid()).isEqualTo("1249846925629348");
+        assertThat(authenticationToken.getAuthorities()).isEqualTo(authorities);
     }
 
     @Disabled
@@ -110,9 +100,11 @@ public class JwtTokenProviderTest {
         //given
         Integer userId = 1;
         Integer memberSocialAccountId = 21;
-        Set<String> teams = new HashSet<>() {{
-            add("운영팀");
-            add("IT팀");}
+        Set<String> teams = new HashSet<>() {
+            {
+                add("운영팀");
+                add("IT팀");
+            }
         };
 
 //        TokenDto newJwtToken = tokenProvider.createAccessToken(userId, memberSocialAccountId, "회장단", teams);
@@ -140,14 +132,32 @@ public class JwtTokenProviderTest {
 //                .containsAll(teams);
     }
 
-    @Disabled
-    @DisplayName("refresh 토큰이 유효하지 않아서 재발급에 실패한다.")
+    @DisplayName("유효하지 않은 토큰 string 을 검사한다.")
     @Test
-    public void failToIssueNewAccessToken() {
+    public void validateInvalidToken() {
 
-        assertThrows(InvalidJwtTokenException.class,
-                ()-> tokenProvider.reissueAccessTokenUsing("invalid-token-string"));
-
+        assertFalse(tokenProvider.validate("invalid-token-string"));
     }
 
+    @DisplayName("유효한 토큰 string 을 검사한다.")
+    @Test
+    public void validateValidToken() {
+        //given
+        List<SimpleGrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"), new SimpleGrantedAuthority("TEAM_IT"));
+        Map<String, Object> attributes = new HashMap<>() {{
+            put("sub", "1249846925629348");
+            put("name", "유동현");
+            put("picture", "blahblah");
+            put("email", "my@gmail.com");
+            put("locale", "ko");
+        }};
+        OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
+                new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
+
+        String accessToken = tokenProvider.createAccessToken(authentication);
+
+        //then
+        assertTrue(tokenProvider.validate(accessToken));
+    }
 }

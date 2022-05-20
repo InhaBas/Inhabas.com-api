@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,18 +24,18 @@ public class TokenService {
 
     @Transactional(readOnly = true)
     public TokenDto reissueAccessToken(HttpServletRequest request) throws RefreshTokenNotFoundException, InvalidJwtTokenException {
-
-        String resolvedRefreshTokenString = tokenProvider.resolveToken(request);
-
-        if (Objects.isNull(resolvedRefreshTokenString)) {
-            throw new NoTokenInRequestHeaderException();
-        }
-
-        if (doesNotExist(resolvedRefreshTokenString)) {
-            throw new RefreshTokenNotFoundException();
-        }
-
-        return tokenProvider.reissueAccessTokenUsing(resolvedRefreshTokenString);
+        return TokenDto.builder().build();
+//        String resolvedRefreshTokenString = tokenProvider.resolveToken(request);
+//
+//        if (Objects.isNull(resolvedRefreshTokenString)) {
+//            throw new NoTokenInRequestHeaderException();
+//        }
+//
+//        if (doesNotExist(resolvedRefreshTokenString)) {
+//            throw new RefreshTokenNotFoundException();
+//        }
+//
+//        return tokenProvider.reissueAccessTokenUsing(resolvedRefreshTokenString);
     }
 
     private boolean doesNotExist(String resolvedRefreshTokenString) {

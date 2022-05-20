@@ -1,8 +1,9 @@
 package com.inhabas.api.config;
 
 import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenHandler;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProcessingFilter;
+import com.inhabas.api.auth.domain.token.jwtUtils.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
@@ -27,6 +28,7 @@ public class WebSecurityConfig {
     public static class ApiSecurityForProduction extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
+        private final UserPrincipalService userPrincipalService;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -39,9 +41,10 @@ public class WebSecurityConfig {
                     .csrf()
                         .disable()
 
-                    .addFilterAfter(new JwtAuthenticationProcessingFilter(
+                    .addFilterAfter(new TokenAuthenticationProcessingFilter(
                             jwtTokenProvider,
-                            new InvalidJwtTokenHandler()), LogoutFilter.class
+                            new InvalidJwtTokenHandler(),
+                            userPrincipalService), LogoutFilter.class
                     )
 
                     .authorizeRequests()
@@ -61,6 +64,7 @@ public class WebSecurityConfig {
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
+        private final UserPrincipalService userPrincipalService;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -72,9 +76,10 @@ public class WebSecurityConfig {
                     .cors().and()
                     .csrf().disable()
 
-                    .addFilterAfter(new JwtAuthenticationProcessingFilter(
+                    .addFilterAfter(new TokenAuthenticationProcessingFilter(
                             jwtTokenProvider,
-                            new InvalidJwtTokenHandler()), LogoutFilter.class
+                            new InvalidJwtTokenHandler(),
+                            userPrincipalService), LogoutFilter.class
                     )
 
                     .authorizeRequests()

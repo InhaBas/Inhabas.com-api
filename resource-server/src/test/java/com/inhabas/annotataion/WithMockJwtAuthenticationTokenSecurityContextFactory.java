@@ -1,6 +1,7 @@
 package com.inhabas.annotataion;
 
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;
@@ -37,8 +38,8 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
                     .build();
         }
 
-        JwtAuthenticationToken token
-                = new JwtAuthenticationToken(principalInfo.memberId(), Collections.singleton(new SimpleGrantedAuthority(role)));
+        TokenAuthenticationResult token
+                = new JwtAuthenticationResult(principalInfo.uid(), principalInfo.provider(), Collections.singleton(new SimpleGrantedAuthority(role)));
         token.setAuthenticated(true);
 
         context.setAuthentication(token);
