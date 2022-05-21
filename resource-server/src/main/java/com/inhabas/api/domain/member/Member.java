@@ -7,11 +7,16 @@ import com.inhabas.api.domain.member.type.wrapper.Email;
 import com.inhabas.api.domain.member.type.wrapper.Name;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique_phone", columnNames = "phone")})
@@ -64,6 +69,20 @@ public class Member {
 
     public String getEmail() {
         return this.email.getValue();
+    }
+
+    public Role getRole() {
+        return this.ibasInformation.getRole();
+    }
+
+    /**
+     * N+1 쿼리 유의하면서 사용할 것.
+     * @return {@code UnmodifiableList}
+     */
+    public Collection<Team> getTeamList() {
+        return this.ibasInformation.getTeamList().stream()
+                .map(MemberTeam::getTeam)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public boolean isDeleted() {

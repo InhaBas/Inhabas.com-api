@@ -1,6 +1,5 @@
 package com.inhabas.api.auth.utils.argumentResolver;
 
-import com.inhabas.api.auth.domain.AuthenticationResult;
 import lombok.Getter;
 
 

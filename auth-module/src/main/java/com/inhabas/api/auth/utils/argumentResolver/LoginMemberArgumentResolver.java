@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.utils.argumentResolver;
 
-import com.inhabas.api.auth.utils.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -54,7 +54,7 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     private ResolvedAuthenticationResult resolveAuthentication(Authentication authentication) {
         ResolvedAuthenticationResult authenticatedMember = null;
 
-        if (authentication instanceof JwtAuthenticationToken) { // jwt 토큰 인증 이후
+        if (authentication instanceof JwtAuthenticationResult) { // jwt 토큰 인증 이후
             //Integer memberId = (Integer) authentication.getPrincipal();
             throw new NotImplementedException("jwt 인증 수정 후 작업해야함.");
 

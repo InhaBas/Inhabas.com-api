@@ -2,6 +2,7 @@ package com.inhabas.api.domain;
 
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
@@ -42,9 +43,9 @@ public class BaseEntityTest {
     @Test
     public void createdTimeTest() {
         //given
-        em.persist(MEMBER1);
+        Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(MEMBER1)
+                .writtenBy(member)
                 .inMenu(freeBoardMenu);
 
         //when
@@ -58,15 +59,15 @@ public class BaseEntityTest {
     @Test
     public void updatedTimeTest() {
         //given
-        em.persist(MEMBER1);
+        Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(MEMBER1)
+                .writtenBy(member)
                 .inMenu(freeBoardMenu);
         em.persist(board);
 
         //when
         NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
-                .writtenBy(MEMBER1)
+                .writtenBy(member)
                 .inMenu(freeBoardMenu);
         em.merge(param);
         em.flush();em.clear();

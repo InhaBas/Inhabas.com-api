@@ -33,8 +33,8 @@ public class CommentRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        writer = em.persist(MEMBER1);
-        commentWriter = em.persist(MEMBER2);
+        writer = em.persist(MEMBER1());
+        commentWriter = em.persist(MEMBER2());
 
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
         Menu freeBoardMenu = em.persist(

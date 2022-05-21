@@ -1,7 +1,5 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.auth.domain.token.NoTokenInRequestHeaderException;
-import com.inhabas.api.auth.domain.token.RefreshTokenNotFoundException;
 import com.inhabas.api.domain.signup.SignUpNotAvailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,19 +22,6 @@ public class ExceptionController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(NoTokenInRequestHeaderException.class)
-    public ResponseEntity<String> corruptedTokenException(final NoTokenInRequestHeaderException e) {
-        log.warn("no token in header: ", e);
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(RefreshTokenNotFoundException.class)
-    public ResponseEntity<String> corruptedTokenException(final RefreshTokenNotFoundException e) {
-        log.warn("invalid refresh token: ", e);
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
-    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> notAllowedException(final AccessDeniedException e) {
