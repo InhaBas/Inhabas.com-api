@@ -15,25 +15,3 @@ auth:
       - http://localhost:8080
 
     default-redirect-uri: http://localhost:8080
----
-spring:
-  config:
-    activate:
-      on-profile: dev
-auth:
-  oauth2:
-    authorizedRedirectUris:
-      - https://dev.inhabas.com
-
-    default-redirect-uri: https://dev.inhabas.com
----
-spring:
-  config:
-    activate:
-      on-profile: production
-auth:
-  oauth2:
-    authorizedRedirectUris:
-      - https://www.inhabas.com
-
-    default-redirect-uri: https://www.inhabas.com
