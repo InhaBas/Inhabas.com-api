@@ -75,7 +75,7 @@ public class WebSecurityConfig {
     @Order(1)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"local", "dev", "test"})
+    @Profile({"local", "dev", "default_mvc_test"})
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
         private final JwtTokenProvider jwtTokenProvider;
