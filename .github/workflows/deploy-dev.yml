@@ -27,9 +27,9 @@ jobs:
         script: |
           cd ${{ secrets.IBAS_DEV_PATH }} && git clone git@github.com:InhaBas/Inhabas.com-api.git
           cd ./Inhabas.com-api && git restore . && git checkout dev && git pull
-          chmod u+x gradlew && ./gradlew build
+          chmod u+x gradlew && ./gradlew build -x build
           
-          kill -9 $(cat resource-server/application.pid)
+          kill -9 $(cat application.pid)
           nohup java -jar -Dspring.profiles.active=dev resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
           
           exit
