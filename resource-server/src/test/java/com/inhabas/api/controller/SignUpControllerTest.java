@@ -3,7 +3,7 @@ package com.inhabas.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
-import com.inhabas.api.domain.member.LoginMember;
+import com.inhabas.api.domain.member.security.LoginMember;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;

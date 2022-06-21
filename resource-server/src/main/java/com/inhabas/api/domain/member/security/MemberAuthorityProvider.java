@@ -1,8 +1,10 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.security;
 
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
+import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccount;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.api.domain.member.type.wrapper.Role;
