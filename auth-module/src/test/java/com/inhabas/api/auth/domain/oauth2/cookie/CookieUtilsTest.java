@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 import javax.servlet.http.Cookie;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -82,9 +81,10 @@ public class CookieUtilsTest {
 
     @DisplayName("성공적으로 serialize 한다.")
     @Test
-    public void serializingTest() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void serializingTest() throws InvocationTargetException, InstantiationException, IllegalAccessException, NoSuchMethodException {
         //reflection
-        Constructor<?> constructor = OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructors()[1];
+        Constructor<?> constructor =
+                OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(AuthorizationGrantType.class);
         constructor.setAccessible(true);
 
         //given
@@ -107,10 +107,11 @@ public class CookieUtilsTest {
 
     @DisplayName("성공적으로 deserialize 한다.")
     @Test
-    public void deserializingTest() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void deserializingTest() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
 
         //reflection
-        Constructor<?> constructor = OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructors()[1];
+        Constructor<?> constructor =
+                OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(AuthorizationGrantType.class);
         constructor.setAccessible(true);
 
         //given

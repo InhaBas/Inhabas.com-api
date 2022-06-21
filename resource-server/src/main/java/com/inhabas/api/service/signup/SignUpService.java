@@ -1,6 +1,6 @@
 package com.inhabas.api.service.signup;
 
-import com.inhabas.api.domain.member.LoginMember;
+import com.inhabas.api.domain.member.security.LoginMember;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;

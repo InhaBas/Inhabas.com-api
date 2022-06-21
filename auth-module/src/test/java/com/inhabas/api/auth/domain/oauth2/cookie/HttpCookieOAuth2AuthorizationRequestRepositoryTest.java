@@ -28,7 +28,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     @DisplayName("Request 쿠키에서 OAuth2AuthorizationRequest 객체를 복원한다.")
     @Test
-    public void loadAuthorizationRequestTest() {
+    public void loadAuthorizationRequestTest() throws NoSuchMethodException {
         //given
         OAuth2AuthorizationRequest oAuth2AuthorizationRequest = createOAuth2AuthorizationRequest();
         Cookie cookie = new Cookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, CookieUtils.serialize(oAuth2AuthorizationRequest));
@@ -71,7 +71,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     @DisplayName("OAuth2AuthorizationRequest 를 성공적으로 쿠키로 저장한다.")
     @Test
-    public void saveAuthorizationRequestTest() {
+    public void saveAuthorizationRequestTest() throws NoSuchMethodException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -90,7 +90,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     @DisplayName("OAuth2AuthorizationRequest 를 쿠키로 저장할 때, redirect_url 도 쿠키로 저장한다.")
     @Test
-    public void saveAuthorizationRequestWithRedirectUrlTest() {
+    public void saveAuthorizationRequestWithRedirectUrlTest() throws NoSuchMethodException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -113,7 +113,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     @DisplayName("OAuth2AuthorizationRequest 를 성공적으로 쿠키에서 삭제한다. (redirectUrl 쿠키는 삭제되지 않는다.)")
     @Test
-    public void removeAuthorizationRequestTest() {
+    public void removeAuthorizationRequestTest() throws NoSuchMethodException {
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -162,9 +162,10 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     }
 
 
-    private OAuth2AuthorizationRequest createOAuth2AuthorizationRequest() {
+    private OAuth2AuthorizationRequest createOAuth2AuthorizationRequest() throws NoSuchMethodException {
         //reflection
-        Constructor<?> constructor = OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructors()[1];
+        Constructor<?> constructor =
+                OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(AuthorizationGrantType.class);
         constructor.setAccessible(true);
 
         //construct

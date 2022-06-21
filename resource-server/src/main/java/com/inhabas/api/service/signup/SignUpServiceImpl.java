@@ -1,7 +1,7 @@
 package com.inhabas.api.service.signup;
 
 import com.inhabas.api.auth.utils.argumentResolver.ResolvedAuthenticationResult;
-import com.inhabas.api.domain.member.LoginMember;
+import com.inhabas.api.domain.member.security.LoginMember;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberDuplicationChecker;
 import com.inhabas.api.domain.member.type.IbasInformation;
