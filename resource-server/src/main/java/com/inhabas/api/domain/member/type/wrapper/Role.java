@@ -10,6 +10,6 @@ public enum Role {
     BASIC_MEMBER, // 일반회원
     DEACTIVATED_MEMBER, // 비활동회원
     NOT_APPROVED_MEMBER, // 가입 후 아직 승인되지 않은 회원
-    ANONYMOUS // 익명.
+    ANONYMOUS // 익명. 유일하게 회원가입을 시도할 수 있는 권한. 즉 상위의 권한으로 회원가입 시도 불가
 }
 
