@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles("test") // for disable cloud config & security filter chain
+@ActiveProfiles("no_security_mvc_test") // for disable cloud config & security filter chain
 @WebMvcTest(excludeAutoConfiguration = {SecurityAutoConfiguration.class, OAuth2ClientAutoConfiguration.class}) // disable default spring-security configuration
 @Import(InterceptorConfigMockBean.class)
 public @interface NoSecureWebMvcTest {

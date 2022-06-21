@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles("test") // for disable cloud config & security filter chain
+@ActiveProfiles("default_mvc_test") // for disable cloud config & security filter chain
 @WebMvcTest(excludeAutoConfiguration = {OAuth2ClientAutoConfiguration.class}) // disable autoload OAuth2-Client-Components from test properties
 @Import({InterceptorConfigMockBean.class, DefaultRoleHierarchy.class, TestConfigurationForSecurity.class})
 public @interface DefaultWebMvcTest {

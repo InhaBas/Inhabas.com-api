@@ -14,7 +14,7 @@ management:
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: default_mvc_test, no_security_mvc_test
   cloud:
     discovery:
       enabled: false
