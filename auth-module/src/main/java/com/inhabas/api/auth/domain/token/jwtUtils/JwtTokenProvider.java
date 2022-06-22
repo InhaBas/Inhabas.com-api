@@ -1,10 +1,12 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
+import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -39,6 +40,7 @@ public class JwtTokenProvider implements TokenProvider {
     private static final Long REFRESH_TOKEN_VALID_MILLI_SECOND = 7 * 24 * 60 * 60 * 1000L; // 7 days
     private static final String PROVIDER = "provider";
     private static final String AUTHORITY = "authorities";
+    private static final String EMAIL = "email";
 
 
     @Override
@@ -67,8 +69,11 @@ public class JwtTokenProvider implements TokenProvider {
 
         assert authentication != null;
 
-        String uid  = ((DefaultOAuth2User) authentication.getPrincipal()).getName();
-        String provider = ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId();
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo((OAuth2AuthenticationToken) authentication);
+        String provider = oAuth2UserInfo.getProvider().toString();
+        String uid = oAuth2UserInfo.getId();
+        String email = oAuth2UserInfo.getEmail();
+
         List<String> authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -81,6 +86,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(uid)
                 .claim(PROVIDER, provider)
+                .claim(EMAIL, email)
                 .claim(AUTHORITY, authorities)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
@@ -117,12 +123,13 @@ public class JwtTokenProvider implements TokenProvider {
         Claims claims = this.parseClaims(token);
         String uid = claims.getSubject();
         String provider = claims.get(PROVIDER, String.class);
+        String email = claims.get(EMAIL, String.class);
         List<? extends GrantedAuthority> grantedAuthorities =
                 (List<SimpleGrantedAuthority>) claims.get(AUTHORITY, List.class).stream()
                         .map(authority-> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-        return new JwtAuthenticationResult(uid, provider, grantedAuthorities);
+        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
     }
 
 

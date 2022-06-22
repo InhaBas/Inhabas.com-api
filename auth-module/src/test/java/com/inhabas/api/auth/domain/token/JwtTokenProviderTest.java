@@ -88,7 +88,7 @@ public class JwtTokenProviderTest {
         JwtAuthenticationResult authenticationToken = tokenProvider.decode(accessToken);
 
         //then
-        assertThat(authenticationToken.getProvider()).isEqualTo("google");
+        assertThat(authenticationToken.getProvider()).isEqualTo("GOOGLE");
         assertThat(authenticationToken.getUid()).isEqualTo("1249846925629348");
         assertThat(authenticationToken.getAuthorities()).isEqualTo(authorities);
     }

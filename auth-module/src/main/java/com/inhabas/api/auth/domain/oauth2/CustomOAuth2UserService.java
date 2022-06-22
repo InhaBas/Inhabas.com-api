@@ -37,7 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // db 에 소셜 계정 정보 update
         socialAccountService.updateSocialAccountInfo(oAuth2UserInfo);
 
-        // 현재 로그인하려는 유저에 맞는 권한을 들고옴. # N+1 발생지점! 쿼리 고치기
+        // 현재 로그인하려는 유저에 맞는 권한을 들고옴.
         Collection<SimpleGrantedAuthority> authorities = userAuthorityProvider.determineAuthorities(oAuth2UserInfo);
 
         String nameAttributeKey = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint()

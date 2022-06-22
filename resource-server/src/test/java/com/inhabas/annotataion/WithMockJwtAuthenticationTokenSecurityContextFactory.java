@@ -25,6 +25,10 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
         String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
+        TokenAuthenticationResult token
+                = new JwtAuthenticationResult(principalInfo.uid(), principalInfo.provider(), principalInfo.email(), Collections.singleton(new SimpleGrantedAuthority(role)));
+        token.setAuthenticated(true);
+
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
 
             Member profile = Member.builder()
@@ -36,11 +40,8 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
                     .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGeneration(), principalInfo.memberType()))
                     .ibasInformation(new IbasInformation(principalInfo.memberRole()))
                     .build();
+            token.setPrincipal(profile);
         }
-
-        TokenAuthenticationResult token
-                = new JwtAuthenticationResult(principalInfo.uid(), principalInfo.provider(), Collections.singleton(new SimpleGrantedAuthority(role)));
-        token.setAuthenticated(true);
 
         context.setAuthentication(token);
         return context;

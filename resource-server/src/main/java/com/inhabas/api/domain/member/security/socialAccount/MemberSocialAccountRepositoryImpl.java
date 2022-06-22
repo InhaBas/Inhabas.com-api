@@ -18,18 +18,6 @@ public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRep
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<MemberSocialAccount> findByUidAndProviderWithRoleAndTeam(UID uid, OAuth2Provider provider) {
-
-        return Optional.ofNullable(jpaQueryFactory
-                .selectFrom(memberSocialAccount)
-                .join(memberSocialAccount.member).fetchJoin()
-                .leftJoin(QMemberTeam.memberTeam).on(memberEqMemberTeam()).fetchJoin()
-                .leftJoin(team).on(memberTeamEqTeam()).fetchJoin()
-                .where(eqSocialAccount(uid, provider))
-                .fetchOne());
-    }
-
-    @Override
     public Optional<Integer> findMemberIdByUidAndProvider(UID uid, OAuth2Provider provider) {
         return Optional.ofNullable(jpaQueryFactory
                 .select(memberSocialAccount.member.id)
@@ -40,13 +28,5 @@ public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRep
 
     private BooleanExpression eqSocialAccount(UID uid, OAuth2Provider provider) {
         return memberSocialAccount.uid.eq(uid).and(memberSocialAccount.provider.eq(provider));
-    }
-
-    private BooleanExpression memberTeamEqTeam() {
-        return QMemberTeam.memberTeam.team.id.eq(team.id);
-    }
-
-    private BooleanExpression memberEqMemberTeam() {
-        return memberSocialAccount.member.eq(QMemberTeam.memberTeam.member);
     }
 }
