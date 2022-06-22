@@ -19,7 +19,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,9 +71,9 @@ public class MemberAuthorityProviderTest {
     public void memberLoginTest() {
 
         given(memberPrincipalService.loadUserPrincipal(any())).willReturn(12171652);
-        given(member.getRole()).willReturn(Role.BASIC_MEMBER);
-        given(member.getTeamList()).willReturn(Arrays.asList(new Team("회계"), new Team("운영")));
-        given(memberRepository.findById(any())).willReturn(Optional.of(member));
+        MemberAuthorityProvider.RoleAndTeamDto roleAndTeamDto =
+                new MemberAuthorityProvider.RoleAndTeamDto(Role.BASIC_MEMBER, Arrays.asList(new Team("회계"), new Team("운영")));
+        given(memberRepository.fetchRoleAndTeamsByMemberId(any())).willReturn(roleAndTeamDto);
 
         //when
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
@@ -91,7 +90,8 @@ public class MemberAuthorityProviderTest {
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")
     public void cannotFindProfileMappedFromSocialAccount() {
         given(memberPrincipalService.loadUserPrincipal(any())).willReturn(12171652);
-        given(memberRepository.findById(any())).willReturn(Optional.empty());
+        given(memberRepository.fetchRoleAndTeamsByMemberId(any()))
+                .willReturn(new MemberAuthorityProvider.RoleAndTeamDto(null, null));
 
         //then
         Assertions.assertThrows(InvalidUserInfoException.class,

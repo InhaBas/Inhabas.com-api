@@ -1,12 +1,14 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.MemberTeam;
+import com.inhabas.api.domain.member.Team;
+import com.inhabas.api.domain.member.security.MemberAuthorityProvider;
+import com.inhabas.api.domain.member.type.IbasInformation;
+import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
-
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import com.inhabas.api.service.signup.NoQueryParameterException;
 import com.inhabas.testConfig.DefaultDataJpaTest;
@@ -231,6 +233,22 @@ public class MemberRepositoryTest {
         assertThat(members.size()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("Team 을 fetchJoin 한다.")
+    public void fetchJoinTeamTest() {
+        //given
+        Team IT = em.persist(new Team("IT 부서"));
+        Team EXEC = em.persist(new Team("운영팀"));
+        Member member = em.persist(MEMBER1());
+        em.persist(new MemberTeam(member, IT));
+        em.persist(new MemberTeam(member, EXEC));
 
+        //when
+        MemberAuthorityProvider.RoleAndTeamDto roleAndTeamDto = memberRepository.fetchRoleAndTeamsByMemberId(member.getId());
 
+        //then
+        assertThat(roleAndTeamDto.getTeams())
+                .extracting("name")
+                .contains("IT 부서", "운영팀");
+    }
 }

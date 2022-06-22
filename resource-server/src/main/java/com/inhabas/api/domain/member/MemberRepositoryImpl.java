@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.member;
 
+import com.inhabas.api.domain.member.security.MemberAuthorityProvider;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
@@ -12,8 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.inhabas.api.domain.member.QMember.member;
+import static com.inhabas.api.domain.member.QMemberTeam.memberTeam;
 
 @Repository
 @Transactional
@@ -21,6 +24,21 @@ import static com.inhabas.api.domain.member.QMember.member;
 public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public MemberAuthorityProvider.RoleAndTeamDto fetchRoleAndTeamsByMemberId(Integer memberId) {
+        Role role = queryFactory
+                .select(member.ibasInformation.role).from(member)
+                .where(member.id.eq(memberId))
+                .fetchOne();
+        List<Team> teams = queryFactory.selectFrom(memberTeam)
+                .innerJoin(memberTeam.team).fetchJoin()
+                .where(memberTeam.member.id.eq(memberId))
+                .fetch().stream().map(MemberTeam::getTeam)
+                .collect(Collectors.toList());
+
+        return new MemberAuthorityProvider.RoleAndTeamDto(role, teams);
+    }
 
     @Override
     public boolean isDuplicated(MemberDuplicationQueryCondition condition) {

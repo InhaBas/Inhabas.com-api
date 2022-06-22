@@ -5,7 +5,6 @@ import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityPro
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -14,10 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -40,10 +36,13 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
             return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + Role.ANONYMOUS));
         }
         else { // 기존회원이면,
-            Member member = memberRepository.findById(memberId) // fetch query 로 변경해야함.
-                    .orElseThrow(InvalidUserInfoException::new);
-            Role role = member.getRole();
-            Collection<Team> teamList = member.getTeamList();
+            RoleAndTeamDto roleAndTeamDto = memberRepository.fetchRoleAndTeamsByMemberId(memberId);
+
+            if (roleAndTeamDto.isEmpty())
+                throw new InvalidUserInfoException();  // 가입된 소셜 계정으로 회원 프로필을 찾을 수 없는 경우.
+
+            Role role = roleAndTeamDto.getRole();
+            Collection<Team> teamList = roleAndTeamDto.getTeams();
 
             return new HashSet<>() {{
                 add(new SimpleGrantedAuthority(ROLE_PREFIX + role.toString()));
@@ -52,4 +51,27 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
 
         }
     }
+
+    public static class RoleAndTeamDto {
+        private Role role;
+        private List<Team> teams;
+
+        public RoleAndTeamDto(Role role, List<Team> teams) {
+            this.role = role;
+            this.teams = teams;
+        }
+
+        public Role getRole() {
+            return role;
+        }
+
+        public List<Team> getTeams() {
+            return teams;
+        }
+
+        boolean isEmpty() {
+            return role == null && teams == null;
+        }
+    }
+
 }
