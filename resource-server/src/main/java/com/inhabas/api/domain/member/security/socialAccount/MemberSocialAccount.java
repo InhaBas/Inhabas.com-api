@@ -55,4 +55,8 @@ public class MemberSocialAccount {
     public Member getMember() {
         return this.member;
     }
+
+    public void SetUID(UID uid) {
+        this.uid = uid;
+    }
 }

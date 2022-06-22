@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsUtils;
 @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile({"dev, local, production"}) // 테스트에는 포함시키지 않음.
+@Profile({"dev", "local", "production"}) // 테스트에는 포함시키지 않음.
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
