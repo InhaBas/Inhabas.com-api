@@ -11,6 +11,7 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -150,6 +151,7 @@ public class BoardServiceTest {
         assertThat(returnedId).isEqualTo(updatedNormalBoard.getId());
     }
 
+    @Disabled
     @DisplayName("게시글을 생성한 유저와 일치하지 않아 게시글 수정에 실패한다.")
     @Test
     public void failToUpdateBoard() {
