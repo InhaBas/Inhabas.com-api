@@ -3,8 +3,9 @@ package com.inhabas.api.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
-import com.inhabas.api.domain.member.security.LoginMember;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Answer;
@@ -62,7 +63,7 @@ public class SignUpControllerTest {
                 .email("my@email.com")
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .memberId(11112222)
+                .memberId(new MemberId(11112222))
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
@@ -118,7 +119,7 @@ public class SignUpControllerTest {
                 .email("") // 상관없음.
                 .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
                 .phoneNumber("8210-1111-1111")
-                .memberId(-1)
+                .memberId(new MemberId(-1))
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
@@ -142,9 +143,11 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
-        LoginMember loginMember = (LoginMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        OAuth2UserInfoAuthentication authentication =
+                (OAuth2UserInfoAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        MemberId loginMemberId = (MemberId) authentication.getPrincipal();
         SignUpDto expectedSavedForm = SignUpDto.builder()
-                .memberId(12171652)
+                .memberId(loginMemberId)
                 .name("홍길동")
                 .major("의예과")
                 .phoneNumber("010-1234-5678")
@@ -152,7 +155,7 @@ public class SignUpControllerTest {
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
-        given(signUpService.loadSignUpForm(loginMember)).willReturn(expectedSavedForm);
+        given(signUpService.loadSignUpForm(loginMemberId, authentication)).willReturn(expectedSavedForm);
 
         //when
         String response = mvc.perform(get("/signUp"))

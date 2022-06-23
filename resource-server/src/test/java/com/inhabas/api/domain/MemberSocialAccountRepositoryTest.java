@@ -3,6 +3,7 @@ package com.inhabas.api.domain;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccount;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.testConfig.DefaultDataJpaTest;
@@ -34,7 +35,8 @@ public class MemberSocialAccountRepositoryTest {
         memberSocialAccountRepository.save(new MemberSocialAccount(member, "my@gmail.com", "1234", OAuth2Provider.GOOGLE));
 
         //when
-        Optional<Integer> id = memberSocialAccountRepository.findMemberIdByUidAndProvider(new UID("1234"), OAuth2Provider.GOOGLE);
+        Optional<MemberId> id =
+                memberSocialAccountRepository.findMemberIdByUidAndProvider(new UID("1234"), OAuth2Provider.GOOGLE);
 
         //then
         assertTrue(id.isPresent());

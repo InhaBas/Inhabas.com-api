@@ -4,6 +4,7 @@ import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuRepository;
@@ -30,7 +31,7 @@ public class BoardServiceImpl implements BoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer memberId, SaveBoardDto saveBoardDto) {
+    public Integer write(MemberId memberId, SaveBoardDto saveBoardDto) {
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
         Member writer = memberRepository.getById(memberId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
@@ -40,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Integer update(Integer memberId, UpdateBoardDto updateBoardDto) {
+    public Integer update(MemberId memberId, UpdateBoardDto updateBoardDto) {
         Member writer = memberRepository.getById(memberId);
         NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
                 .orElseThrow(BoardNotFoundException::new);

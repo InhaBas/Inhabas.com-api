@@ -1,6 +1,7 @@
 package com.inhabas.api.dto.signUp;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.service.signup.NoQueryParameterException;
 import lombok.NoArgsConstructor;
@@ -12,11 +13,11 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDuplicationQueryCondition {
 
-    private Integer memberId;
+    private MemberId memberId;
 
     private Phone phoneNumber;
 
-    public MemberDuplicationQueryCondition(Integer memberId, String phone) {
+    public MemberDuplicationQueryCondition(MemberId memberId, String phone) {
         this.memberId = memberId;
         setPhoneNumber(phone);
     }
@@ -27,7 +28,7 @@ public class MemberDuplicationQueryCondition {
         }
     }
 
-    public Integer getMemberId() {
+    public MemberId getMemberId() {
         return memberId;
     }
 
@@ -39,7 +40,7 @@ public class MemberDuplicationQueryCondition {
     }
 
     public void setMemberId(Integer memberId) {
-        this.memberId = memberId;
+        this.memberId = new MemberId(memberId);
     }
 
     public void setPhoneNumber(String phoneNumber) {

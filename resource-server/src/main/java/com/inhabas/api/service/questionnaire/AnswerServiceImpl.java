@@ -1,6 +1,7 @@
 package com.inhabas.api.service.questionnaire;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.questionaire.Answer;
 import com.inhabas.api.domain.questionaire.AnswerRepository;
@@ -18,7 +19,7 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final MemberRepository memberRepository;
 
-    public void saveAnswers(List<AnswerDto> submittedAnswers, Integer memberId) {
+    public void saveAnswers(List<AnswerDto> submittedAnswers, MemberId memberId) {
 
         Member currentMember = memberRepository.getById(memberId);
 
@@ -29,7 +30,7 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.saveAll(answers);
     }
 
-    public List<AnswerDto> getAnswers(Integer memberId) {
+    public List<AnswerDto> getAnswers(MemberId memberId) {
 
         return answerRepository.findByMember_Id(memberId).stream()
                 .map(a-> new AnswerDto(a.getQuestionNo(), a.getAnswer()))
@@ -37,7 +38,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public boolean existAnswersWrittenBy(Integer memberId) {
+    public boolean existAnswersWrittenBy(MemberId memberId) {
         return answerRepository.existsByMember_id(memberId);
     }
 }

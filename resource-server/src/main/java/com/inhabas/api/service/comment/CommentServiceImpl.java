@@ -5,6 +5,7 @@ import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.api.dto.comment.CommentSaveDto;
@@ -55,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
         Comment OldComment = commentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        Integer updaterId = commentUpdateDto.getWriterId();
+        MemberId updaterId = commentUpdateDto.getWriterId();
         if (OldComment.isWrittenBy(updaterId)) {
             OldComment.setContents(commentUpdateDto.getContents());
             commentRepository.save(OldComment);

@@ -5,6 +5,7 @@ import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityPro
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -30,7 +31,7 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
 
         OAuth2UserInfoAuthentication authentication =
                 new OAuth2UserInfoAuthentication(oAuth2UserInfo.getId(), oAuth2UserInfo.getProvider().toString(), oAuth2UserInfo.getEmail());
-        Integer memberId = (Integer) userPrincipalService.loadUserPrincipal(authentication);
+        MemberId memberId = (MemberId) userPrincipalService.loadUserPrincipal(authentication);
 
         if (Objects.isNull(memberId)) {  // 기존회원이 아니면, ROLE_ANONYMOUS
             return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + Role.ANONYMOUS));

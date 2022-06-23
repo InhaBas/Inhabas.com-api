@@ -4,6 +4,7 @@ import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
@@ -25,7 +26,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer memberId, SaveContestBoardDto dto) {
+    public Integer write(MemberId memberId, SaveContestBoardDto dto) {
         Member writer = memberRepository.getById(memberId);
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
@@ -40,7 +41,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     }
 
     @Override
-    public Integer update(Integer memberId, UpdateContestBoardDto dto) {
+    public Integer update(MemberId memberId, UpdateContestBoardDto dto) {
         ContestBoard savedContestBoard = contestBoardRepository.findById(dto.getId())
                 .orElseThrow(BoardNotFoundException::new);
         Member writer = memberRepository.getById(memberId);

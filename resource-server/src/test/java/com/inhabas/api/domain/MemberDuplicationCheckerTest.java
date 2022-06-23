@@ -1,6 +1,7 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.domain.member.MemberDuplicationCheckerImpl;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.type.wrapper.Phone;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.inhabas.api.domain.MemberTest.MEMBER1;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -32,11 +32,11 @@ public class MemberDuplicationCheckerTest {
     @Test
     public void nonDuplicatedMemberTest() {
         //given
-        given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(false);
+        given(memberRepository.existsByPhoneOrId(any(Phone.class), any())).willReturn(false);
 
         //when
         Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
-        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
+        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), any());
     }
 
 
@@ -44,11 +44,11 @@ public class MemberDuplicationCheckerTest {
     @Test
     public void duplicatedMemberTest() {
         //given
-        given(memberRepository.existsByPhoneOrId(any(Phone.class), anyInt())).willReturn(true);
+        given(memberRepository.existsByPhoneOrId(any(Phone.class), any())).willReturn(true);
 
         //when
         Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
-        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), anyInt());
+        then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), any());
     }
 
 
@@ -59,7 +59,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(false);
 
         //when
-        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(12171652, null)));
+        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(new MemberId(12171652), null)));
         then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 
@@ -69,7 +69,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.isDuplicated(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when
-        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(12171652, null)));
+        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(new MemberDuplicationQueryCondition(new MemberId(12171652), null)));
         then(memberRepository).should(times(1)).isDuplicated(any(MemberDuplicationQueryCondition.class));
     }
 

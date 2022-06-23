@@ -5,6 +5,7 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalNotFoundException;
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccount;
 import com.inhabas.api.domain.member.security.socialAccount.MemberSocialAccountRepository;
 import org.junit.jupiter.api.Assertions;
@@ -42,8 +43,8 @@ public class MemberPrincipalServiceTest {
                 .willReturn(Optional.of(member.getId()));
 
         //when
-        Integer memberId
-                = (Integer) memberPrincipalService.loadUserPrincipal(new OAuth2UserInfoAuthentication("1234579123", "KAKAO", "my@gmail.com"));
+        MemberId memberId
+                = (MemberId) memberPrincipalService.loadUserPrincipal(new OAuth2UserInfoAuthentication("1234579123", "KAKAO", "my@gmail.com"));
 
         //then
         assertThat(memberId).isEqualTo(member.getId());
@@ -66,8 +67,8 @@ public class MemberPrincipalServiceTest {
         given(memberSocialAccountRepository.save(any())).willReturn(null);
 
         //when
-        Integer memberId
-                = (Integer) memberPrincipalService.loadUserPrincipal(new OAuth2UserInfoAuthentication("1234579123", "KAKAO", "my@gmail.com"));
+        MemberId memberId
+                = (MemberId) memberPrincipalService.loadUserPrincipal(new OAuth2UserInfoAuthentication("1234579123", "KAKAO", "my@gmail.com"));
 
         //then
         assertThat(memberId).isEqualTo(member.getId());

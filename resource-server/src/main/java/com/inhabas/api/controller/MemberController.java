@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.member.ContactDto;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.api.service.member.MemberTeamService;
@@ -27,7 +28,7 @@ public class MemberController {
 
     @Operation(description = "멤버 조회")
     @GetMapping
-    public Member member(@RequestParam Integer id) {
+    public Member member(@RequestParam MemberId id) {
         return memberService.findById(id);
     }
 
@@ -57,7 +58,7 @@ public class MemberController {
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
     })
-    public ResponseEntity<?> addOneTeamToMember(@RequestParam Integer memberId, @RequestParam Integer teamId) {
+    public ResponseEntity<?> addOneTeamToMember(@RequestParam MemberId memberId, @RequestParam Integer teamId) {
 
         memberTeamService.addMemberToTeam(memberId, teamId);
 
@@ -70,7 +71,7 @@ public class MemberController {
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
     })
-    public ResponseEntity<?> deleteOneTeamOfMember(@RequestParam Integer memberId, @RequestParam Integer teamId) {
+    public ResponseEntity<?> deleteOneTeamOfMember(@RequestParam MemberId memberId, @RequestParam Integer teamId) {
 
         memberTeamService.deleteMemberFromTeam(memberId, teamId);
 

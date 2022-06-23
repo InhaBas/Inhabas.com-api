@@ -1,7 +1,8 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.auth.utils.argumentResolver.Authenticated;
-import com.inhabas.api.domain.member.security.LoginMember;
+import com.inhabas.api.argumentResolver.Authenticated;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.AnswerDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
@@ -37,9 +38,9 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "잘못된 폼 데이터")
     })
     public ResponseEntity<?> saveStudentProfile(
-            @Authenticated LoginMember authUser, @Valid @RequestBody SignUpDto form) {
+            @Authenticated OAuth2UserInfoAuthentication authentication, @Valid @RequestBody SignUpDto form) {
 
-        signUpService.saveSignUpForm(form, authUser);
+        signUpService.saveSignUpForm(form, authentication);  //
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -47,9 +48,10 @@ public class SignUpController {
     @GetMapping
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<SignUpDto> loadProfile(@Authenticated LoginMember signUpUser) {
+    public ResponseEntity<SignUpDto> loadProfile(
+            @Authenticated OAuth2UserInfoAuthentication authentication, @Authenticated MemberId memberId) {
 
-        SignUpDto form = signUpService.loadSignUpForm(signUpUser);
+        SignUpDto form = signUpService.loadSignUpForm(memberId, authentication);
 
         return ResponseEntity.ok(form);
     }
@@ -92,9 +94,9 @@ public class SignUpController {
     @GetMapping("/answer")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated LoginMember signUpUser) {
+    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated MemberId memberId) {
 
-        List<AnswerDto> answers = signUpService.getAnswers(signUpUser);
+        List<AnswerDto> answers = signUpService.getAnswers(memberId);
 
         return ResponseEntity.ok(answers);
     }
@@ -106,9 +108,9 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우")
     })
     public ResponseEntity<?> saveAnswers(
-            @Authenticated LoginMember signUpUser, @Valid @RequestBody List<AnswerDto> answers) {
+            @Authenticated MemberId memberId, @Valid @RequestBody List<AnswerDto> answers) {
 
-        signUpService.saveAnswers(answers, signUpUser);
+        signUpService.saveAnswers(answers, memberId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -117,9 +119,9 @@ public class SignUpController {
     @PutMapping("/finish")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<?> finishSignUp(@Authenticated LoginMember signUpUser) {
+    public ResponseEntity<?> finishSignUp(@Authenticated MemberId memberId) {
 
-        signUpService.completeSignUp(signUpUser);
+        signUpService.completeSignUp(memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

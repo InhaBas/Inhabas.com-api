@@ -4,6 +4,7 @@ import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.type.wrapper.Contents;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -135,7 +136,7 @@ public class Comment extends BaseEntity {
         return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
     }
 
-    public boolean isWrittenBy(Integer writerId) {
+    public boolean isWrittenBy(MemberId writerId) {
         return writer.isSameMember(writerId);
     }
 

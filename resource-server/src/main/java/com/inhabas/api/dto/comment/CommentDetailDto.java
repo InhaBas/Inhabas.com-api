@@ -2,6 +2,7 @@ package com.inhabas.api.dto.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.comment.Comment;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.type.wrapper.Major;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,7 @@ public class CommentDetailDto {
 
     private Integer id;
     private String contents;
-    private Integer writerId;
+    private MemberId writerId;
     private String writerName;
     private Major writerMajor;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
@@ -33,7 +34,7 @@ public class CommentDetailDto {
         );
     }
 
-    public CommentDetailDto(Integer id, String contents, Integer memberId, String memberName, String major, LocalDateTime created) {
+    public CommentDetailDto(Integer id, String contents, MemberId memberId, String memberName, String major, LocalDateTime created) {
         this.id = id;
         this.contents = contents;
         this.writerId = memberId;

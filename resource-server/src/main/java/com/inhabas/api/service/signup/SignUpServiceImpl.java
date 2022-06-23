@@ -1,7 +1,7 @@
 package com.inhabas.api.service.signup;
 
-import com.inhabas.api.auth.utils.argumentResolver.ResolvedAuthenticationResult;
-import com.inhabas.api.domain.member.security.LoginMember;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberDuplicationChecker;
 import com.inhabas.api.domain.member.type.IbasInformation;
@@ -44,7 +44,7 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional
-    public void saveSignUpForm(SignUpDto signUpForm, LoginMember authUserDetail) {
+    public void saveSignUpForm(SignUpDto signUpForm, OAuth2UserInfoAuthentication authentication) {
         Integer generation = signUpScheduler.getSchedule().getGeneration();
         IbasInformation ibasInformation = new IbasInformation(DEFAULT_ROLE_BEFORE_FINISH_SIGNUP);
         SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), generation, signUpForm.getMemberType());
@@ -53,7 +53,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .id(signUpForm.getMemberId())
                 .name(signUpForm.getName())
                 .phone(signUpForm.getPhoneNumber())
-                .email(authUserDetail.getEmail())
+                .email(authentication.getEmail())
                 .ibasInformation(ibasInformation)
                 .schoolInformation(schoolInformation)
                 .build();
@@ -63,27 +63,27 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public void completeSignUp(LoginMember signUpUser) {
+    public void completeSignUp(MemberId memberId) {
 
-        if (notYetWroteProfile(signUpUser)) {
+        Member member = memberService.findById(memberId);
+
+        if (notYetWroteProfile(member)) {
             throw new NotWriteProfileException();
         }
-        else if (notYetWroteAnswers(signUpUser)) {
+        else if (notYetWroteAnswers(member)) {
             throw new NotWriteAnswersException();
         }
 
-        memberService.finishSignUp(signUpUser.getMemberId());
+        memberService.finishSignUp(member);
     }
 
-    private boolean notYetWroteProfile(ResolvedAuthenticationResult signUpUser) {
-        return Objects.isNull(signUpUser.getMemberId());
+    private boolean notYetWroteProfile(Member member) {
+        return Objects.isNull(member);
     }
 
-    private boolean notYetWroteAnswers(ResolvedAuthenticationResult signUpUser) {
-        Member member = memberService.findById(signUpUser.getMemberId());
-
+    private boolean notYetWroteAnswers(Member member) {
         return member.isUnderGraduate()
-                && !answerService.existAnswersWrittenBy(signUpUser.getMemberId());
+                && !answerService.existAnswersWrittenBy(member.getId());
     }
 
     @Override
@@ -92,13 +92,13 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public void saveAnswers(List<AnswerDto> answerDtoList, LoginMember authUserDetail) {
-        answerService.saveAnswers(answerDtoList, authUserDetail.getMemberId());
+    public void saveAnswers(List<AnswerDto> answerDtoList, MemberId memberId) {
+        answerService.saveAnswers(answerDtoList, memberId);
     }
 
     @Override
-    public List<AnswerDto> getAnswers(LoginMember authUserDetail) {
-        return answerService.getAnswers(authUserDetail.getMemberId());
+    public List<AnswerDto> getAnswers(MemberId memberId) {
+        return answerService.getAnswers(memberId);
     }
 
     @Override
@@ -108,15 +108,15 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional(readOnly = true)
-    public SignUpDto loadSignUpForm(LoginMember signUpUser) {
+    public SignUpDto loadSignUpForm(MemberId memberId, OAuth2UserInfoAuthentication authentication) {
 
         try {
-            Member member = memberService.findById(signUpUser.getMemberId());
+            Member member = memberService.findById(memberId);
 
             return SignUpDto.builder()
-                    .memberId(signUpUser.getMemberId())
+                    .memberId(memberId)
                     .phoneNumber(member.getPhone())
-                    .email(signUpUser.getEmail())
+                    .email(member.getEmail())
                     .name(member.getName())
                     .major(member.getSchoolInformation().getMajor())
                     .memberType(member.getSchoolInformation().getMemberType())
@@ -126,7 +126,7 @@ public class SignUpServiceImpl implements SignUpService {
             return SignUpDto.builder()
                     .memberId(null)
                     .phoneNumber(null)
-                    .email(signUpUser.getEmail())
+                    .email(authentication.getEmail())
                     .name(null)
                     .major(null)
                     .memberType(DEFAULT_MEMBER_TYPE)

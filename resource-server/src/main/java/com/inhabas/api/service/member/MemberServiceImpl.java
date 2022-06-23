@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Member findById(Integer id) {
+    public Member findById(MemberId id) {
         return memberRepository.findById(id)
                 .orElseThrow(MemberNotFoundException::new);
     }
@@ -57,10 +57,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
-    public void changeRole(Integer memberId, Role role) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-
+    public void changeRole(Member member, Role role) {
         member.setRole(role);
         memberRepository.save(member);
     }
@@ -78,9 +75,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void finishSignUp(Integer memberId) {
-        Member member = findById(memberId);
+    public void finishSignUp(Member member) {
         member.finishSignUp();
-        this.changeRole(memberId, DEFAULT_ROLE_AFTER_FINISH_SIGNUP);
+        this.changeRole(member, DEFAULT_ROLE_AFTER_FINISH_SIGNUP);
     }
 }
