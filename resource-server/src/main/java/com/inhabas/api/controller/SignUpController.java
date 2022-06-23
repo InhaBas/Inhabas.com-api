@@ -1,6 +1,6 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.argumentResolver.Authenticated;
+import com.inhabas.api.web.argumentResolver.Authenticated;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.member.MajorInfoDto;

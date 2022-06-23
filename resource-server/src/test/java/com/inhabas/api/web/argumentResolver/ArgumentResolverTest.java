@@ -1,4 +1,4 @@
-package com.inhabas.api.argumentResolver;
+package com.inhabas.api.web.argumentResolver;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
@@ -22,7 +22,6 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 public class ArgumentResolverTest {
 
@@ -130,11 +129,12 @@ public class ArgumentResolverTest {
     @Test
     public void successToInjectJwtTokenIntegerIdIntoArguments() {
         //given
-        String uid = "12943275193";
+        MemberId memberId = new MemberId(12171652);
 
         // jwt 토큰 인증 결과
         JwtAuthenticationResult authentication =
-                new JwtAuthenticationResult(uid, "google", "my@gmail.com",  Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+                new JwtAuthenticationResult("123135135", "google", "my@gmail.com",  Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+        authentication.setPrincipal(memberId);
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -146,7 +146,7 @@ public class ArgumentResolverTest {
 
         // then
         Assertions.assertThat(profileId).isNotNull();
-        Assertions.assertThat(profileId).isEqualTo(uid);
+        Assertions.assertThat(profileId).isEqualTo(memberId);
         Assertions.assertThat(profileId).isInstanceOf(MemberId.class);
     }
 

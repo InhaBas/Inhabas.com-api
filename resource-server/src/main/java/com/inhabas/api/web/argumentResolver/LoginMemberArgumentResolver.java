@@ -1,7 +1,6 @@
-package com.inhabas.api.argumentResolver;
+package com.inhabas.api.web.argumentResolver;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import com.inhabas.api.domain.member.MemberId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
@@ -39,30 +38,19 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         if (Objects.isNull(authentication)) return null;  // login not processed, anonymous user!
 
-
         if (isMemberIdType(parameter))
             return resolveMemberId(authentication);
         else if (isOAuth2UserInfoAuthenticationType(parameter))
             return authentication;
         else
             throw new IllegalArgumentException("지원하지 않는 타입입니다");
-
-    }
-
-    private boolean isMemberIdType(MethodParameter parameter) {
-        return parameter.getParameterType().equals(MemberId.class);
-    }
-
-    private boolean isOAuth2UserInfoAuthenticationType(MethodParameter parameter) {
-        return OAuth2UserInfoAuthentication.class
-                .isAssignableFrom(parameter.getParameterType());
     }
 
     private MemberId resolveMemberId(Authentication authentication) {
+
         MemberId memberId = null;
 
-        if (authentication instanceof JwtAuthenticationResult) { // jwt 토큰 인증 이후
-
+        if (isOAuth2UserInfoAuthenticationType(authentication)) { // jwt 토큰 인증 이후
             memberId = (MemberId) authentication.getPrincipal();
 
         } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
@@ -73,5 +61,21 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
         }
 
         return memberId;
+    }
+
+    private boolean isMemberIdType(MethodParameter parameter) {
+
+        return parameter.getParameterType().equals(MemberId.class);
+    }
+
+    private boolean isOAuth2UserInfoAuthenticationType(MethodParameter parameter) {
+
+        return OAuth2UserInfoAuthentication.class
+                .isAssignableFrom(parameter.getParameterType());
+    }
+    private boolean isOAuth2UserInfoAuthenticationType(Authentication authentication) {
+
+        return OAuth2UserInfoAuthentication.class
+                .isAssignableFrom(authentication.getClass());
     }
 }
