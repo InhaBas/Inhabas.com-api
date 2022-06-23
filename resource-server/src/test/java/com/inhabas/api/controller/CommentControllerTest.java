@@ -79,14 +79,14 @@ public class CommentControllerTest {
     @Test
     void createNewComment() throws Exception {
         //given
-        CommentSaveDto newComment = new CommentSaveDto(new MemberId(12171652), "아싸 1등", 13);
+        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13}";
         Integer newCommentId = 1;
         given(commentService.create(any(CommentSaveDto.class))).willReturn(newCommentId);
 
         //when
         String responseBody = mockMvc.perform(post("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newComment)))
+                        .content(jsonRequest))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse().getContentAsString();
@@ -101,12 +101,12 @@ public class CommentControllerTest {
     void tryToSaveTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        CommentSaveDto newComment = new CommentSaveDto(new MemberId(12171652), tooLongContents, 13);
+        String jsonRequest = String.format("{\"writerId\":12171652,\"contents\":\"%s\",\"boardId\":13}", tooLongContents);
 
         //when
         String errorMessage = mockMvc.perform(post("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newComment)))
+                        .content(jsonRequest))
                 .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse().getContentAsString();
@@ -118,12 +118,12 @@ public class CommentControllerTest {
     @Test
     void updateComment() throws Exception {
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(1217162), "1등이 아니네,,,", 12);
+        String jsonRequest = "{\"id\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
         given(commentService.update(any(CommentUpdateDto.class))).willReturn(1);
 
         String responseBody = mockMvc.perform(put("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(param)))
+                        .content(jsonRequest))
                 .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse().getContentAsString();
