@@ -6,14 +6,31 @@ import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
 import com.inhabas.api.domain.member.MemberId;
-import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuId;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.util.*;
 
 
 @Entity
@@ -35,9 +52,9 @@ public class NormalBoard extends BaseEntity {
     @Embedded
     protected Contents contents;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_board_to_menu"))
-    protected Menu menu;
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "menu_id"))
+    protected MenuId menuId;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "writer_id"))
@@ -77,8 +94,8 @@ public class NormalBoard extends BaseEntity {
         return contents.getValue();
     }
 
-    public Menu getMenu() {
-        return menu;
+    public MenuId getMenuId() {
+        return menuId;
     }
 
     public MemberId getWriterId() {
@@ -124,8 +141,8 @@ public class NormalBoard extends BaseEntity {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends NormalBoard> T inMenu(Menu menu) {
-        this.menu = menu;
+    public <T extends NormalBoard> T inMenu(MenuId menuId) {
+        this.menuId = menuId;
         return (T) this;
     }
 }

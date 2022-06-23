@@ -4,6 +4,7 @@ package com.inhabas.api.domain.contest;
 import static com.inhabas.api.domain.contest.QContestBoard.contestBoard;
 import static com.inhabas.api.domain.member.QMember.member;
 
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.querydsl.core.types.Order;
@@ -80,7 +81,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     }
 
     @Override
-    public Page<ListContestBoardDto> findAllByMenuId(Integer menuId, Pageable pageable) {
+    public Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable) {
         List <OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
         List<ListContestBoardDto> results = queryFactory.select(Projections.constructor(ListContestBoardDto.class,
                         contestBoard.title.value,
@@ -96,8 +97,8 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         return new PageImpl<>(results, pageable, results.size());
     }
 
-    private BooleanExpression menuEq(Integer menuId) {
-        return contestBoard.menu.id.eq(menuId);
+    private BooleanExpression menuEq(MenuId menuId) {
+        return contestBoard.menuId.eq(menuId);
     }
 
 }

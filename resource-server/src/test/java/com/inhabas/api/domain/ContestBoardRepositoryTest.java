@@ -1,5 +1,8 @@
 package com.inhabas.api.domain;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
@@ -9,6 +12,9 @@ import com.inhabas.api.domain.menu.wrapper.MenuType;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.testConfig.DefaultDataJpaTest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
-import static org.assertj.core.api.Assertions.*;
 
 @DefaultDataJpaTest
 public class ContestBoardRepositoryTest {
@@ -52,11 +51,11 @@ public class ContestBoardRepositoryTest {
                         .build());
 
         board1 = ContestBoardTest.getContestBoard1()
-                    .writtenBy(writer.getId()).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu.getId());
         board2 = ContestBoardTest.getContestBoard2()
-                    .writtenBy(writer.getId()).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu.getId());
         board3 = ContestBoardTest.getContestBoard3()
-                    .writtenBy(writer.getId()).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu.getId());
     }
 
     @DisplayName("저장한 게시글의 Id를 참조하여 Dto를 반환한다.")

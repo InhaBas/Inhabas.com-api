@@ -1,6 +1,7 @@
 package com.inhabas.api.service.contest;
 
 import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -17,6 +18,6 @@ public interface ContestBoardService {
 
     DetailContestBoardDto getBoard(Integer id);
 
-    Page<ListContestBoardDto> getBoardList(Integer menuId, Pageable pageable);
+    Page<ListContestBoardDto> getBoardList(MenuId menuId, Pageable pageable);
 
 }

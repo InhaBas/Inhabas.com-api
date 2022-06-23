@@ -1,24 +1,24 @@
 package com.inhabas.api.domain;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.MemberTest.MEMBER2;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
 import com.inhabas.api.domain.member.Member;
-
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
 import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.testConfig.DefaultDataJpaTest;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
-import java.util.List;
-
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.MemberTest.MEMBER2;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
 public class CommentRepositoryTest {
@@ -49,7 +49,7 @@ public class CommentRepositoryTest {
         normalBoard = em.persist(
                 NormalBoardTest.getBoard1()
                         .writtenBy(writer.getId())
-                        .inMenu(freeBoardMenu)
+                        .inMenu(freeBoardMenu.getId())
         );
     }
 

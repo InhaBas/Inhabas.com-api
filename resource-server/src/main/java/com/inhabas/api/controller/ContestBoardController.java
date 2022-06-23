@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
@@ -44,7 +45,7 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 목록 조회 URL 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Page<ListContestBoardDto>> getBoardList(@RequestParam Integer menuId, Pageable pageable) {
+    public ResponseEntity<Page<ListContestBoardDto>> getBoardList(@RequestParam MenuId menuId, Pageable pageable) {
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
     }
 

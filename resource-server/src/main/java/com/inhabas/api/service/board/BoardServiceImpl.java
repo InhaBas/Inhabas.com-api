@@ -4,18 +4,16 @@ import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.MemberId;
-import com.inhabas.api.domain.menu.Menu;
-import com.inhabas.api.domain.menu.MenuRepository;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 @Slf4j
@@ -24,14 +22,12 @@ import javax.transaction.Transactional;
 public class BoardServiceImpl implements BoardService {
 
     private final NormalBoardRepository boardRepository;
-    private final MenuRepository menuRepository;
 
     @Override
     public Integer write(MemberId memberId, SaveBoardDto saveBoardDto) {
 
-        Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
-                .inMenu(menu)
+                .inMenu(saveBoardDto.getMenuId())
                 .writtenBy(memberId);
 
         return boardRepository.save(normalBoard).getId();
@@ -44,7 +40,7 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(BoardNotFoundException::new);
         NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
                 .writtenBy(memberId)
-                .inMenu(savedBoard.getMenu());
+                .inMenu(savedBoard.getMenuId());
 
         return boardRepository.save(updatedBoard).getId();
     }
@@ -61,7 +57,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Page<BoardDto> getBoardList(Integer menuId, Pageable pageable) {
+    public Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable) {
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
 }

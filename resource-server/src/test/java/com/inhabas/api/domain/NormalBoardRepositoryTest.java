@@ -1,13 +1,21 @@
 package com.inhabas.api.domain;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.board.NormalBoardRepository;
+import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.testConfig.DefaultDataJpaTest;
+import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,14 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
-
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DefaultDataJpaTest
 public class NormalBoardRepositoryTest {
@@ -59,11 +59,11 @@ public class NormalBoardRepositoryTest {
                         .build());
 
         FREE_BOARD = NormalBoardTest.getBoard1()
-                .writtenBy(writer.getId()).inMenu(freeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(freeBoardMenu.getId());
         NOTICE_BOARD = NormalBoardTest.getBoard2()
-                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu.getId());
         NOTICE_BOARD_2 = NormalBoardTest.getBoard3()
-                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu.getId());
     }
 
 
@@ -100,7 +100,7 @@ public class NormalBoardRepositoryTest {
                 () -> assertThat(find.getId()).isEqualTo(FREE_BOARD.getId()),
                 () -> assertThat(find.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(find.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(find.getMenuId()).isEqualTo(FREE_BOARD.getMenu().getId()),
+                () -> assertThat(find.getMenuId()).isEqualTo(FREE_BOARD.getMenuId()),
                 () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
         );
     }
@@ -160,21 +160,21 @@ public class NormalBoardRepositoryTest {
         boardRepository.save(FREE_BOARD);
         boardRepository.save(NOTICE_BOARD);
         boardRepository.save(NOTICE_BOARD_2);
-        Integer freeBoardId = FREE_BOARD.getMenu().getId();
-        Integer noticeBoardId = NOTICE_BOARD.getMenu().getId();
+        MenuId freeBoardMenuId = FREE_BOARD.getMenuId();
+        MenuId noticeBoardMenuId = NOTICE_BOARD.getMenuId();
 
         //when
-        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardId, Pageable.ofSize(5));
-        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardId, Pageable.ofSize(5));
+        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardMenuId, Pageable.ofSize(5));
+        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardMenuId, Pageable.ofSize(5));
 
         //then
         assertThat(freeBoards.getTotalElements()).isEqualTo(1);
         freeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(freeBoardId));
+                board->assertThat(board.getMenuId()).isEqualTo(freeBoardMenuId));
 
         assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
         noticeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardId));
+                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardMenuId));
     }
 
 }

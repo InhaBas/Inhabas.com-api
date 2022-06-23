@@ -1,6 +1,7 @@
 package com.inhabas.api.service.board;
 
 import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
@@ -16,6 +17,6 @@ public interface BoardService {
 
     BoardDto getBoard(Integer boardId);
 
-    Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
+    Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable);
 
 }

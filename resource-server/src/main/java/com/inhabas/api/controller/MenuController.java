@@ -1,5 +1,6 @@
 package com.inhabas.api.controller;
 
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.dto.menu.MenuGroupDto;
 import com.inhabas.api.service.menu.MenuService;
@@ -35,7 +36,7 @@ public class MenuController {
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "존재하지 않는 메뉴")
     })
-    public ResponseEntity<MenuDto> getMenuInfo(@RequestParam Integer menuId) {
+    public ResponseEntity<MenuDto> getMenuInfo(@RequestParam MenuId menuId) {
         MenuDto menu = menuService.getMenuInfoById(menuId);
 
         return ResponseEntity.ok(menu);

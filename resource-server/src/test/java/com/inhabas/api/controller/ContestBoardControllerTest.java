@@ -1,5 +1,17 @@
 package com.inhabas.api.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
@@ -8,7 +20,11 @@ import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
 import com.inhabas.api.service.contest.ContestBoardService;
 import com.inhabas.testConfig.DefaultWebMvcTest;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,49 +33,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(ContestBoardController.class)
 public class ContestBoardControllerTest {
 
+    @Autowired
     private MockMvc mvc;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private ContestBoardController contestBoardController;
-
     @MockBean
     private ContestBoardService contestBoardService;
 
-    @BeforeEach
-    public void setUp() {
-        mvc = MockMvcBuilders
-                .standaloneSetup(contestBoardController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setViewResolvers((viewName, locale) -> new MappingJackson2JsonView())
-                .build();
-    }
 
     @DisplayName("공모전 게시글 저장을 요청한다.")
     @Test
@@ -118,11 +106,12 @@ public class ContestBoardControllerTest {
 
         Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
 
-        given(contestBoardService.getBoardList(anyInt(), any())).willReturn(expectedContestBoardDto);
+        given(contestBoardService.getBoardList(any(), any())).willReturn(expectedContestBoardDto);
 
         // when
         String responseBody = mvc.perform(get("/contest/all")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
                         .param("menuId", "9")
                         .param("page", "0")
                         .param("size", "10")

@@ -1,15 +1,27 @@
 package com.inhabas.api.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberId;
-import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
 import com.inhabas.api.service.contest.ContestBoardServiceImpl;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,22 +29,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class ContestBoardServiceTest {
@@ -104,7 +107,7 @@ public class ContestBoardServiceTest {
         given(contestBoardRepository.findAllByMenuId(any(), any())).willReturn(expectedContestBoardDto);
 
         //when
-        Page<ListContestBoardDto> returnedBoardList = contestBoardService.getBoardList(1, pageable);
+        Page<ListContestBoardDto> returnedBoardList = contestBoardService.getBoardList(new MenuId(1), pageable);
 
         //then
         assertThat(returnedBoardList).isEqualTo(expectedContestBoardDto);

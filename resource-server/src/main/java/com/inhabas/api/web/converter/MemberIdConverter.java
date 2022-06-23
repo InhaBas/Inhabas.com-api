@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class MemberIdConverter {
 
     @Component
-    public static class StringToEventConverter implements Converter<String, MemberId> {
+    public static class StringToMemberIdConverter implements Converter<String, MemberId> {
         @Override
         public MemberId convert(String source){
             return new MemberId(Integer.parseInt(source));
@@ -15,7 +15,7 @@ public class MemberIdConverter {
     }
 
     @Component
-    public static class IntegerToEventConverter implements Converter<Integer, MemberId> {
+    public static class IntegerToMemberIdConverter implements Converter<Integer, MemberId> {
         @Override
         public MemberId convert(Integer source){
             return new MemberId(source);
@@ -23,7 +23,7 @@ public class MemberIdConverter {
     }
 
     @Component
-    public static class EventToStringConverter implements Converter<MemberId, String>{
+    public static class MemberIdToStringConverter implements Converter<MemberId, String>{
         @Override
         public String convert(MemberId source){
             return source.toString();

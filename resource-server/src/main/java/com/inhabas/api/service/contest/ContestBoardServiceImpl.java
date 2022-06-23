@@ -4,7 +4,7 @@ import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
 import com.inhabas.api.domain.member.MemberId;
-import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -54,7 +54,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 .deadline(dto.getDeadline())
                 .build()
                 .writtenBy(memberId)
-                .inMenu(savedContestBoard.getMenu());
+                .inMenu(savedContestBoard.getMenuId());
 
         return contestBoardRepository.save(entity).getId();
     }
@@ -72,7 +72,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     }
 
     @Override
-    public Page<ListContestBoardDto> getBoardList(Integer menuId, Pageable pageable) {
+    public Page<ListContestBoardDto> getBoardList(MenuId menuId, Pageable pageable) {
         return contestBoardRepository.findAllByMenuId(menuId, pageable);
     }
 }

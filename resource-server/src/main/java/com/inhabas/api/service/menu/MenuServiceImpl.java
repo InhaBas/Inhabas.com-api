@@ -1,6 +1,7 @@
 package com.inhabas.api.service.menu;
 
 import com.inhabas.api.domain.menu.Menu;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.dto.menu.MenuGroupDto;
@@ -24,7 +25,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     @Transactional(readOnly = true)
-    public MenuDto getMenuInfoById(Integer menuId) {
+    public MenuDto getMenuInfoById(MenuId menuId) {
 
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(MenuNotExistException::new);

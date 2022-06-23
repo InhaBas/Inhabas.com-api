@@ -1,15 +1,31 @@
 package com.inhabas.api.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.annotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.domain.board.NormalBoard;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
 import com.inhabas.testConfig.DefaultWebMvcTest;
-import org.junit.jupiter.api.BeforeEach;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +34,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(BoardController.class)
 public class BoardControllerTest {
@@ -59,21 +58,12 @@ public class BoardControllerTest {
     @MockBean
     NormalBoard normalBoard;
 
-    @BeforeEach
-    public void setUp() {
-        mvc = MockMvcBuilders
-                .standaloneSetup(boardController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setViewResolvers((viewName, locale) -> new MappingJackson2JsonView())
-                .build();
-    }
-
     @DisplayName("게시글 저장을 요청한다.")
     @Test
     @WithMockJwtAuthenticationToken
     public void addNewBoard() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", new MenuId(1));
         given(boardService.write(any(), any(SaveBoardDto.class))).willReturn(1);
 
         // when
@@ -117,16 +107,19 @@ public class BoardControllerTest {
     @DisplayName("게시글 목록 조회를 요청한다.")
     @Test
     public void getBoardList() throws Exception {
-        PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
+        PageRequest pageable = PageRequest.of(2,1, Sort.Direction.ASC, "id");
 
         List<BoardDto> results = new ArrayList<>();
-        results.add(new BoardDto(1, "Shown Title1", null, "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(2, "Shown Title2", null, "Mingyeom", 2, LocalDateTime.now(), null));
-        results.add(new BoardDto(3, "Shown Title3", null, "Mingyeom", 2, LocalDateTime.now(), null));
+        results.add(new BoardDto(1, "Shown Title1", null, "Mingyeom",
+                new MenuId(2), LocalDateTime.now(), null));
+        results.add(new BoardDto(2, "Shown Title2", null, "Mingyeom",
+                new MenuId(2), LocalDateTime.now(), null));
+        results.add(new BoardDto(3, "Shown Title3", null, "Mingyeom",
+                new MenuId(2), LocalDateTime.now(), null));
 
-        Page<BoardDto> expectedBoardDto = new PageImpl<>(results,pageable, results.size());
+        Page<BoardDto> expectedBoardDto = new PageImpl<>(results, pageable, results.size());
 
-        given(boardService.getBoardList(anyInt(), any())).willReturn(expectedBoardDto);
+        given(boardService.getBoardList(any(), any())).willReturn(expectedBoardDto);
 
         // when
         String responseBody = mvc.perform(get("/board/all")
@@ -148,7 +141,9 @@ public class BoardControllerTest {
     @Test
     public void getBoardDetail() throws Exception{
         //given
-        BoardDto boardDto = new BoardDto(1, "Shown Title", "Shown Contents", "Mingyeom", 1, LocalDateTime.now(), null);
+        BoardDto boardDto =
+                new BoardDto(1, "Shown Title", "Shown Contents", "Mingyeom",
+                        new MenuId(1), LocalDateTime.now(), null);
         given(boardService.getBoard(anyInt())).willReturn(boardDto);
 
         // when
@@ -169,7 +164,7 @@ public class BoardControllerTest {
     @WithMockJwtAuthenticationToken
     public void TitleIsTooLongError() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", new MenuId(1));
 
         // when
         String errorMessage = Objects.requireNonNull(
@@ -191,7 +186,7 @@ public class BoardControllerTest {
     @WithMockJwtAuthenticationToken
     public void ContentIsNullError() throws Exception {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "   ", new MenuId(1));
 
         // when
         String errorMessage = Objects.requireNonNull(
