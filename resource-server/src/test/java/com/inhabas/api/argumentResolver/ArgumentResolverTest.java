@@ -1,6 +1,8 @@
-package com.inhabas.api.auth.utils.argumentResolver;
+package com.inhabas.api.argumentResolver;
 
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import com.inhabas.api.domain.member.MemberId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -43,14 +45,14 @@ public class ArgumentResolverTest {
     @Test
     public void returnNullIfNotAuthenticated() {
         //when
-        ResolvedAuthenticationResult invalidUser = (ResolvedAuthenticationResult) loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
+        Object invalidUser =loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
 
         //then
         assertThat(invalidUser).isNull();
     }
 
     @Disabled
-    @DisplayName("Jwt token 인증된 ResolvedAuthenticationResult 를 컨트롤러 파라미터로 주입한다.")
+    @DisplayName("Jwt token 인증된 OAuth2UserInfoAuthentication 를 컨트롤러 파라미터로 주입한다.")
     @Test
     public void successToInjectJwtTokenAuthenticatedAuthUserIntoArguments() {
         //given
@@ -61,18 +63,20 @@ public class ArgumentResolverTest {
         JwtAuthenticationResult authentication =
                 new JwtAuthenticationResult(uid, "google", "my@gmail.com", Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
 
-        //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
+        //oauth2Info 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Mockito.doReturn(ResolvedAuthenticationResult.class).when(parameter).getParameterType();
+        Mockito.doReturn(JwtAuthenticationResult.class).when(parameter).getParameterType();
 
         //when
-        ResolvedAuthenticationResult authenticatedUser = (ResolvedAuthenticationResult) loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
+        OAuth2UserInfoAuthentication oauth2Info = (OAuth2UserInfoAuthentication) loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
 
         //then
-        assertThat(authenticatedUser).isNotNull();
-        //assertThat(authenticatedUser.getMemberId()).isEqualTo(uid);
-        assertThat(authenticatedUser.getRoleString()).isEqualTo("ROLE_MEMBER");
+        assertThat(oauth2Info).isNotNull();
+        assertThat(oauth2Info.getAuthorities())
+                .singleElement()
+                .extracting("role")
+                .isEqualTo("ROLE_MEMBER");
     }
 
     @Disabled
@@ -122,7 +126,7 @@ public class ArgumentResolverTest {
     }
 
 
-    @DisplayName("Jwt 토큰 인증된 authUser에 대한 Id를 받아온 경우 Profile Id를 반환한다.")
+    @DisplayName("Jwt 토큰 인증된 회원의 Member Id를 반환한다.")
     @Test
     public void successToInjectJwtTokenIntegerIdIntoArguments() {
         //given
@@ -135,7 +139,7 @@ public class ArgumentResolverTest {
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Mockito.doReturn(Integer.class).when(parameter).getParameterType();
+        Mockito.doReturn(MemberId.class).when(parameter).getParameterType();
 
         //when
         Object profileId = loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
@@ -143,7 +147,7 @@ public class ArgumentResolverTest {
         // then
         Assertions.assertThat(profileId).isNotNull();
         Assertions.assertThat(profileId).isEqualTo(uid);
-        Assertions.assertThat(profileId).isInstanceOf(Integer.class);
+        Assertions.assertThat(profileId).isInstanceOf(MemberId.class);
     }
 
     @Disabled
