@@ -2,6 +2,7 @@ package com.inhabas.api.service;
 
 import com.inhabas.api.domain.MemberTest;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.questionaire.Answer;
 import com.inhabas.api.domain.questionaire.AnswerRepository;
@@ -21,10 +22,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AnswerServiceTest {
@@ -44,8 +45,8 @@ public class AnswerServiceTest {
     public void saveAnswersTest() {
         //given
         Member member = MemberTest.MEMBER1();
-        Integer currentUserId = member.getId();
-        given(memberRepository.getById(anyInt())).willReturn(member);
+        MemberId currentUserId = member.getId();
+        given(memberRepository.getById(any())).willReturn(member);
 
         ArrayList<AnswerDto> submittedAnswers = new ArrayList<>() {{
             add(new AnswerDto(1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
@@ -80,7 +81,7 @@ public class AnswerServiceTest {
     public void loadAnswersTest() {
         //given
         Member member = MemberTest.MEMBER1();
-        Integer currentUserId = member.getId();
+        MemberId currentUserId = member.getId();
 
         ArrayList<Answer> savedAnswers = new ArrayList<>() {{
             add(new Answer(member, 1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
@@ -88,7 +89,7 @@ public class AnswerServiceTest {
             add(new Answer(member, 3, "외주를 받아 진행했던 적이 있는데, 아주 잘 되어 스타트업 창업을 진행했습니다."));
             add(new Answer(member, 4, "이 동아리에 입부한다면, 말하는 대로 코딩해주는 인공지능 모델을 개발하고 싶습니다."));
         }};
-        given(answerRepository.findByMember_Id(anyInt())).willReturn(savedAnswers);
+        given(answerRepository.findByMember_Id(any())).willReturn(savedAnswers);
 
         ArrayList<AnswerDto> expectedConvertedDTOs = new ArrayList<>() {{
             add(new AnswerDto(1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
@@ -110,13 +111,13 @@ public class AnswerServiceTest {
     @Test
     public void existAnswersWrittenByMemberTest() {
         //given
-        given(answerRepository.existsByMember_id(anyInt())).willReturn(true);
+        given(answerRepository.existsByMember_id(any())).willReturn(true);
 
         //when
-        boolean result = answerService.existAnswersWrittenBy(12171652);
+        boolean result = answerService.existAnswersWrittenBy(new MemberId(12171652));
 
         //then
         assertTrue(result);
-        then(answerRepository).should(times(1)).existsByMember_id(anyInt());
+        then(answerRepository).should(times(1)).existsByMember_id(any());
     }
 }

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.ApiApplication;
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.domain.member.MajorInfo;
-import com.inhabas.api.domain.member.MajorInfoRepository;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.MemberType;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.domain.questionaire.Questionnaire;
@@ -138,7 +135,7 @@ public class SignUpIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
                                 .email("my@gmail.com")
-                                .memberId(12171652)
+                                .memberId(new MemberId(12171652))
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
@@ -180,7 +177,7 @@ public class SignUpIntegrationTest {
 
 
         //then
-        Member 유동현 = memberRepository.findById(12171652).orElseThrow(MemberNotFoundException::new);
+        Member 유동현 = memberRepository.findById(new MemberId(12171652)).orElseThrow(MemberNotFoundException::new);
         assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(12171652);
@@ -230,7 +227,7 @@ public class SignUpIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
                                 .email("my@gmail.com")
-                                .memberId(228761)
+                                .memberId(new MemberId(228761))
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
@@ -245,7 +242,8 @@ public class SignUpIntegrationTest {
 
 
         //then
-        Member 유동현_교수 = memberRepository.findById(228761).orElseThrow(MemberNotFoundException::new);
+        Member 유동현_교수 = memberRepository.findById(new MemberId(228761))
+                .orElseThrow(MemberNotFoundException::new);
         assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);

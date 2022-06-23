@@ -1,6 +1,8 @@
-package com.inhabas.api.auth.utils.argumentResolver;
+package com.inhabas.api.web.argumentResolver;
 
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
+import com.inhabas.api.domain.member.MemberId;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
@@ -14,7 +16,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Objects;
 
-
+@Slf4j
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
@@ -33,38 +35,47 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (Objects.isNull(authentication))
-            return null;  // login not processed, anonymous user!
 
-        ResolvedAuthenticationResult authenticatedMember = resolveAuthentication(authentication);
+        if (Objects.isNull(authentication)) return null;  // login not processed, anonymous user!
 
-        if (parameter.getParameterType().equals(Integer.class)) {
-
-            return authenticatedMember.getMemberId();
-        }
-        else if (ResolvedAuthenticationResult.class.isAssignableFrom(parameter.getParameterType())) {
-
-            return authenticatedMember;
-        }
-        else {
+        if (isMemberIdType(parameter))
+            return resolveMemberId(authentication);
+        else if (isOAuth2UserInfoAuthenticationType(parameter))
+            return authentication;
+        else
             throw new IllegalArgumentException("지원하지 않는 타입입니다");
-        }
     }
 
-    private ResolvedAuthenticationResult resolveAuthentication(Authentication authentication) {
-        ResolvedAuthenticationResult authenticatedMember = null;
+    private MemberId resolveMemberId(Authentication authentication) {
 
-        if (authentication instanceof JwtAuthenticationResult) { // jwt 토큰 인증 이후
-            //Integer memberId = (Integer) authentication.getPrincipal();
-            throw new NotImplementedException("jwt 인증 수정 후 작업해야함.");
+        MemberId memberId = null;
+
+        if (isOAuth2UserInfoAuthenticationType(authentication)) { // jwt 토큰 인증 이후
+            memberId = (MemberId) authentication.getPrincipal();
 
         } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
             throw new NotImplementedException("소셜로그인 구현 완료 후에 작업해야됨!");
         }
         else {
-            throw new RuntimeException("cannot resolve login member!");
+            log.warn("{} - cannot resolve authenticated User's Id!", this.getClass());
         }
 
-        //return authenticatedMember;
+        return memberId;
+    }
+
+    private boolean isMemberIdType(MethodParameter parameter) {
+
+        return parameter.getParameterType().equals(MemberId.class);
+    }
+
+    private boolean isOAuth2UserInfoAuthenticationType(MethodParameter parameter) {
+
+        return OAuth2UserInfoAuthentication.class
+                .isAssignableFrom(parameter.getParameterType());
+    }
+    private boolean isOAuth2UserInfoAuthenticationType(Authentication authentication) {
+
+        return OAuth2UserInfoAuthentication.class
+                .isAssignableFrom(authentication.getClass());
     }
 }

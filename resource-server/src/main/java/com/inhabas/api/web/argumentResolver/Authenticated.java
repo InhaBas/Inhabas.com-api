@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.utils.argumentResolver;
+package com.inhabas.api.web.argumentResolver;
 
 import io.swagger.v3.oas.annotations.Parameter;
 

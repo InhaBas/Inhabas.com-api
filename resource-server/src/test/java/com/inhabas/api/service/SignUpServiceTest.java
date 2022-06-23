@@ -1,6 +1,7 @@
 package com.inhabas.api.service;
 
 import com.inhabas.api.domain.member.MemberDuplicationCheckerImpl;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.member.MajorInfoDto;
 import com.inhabas.api.dto.signUp.MemberDuplicationQueryCondition;
 import com.inhabas.api.service.member.MajorInfoService;
@@ -210,7 +211,8 @@ public class SignUpServiceTest {
     @Test
     public void validateForMemberId() {
         //given
-        MemberDuplicationQueryCondition condition = new MemberDuplicationQueryCondition(12171652, "010-1111-1111");
+        MemberDuplicationQueryCondition condition =
+                new MemberDuplicationQueryCondition(new MemberId(12171652), "010-1111-1111");
         given(memberDuplicationChecker.isDuplicatedMember(any(MemberDuplicationQueryCondition.class))).willReturn(true);
 
         //when

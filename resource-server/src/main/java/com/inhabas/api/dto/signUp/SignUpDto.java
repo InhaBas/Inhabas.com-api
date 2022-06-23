@@ -1,6 +1,8 @@
 package com.inhabas.api.dto.signUp;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.type.MemberType;
 import lombok.Builder;
 import lombok.Data;
@@ -28,14 +30,15 @@ public class SignUpDto {
     @Email
     private String email;
 
+    @JsonUnwrapped
     @NotNull @Positive
-    private Integer memberId;
+    private MemberId memberId;
 
     @NotNull
     private MemberType memberType;
 
     @Builder
-    public SignUpDto(String name, String major, String phoneNumber, String email, Integer memberId, MemberType memberType) {
+    public SignUpDto(String name, String major, String phoneNumber, String email, MemberId memberId, MemberType memberType) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;

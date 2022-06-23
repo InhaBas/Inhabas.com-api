@@ -3,6 +3,7 @@ package com.inhabas.api.service;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuRepository;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -64,13 +65,12 @@ public class BoardServiceTest {
         SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1);
         NormalBoard normalBoard = new NormalBoard(1, "title", "contents");
         Menu menu = new Menu(null, 1, null, "name", "description");
-        Member member = new Member(12201863, "mingyeom", "010-0000-0000","my@gmail.com", "picture", null, null);
+        Member member = new Member(new MemberId(12201863), "mingyeom", "010-0000-0000","my@gmail.com", "picture", null, null);
         given(boardRepository.save(any())).willReturn(normalBoard);
         given(menuRepository.getById(any())).willReturn(menu);
-        given(memberRepository.getById(any())).willReturn(member);
 
         // when
-        Integer returnedId = boardService.write(12201863, saveBoardDto);
+        Integer returnedId = boardService.write(new MemberId(12201863), saveBoardDto);
 
         // then
         then(boardRepository).should(times(1)).save(any());
@@ -133,9 +133,9 @@ public class BoardServiceTest {
     @Test
     public void updateBoard() {
         //given
-        Member entityMember = new Member(12201863, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
-        NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(entityMember);
-        NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
+        MemberId memberId = new MemberId(12201863);
+        NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(memberId);
+        NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(memberId);
 
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(savedNormalBoard));
         given(boardRepository.save(any())).willReturn(updatedNormalBoard);
@@ -143,7 +143,7 @@ public class BoardServiceTest {
         UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "수정된 제목", "수정된 내용");
 
         // when
-        Integer returnedId = boardService.update(12201863, updateBoardDto);
+        Integer returnedId = boardService.update(memberId, updateBoardDto);
 
         // then
         then(boardRepository).should(times(1)).save(any());

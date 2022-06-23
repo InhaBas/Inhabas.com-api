@@ -35,10 +35,11 @@ public class NormalBoardRepositoryTest {
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
     NormalBoard NOTICE_BOARD_2;
+    Member writer;
 
     @BeforeEach
     public void setUp() {
-        Member saveMember = em.persist(MEMBER1());
+        writer = em.persist(MEMBER1());
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
         Menu NoticeBoardMenu = em.persist(
                 Menu.builder()
@@ -58,11 +59,11 @@ public class NormalBoardRepositoryTest {
                         .build());
 
         FREE_BOARD = NormalBoardTest.getBoard1()
-                .writtenBy(saveMember).inMenu(freeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(freeBoardMenu);
         NOTICE_BOARD = NormalBoardTest.getBoard2()
-                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu);
         NOTICE_BOARD_2 = NormalBoardTest.getBoard3()
-                .writtenBy(saveMember).inMenu(NoticeBoardMenu);
+                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu);
     }
 
 
@@ -80,7 +81,7 @@ public class NormalBoardRepositoryTest {
                 () -> assertThat(saveBoard.getCreated()).isNotNull(),
                 () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(saveBoard.getWriter()).isEqualTo(saveMember)
+                () -> assertThat(saveBoard.getWriterId()).isEqualTo(saveMember.getId())
         );
     }
 
@@ -100,7 +101,7 @@ public class NormalBoardRepositoryTest {
                 () -> assertThat(find.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(find.getContents()).isEqualTo(FREE_BOARD.getContents()),
                 () -> assertThat(find.getMenuId()).isEqualTo(FREE_BOARD.getMenu().getId()),
-                () -> assertThat(find.getWriterName()).isEqualTo(FREE_BOARD.getWriter().getName())
+                () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
         );
     }
 
@@ -112,8 +113,9 @@ public class NormalBoardRepositoryTest {
         boardRepository.save(FREE_BOARD);
 
         //when
-        NormalBoard param = new NormalBoard(
-                FREE_BOARD.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.").writtenBy(saveMember);
+        NormalBoard param =
+                new NormalBoard(FREE_BOARD.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.")
+                .writtenBy(saveMember.getId());
         boardRepository.save(param);
 
         //then

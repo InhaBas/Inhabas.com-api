@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.comment.CommentDetailDto;
 import com.inhabas.api.dto.comment.CommentSaveDto;
 import com.inhabas.api.dto.comment.CommentUpdateDto;
@@ -28,8 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DefaultWebMvcTest(CommentController.class)
 public class CommentControllerTest {
@@ -57,9 +57,9 @@ public class CommentControllerTest {
     void getCommentList() throws Exception {
         //given
         List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
-                new CommentDetailDto(1, "contents1", 12171652, "유동현", "간호학과", LocalDateTime.now()),
-                new CommentDetailDto(2, "contents2", 12171652, "유동현", "간호학과", LocalDateTime.now()),
-                new CommentDetailDto(3, "contents3", 12171652, "유동현", "간호학과", LocalDateTime.now())
+                new CommentDetailDto(1, "contents1", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(2, "contents2", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(3, "contents3", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now())
         });
         given(commentService.getComments(anyInt())).willReturn(commentList);
 
@@ -79,14 +79,14 @@ public class CommentControllerTest {
     @Test
     void createNewComment() throws Exception {
         //given
-        CommentSaveDto newComment = new CommentSaveDto(12171652, "아싸 1등", 13);
+        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13}";
         Integer newCommentId = 1;
         given(commentService.create(any(CommentSaveDto.class))).willReturn(newCommentId);
 
         //when
         String responseBody = mockMvc.perform(post("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newComment)))
+                        .content(jsonRequest))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse().getContentAsString();
@@ -101,12 +101,12 @@ public class CommentControllerTest {
     void tryToSaveTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        CommentSaveDto newComment = new CommentSaveDto(12171652, tooLongContents, 13);
+        String jsonRequest = String.format("{\"writerId\":12171652,\"contents\":\"%s\",\"boardId\":13}", tooLongContents);
 
         //when
         String errorMessage = mockMvc.perform(post("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(newComment)))
+                        .content(jsonRequest))
                 .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse().getContentAsString();
@@ -118,12 +118,12 @@ public class CommentControllerTest {
     @Test
     void updateComment() throws Exception {
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, 1217162, "1등이 아니네,,,", 12);
+        String jsonRequest = "{\"id\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
         given(commentService.update(any(CommentUpdateDto.class))).willReturn(1);
 
         String responseBody = mockMvc.perform(put("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(param)))
+                        .content(jsonRequest))
                 .andExpect(status().isNoContent())
                 .andReturn()
                 .getResponse().getContentAsString();
@@ -137,7 +137,7 @@ public class CommentControllerTest {
     void tryToUpdateTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        CommentUpdateDto param = new CommentUpdateDto(1, 12171652, tooLongContents, 13);
+        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(1217162), tooLongContents, 13);
 
         //when
         String errorMessage = mockMvc.perform(put("/comment")
@@ -154,7 +154,7 @@ public class CommentControllerTest {
     @Test
     void illegalTryToUpdateComment() throws Exception {
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, 1217162, "1등이 아니네,,,", 12);
+        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(1217162), "1등이 아니네,,,", 12);
         given(commentService.update(any(CommentUpdateDto.class))).willThrow(RuntimeException.class);
 
         //when

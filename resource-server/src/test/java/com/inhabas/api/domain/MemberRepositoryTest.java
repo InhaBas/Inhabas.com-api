@@ -1,9 +1,6 @@
 package com.inhabas.api.domain;
 
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.domain.member.MemberTeam;
-import com.inhabas.api.domain.member.Team;
+import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.security.MemberAuthorityProvider;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;
@@ -102,7 +99,7 @@ public class MemberRepositoryTest {
 
         //when
         Member samePhoneMember = Member.builder()
-                .id(99999999)
+                .id(new MemberId(99999999))
                 .name("홍길동")
                 .phone(member.getPhone()) // 같은 전화번호
                 .email("my@gmail.com")
@@ -121,7 +118,7 @@ public class MemberRepositoryTest {
     public void 전화번호가_존재한다() {
         //given
         Member member = Member.builder()
-                .id(12171652)
+                .id(new MemberId(12171652))
                 .phone("010-0000-0000")
                 .name("유동현")
                 .email("my@gmail.com")
@@ -162,7 +159,8 @@ public class MemberRepositoryTest {
     @Test
     public void validateMemberId() {
         //when
-        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171652, null));
+        MemberId memberId = new MemberId(12171652);
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171652), null));
 
         //then
         assertFalse(result);
@@ -188,7 +186,7 @@ public class MemberRepositoryTest {
         memberRepository.save(MEMBER1());
 
         //when
-        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1234"));
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171234), "010-1111-1234"));
 
         //then
         assertTrue(result);
@@ -201,7 +199,7 @@ public class MemberRepositoryTest {
         memberRepository.save(MEMBER1());
 
         //when
-        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171111, "010-1111-1111"));
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171111), "010-1111-1111"));
 
         //then
         assertTrue(result);
@@ -214,7 +212,7 @@ public class MemberRepositoryTest {
         memberRepository.save(MEMBER1());
 
         //when
-        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(12171234, "010-1111-1111"));
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171234), "010-1111-1111"));
 
         //then
         assertTrue(result);

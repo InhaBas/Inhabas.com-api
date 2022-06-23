@@ -15,7 +15,7 @@ public class MemberTeamServiceImpl implements MemberTeamService {
 
     @Override
     @Transactional
-    public void addMemberToTeam(Integer memberId, Integer teamId) {
+    public void addMemberToTeam(MemberId memberId, Integer teamId) {
         Member memberProxy = memberRepository.getById(memberId);
         Team teamProxy = teamRepository.getById(teamId);
 
@@ -24,7 +24,7 @@ public class MemberTeamServiceImpl implements MemberTeamService {
 
     @Override
     @Transactional
-    public void deleteMemberFromTeam(Integer memberId, Integer teamId) {
+    public void deleteMemberFromTeam(MemberId memberId, Integer teamId) {
 
         memberTeamRepository.deleteByMemberIdAndTeamId(memberId, teamId);
     }

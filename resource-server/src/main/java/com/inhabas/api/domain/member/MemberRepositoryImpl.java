@@ -26,7 +26,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public MemberAuthorityProvider.RoleAndTeamDto fetchRoleAndTeamsByMemberId(Integer memberId) {
+    public MemberAuthorityProvider.RoleAndTeamDto fetchRoleAndTeamsByMemberId(MemberId memberId) {
         Role role = queryFactory
                 .select(member.ibasInformation.role).from(member)
                 .where(member.id.eq(memberId))
@@ -80,7 +80,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .or(eqPhone(condition.getPhone()));
     }
 
-    private BooleanExpression eqId(Integer id) {
+    private BooleanExpression eqId(MemberId id) {
         return Objects.isNull(id) ? null : member.id.eq(id);
     }
 

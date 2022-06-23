@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -32,7 +33,7 @@ public class MemberControllerTest {
     @DisplayName("회원을 한 팀에 추가시킨다.")
     @Test
     public void addMemberToTeamTest() throws Exception {
-        doNothing().when(memberTeamService).addMemberToTeam(anyInt(), anyInt());
+        doNothing().when(memberTeamService).addMemberToTeam(any(), anyInt());
 
         mvc.perform(post("/member/team").with(csrf())
                         .param("memberId", "12171652")
@@ -43,7 +44,7 @@ public class MemberControllerTest {
     @DisplayName("팀에서 회원을 방출시킨다.")
     @Test
     public void expelMemberFromTeamTest() throws Exception {
-        doNothing().when(memberTeamService).deleteMemberFromTeam(anyInt(), anyInt());
+        doNothing().when(memberTeamService).deleteMemberFromTeam(any(), anyInt());
 
         mvc.perform(delete("/member/team").with(csrf())
                         .param("memberId", "12171652")

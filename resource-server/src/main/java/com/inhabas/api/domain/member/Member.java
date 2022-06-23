@@ -15,7 +15,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -24,8 +23,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
-    @Id
-    private Integer id;
+
+    @EmbeddedId
+    private MemberId id;
 
     @Embedded
     private Name name;
@@ -49,7 +49,7 @@ public class Member {
     private boolean isDeleted = false;
 
     @Builder
-    public Member(Integer id, String name, String phone, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
+    public Member(MemberId id, String name, String phone, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
         this.name = new Name(name);
         this.phone = new Phone(phone);
@@ -110,8 +110,8 @@ public class Member {
                 && getIbasInformation().equals(member.getIbasInformation());
     }
 
-    public boolean isSameMember(Integer id) {
-        return Objects.equals(this.id, id);
+    public boolean isSameMember(MemberId id) {
+        return this.id.equals(id);
     }
 
     public boolean isUnderGraduate() {

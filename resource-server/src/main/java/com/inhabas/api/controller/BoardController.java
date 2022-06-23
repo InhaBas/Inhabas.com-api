@@ -1,6 +1,7 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.auth.utils.argumentResolver.Authenticated;
+import com.inhabas.api.web.argumentResolver.Authenticated;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
@@ -60,7 +61,7 @@ public class BoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Integer> addBoard(@Authenticated Integer memberId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
+    public ResponseEntity<Integer> addBoard(@Authenticated MemberId memberId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
         return new ResponseEntity<>(boardService.write(memberId, saveBoardDto), HttpStatus.CREATED);
     }
 
@@ -71,7 +72,7 @@ public class BoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Integer> updateBoard(@Authenticated Integer memberId ,@Valid @RequestBody UpdateBoardDto updateBoardDto) {
+    public ResponseEntity<Integer> updateBoard(@Authenticated MemberId memberId , @Valid @RequestBody UpdateBoardDto updateBoardDto) {
         return new ResponseEntity<>(boardService.update(memberId, updateBoardDto), HttpStatus.OK);
     }
 

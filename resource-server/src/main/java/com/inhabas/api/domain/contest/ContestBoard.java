@@ -5,14 +5,15 @@ import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.contest.type.wrapper.Association;
 import com.inhabas.api.domain.contest.type.wrapper.Topic;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.menu.Menu;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
@@ -62,16 +63,4 @@ public class ContestBoard extends NormalBoard {
         this.deadline =deadline;
     }
 
-    /* relation method */
-
-
-    public ContestBoard writtenBy(Member writer){
-        super._writtenBy(writer);
-        return this;
-    }
-
-    public ContestBoard inMenu(Menu menu){
-        super._inMenu(menu);
-        return this;
-    }
 }

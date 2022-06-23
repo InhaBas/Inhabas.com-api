@@ -1,15 +1,12 @@
 package com.inhabas.api.service;
 
-import com.inhabas.api.domain.member.DuplicatedMemberFieldException;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberDuplicationChecker;
-import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.type.IbasInformation;
 import com.inhabas.api.domain.member.type.SchoolInformation;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.ContactDto;
-import com.inhabas.api.service.member.MemberNotFoundException;
 import com.inhabas.api.service.member.MemberServiceImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,7 +77,7 @@ public class MemberServiceTest {
 
         //when
         Member newMember = Member.builder()
-                .id(12345678)
+                .id(new MemberId(12345678))
                 .name("유동현")
                 .phone("010-0000-0000")
                 .email("my@gmail.com")
@@ -102,7 +99,7 @@ public class MemberServiceTest {
 
         //when
         Member newMember = Member.builder()
-                .id(12345678)
+                .id(new MemberId(12345678))
                 .name("유동현")
                 .phone("010-0000-0000")
                 .email("my@gmail.com")
@@ -119,7 +116,7 @@ public class MemberServiceTest {
     @Test
     public void changeRoleTest() {
         //given
-        Integer memberId = 12171652;
+        MemberId memberId = new MemberId(12171652);
         Member targetMember = Member.builder()
                 .id(memberId)
                 .picture("")
@@ -129,12 +126,10 @@ public class MemberServiceTest {
                 .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
                 .ibasInformation(new IbasInformation(Role.ANONYMOUS))
                 .build();
-        given(memberRepository.findById(anyInt()))
-                .willReturn(Optional.ofNullable(targetMember));
 
         assert targetMember != null;
         Member result = Member.builder()
-                .id(targetMember.getId())
+                .id(memberId)
                 .picture(targetMember.getPicture())
                 .name(targetMember.getName())
                 .email("my@gmail.com")
@@ -146,30 +141,31 @@ public class MemberServiceTest {
                 .willReturn(result); // NOT care about this return-value of save() in Service logic
 
         //when
-        memberService.changeRole(memberId, Role.NOT_APPROVED_MEMBER);
+        memberService.changeRole(targetMember, Role.NOT_APPROVED_MEMBER);
 
         //then
         assertThat(targetMember.getIbasInformation().getRole())
                 .isEqualTo(Role.NOT_APPROVED_MEMBER);
     }
 
+    @Disabled
     @DisplayName("권한변경 시도 시에, 회원이 존재하지 않는 경우 MemberNotExistException 발생")
     @Test
     public void failToChangeRoleTest() {
 
-        given(memberRepository.findById(anyInt()))
+        given(memberRepository.findById(any()))
                 .willReturn(Optional.empty());
 
         //when
-        assertThrows(MemberNotFoundException.class,
-                () -> memberService.changeRole(12171652, Role.BASIC_MEMBER));
+//        assertThrows(MemberNotFoundException.class,
+//                () -> memberService.changeRole(new MemberId(12171652), Role.BASIC_MEMBER));
     }
 
     @DisplayName("회장 연락처 불러오기")
     @Test
     public void getChiefContact() {
         Member chief = Member.builder()
-                .id(12171652)
+                .id(new MemberId(12171652))
                 .picture("")
                 .name("유동현")
                 .email("my@gmail.com")

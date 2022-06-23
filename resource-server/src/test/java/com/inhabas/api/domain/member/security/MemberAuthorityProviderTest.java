@@ -4,6 +4,7 @@ import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.domain.member.Team;
 import com.inhabas.api.domain.member.type.wrapper.Role;
@@ -70,7 +71,7 @@ public class MemberAuthorityProviderTest {
     @DisplayName("기존회원의 권한을 들고온다.")
     public void memberLoginTest() {
 
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(12171652);
+        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
         MemberAuthorityProvider.RoleAndTeamDto roleAndTeamDto =
                 new MemberAuthorityProvider.RoleAndTeamDto(Role.BASIC_MEMBER, Arrays.asList(new Team("회계"), new Team("운영")));
         given(memberRepository.fetchRoleAndTeamsByMemberId(any())).willReturn(roleAndTeamDto);
@@ -89,7 +90,7 @@ public class MemberAuthorityProviderTest {
     @Test
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")
     public void cannotFindProfileMappedFromSocialAccount() {
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(12171652);
+        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
         given(memberRepository.fetchRoleAndTeamsByMemberId(any()))
                 .willReturn(new MemberAuthorityProvider.RoleAndTeamDto(null, null));
 

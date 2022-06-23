@@ -1,6 +1,7 @@
 package com.inhabas.api.service.member;
 
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import com.inhabas.api.dto.member.ContactDto;
 
@@ -13,13 +14,13 @@ public interface MemberService {
 
     List<Member> findMembers();
 
-    Member findById(Integer memberId);
+    Member findById(MemberId memberId);
 
     Optional<Member> updateMember(Member member);
 
-    void changeRole(Integer memberId, Role role);
+    void changeRole(Member member, Role role);
 
     ContactDto getChiefContact();
 
-    void finishSignUp(Integer memberId);
+    void finishSignUp(Member member);
 }

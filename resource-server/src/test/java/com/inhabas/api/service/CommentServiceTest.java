@@ -7,6 +7,7 @@ import com.inhabas.api.domain.board.NormalBoardRepository;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.comment.CommentRepository;
 import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.dto.comment.CommentSaveDto;
 import com.inhabas.api.dto.comment.CommentUpdateDto;
@@ -52,14 +53,17 @@ public class CommentServiceTest {
     @DisplayName("새로운 댓글을 저장한다.")
     @Test
     public void SaveNewCommentTest() {
+
+        MemberId memberId = new MemberId(12171652);
+
         //mocking
-        given(memberRepository.getById(12171652)).willReturn(proxyWriter);
+        given(memberRepository.getById(memberId)).willReturn(proxyWriter);
         given(boardRepository.getById(12)).willReturn(proxyBoard);
         given(commentRepository.save(any(Comment.class)))
                 .willReturn(new Comment(any(Integer.class), "이야 이게 댓글 기능이라고??"));
 
         //given
-        CommentSaveDto newComment = new CommentSaveDto(12171652, "이야 이게 댓글 기능이라고??", 12);
+        CommentSaveDto newComment = new CommentSaveDto(memberId, "이야 이게 댓글 기능이라고??", 12);
 
         //when
         Integer returnId = commentService.create(newComment);
@@ -81,7 +85,7 @@ public class CommentServiceTest {
                 .willAnswer(i -> i.getArguments()[0]);
 
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, 12171652, "내용 수정 좀 할게요.", 12);
+        CommentUpdateDto param = new CommentUpdateDto(1, proxyWriter.getId(), "내용 수정 좀 할게요.", 12);
 
         //when
         Integer returnId = commentService.update(param);
@@ -107,7 +111,7 @@ public class CommentServiceTest {
                 .willReturn(expectedCommentAfterFind(commentId, proxyWriter, proxyBoard));
 
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, 12170000, "내용 수정 좀 할게요.", 12);
+        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(12170000), "내용 수정 좀 할게요.", 12);
 
         //when
         Assertions.assertThrows(RuntimeException.class,

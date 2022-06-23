@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.board.QNormalBoard.normalBoard;
+import static com.inhabas.api.domain.member.QMember.member;
 
 @RequiredArgsConstructor
 public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
@@ -26,12 +27,12 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         normalBoard.id,
                         normalBoard.title.value,
                         Expressions.asString("").as("contents"),
-                        normalBoard.writer.name.value,
+                        member.name.value,
                         Expressions.asNumber(menuId).as("menuId"),
                         normalBoard.created,
                         normalBoard.updated))
                 .from(normalBoard)
-                .innerJoin(normalBoard.writer)
+                .innerJoin(member).on(normalBoard.writerId.eq(member.id))
                 .where(menuEq(menuId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -51,12 +52,12 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         Expressions.asNumber(id).as("id"),
                         normalBoard.title.value,
                         normalBoard.contents.value,
-                        normalBoard.writer.name.value,
+                        member.name.value,
                         normalBoard.menu.id,
                         normalBoard.created,
                         normalBoard.updated))
                 .from(normalBoard)
-                .innerJoin(normalBoard.writer).on(normalBoard.id.eq(id))
+                .innerJoin(member).on(normalBoard.writerId.eq(member.id))
                 .limit(1)
                 .fetchOne();
 

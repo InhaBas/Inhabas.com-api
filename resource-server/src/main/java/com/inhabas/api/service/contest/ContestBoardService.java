@@ -1,5 +1,6 @@
 package com.inhabas.api.service.contest;
 
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.inhabas.api.dto.contest.SaveContestBoardDto;
@@ -8,9 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ContestBoardService {
-    Integer write(Integer memberId, SaveContestBoardDto dto);
+    Integer write(MemberId memberId, SaveContestBoardDto dto);
 
-    Integer update(Integer memberId, UpdateContestBoardDto dto);
+    Integer update(MemberId memberId, UpdateContestBoardDto dto);
 
     void delete(Integer id);
 

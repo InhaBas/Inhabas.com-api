@@ -3,12 +3,10 @@ package com.inhabas.api.service.board;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.board.NormalBoardRepository;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.MemberRepository;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.dto.board.BoardDto;
-
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import lombok.RequiredArgsConstructor;
@@ -27,26 +25,27 @@ public class BoardServiceImpl implements BoardService {
 
     private final NormalBoardRepository boardRepository;
     private final MenuRepository menuRepository;
-    private final MemberRepository memberRepository;
 
     @Override
-    public Integer write(Integer memberId, SaveBoardDto saveBoardDto) {
+    public Integer write(MemberId memberId, SaveBoardDto saveBoardDto) {
+
         Menu menu = menuRepository.getById(saveBoardDto.getMenuId());
-        Member writer = memberRepository.getById(memberId);
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(menu)
-                .writtenBy(writer);
+                .writtenBy(memberId);
+
         return boardRepository.save(normalBoard).getId();
     }
 
     @Override
-    public Integer update(Integer memberId, UpdateBoardDto updateBoardDto) {
-        Member writer = memberRepository.getById(memberId);
+    public Integer update(MemberId memberId, UpdateBoardDto updateBoardDto) {
+
         NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
                 .orElseThrow(BoardNotFoundException::new);
         NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
-                .writtenBy(writer)
+                .writtenBy(memberId)
                 .inMenu(savedBoard.getMenu());
+
         return boardRepository.save(updatedBoard).getId();
     }
 

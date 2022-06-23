@@ -2,9 +2,7 @@ package com.inhabas.annotataion;
 
 import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.member.type.IbasInformation;
-import com.inhabas.api.domain.member.type.SchoolInformation;
+import com.inhabas.api.domain.member.MemberId;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,17 +28,8 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
         token.setAuthenticated(true);
 
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
-
-            Member profile = Member.builder()
-                    .id(principalInfo.memberId())
-                    .picture("")
-                    .name(principalInfo.memberName())
-                    .email(principalInfo.email())
-                    .phone(principalInfo.memberPhone())
-                    .schoolInformation(new SchoolInformation(principalInfo.memberMajor(), principalInfo.memberGeneration(), principalInfo.memberType()))
-                    .ibasInformation(new IbasInformation(principalInfo.memberRole()))
-                    .build();
-            token.setPrincipal(profile);
+            MemberId memberId = new MemberId(principalInfo.memberId());
+            token.setPrincipal(memberId);
         }
 
         context.setAuthentication(token);
