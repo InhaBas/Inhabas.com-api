@@ -20,6 +20,7 @@ import com.inhabas.api.dto.contest.SaveContestBoardDto;
 import com.inhabas.api.dto.contest.UpdateContestBoardDto;
 import com.inhabas.api.service.contest.ContestBoardService;
 import com.inhabas.testConfig.DefaultWebMvcTest;
+import com.inhabas.testConfig.NoSecureWebMvcTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@DefaultWebMvcTest(ContestBoardController.class)
+@NoSecureWebMvcTest(ContestBoardController.class)
 public class ContestBoardControllerTest {
 
     @Autowired

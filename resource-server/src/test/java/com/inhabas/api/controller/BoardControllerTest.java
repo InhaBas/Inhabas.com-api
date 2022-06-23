@@ -21,7 +21,7 @@ import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardService;
 import com.inhabas.api.service.member.MemberService;
-import com.inhabas.testConfig.DefaultWebMvcTest;
+import com.inhabas.testConfig.NoSecureWebMvcTest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-@DefaultWebMvcTest(BoardController.class)
+@NoSecureWebMvcTest(BoardController.class)
 public class BoardControllerTest {
 
     @Autowired
