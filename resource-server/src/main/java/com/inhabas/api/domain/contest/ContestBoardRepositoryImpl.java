@@ -1,6 +1,9 @@
 package com.inhabas.api.domain.contest;
 
 
+import static com.inhabas.api.domain.contest.QContestBoard.contestBoard;
+import static com.inhabas.api.domain.member.QMember.member;
+
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import com.querydsl.core.types.Order;
@@ -10,17 +13,14 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static com.inhabas.api.domain.contest.QContestBoard.contestBoard;
 
 @RequiredArgsConstructor
 public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom {
@@ -32,7 +32,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         return Optional.ofNullable(queryFactory
                 .select(Projections.constructor(DetailContestBoardDto.class,
                             Expressions.asNumber(id).as("id"),
-                            contestBoard.writer.name.value,
+                            member.name.value,
                             contestBoard.title.value,
                             contestBoard.contents.value,
                             contestBoard.association.value,
@@ -43,7 +43,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             contestBoard.updated
                         ))
                 .from(contestBoard)
-                .innerJoin(contestBoard.writer).on(contestBoard.id.eq(id))
+                .innerJoin(member).on(contestBoard.writerId.eq(member.id))
                 .limit(1)
                 .fetchOne());
     }

@@ -3,7 +3,6 @@ package com.inhabas.api.service.contest;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.ContestBoard;
 import com.inhabas.api.domain.contest.ContestBoardRepository;
-import com.inhabas.api.domain.member.Member;
 import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.member.MemberRepository;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
@@ -23,11 +22,10 @@ import javax.transaction.Transactional;
 public class ContestBoardServiceImpl implements ContestBoardService {
 
     private final ContestBoardRepository contestBoardRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     public Integer write(MemberId memberId, SaveContestBoardDto dto) {
-        Member writer = memberRepository.getById(memberId);
+
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
                 .contents(dto.getContents())
@@ -36,15 +34,16 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
                 .build()
-                        .writtenBy(writer);
+                        .writtenBy(memberId);
         return contestBoardRepository.save(contestBoard).getId();
     }
 
     @Override
     public Integer update(MemberId memberId, UpdateContestBoardDto dto) {
+
         ContestBoard savedContestBoard = contestBoardRepository.findById(dto.getId())
                 .orElseThrow(BoardNotFoundException::new);
-        Member writer = memberRepository.getById(memberId);
+
         ContestBoard entity = ContestBoard.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
@@ -54,8 +53,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
                 .build()
-                .writtenBy(writer)
+                .writtenBy(memberId)
                 .inMenu(savedContestBoard.getMenu());
+
         return contestBoardRepository.save(entity).getId();
     }
 

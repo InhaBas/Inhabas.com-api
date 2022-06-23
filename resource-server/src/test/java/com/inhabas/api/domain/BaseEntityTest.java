@@ -45,7 +45,7 @@ public class BaseEntityTest {
         //given
         Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(member)
+                .writtenBy(member.getId())
                 .inMenu(freeBoardMenu);
 
         //when
@@ -61,13 +61,13 @@ public class BaseEntityTest {
         //given
         Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(member)
+                .writtenBy(member.getId())
                 .inMenu(freeBoardMenu);
         em.persist(board);
 
         //when
         NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
-                .writtenBy(member)
+                .writtenBy(member.getId())
                 .inMenu(freeBoardMenu);
         em.merge(param);
         em.flush();em.clear();

@@ -68,7 +68,6 @@ public class BoardServiceTest {
         Member member = new Member(new MemberId(12201863), "mingyeom", "010-0000-0000","my@gmail.com", "picture", null, null);
         given(boardRepository.save(any())).willReturn(normalBoard);
         given(menuRepository.getById(any())).willReturn(menu);
-        given(memberRepository.getById(any())).willReturn(member);
 
         // when
         Integer returnedId = boardService.write(new MemberId(12201863), saveBoardDto);
@@ -135,9 +134,8 @@ public class BoardServiceTest {
     public void updateBoard() {
         //given
         MemberId memberId = new MemberId(12201863);
-        Member entityMember = new Member(memberId, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
-        NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(entityMember);
-        NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(entityMember);
+        NormalBoard savedNormalBoard = new NormalBoard(1, "Origin Title", "Origin Contents").writtenBy(memberId);
+        NormalBoard updatedNormalBoard = new NormalBoard(1, "Title", "Contents").writtenBy(memberId);
 
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(savedNormalBoard));
         given(boardRepository.save(any())).willReturn(updatedNormalBoard);

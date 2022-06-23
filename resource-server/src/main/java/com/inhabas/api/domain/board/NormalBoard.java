@@ -5,7 +5,7 @@ import com.inhabas.api.domain.board.type.wrapper.Contents;
 import com.inhabas.api.domain.board.type.wrapper.Title;
 import com.inhabas.api.domain.comment.Comment;
 import com.inhabas.api.domain.file.BoardFile;
-import com.inhabas.api.domain.member.Member;
+import com.inhabas.api.domain.member.MemberId;
 import com.inhabas.api.domain.menu.Menu;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,9 +39,9 @@ public class NormalBoard extends BaseEntity {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_board_to_menu"))
     protected Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_board_to_user"))
-    protected Member writer;
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "writer_id"))
+    protected MemberId writerId;
 
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
@@ -81,8 +81,8 @@ public class NormalBoard extends BaseEntity {
         return menu;
     }
 
-    public Member getWriter() {
-        return writer;
+    public MemberId getWriterId() {
+        return writerId;
     }
 
     public Set<BoardFile> getFiles() {
@@ -91,16 +91,16 @@ public class NormalBoard extends BaseEntity {
 
     /* relation method */
 
-    protected void _writtenBy(Member writer){
-        if (Objects.isNull(this.writer))
-            this.writer = writer;
-        else
-            throw new IllegalStateException("게시글 작성자를 수정할 수 없습니다.");
-    }
+    @SuppressWarnings("unchecked")
+    public <T extends NormalBoard> T writtenBy(MemberId writerId){
 
-    public NormalBoard writtenBy(Member writer){
-        this._writtenBy(writer);
-        return this;
+        if (Objects.isNull(this.writerId)) {
+            this.writerId = writerId;
+            return (T) this;
+        }
+        else {
+            throw new IllegalStateException("게시글 작성자를 수정할 수 없습니다.");
+        }
     }
 
     public NormalBoard addFiles(Set<BoardFile> UploadFiles) {
@@ -110,8 +110,8 @@ public class NormalBoard extends BaseEntity {
         return this;
     }
 
-    public boolean isWriter(Member member) {
-        return this.writer.equals(member);
+    public boolean isWriter(MemberId writerId) {
+        return this.writerId.equals(writerId);
     }
 
     public void addFile(BoardFile uploadFile) {
@@ -123,12 +123,9 @@ public class NormalBoard extends BaseEntity {
         comments.add(newComment);
     }
 
-    protected void _inMenu(Menu menu){
+    @SuppressWarnings("unchecked")
+    public <T extends NormalBoard> T inMenu(Menu menu) {
         this.menu = menu;
-    }
-
-    public NormalBoard inMenu(Menu menu) {
-        _inMenu(menu);
-        return this;
+        return (T) this;
     }
 }

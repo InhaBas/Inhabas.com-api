@@ -43,8 +43,6 @@ public class ContestBoardServiceTest {
     @Mock
     ContestBoardRepository contestBoardRepository;
 
-    @Mock
-    MemberRepository memberRepository;
 
     private MockMvc mockMvc;
 
@@ -69,7 +67,6 @@ public class ContestBoardServiceTest {
                         null, null);
 
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
-        given(memberRepository.getById(any())).willReturn(writer);
 
         // when
         Integer returnedId = contestBoardService.write(memberId, saveContestBoardDto);
@@ -150,11 +147,10 @@ public class ContestBoardServiceTest {
     public void updateContestBoard() {
         //given
         MemberId memberId = new MemberId(12201863);
-        Member writer = new Member(memberId, "mingyeom", "010-0000-0000", "my@gmail.com", "picture", null, null);
         ContestBoard expectedContestBoard =
                 new ContestBoard(1, "title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26))
-                .writtenBy(writer);
+                .writtenBy(memberId);
 
         given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
         given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));

@@ -36,11 +36,12 @@ public class ContestBoardRepositoryTest {
     ContestBoard board1;
     ContestBoard board2;
     ContestBoard board3;
+    Member writer;
 
     @BeforeEach
     public void settingContestBoard(){
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        Member savedMember = em.persist(MEMBER1());
+        writer = em.persist(MEMBER1());
         menu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
@@ -51,11 +52,11 @@ public class ContestBoardRepositoryTest {
                         .build());
 
         board1 = ContestBoardTest.getContestBoard1()
-                    .writtenBy(savedMember).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu);
         board2 = ContestBoardTest.getContestBoard2()
-                    .writtenBy(savedMember).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu);
         board3 = ContestBoardTest.getContestBoard3()
-                    .writtenBy(savedMember).inMenu(menu);
+                    .writtenBy(writer.getId()).inMenu(menu);
     }
 
     @DisplayName("저장한 게시글의 Id를 참조하여 Dto를 반환한다.")
@@ -66,7 +67,7 @@ public class ContestBoardRepositoryTest {
 
         DetailContestBoardDto expectedDto = DetailContestBoardDto.builder()
                         .id(savedContestBoard.getId())
-                        .writerName(savedContestBoard.getWriter().getName())
+                        .writerName(writer.getName())
                         .title(savedContestBoard.getTitle())
                         .contents(savedContestBoard.getContents())
                         .association(savedContestBoard.getAssociation())

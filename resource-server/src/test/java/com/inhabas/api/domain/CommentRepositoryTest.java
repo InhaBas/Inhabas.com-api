@@ -48,7 +48,7 @@ public class CommentRepositoryTest {
 
         normalBoard = em.persist(
                 NormalBoardTest.getBoard1()
-                        .writtenBy(writer)
+                        .writtenBy(writer.getId())
                         .inMenu(freeBoardMenu)
         );
     }
