@@ -1,12 +1,21 @@
 package com.inhabas.api.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.domain.menu.MenuRepository;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.service.menu.MenuNotExistException;
 import com.inhabas.api.service.menu.MenuServiceImpl;
+import java.util.ArrayList;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,15 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.ArrayList;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -53,13 +53,13 @@ public class MenuServiceTest {
         ReflectionTestUtils.setField(boardGroup, "id", 1);
         Menu existMenu = new Menu(boardGroup, 1, MenuType.LIST, "자유게시판", "자유로운 게시판 입니다.");
         ReflectionTestUtils.setField(existMenu, "id", 1);
-        given(menuRepository.findById(anyInt())).willReturn(Optional.of(existMenu));
+        given(menuRepository.findById(any(MenuId.class))).willReturn(Optional.of(existMenu));
 
         //when
-        MenuDto returnedMenuDto = menuService.getMenuInfoById(1);
+        MenuDto returnedMenuDto = menuService.getMenuInfoById(new MenuId(1));
 
         //then
-        then(menuRepository).should(times(1)).findById(anyInt());
+        then(menuRepository).should(times(1)).findById(any(MenuId.class));
         assertThat(returnedMenuDto)
                 .usingRecursiveComparison()
                 .isEqualTo(MenuDto.convert(existMenu));
@@ -69,10 +69,10 @@ public class MenuServiceTest {
     @Test
     public void FailToGetMenuInfoByIdTest() {
 
-        given(menuRepository.findById(anyInt())).willReturn(Optional.empty());
+        given(menuRepository.findById(any(MenuId.class))).willReturn(Optional.empty());
 
         //when
         Assertions.assertThrows(MenuNotExistException.class,
-                () -> menuService.getMenuInfoById(1));
+                () -> menuService.getMenuInfoById(new MenuId(1)));
     }
 }

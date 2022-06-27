@@ -1,17 +1,17 @@
 package com.inhabas.api.domain.menu;
 
+import static com.inhabas.api.domain.menu.QMenu.menu;
+import static com.querydsl.core.group.GroupBy.list;
+
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.dto.menu.MenuGroupDto;
 import com.querydsl.core.group.GroupBy;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.inhabas.api.domain.menu.QMenu.menu;
-import static com.querydsl.core.group.GroupBy.list;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MenuRepositoryImpl implements MenuRepositoryCustom {
@@ -33,5 +33,13 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
                 ).entrySet().stream()
                 .map(entry -> new MenuGroupDto(entry.getKey().getId(), entry.getKey().getName(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Menu> findById(MenuId menuId) {
+        return Optional.ofNullable(
+                jpaQueryFactory.selectFrom(menu)
+                .where(menu.id.eq(Integer.parseInt(menuId.toString())))
+                .fetchOne());
     }
 }

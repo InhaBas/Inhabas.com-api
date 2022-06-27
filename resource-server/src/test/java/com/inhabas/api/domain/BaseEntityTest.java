@@ -1,5 +1,8 @@
 package com.inhabas.api.domain;
 
+import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.config.JpaConfig;
 import com.inhabas.api.domain.board.NormalBoard;
 import com.inhabas.api.domain.member.Member;
@@ -7,16 +10,12 @@ import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuGroup;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
 import com.inhabas.testConfig.DefaultDataJpaTest;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-
-import java.time.LocalDateTime;
-
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
 @Import(JpaConfig.class)
@@ -46,7 +45,7 @@ public class BaseEntityTest {
         Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
                 .writtenBy(member.getId())
-                .inMenu(freeBoardMenu);
+                .inMenu(freeBoardMenu.getId());
 
         //when
         em.persist(board);
@@ -62,13 +61,13 @@ public class BaseEntityTest {
         Member member = em.persist(MEMBER1());
         NormalBoard board = new NormalBoard("title", "contents")
                 .writtenBy(member.getId())
-                .inMenu(freeBoardMenu);
+                .inMenu(freeBoardMenu.getId());
         em.persist(board);
 
         //when
         NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
                 .writtenBy(member.getId())
-                .inMenu(freeBoardMenu);
+                .inMenu(freeBoardMenu.getId());
         em.merge(param);
         em.flush();em.clear();
 

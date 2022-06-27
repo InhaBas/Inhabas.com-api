@@ -1,14 +1,17 @@
 package com.inhabas.api.dto.board;
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.inhabas.api.domain.menu.MenuId;
+import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import javax.validation.Validator;
-
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.*;
+import javax.validation.ValidatorFactory;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class SaveBoardDtoTest {
 
@@ -30,7 +33,7 @@ public class SaveBoardDtoTest {
     @Test
     public void SaveBoardDto_is_OK(){
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", new MenuId(1));
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -43,7 +46,7 @@ public class SaveBoardDtoTest {
     @Test
     public void Contents_is_null() {
         // given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", null, new MenuId(1));
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -60,7 +63,7 @@ public class SaveBoardDtoTest {
         String title = "title".repeat(20) + ".";
         String contents = "그냥 본문 내용입니다.";
 
-        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, 1);
+        SaveBoardDto saveBoardDto = new SaveBoardDto(title, contents, new MenuId(1));
 
         // when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);

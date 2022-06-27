@@ -20,7 +20,8 @@ import javax.persistence.*;
                 @Index(name = "priority_index", columnList = "priority ASC")})
 public class Menu extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -54,5 +55,9 @@ public class Menu extends BaseEntity {
         this.type = type;
         this.name = new MenuName(name);
         this.description = new Description(description);
+    }
+
+    public MenuId getId() {
+        return new MenuId(this.id);
     }
 }

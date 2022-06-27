@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.contest;
 
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.contest.DetailContestBoardDto;
 import com.inhabas.api.dto.contest.ListContestBoardDto;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,6 @@ public interface ContestBoardRepositoryCustom {
 
     Optional<DetailContestBoardDto> findDtoById(Integer id);
 
-    Page<ListContestBoardDto> findAllByMenuId(Integer menuId, Pageable pageable);
+    Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable);
 
 }

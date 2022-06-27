@@ -1,5 +1,6 @@
 package com.inhabas.api.service.menu;
 
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.menu.MenuDto;
 import com.inhabas.api.dto.menu.MenuGroupDto;
 
@@ -9,5 +10,5 @@ public interface MenuService {
 
     List<MenuGroupDto> getAllMenuInfo();
 
-    MenuDto getMenuInfoById(Integer menuId);
+    MenuDto getMenuInfoById(MenuId menuId);
 }

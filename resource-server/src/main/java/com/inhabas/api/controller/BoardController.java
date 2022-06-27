@@ -1,24 +1,31 @@
 package com.inhabas.api.controller;
 
-import com.inhabas.api.web.argumentResolver.Authenticated;
 import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.dto.board.BoardDto;
 import com.inhabas.api.dto.board.SaveBoardDto;
 import com.inhabas.api.dto.board.UpdateBoardDto;
 import com.inhabas.api.service.board.BoardService;
+import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Slf4j
@@ -50,7 +57,7 @@ public class BoardController {
         })
     public ResponseEntity<Page<BoardDto>> getBoardList(
             Pageable pageable,
-            @RequestParam Integer menuId) {
+            @RequestParam MenuId menuId) {
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
     }
 

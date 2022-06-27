@@ -1,13 +1,12 @@
 package com.inhabas.api.dto.board;
 
+import com.inhabas.api.domain.menu.MenuId;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,9 +19,9 @@ public class SaveBoardDto {
     private String contents;
 
     @NotNull
-    private Integer menuId;
+    private MenuId menuId;
 
-    public SaveBoardDto(String title, String contents, Integer menuId) {
+    public SaveBoardDto(String title, String contents, MenuId menuId) {
         this.title = title;
         this.contents = contents;
         this.menuId = menuId;
