@@ -1,23 +1,22 @@
 package com.inhabas.api.auth.domain.token.securityFilter;
 
 import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
@@ -25,7 +24,7 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final UserPrincipalService userPrincipalService;
 
-    private final AuthenticationFailureHandler failureHandler;
+    private final TokenAuthenticationFailureHandler failureHandler;
 
     private final TokenProvider tokenProvider;
 
