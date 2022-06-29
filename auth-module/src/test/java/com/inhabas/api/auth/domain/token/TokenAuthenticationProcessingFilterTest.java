@@ -1,10 +1,29 @@
 package com.inhabas.api.auth.domain.token;
 
-import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
+import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,23 +40,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 @Import({RefreshTokenRepository.class})
 public class TokenAuthenticationProcessingFilterTest {
@@ -53,6 +55,9 @@ public class TokenAuthenticationProcessingFilterTest {
 
     @Spy
     private JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(refreshTokenRepository);
+
+    @Spy
+    private JwtTokenResolver jwtTokenResolver = new JwtTokenResolver();
 
     @InjectMocks
     private TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
