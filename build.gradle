@@ -91,6 +91,7 @@ project(':auth-module') {
         api 'org.springframework.boot:spring-boot-starter-oauth2-client'
         api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation 'org.mockito:mockito-inline:2.13.0'
     }
 }
 

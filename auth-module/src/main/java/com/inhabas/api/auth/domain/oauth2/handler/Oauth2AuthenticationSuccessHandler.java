@@ -1,24 +1,22 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
+import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+
 import com.inhabas.api.auth.AuthProperties;
+import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
+import java.io.IOException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
-
-import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 @RequiredArgsConstructor
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -48,10 +46,12 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
      */
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue);
 
-        if (notAuthorized(redirectUri)) {
+        String targetUrl = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue)
+                .orElse(authProperties.getOauth2().getDefaultRedirectUri());
+
+        if (notAuthorized(targetUrl)) {
             /* 여기서 AuthenticationException 이 발생하면 예외는 AbstractAuthenticationProcessingFilter.doFilter 에서 처리된다.
              *   - AbstractAuthenticationProcessingFilter.doFilter 안에서 try~ catch~ 에서 잡힘.
              *   -    -> AbstractAuthenticationProcessingFilter.unsuccessfulAuthentication()
@@ -60,7 +60,6 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new UnauthorizedRedirectUrlException();
         }
 
-        String targetUrl = redirectUri.orElse(authProperties.getOauth2().getDefaultRedirectUri());
         String imageUrl = OAuth2UserInfoFactory.getOAuth2UserInfo((OAuth2AuthenticationToken) authentication)
                 .getImageUrl();
 
@@ -72,8 +71,8 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .build().toUriString();
     }
 
-    private boolean notAuthorized(Optional<String> redirectUrl) {
-        return redirectUrl.isPresent() &&
-                !authProperties.getOauth2().isAuthorizedRedirectUri(redirectUrl.get());
+    private boolean notAuthorized(String redirectUrl) {
+        return !redirectUrl.isBlank() &&
+                !authProperties.getOauth2().isAuthorizedRedirectUri(redirectUrl);
     }
 }
