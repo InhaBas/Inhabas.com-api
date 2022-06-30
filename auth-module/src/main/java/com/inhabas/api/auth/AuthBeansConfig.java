@@ -6,8 +6,10 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHan
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.DefaultUserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenReIssuer;
 import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
@@ -84,6 +86,12 @@ public class AuthBeansConfig {
     ) {
         return new TokenAuthenticationProcessingFilter(tokenProvider, tokenResolver, failureHandler,
                 userPrincipalService);
+    }
+
+    @Bean
+    public TokenReIssuer tokenReIssuer(TokenProvider tokenProvider, TokenResolver tokenResolver,
+            RefreshTokenRepository refreshTokenRepository) {
+        return new JwtTokenReIssuer(tokenProvider, tokenResolver, refreshTokenRepository);
     }
 
 }

@@ -1,47 +1,50 @@
 package com.inhabas.api.auth.domain.token;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
-import org.junit.jupiter.api.Disabled;
+import com.inhabas.api.auth.domain.token.controller.JwtTokenController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.web.servlet.MockMvc;
 
-@Disabled
-@WebMvcTest
+@ComponentScan(basePackages = "com.inhabas.api.auth.domain.token.controller")
+@WebMvcTest(value = JwtTokenController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
 public class JwtControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private TokenService tokenService;
-
-    @Spy
-    private JwtTokenProvider jwtTokenProvider;
+    private TokenReIssuer tokenReIssuer;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Disabled
+
     @DisplayName("accessToken 재발급")
     @Test
     public void reissueAccessTokenTest() throws Exception {
         //given
-        String tmp = jwtTokenProvider.createAccessToken(null);
-        //TokenDto expectedNewTokenDto = new TokenDto(tmp.getGrantType(), tmp.getAccessToken(), null, tmp.getExpiresIn());
-//
-//        given(tokenService.reissueAccessToken(any())).willReturn(expectedNewTokenDto);
-//
-//        //when
-//        mockMvc.perform(post("/jwt/reissue-token").with(csrf()))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(objectMapper.writeValueAsString(expectedNewTokenDto)))
-//                .andReturn();
+        TokenDto expectedNewTokenDto =
+                new TokenDto("Bearer", "accessToken", "", 1L);
+        given(tokenReIssuer.reissueAccessToken(any())).willReturn(expectedNewTokenDto);
+
+        //when
+        mockMvc.perform(post("/token/refresh")
+                        .with(csrf())
+                        .header("Authorization", "Bearer header.refreshToken.signature"))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
 }
