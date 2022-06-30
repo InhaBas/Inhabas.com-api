@@ -2,7 +2,7 @@ package com.inhabas.api.auth.domain.token.securityFilter;
 
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.TokenResolver;
-import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.auth.domain.token.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -60,7 +60,7 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
             try {
                 if (!tokenProvider.validate(token))
-                    throw new InvalidJwtTokenException();
+                    throw new InvalidTokenException();
 
                 JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
                 Object principal = userPrincipalService.loadUserPrincipal(authentication);
@@ -69,7 +69,7 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                 // handle for authentication success
                 successfulAuthentication(request, response, filterChain, authentication);
 
-            } catch (InvalidJwtTokenException | UserPrincipalNotFoundException e) {
+            } catch (InvalidTokenException | UserPrincipalNotFoundException e) {
                 // Authentication failed redirection
                 this.unsuccessfulAuthentication(request, response, e);
                 return;
