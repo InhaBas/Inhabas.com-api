@@ -1,24 +1,23 @@
 package com.inhabas.api.auth.domain.token.controller;
 
 import com.inhabas.api.auth.domain.token.TokenDto;
-import com.inhabas.api.auth.domain.token.TokenService;
+import com.inhabas.api.auth.domain.token.TokenReIssuer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequiredArgsConstructor
 public class JwtTokenController {
 
-    private final TokenService tokenService;
+    private final TokenReIssuer tokenReIssuer;
 
-    @PostMapping("/jwt/reissue-token")
+    @PostMapping("/token/refresh")
     @Operation(summary = "access token 재발급을 요청한다.", description = "request 헤더 Authenticate 에 refreshToken 넣어서 보내줘야함.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -26,7 +25,7 @@ public class JwtTokenController {
     })
     public ResponseEntity<TokenDto> reissueAccessToken(HttpServletRequest request) {
 
-        TokenDto newAccessToken = tokenService.reissueAccessToken(request);
+        TokenDto newAccessToken = tokenReIssuer.reissueAccessToken(request);
 
         return ResponseEntity.ok(newAccessToken);
     }

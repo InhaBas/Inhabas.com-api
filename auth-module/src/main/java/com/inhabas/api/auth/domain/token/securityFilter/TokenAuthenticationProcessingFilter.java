@@ -1,35 +1,34 @@
 package com.inhabas.api.auth.domain.token.securityFilter;
 
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.auth.domain.token.jwtUtils.InvalidJwtTokenException;
+import com.inhabas.api.auth.domain.token.TokenResolver;
+import com.inhabas.api.auth.domain.token.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-
     private final UserPrincipalService userPrincipalService;
 
-    private final AuthenticationFailureHandler failureHandler;
+    private final TokenAuthenticationFailureHandler failureHandler;
 
     private final TokenProvider tokenProvider;
+
+    private final TokenResolver tokenResolver;
 
     private AuthenticationSuccessHandler successHandler; // this is not necessary, for future usage
 
@@ -39,11 +38,15 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
      * @param failureHandler In the case of the invalid jwt token,
      *                       default behavior is just to redirect to controller to response "Invalid_Token" error.
      */
-    public TokenAuthenticationProcessingFilter(TokenProvider tokenProvider,
-                                               AuthenticationFailureHandler failureHandler,
-                                               UserPrincipalService userPrincipalService) {
+    public TokenAuthenticationProcessingFilter(
+            TokenProvider tokenProvider,
+            TokenResolver tokenResolver,
+            TokenAuthenticationFailureHandler failureHandler,
+            UserPrincipalService userPrincipalService) {
+
         this.failureHandler = failureHandler;
         this.tokenProvider = tokenProvider;
+        this.tokenResolver = tokenResolver;
         this.userPrincipalService = userPrincipalService;
     }
 
@@ -51,13 +54,13 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = this.resolveTokenOrNull(request);
+        String token = tokenResolver.resolveTokenOrNull(request);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null && StringUtils.hasText(token)) {
 
             try {
                 if (!tokenProvider.validate(token))
-                    throw new InvalidJwtTokenException();
+                    throw new InvalidTokenException();
 
                 JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
                 Object principal = userPrincipalService.loadUserPrincipal(authentication);
@@ -66,7 +69,7 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                 // handle for authentication success
                 successfulAuthentication(request, response, filterChain, authentication);
 
-            } catch (InvalidJwtTokenException | UserPrincipalNotFoundException e) {
+            } catch (InvalidTokenException | UserPrincipalNotFoundException e) {
                 // Authentication failed redirection
                 this.unsuccessfulAuthentication(request, response, e);
                 return;
@@ -100,15 +103,5 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
         logger.trace("Cleared SecurityContextHolder");
         logger.trace("Handling authentication failure");
         this.failureHandler.onAuthenticationFailure(request, response, failed); // 리다이렉트 해야함?
-    }
-
-
-    private String resolveTokenOrNull(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
-            return bearerToken.substring(7);
-        else
-            return null;
     }
 }

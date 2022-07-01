@@ -2,13 +2,26 @@ package com.inhabas.api.auth.domain.token.jwtUtils;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
+import com.inhabas.api.auth.domain.token.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import java.security.Key;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -17,16 +30,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.stereotype.Component;
-
-import java.security.Key;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 // https://github.com/jwtk/jjwt
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JwtTokenProvider implements TokenProvider {
 
@@ -109,6 +115,8 @@ public class JwtTokenProvider implements TokenProvider {
             logger.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
             logger.error("Unsupported JWT token");
+        } catch (SignatureException ex) {
+            logger.error("JWT signature does not match");
         } catch (IllegalArgumentException ex) {
             logger.error("JWT claims string is empty.");
         }
@@ -140,14 +148,14 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public TokenDto reissueAccessTokenUsing(String refreshToken) throws InvalidJwtTokenException {
+    public TokenDto reissueAccessTokenUsing(String refreshToken) throws InvalidTokenException {
 
         try {
             Claims claims = this.parseClaims(refreshToken);
             return this.createAccessTokenOnly(claims);
 
         } catch (JwtException e) {
-            throw new InvalidJwtTokenException();
+            throw new InvalidTokenException();
         }
     }
 

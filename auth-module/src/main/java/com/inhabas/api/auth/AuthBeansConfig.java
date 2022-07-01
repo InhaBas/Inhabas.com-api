@@ -6,9 +6,16 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHan
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.DefaultUserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenReIssuer;
+import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
+import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
+import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationFailureHandler;
+import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -58,6 +65,33 @@ public class AuthBeansConfig {
     @ConditionalOnMissingBean
     public UserPrincipalService userPrincipalService() {
         return new DefaultUserPrincipalService();
+    }
+
+    @Bean
+    public TokenAuthenticationFailureHandler tokenAuthenticationFailureHandler() {
+        return new InvalidJwtTokenHandler();
+    }
+
+    @Bean
+    public TokenResolver tokenResolver() {
+        return new JwtTokenResolver();
+    }
+
+    @Bean
+    public TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter(
+            TokenProvider tokenProvider,
+            TokenResolver tokenResolver,
+            TokenAuthenticationFailureHandler failureHandler,
+            UserPrincipalService userPrincipalService
+    ) {
+        return new TokenAuthenticationProcessingFilter(tokenProvider, tokenResolver, failureHandler,
+                userPrincipalService);
+    }
+
+    @Bean
+    public TokenReIssuer tokenReIssuer(TokenProvider tokenProvider, TokenResolver tokenResolver,
+            RefreshTokenRepository refreshTokenRepository) {
+        return new JwtTokenReIssuer(tokenProvider, tokenResolver, refreshTokenRepository);
     }
 
 }

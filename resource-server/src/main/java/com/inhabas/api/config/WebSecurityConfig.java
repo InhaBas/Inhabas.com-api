@@ -1,9 +1,6 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
-import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
-import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import com.inhabas.api.domain.member.security.Hierarchical;
 import com.inhabas.api.domain.member.type.wrapper.Role;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +29,7 @@ public class WebSecurityConfig {
     @Profile({"production"})
     public static class ApiSecurityForProduction extends WebSecurityConfigurerAdapter {
 
-        private final JwtTokenProvider jwtTokenProvider;
-        private final UserPrincipalService userPrincipalService;
+        private final TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
         private final Hierarchical hierarchy;
 
         @Override
@@ -47,10 +43,7 @@ public class WebSecurityConfig {
                     .csrf()
                         .disable()
 
-                    .addFilterAfter(new TokenAuthenticationProcessingFilter(
-                            jwtTokenProvider,
-                            new InvalidJwtTokenHandler(),
-                            userPrincipalService), LogoutFilter.class
+                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class
                     )
 
                     .authorizeRequests()
@@ -78,8 +71,7 @@ public class WebSecurityConfig {
     @Profile({"local", "dev", "default_mvc_test"})
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
-        private final JwtTokenProvider jwtTokenProvider;
-        private final UserPrincipalService userPrincipalService;
+        private final TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
         private final Hierarchical hierarchy;
 
         @Override
@@ -92,11 +84,7 @@ public class WebSecurityConfig {
                     .cors().and()
                     .csrf().disable()
 
-                    .addFilterAfter(new TokenAuthenticationProcessingFilter(
-                            jwtTokenProvider,
-                            new InvalidJwtTokenHandler(),
-                            userPrincipalService), LogoutFilter.class
-                    )
+                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
 
                     .authorizeRequests()
                         .expressionHandler(expressionHandler())
