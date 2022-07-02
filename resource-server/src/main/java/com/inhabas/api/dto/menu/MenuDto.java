@@ -1,5 +1,6 @@
 package com.inhabas.api.dto.menu;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.inhabas.api.domain.menu.Menu;
 import com.inhabas.api.domain.menu.MenuId;
 import com.inhabas.api.domain.menu.wrapper.MenuType;
@@ -8,6 +9,7 @@ import lombok.Getter;
 @Getter
 public class MenuDto {
 
+    @JsonUnwrapped
     private MenuId id;
 
     private Integer priority;
