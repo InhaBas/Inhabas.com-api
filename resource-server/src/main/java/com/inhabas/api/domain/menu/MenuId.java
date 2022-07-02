@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.menu;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ public class MenuId implements Serializable {
 
     private static final long serialVersionUID = -7661257651938513762L;
 
+    @JsonProperty("id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
