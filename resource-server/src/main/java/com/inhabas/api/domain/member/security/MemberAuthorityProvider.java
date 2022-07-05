@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.member.security;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
+import com.inhabas.api.auth.domain.exception.UserNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
@@ -33,8 +34,8 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
                 new OAuth2UserInfoAuthentication(oAuth2UserInfo.getId(), oAuth2UserInfo.getProvider().toString(), oAuth2UserInfo.getEmail());
         MemberId memberId = (MemberId) userPrincipalService.loadUserPrincipal(authentication);
 
-        if (Objects.isNull(memberId)) {  // 기존회원이 아니면, ROLE_ANONYMOUS
-            return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + Role.ANONYMOUS));
+        if (Objects.isNull(memberId)) {  // 기존회원이 아니면, 로그인 불가!
+            throw new UserNotFoundException();
         }
         else { // 기존회원이면,
             RoleAndTeamDto roleAndTeamDto = memberRepository.fetchRoleAndTeamsByMemberId(memberId);
@@ -54,8 +55,8 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
     }
 
     public static class RoleAndTeamDto {
-        private Role role;
-        private List<Team> teams;
+        private final Role role;
+        private final List<Team> teams;
 
         public RoleAndTeamDto(Role role, List<Team> teams) {
             this.role = role;
