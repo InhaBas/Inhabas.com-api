@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.member.security;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
+import com.inhabas.api.auth.domain.exception.UserNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.domain.member.Member;
@@ -51,20 +52,14 @@ public class MemberAuthorityProviderTest {
     }
 
     @Test
-    @DisplayName("회원가입하지 않은 사용자가 로그인 시도하면 anonymous 권한을 부여한다.")
-    public void anonymousUserLoginTest() {
+    @DisplayName("회원가입하지 않은 사용자가 로그인 시도하면 UserNotFoundException 을 발생시킨다.")
+    public void NonMemberLoginRaisesExceptionTest() {
 
         given(memberPrincipalService.loadUserPrincipal(any())).willReturn(null);
 
         //when
-        Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
-                memberAuthorityProvider.determineAuthorities(oAuth2UserInfo);
-
-        //then
-        assertThat(simpleGrantedAuthorities)
-                .singleElement()
-                .extracting("role")
-                .isEqualTo("ROLE_ANONYMOUS");
+        Assertions.assertThrows(UserNotFoundException.class,
+                ()->memberAuthorityProvider.determineAuthorities(oAuth2UserInfo));
     }
 
     @Test
