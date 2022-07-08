@@ -1,9 +1,9 @@
 package com.inhabas.api.securityConfig;
 
-import com.inhabas.api.controller.BoardController;
-import com.inhabas.api.service.board.BoardService;
-import com.inhabas.api.service.member.MemberService;
-import com.inhabas.testConfig.DefaultWebMvcTest;
+import com.inhabas.api.web.BoardController;
+import com.inhabas.api.domain.board.usecase.BoardService;
+import com.inhabas.api.domain.member.domain.MemberService;
+import com.inhabas.testAnnotataion.DefaultWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package com.inhabas.api.web.argumentResolver;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
-import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;

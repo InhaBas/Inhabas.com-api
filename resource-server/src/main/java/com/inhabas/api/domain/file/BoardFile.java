@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.file;
 
-import com.inhabas.api.domain.board.NormalBoard;
+import com.inhabas.api.domain.board.domain.NormalBoard;
 
 import lombok.AccessLevel;
 import lombok.Getter;

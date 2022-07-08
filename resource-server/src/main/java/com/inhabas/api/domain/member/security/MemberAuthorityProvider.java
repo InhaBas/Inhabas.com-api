@@ -6,10 +6,10 @@ import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityPro
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import com.inhabas.api.domain.member.MemberId;
-import com.inhabas.api.domain.member.MemberRepository;
-import com.inhabas.api.domain.member.Team;
-import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.member.repository.MemberRepository;
+import com.inhabas.api.domain.team.domain.Team;
+import com.inhabas.api.domain.member.domain.valueObject.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
