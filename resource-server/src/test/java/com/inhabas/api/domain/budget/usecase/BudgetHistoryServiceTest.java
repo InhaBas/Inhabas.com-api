@@ -200,7 +200,7 @@ public class BudgetHistoryServiceTest {
         budgetHistoryService.searchHistoryList(null, Pageable.ofSize(15));
 
         //then
-        then(repository).should(times(1)).search(any(),any());
+        then(repository).should(times(1)).search(any(), any());
     }
 
     @DisplayName("회계내역을 id 로 조회한다.")
@@ -233,5 +233,16 @@ public class BudgetHistoryServiceTest {
         then(repository).should(times(1)).findDtoById(anyInt());
     }
 
+    @DisplayName("기록이 존재하는 년도를 모두 가져온다.")
+    @Test
+    public void fetchAllYearOfHistoryTest() {
+        //given
+        given(repository.findAllYear()).willReturn(null);
 
+        //when
+        budgetHistoryService.getAllYearOfHistory();
+
+        //then
+        then(repository).should(times(1)).findAllYear();
+    }
 }

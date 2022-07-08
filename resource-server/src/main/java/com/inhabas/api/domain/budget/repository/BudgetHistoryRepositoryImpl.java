@@ -51,6 +51,18 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
         return new PageImpl<>(result, pageable, getCount(year));
     }
 
+
+    @Override
+    public List<Integer> findAllYear() {
+        return queryFactory
+                .select(budgetHistory.dateUsed.year())
+                .from(budgetHistory)
+                .distinct()
+                .orderBy(budgetHistory.dateUsed.desc())
+                .fetch();
+    }
+
+
     private BooleanExpression createdIn(Integer year) {
         return year == null ?
                 Expressions.asBoolean(true).isTrue()

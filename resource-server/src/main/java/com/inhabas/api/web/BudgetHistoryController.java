@@ -16,6 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/budget/history")
@@ -70,4 +71,9 @@ public class BudgetHistoryController {
         return ResponseEntity.ok(history);
     }
 
+    @GetMapping("/years")
+    public ResponseEntity<List<Integer>> getAllYearsOfHistory() {
+
+        return ResponseEntity.ok(budgetHistoryService.getAllYearOfHistory());
+    }
 }

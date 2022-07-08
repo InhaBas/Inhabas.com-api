@@ -132,4 +132,31 @@ public class BudgetHistoryRepositoryTest {
         assertThat(page.getNumberOfElements()).isEqualTo(6);
         assertThat(page.getTotalPages()).isEqualTo(1);
     }
+
+    @DisplayName("회계내역이 있는 년도를 모두 가져온다.")
+    @Test
+    public void getAllYearOfHistory() {
+        //given
+        List<BudgetHistory> histories = new ArrayList<>();
+        for (int i = 1; i < 21; i++) {
+            histories.add(
+                    BudgetHistory.builder()
+                            .title("간식비2000")
+                            .details("과자2000")
+                            .income(0)
+                            .outcome(500000)
+                            .dateUsed(LocalDateTime.of(2000 + (i / 3), 1, 1, 1, 1, 1))
+                            .personReceived(received)
+                            .personInCharge(inCharge)
+                            .build());
+        }
+        budgetHistoryRepository.saveAll(histories);
+
+        //when
+        List<Integer> allYear = budgetHistoryRepository.findAllYear();
+
+        //then
+        assertThat(allYear).containsExactly(2006, 2005, 2004, 2003, 2002, 2001, 2000);
+        assertThat(allYear).hasSize(7);
+    }
 }

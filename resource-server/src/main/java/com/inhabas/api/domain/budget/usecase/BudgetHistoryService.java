@@ -7,6 +7,8 @@ import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface BudgetHistoryService {
 
     void createNewHistory(BudgetHistoryCreateForm form, MemberId CFO);
@@ -18,4 +20,6 @@ public interface BudgetHistoryService {
     Page<BudgetHistoryDetailDto> searchHistoryList(Integer year, Pageable pageable);
 
     BudgetHistoryDetailDto getHistory(Integer id);
+
+    List<Integer> getAllYearOfHistory();
 }

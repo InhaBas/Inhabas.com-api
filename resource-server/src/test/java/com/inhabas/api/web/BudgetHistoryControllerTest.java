@@ -145,9 +145,19 @@ public class BudgetHistoryControllerTest {
     public void fetchOneBudgetHistoryTest() throws Exception {
 
         mockMvc.perform(get("/budget/history")
-                .param("id", "2"))
+                        .param("id", "2"))
                 .andExpect(status().isOk());
 
         then(budgetHistoryService).should(times(1)).getHistory(anyInt());
+    }
+
+    @DisplayName("회계 내역의 모든 연도를 불러온다.")
+    @Test
+    public void fetchAllYearsOfHistoryTest() throws Exception {
+
+        mockMvc.perform(get("/budget/history/years"))
+                .andExpect(status().isOk());
+
+        then(budgetHistoryService).should(times(1)).getAllYearOfHistory();
     }
 }
