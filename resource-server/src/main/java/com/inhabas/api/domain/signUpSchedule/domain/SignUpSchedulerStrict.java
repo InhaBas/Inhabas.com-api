@@ -1,8 +1,8 @@
-package com.inhabas.api.domain.signup.domain;
+package com.inhabas.api.domain.signUpSchedule.domain;
 
-import com.inhabas.api.domain.signup.domain.entity.SignUpSchedule;
-import com.inhabas.api.domain.signup.repository.SignUpScheduleRepository;
-import com.inhabas.api.domain.signup.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
+import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
+import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

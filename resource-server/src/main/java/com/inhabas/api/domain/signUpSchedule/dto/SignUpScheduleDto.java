@@ -1,7 +1,7 @@
-package com.inhabas.api.domain.signup.dto;
+package com.inhabas.api.domain.signUpSchedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.signup.domain.entity.SignUpSchedule;
+import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

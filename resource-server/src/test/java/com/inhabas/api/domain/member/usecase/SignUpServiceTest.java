@@ -12,7 +12,7 @@ import com.inhabas.api.domain.member.domain.MemberDuplicationCheckerImpl;
 import com.inhabas.api.domain.member.domain.MemberServiceImpl;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
-import com.inhabas.api.domain.signup.domain.SignUpSchedulerStrict;
+import com.inhabas.api.domain.signUpSchedule.domain.SignUpSchedulerStrict;
 import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
 import java.util.List;

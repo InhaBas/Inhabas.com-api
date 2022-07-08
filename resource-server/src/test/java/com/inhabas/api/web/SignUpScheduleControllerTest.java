@@ -1,9 +1,9 @@
 package com.inhabas.api.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.domain.signup.InvalidDateException;
-import com.inhabas.api.domain.signup.dto.SignUpScheduleDto;
-import com.inhabas.api.domain.signup.domain.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

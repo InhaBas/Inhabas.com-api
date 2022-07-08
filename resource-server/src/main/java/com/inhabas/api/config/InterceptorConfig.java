@@ -1,7 +1,7 @@
 package com.inhabas.api.config;
 
 import com.inhabas.api.web.interceptor.SignUpControllerInterceptor;
-import com.inhabas.api.domain.signup.domain.SignUpAvailabilityChecker;
+import com.inhabas.api.domain.signUpSchedule.domain.SignUpAvailabilityChecker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

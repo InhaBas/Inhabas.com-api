@@ -1,6 +1,6 @@
-package com.inhabas.api.domain.signup.domain;
+package com.inhabas.api.domain.signUpSchedule.domain;
 
-import com.inhabas.api.domain.signup.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 
 
 public interface SignUpScheduler {

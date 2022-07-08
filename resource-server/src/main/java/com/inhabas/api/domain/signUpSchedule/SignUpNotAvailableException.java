@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.signup;
+package com.inhabas.api.domain.signUpSchedule;
 
 public class SignUpNotAvailableException extends RuntimeException {
 

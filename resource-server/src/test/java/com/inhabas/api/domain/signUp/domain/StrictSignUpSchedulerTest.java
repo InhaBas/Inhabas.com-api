@@ -5,10 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import com.inhabas.api.domain.signup.domain.SignUpSchedulerStrict;
-import com.inhabas.api.domain.signup.domain.entity.SignUpSchedule;
-import com.inhabas.api.domain.signup.repository.SignUpScheduleRepository;
-import com.inhabas.api.domain.signup.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.domain.SignUpSchedulerStrict;
+import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
+import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
+import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package com.inhabas.api.web;
 
-import com.inhabas.api.domain.signup.SignUpNotAvailableException;
+import com.inhabas.api.domain.signUpSchedule.SignUpNotAvailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

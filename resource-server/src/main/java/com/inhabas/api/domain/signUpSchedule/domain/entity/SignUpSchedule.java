@@ -1,6 +1,6 @@
-package com.inhabas.api.domain.signup.domain.entity;
+package com.inhabas.api.domain.signUpSchedule.domain.entity;
 
-import com.inhabas.api.domain.signup.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

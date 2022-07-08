@@ -19,7 +19,7 @@ import com.inhabas.api.domain.member.MemberNotFoundException;
 import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.member.NotWriteAnswersException;
 import com.inhabas.api.domain.member.NotWriteProfileException;
-import com.inhabas.api.domain.signup.domain.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;

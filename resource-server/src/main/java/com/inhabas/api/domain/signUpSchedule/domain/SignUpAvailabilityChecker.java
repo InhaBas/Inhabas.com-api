@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.signup.domain;
+package com.inhabas.api.domain.signUpSchedule.domain;
 
 public interface SignUpAvailabilityChecker {
 
