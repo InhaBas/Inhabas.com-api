@@ -194,13 +194,13 @@ public class BudgetHistoryServiceTest {
     @Test
     public void getListOfBudgetHistoryTest() {
         //given
-        given(repository.findAllByPageable(any())).willReturn(null);
+        given(repository.search(any(), any())).willReturn(null);
 
         //when
-        budgetHistoryService.getHistoryList(Pageable.ofSize(15));
+        budgetHistoryService.searchHistoryList(null, Pageable.ofSize(15));
 
         //then
-        then(repository).should(times(1)).findAllByPageable(any());
+        then(repository).should(times(1)).search(any(),any());
     }
 
     @DisplayName("회계내역을 id 로 조회한다.")

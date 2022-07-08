@@ -61,9 +61,9 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     }
 
     @Override
-    public Page<BudgetHistoryDetailDto> getHistoryList(Pageable pageable) {
+    public Page<BudgetHistoryDetailDto> searchHistoryList(Integer year, Pageable pageable) {
 
-        return repository.findAllByPageable(pageable);
+        return repository.search(year, pageable);
     }
 
     @Override

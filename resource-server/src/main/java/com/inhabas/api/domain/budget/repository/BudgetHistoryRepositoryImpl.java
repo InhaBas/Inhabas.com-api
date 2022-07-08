@@ -3,6 +3,8 @@ package com.inhabas.api.domain.budget.repository;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.member.domain.entity.QMember;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -37,21 +39,31 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
 
 
     @Override
-    public Page<BudgetHistoryDetailDto> findAllByPageable(Pageable pageable) {
+    public Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable) {
 
         List<BudgetHistoryDetailDto> result = getDtoJPAQuery()
+                .where(createdIn(year))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy()
+                .orderBy(budgetHistory.dateUsed.desc())
                 .fetch();
 
-        return new PageImpl<>(result, pageable, getCount());
+        return new PageImpl<>(result, pageable, getCount(year));
+    }
+
+    private BooleanExpression createdIn(Integer year) {
+        return year == null ?
+                Expressions.asBoolean(true).isTrue()
+                : budgetHistory.dateUsed.year().eq(year);
     }
 
 
     // need to cache such as EHCACHE later.
-    private Integer getCount() {
-        return queryFactory.selectFrom(budgetHistory).fetch().size();
+    private Integer getCount(Integer year) {
+        return queryFactory.selectFrom(budgetHistory)
+                .where(createdIn(year))
+                .fetch()
+                .size();
     }
 
 

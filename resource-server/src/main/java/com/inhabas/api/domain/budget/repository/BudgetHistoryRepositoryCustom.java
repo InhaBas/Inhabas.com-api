@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface BudgetHistoryRepositoryCustom {
 
-    Page<BudgetHistoryDetailDto> findAllByPageable(Pageable pageable);
+    Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable);
 
     Optional<BudgetHistoryDetailDto> findDtoById(Integer id);
 }

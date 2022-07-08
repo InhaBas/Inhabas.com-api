@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,11 +52,12 @@ public class BudgetHistoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<Page<BudgetHistoryDetailDto>> getListBudgetHistory(
+    @GetMapping("/search")
+    public ResponseEntity<Page<BudgetHistoryDetailDto>> searchBudgetHistory(
+            @Nullable @RequestParam Integer year,
             @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
 
-        Page<BudgetHistoryDetailDto> historyList = budgetHistoryService.getHistoryList(pageable);
+        Page<BudgetHistoryDetailDto> historyList = budgetHistoryService.searchHistoryList(year, pageable);
 
         return ResponseEntity.ok(historyList);
     }

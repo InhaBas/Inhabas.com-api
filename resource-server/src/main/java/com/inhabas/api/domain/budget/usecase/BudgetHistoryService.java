@@ -15,7 +15,7 @@ public interface BudgetHistoryService {
 
     void deleteHistory(Integer historyId, MemberId CFO);
 
-    Page<BudgetHistoryDetailDto> getHistoryList(Pageable pageable);
+    Page<BudgetHistoryDetailDto> searchHistoryList(Integer year, Pageable pageable);
 
     BudgetHistoryDetailDto getHistory(Integer id);
 }

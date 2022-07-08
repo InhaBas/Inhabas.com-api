@@ -84,7 +84,7 @@ public class BudgetHistoryRepositoryTest {
                             .details("과자" + i)
                             .income(0)
                             .outcome(500000)
-                            .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
+                            .dateUsed(LocalDateTime.of(2000, 1, i, 1, 1, 1))
                             .personReceived(received)
                             .personInCharge(inCharge)
                             .build());
@@ -92,7 +92,7 @@ public class BudgetHistoryRepositoryTest {
         budgetHistoryRepository.saveAll(histories);
 
         //when
-        Page<BudgetHistoryDetailDto> page = budgetHistoryRepository.findAllByPageable(
+        Page<BudgetHistoryDetailDto> page = budgetHistoryRepository.search(null,
                 PageRequest.of(1, 20, Direction.DESC, "dateUsed"));
 
 
@@ -100,6 +100,36 @@ public class BudgetHistoryRepositoryTest {
         assertThat(page.getTotalElements()).isEqualTo(30);
         assertThat(page.getNumberOfElements()).isEqualTo(10);
         assertThat(page.getTotalPages()).isEqualTo(2);
-        assertThat(page.getContent().get(0)).extracting("title").isEqualTo("간식비21");
+        assertThat(page.getContent().get(0)).extracting("title").isEqualTo("간식비10");
+    }
+
+    @DisplayName("2021년도 예산 내역만 가져온다.")
+    @Test
+    public void searchBudgetHistoryByYearTest() {
+
+        //given
+        List<BudgetHistory> histories = new ArrayList<>();
+        for (int i = 1; i < 21; i++) {
+            histories.add(
+                    BudgetHistory.builder()
+                            .title("간식비2000")
+                            .details("과자2000")
+                            .income(0)
+                            .outcome(500000)
+                            .dateUsed(LocalDateTime.of(2000 + (i / 15), 1, 1, 1, 1, 1))
+                            .personReceived(received)
+                            .personInCharge(inCharge)
+                            .build());
+        }
+        budgetHistoryRepository.saveAll(histories);
+
+        //when
+        Page<BudgetHistoryDetailDto> page = budgetHistoryRepository.search(2001,
+                PageRequest.of(0, 15, Direction.DESC, "dateUsed"));
+
+        //then
+        assertThat(page.getTotalElements()).isEqualTo(6);
+        assertThat(page.getNumberOfElements()).isEqualTo(6);
+        assertThat(page.getTotalPages()).isEqualTo(1);
     }
 }

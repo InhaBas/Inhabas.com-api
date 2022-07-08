@@ -134,10 +134,10 @@ public class BudgetHistoryControllerTest {
     @Test
     public void getListOfBudgetHistoryListTest() throws Exception {
 
-        mockMvc.perform(get("/budget/history/get"))
+        mockMvc.perform(get("/budget/history/search"))
                 .andExpect(status().isOk());
 
-        then(budgetHistoryService).should(times(1)).getHistoryList(any());
+        then(budgetHistoryService).should(times(1)).searchHistoryList(any(), any());
     }
 
     @DisplayName("회계내역 정보 하나를 불러온다.")
