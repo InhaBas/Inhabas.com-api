@@ -25,7 +25,7 @@ public class BudgetHistoryController {
 
     private final BudgetHistoryService budgetHistoryService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createNewHistory(
             @Authenticated MemberId memberId, @Valid @RequestBody BudgetHistoryCreateForm form) {
 
@@ -34,7 +34,7 @@ public class BudgetHistoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<?> modifyHistory(
             @Authenticated MemberId memberId, @Valid @RequestBody BudgetHistoryModifyForm form) {
 
@@ -43,10 +43,10 @@ public class BudgetHistoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{historyId}")
     public ResponseEntity<?> deleteHistory(
             @Authenticated MemberId memberId,
-            @RequestParam(name = "id") Integer historyId) {
+            @PathVariable Integer historyId) {
 
         budgetHistoryService.deleteHistory(historyId, memberId);
 
@@ -63,8 +63,8 @@ public class BudgetHistoryController {
         return ResponseEntity.ok(historyList);
     }
 
-    @GetMapping
-    public ResponseEntity<BudgetHistoryDetailDto> getBudgetHistory(@RequestParam("id") Integer historyId) {
+    @GetMapping("/{historyId}")
+    public ResponseEntity<BudgetHistoryDetailDto> getBudgetHistory(@PathVariable Integer historyId) {
 
         BudgetHistoryDetailDto history = budgetHistoryService.getHistory(historyId);
 

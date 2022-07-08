@@ -37,7 +37,7 @@ public class BudgetHistoryControllerTest {
 
         //when
         Exception resolvedException =
-                mockMvc.perform(post("/budget/history/create")
+                mockMvc.perform(post("/budget/history")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonOfCreationForm))
                         .andExpect(status().isBadRequest())
@@ -65,7 +65,7 @@ public class BudgetHistoryControllerTest {
         String jsonOfCreationForm = "{\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
 
         //when
-        mockMvc.perform(post("/budget/history/create")
+        mockMvc.perform(post("/budget/history")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOfCreationForm))
                 .andExpect(status().isNoContent());
@@ -81,7 +81,7 @@ public class BudgetHistoryControllerTest {
 
         //when
         Exception resolvedException =
-                mockMvc.perform(put("/budget/history/update")
+                mockMvc.perform(put("/budget/history")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonOfCreationForm))
                         .andExpect(status().isBadRequest())
@@ -109,7 +109,7 @@ public class BudgetHistoryControllerTest {
         String jsonOfModificationForm = "{\"id\":1,\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
 
         //when
-        mockMvc.perform(put("/budget/history/update")
+        mockMvc.perform(put("/budget/history")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOfModificationForm))
                 .andExpect(status().isNoContent());
@@ -123,8 +123,7 @@ public class BudgetHistoryControllerTest {
         //given
 
         //when
-        mockMvc.perform(delete("/budget/history/delete")
-                        .param("id", "1"))
+        mockMvc.perform(delete("/budget/history/2"))
                 .andExpect(status().isNoContent());
 
         then(budgetHistoryService).should(times(1)).deleteHistory(any(), any());
@@ -144,8 +143,7 @@ public class BudgetHistoryControllerTest {
     @Test
     public void fetchOneBudgetHistoryTest() throws Exception {
 
-        mockMvc.perform(get("/budget/history")
-                        .param("id", "2"))
+        mockMvc.perform(get("/budget/history/2"))
                 .andExpect(status().isOk());
 
         then(budgetHistoryService).should(times(1)).getHistory(anyInt());
