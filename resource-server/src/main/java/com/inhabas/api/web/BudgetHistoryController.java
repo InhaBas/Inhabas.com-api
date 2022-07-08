@@ -6,21 +6,15 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/budget/history")
@@ -64,6 +58,14 @@ public class BudgetHistoryController {
         Page<BudgetHistoryDetailDto> historyList = budgetHistoryService.getHistoryList(pageable);
 
         return ResponseEntity.ok(historyList);
+    }
+
+    @GetMapping
+    public ResponseEntity<BudgetHistoryDetailDto> getBudgetHistory(@RequestParam("id") Integer historyId) {
+
+        BudgetHistoryDetailDto history = budgetHistoryService.getHistory(historyId);
+
+        return ResponseEntity.ok(history);
     }
 
 }

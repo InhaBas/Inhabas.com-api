@@ -1,20 +1,13 @@
 package com.inhabas.api.domain.budget.usecase;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
 import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +18,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetHistoryServiceTest {
@@ -188,7 +190,7 @@ public class BudgetHistoryServiceTest {
         then(repository).should(times(1)).findById(anyInt());
     }
 
-    @DisplayName("회계내역을 출력한다.")
+    @DisplayName("회계내역을 한 페이지를 출력한다.")
     @Test
     public void getListOfBudgetHistoryTest() {
         //given
@@ -200,4 +202,36 @@ public class BudgetHistoryServiceTest {
         //then
         then(repository).should(times(1)).findAllByPageable(any());
     }
+
+    @DisplayName("회계내역을 id 로 조회한다.")
+    @Test
+    public void getOneBudgetHistoryTest() {
+        //given
+        given(repository.findDtoById(anyInt()))
+                .willReturn(Optional.of(new BudgetHistoryDetailDto(
+                        null, null, null, null, null, null,
+                        null, null, null, null,
+                        null)));
+
+        //when
+        budgetHistoryService.getHistory(2);
+
+        //then
+        then(repository).should(times(1)).findDtoById(anyInt());
+    }
+
+    @DisplayName("id 에 해당하는 회계내역이 없는 경우, NotFoundException을 던진다.")
+    @Test
+    public void cannotFindBudgetHistoryFindById() {
+        //given
+        given(repository.findDtoById(anyInt())).willReturn(Optional.empty());
+
+        //when
+        Assertions.assertThrows(NotFoundBudgetHistoryException.class,
+                () -> budgetHistoryService.getHistory(2));
+
+        then(repository).should(times(1)).findDtoById(anyInt());
+    }
+
+
 }

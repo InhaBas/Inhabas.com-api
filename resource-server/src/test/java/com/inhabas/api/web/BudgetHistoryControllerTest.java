@@ -1,16 +1,5 @@
 package com.inhabas.api.web;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.groups.Tuple.tuple;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +9,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @NoSecureWebMvcTest(BudgetHistoryController.class)
 public class BudgetHistoryControllerTest {
@@ -132,7 +130,7 @@ public class BudgetHistoryControllerTest {
         then(budgetHistoryService).should(times(1)).deleteHistory(any(), any());
     }
 
-    @DisplayName("회계내역 정보를 불러온다.")
+    @DisplayName("회계내역 리스트를 불러온다.")
     @Test
     public void getListOfBudgetHistoryListTest() throws Exception {
 
@@ -140,5 +138,16 @@ public class BudgetHistoryControllerTest {
                 .andExpect(status().isOk());
 
         then(budgetHistoryService).should(times(1)).getHistoryList(any());
+    }
+
+    @DisplayName("회계내역 정보 하나를 불러온다.")
+    @Test
+    public void fetchOneBudgetHistoryTest() throws Exception {
+
+        mockMvc.perform(get("/budget/history")
+                .param("id", "2"))
+                .andExpect(status().isOk());
+
+        then(budgetHistoryService).should(times(1)).getHistory(anyInt());
     }
 }
