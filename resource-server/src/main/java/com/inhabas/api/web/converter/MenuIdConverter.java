@@ -1,6 +1,6 @@
 package com.inhabas.api.web.converter;
 
-import com.inhabas.api.domain.menu.MenuId;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

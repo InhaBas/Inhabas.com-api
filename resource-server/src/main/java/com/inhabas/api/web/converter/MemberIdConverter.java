@@ -1,6 +1,6 @@
 package com.inhabas.api.web.converter;
 
-import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package com.inhabas.api.web.argumentResolver;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.domain.member.MemberId;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;

@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.member.security.socialAccount;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.domain.member.type.wrapper.Email;
+import com.inhabas.api.domain.member.domain.valueObject.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

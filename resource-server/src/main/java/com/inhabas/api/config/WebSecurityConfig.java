@@ -2,7 +2,7 @@ package com.inhabas.api.config;
 
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.domain.member.security.Hierarchical;
-import com.inhabas.api.domain.member.type.wrapper.Role;
+import com.inhabas.api.domain.member.domain.valueObject.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;

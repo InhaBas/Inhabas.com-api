@@ -1,15 +1,15 @@
 package com.inhabas.api.domain;
 
-import static com.inhabas.api.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.inhabas.api.config.JpaConfig;
-import com.inhabas.api.domain.board.NormalBoard;
-import com.inhabas.api.domain.member.Member;
-import com.inhabas.api.domain.menu.Menu;
-import com.inhabas.api.domain.menu.MenuGroup;
-import com.inhabas.api.domain.menu.wrapper.MenuType;
-import com.inhabas.testConfig.DefaultDataJpaTest;
+import com.inhabas.api.domain.board.domain.NormalBoard;
+import com.inhabas.api.domain.member.domain.entity.Member;
+import com.inhabas.api.domain.menu.domain.Menu;
+import com.inhabas.api.domain.menu.domain.MenuGroup;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
+import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
