@@ -1,8 +1,11 @@
 package com.inhabas.api.domain.budget.usecase;
 
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BudgetHistoryService {
 
@@ -11,4 +14,6 @@ public interface BudgetHistoryService {
     void modifyHistory(BudgetHistoryModifyForm historyId, MemberId CFO);
 
     void deleteHistory(Integer historyId, MemberId CFO);
+
+    Page<BudgetHistoryDetailDto> getHistoryList(Pageable pageable);
 }

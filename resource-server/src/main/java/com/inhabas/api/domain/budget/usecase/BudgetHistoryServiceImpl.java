@@ -4,11 +4,14 @@ import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
 import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,6 +54,12 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
         }
 
         repository.deleteById(historyId);
+    }
+
+    @Override
+    public Page<BudgetHistoryDetailDto> getHistoryList(Pageable pageable) {
+
+        return repository.findAllByPageable(pageable);
     }
 
 

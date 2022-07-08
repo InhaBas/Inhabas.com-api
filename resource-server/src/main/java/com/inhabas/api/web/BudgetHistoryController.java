@@ -1,14 +1,20 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,4 +56,14 @@ public class BudgetHistoryController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/get")
+    public ResponseEntity<Page<BudgetHistoryDetailDto>> getListBudgetHistory(
+            @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
+
+        Page<BudgetHistoryDetailDto> historyList = budgetHistoryService.getHistoryList(pageable);
+
+        return ResponseEntity.ok(historyList);
+    }
+
 }

@@ -17,6 +17,11 @@ spring:
       enabled: always
   jackson:
     property-naming-strategy: SNAKE_CASE
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이지네이션 index 1부터 시작.
+        default-page-size: 15
   jpa:
     show-sql: true
     defer-datasource-initialization: false

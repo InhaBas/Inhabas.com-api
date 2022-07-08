@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -167,7 +168,7 @@ public class BudgetHistoryServiceTest {
 
         //when
         Assertions.assertThrows(HistoryCannotModifiableException.class,
-                ()->budgetHistoryService.deleteHistory(historyId, currentCFO));
+                () -> budgetHistoryService.deleteHistory(historyId, currentCFO));
 
         //then
         then(repository).should(times(1)).findById(anyInt());
@@ -185,5 +186,18 @@ public class BudgetHistoryServiceTest {
 
         //then
         then(repository).should(times(1)).findById(anyInt());
+    }
+
+    @DisplayName("회계내역을 출력한다.")
+    @Test
+    public void getListOfBudgetHistoryTest() {
+        //given
+        given(repository.findAllByPageable(any())).willReturn(null);
+
+        //when
+        budgetHistoryService.getHistoryList(Pageable.ofSize(15));
+
+        //then
+        then(repository).should(times(1)).findAllByPageable(any());
     }
 }

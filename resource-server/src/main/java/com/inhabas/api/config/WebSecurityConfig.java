@@ -1,8 +1,8 @@
 package com.inhabas.api.config;
 
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
-import com.inhabas.api.domain.member.security.Hierarchical;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
+import com.inhabas.api.domain.member.security.Hierarchical;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -51,6 +51,9 @@ public class WebSecurityConfig {
                         .antMatchers("/jwt/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                    // 회계내역
+                        .antMatchers(HttpMethod.GET, "/budget/history/**").permitAll()
+                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString())
 
                     .expressionHandler(expressionHandler());
@@ -91,6 +94,9 @@ public class WebSecurityConfig {
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
+                    // 회계내역
+                        .antMatchers(HttpMethod.GET, "/budget/history/**").permitAll()
+                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
