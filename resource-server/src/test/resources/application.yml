@@ -15,6 +15,13 @@ spring:
   output:
     ansi:
       enabled: always
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true # 페이지네이션 index 1부터 시작.
+        default-page-size: 15
   jpa:
     show-sql: true
     defer-datasource-initialization: false
@@ -76,6 +83,3 @@ logging:
     org.springframwork.web.client: DEBUG
     org.hibernate.type: trace
 
-authenticate:
-  oauth2-success-handle-url: /login/test-success
-  oauth2-failure-handle-url: /login/test-fail

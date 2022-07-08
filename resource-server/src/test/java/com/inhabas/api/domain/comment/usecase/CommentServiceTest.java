@@ -1,25 +1,16 @@
 package com.inhabas.api.domain.comment.usecase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.isA;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.NormalBoardTest;
 import com.inhabas.api.domain.board.repository.NormalBoardRepository;
 import com.inhabas.api.domain.comment.domain.Comment;
+import com.inhabas.api.domain.comment.dto.CommentSaveDto;
+import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.repository.CommentRepository;
 import com.inhabas.api.domain.member.domain.MemberTest;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.member.repository.MemberRepository;
-import com.inhabas.api.domain.comment.dto.CommentSaveDto;
-import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +19,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -64,7 +62,7 @@ public class CommentServiceTest {
                 .willReturn(new Comment(any(Integer.class), "이야 이게 댓글 기능이라고??"));
 
         //given
-        CommentSaveDto newComment = new CommentSaveDto(memberId, "이야 이게 댓글 기능이라고??", 12);
+        CommentSaveDto newComment = new CommentSaveDto(12171652, "이야 이게 댓글 기능이라고??", 12);
 
         //when
         Integer returnId = commentService.create(newComment);

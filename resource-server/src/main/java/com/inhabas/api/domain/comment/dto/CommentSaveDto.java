@@ -26,8 +26,8 @@ public class CommentSaveDto {
     @NotNull @Positive
     private Integer boardId;
 
-    public CommentSaveDto(MemberId writerId, String contents, Integer boardId) {
-        this.writerId = writerId;
+    public CommentSaveDto(Integer writerId, String contents, Integer boardId) {
+        this.writerId = new MemberId(writerId);
         this.contents = contents;
         this.boardId = boardId;
     }
