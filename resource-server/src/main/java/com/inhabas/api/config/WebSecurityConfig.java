@@ -52,7 +52,7 @@ public class WebSecurityConfig {
                         .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/application/**").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString())
 
@@ -95,7 +95,7 @@ public class WebSecurityConfig {
                         .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
                         .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/application/**").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
