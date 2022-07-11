@@ -3,9 +3,11 @@ package com.inhabas.api.domain.budget.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @AllArgsConstructor
 public class BudgetApplicationDetailDto {
 
