@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
+import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +28,9 @@ public class BudgetApplicationControllerTest {
 
     @MockBean
     private BudgetApplicationService service;
+    @MockBean
+    private BudgetApplicationProcessor processor;
+
 
     @DisplayName("지원서를 작성한다.")
     @Test
@@ -90,5 +94,18 @@ public class BudgetApplicationControllerTest {
         //then
         then(service).should(times(1))
                 .getApplications(any(), any(Pageable.class));
+    }
+
+    @DisplayName("예산지원신청글의 상태를 변경한다.")
+    @Test
+    public void changeApplicationStatusTest() throws Exception {
+
+        mockMvc.perform(put("/budget/application/1/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"status\":\"PROCESSED\", \"reject_reason\":\"\"}"))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(processor).should(times(1)).process(anyInt(), any(), any());
     }
 }

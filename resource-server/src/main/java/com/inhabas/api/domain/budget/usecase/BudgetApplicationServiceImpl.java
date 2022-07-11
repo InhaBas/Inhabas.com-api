@@ -14,14 +14,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BudgetApplicationServiceImpl implements BudgetApplicationService {
 
     private final BudgetApplicationRepository repository;
 
 
+    @Transactional
     @Override
     public void registerApplication(BudgetApplicationRegisterForm form, MemberId applicant) {
 
@@ -29,6 +32,7 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
         repository.save(application);
     }
 
+    @Transactional
     @Override
     public void updateApplication(BudgetApplicationUpdateForm form, MemberId applicant) {
 
@@ -41,6 +45,7 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
         repository.save(application);
     }
 
+    @Transactional
     @Override
     public void deleteApplication(Integer applicationId, MemberId applicant) {
 

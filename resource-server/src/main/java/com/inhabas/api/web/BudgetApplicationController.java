@@ -1,11 +1,9 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
+import com.inhabas.api.domain.budget.dto.*;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
+import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,6 +28,7 @@ import javax.validation.Valid;
 public class BudgetApplicationController {
 
     private final BudgetApplicationService budgetApplicationService;
+    private final BudgetApplicationProcessor applicationProcessor;
 
     @Operation(summary = "새로운 예산지원신청글을 추가한다.")
     @PostMapping
@@ -95,5 +94,21 @@ public class BudgetApplicationController {
         Page<BudgetApplicationListDto> page = budgetApplicationService.getApplications(status, pageable);
 
         return ResponseEntity.ok(page);
+    }
+
+    @Operation(summary = "총무가 예산지원요청글의 상태를 변경한다.")
+    @PutMapping("/{applicationId}/status")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 status 정보이거나, 또는 게시글이 존재하지 않는 경우"),
+            @ApiResponse(responseCode = "401", description = "이미 처리완료된 상태이거나, 총무가 아니면 변경 불가.")
+    })
+    public ResponseEntity<?> changeApplicationStatus(
+            @Authenticated MemberId loginMember, @PathVariable Integer applicationId,
+            @RequestBody BudgetApplicationStatusChangeRequest request) {
+
+        applicationProcessor.process(applicationId, request, loginMember);
+
+        return ResponseEntity.noContent().build();
     }
 }

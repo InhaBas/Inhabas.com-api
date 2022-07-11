@@ -78,4 +78,59 @@ public class BudgetSupportApplication extends BaseEntity {
     public boolean cannotModifiableBy(MemberId currentApplicant) {
         return !this.applicationWriter.equals(currentApplicant);
     }
+
+
+
+    public void approve(MemberId personInCharge) {
+
+        this.status = ApplicationStatus.APPROVED;
+        this.personInCharge = personInCharge;
+    }
+
+    public void waiting(MemberId personInCharge) {
+
+        this.status = ApplicationStatus.WAITING;
+        this.personInCharge = personInCharge;
+    }
+
+    public void deny(String reason, MemberId personInCharge) {
+
+        this.rejectReason = new RejectReason(reason);
+        this.status = ApplicationStatus.DENIED;
+        this.personInCharge = personInCharge;
+    }
+
+    public void process(MemberId personInCharge) {
+
+        if (this.isProcessed())
+            throw new ApplicationCannotModifiableException("이미 처리가 완료된 예산지원 내역입니다.");
+
+        this.status = ApplicationStatus.PROCESSED;
+        this.personInCharge = personInCharge;
+    }
+
+    private boolean isProcessed() {
+        return this.status == ApplicationStatus.PROCESSED;
+    }
+
+    /**
+     * 예산지원신청을 완전히 다 처리하고 나면 자동적으로 회계처리내역에 추가되도록 하기 위해서, 회계내역 엔티티로 변환한다.
+     */
+    public BudgetHistory makeHistory() {
+
+        if (this.isProcessed() && this.personInCharge != null) {
+            return BudgetHistory.builder()
+                    .title(this.title.getValue())
+                    .dateUsed(this.dateUsed)
+                    .details(this.details.getValue())
+                    .income(0)
+                    .outcome(this.outcome.getValue())
+                    .personInCharge(this.personInCharge)
+                    .personReceived(this.applicationWriter)
+                    .build();
+        }
+        else {
+            throw new RuntimeException("회계기록 중에 오류가 발생하였습니다!");
+        }
+    }
 }
