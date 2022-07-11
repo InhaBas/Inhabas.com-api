@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.budget.usecase;
 
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
-import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
+import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
@@ -119,7 +119,7 @@ public class BudgetHistoryServiceTest {
         BudgetHistoryModifyForm form = new BudgetHistoryModifyForm(
                 LocalDateTime.of(2000, 1, 1, 1, 1, 1),
                 "서버운영비", "aws 작년 서버비용", 12345678, 0, 500000, 1);
-        Assertions.assertThrows(NotFoundBudgetHistoryException.class,
+        Assertions.assertThrows(BudgetHistoryNotFoundException.class,
                 () -> budgetHistoryService.modifyHistory(form, new MemberId(12171652)));
     }
 
@@ -183,7 +183,7 @@ public class BudgetHistoryServiceTest {
         given(repository.findById(any())).willReturn(Optional.empty());
 
         //when
-        Assertions.assertThrows(NotFoundBudgetHistoryException.class,
+        Assertions.assertThrows(BudgetHistoryNotFoundException.class,
                 () -> budgetHistoryService.deleteHistory(1, new MemberId(12171652)));
 
         //then
@@ -227,7 +227,7 @@ public class BudgetHistoryServiceTest {
         given(repository.findDtoById(anyInt())).willReturn(Optional.empty());
 
         //when
-        Assertions.assertThrows(NotFoundBudgetHistoryException.class,
+        Assertions.assertThrows(BudgetHistoryNotFoundException.class,
                 () -> budgetHistoryService.getHistory(2));
 
         then(repository).should(times(1)).findDtoById(anyInt());

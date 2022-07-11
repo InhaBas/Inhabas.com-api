@@ -1,23 +1,16 @@
 package com.inhabas.api.domain.budget.domain;
 
 import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
-import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import java.time.LocalDateTime;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -73,11 +66,11 @@ public class BudgetHistory extends BaseEntity {
         this.personReceived = personReceived;
     }
 
-    public BudgetHistory modify(MemberId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
+    public void modify(MemberId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
             String title, String details, MemberId personReceived) {
 
         if (this.id == null) {
-            throw new NotFoundBudgetHistoryException("cannot modify this entity, because not persisted ever!");
+            throw new BudgetHistoryNotFoundException("cannot modify this entity, because not persisted ever!");
         }
 
         if (this.cannotModifiableBy(currentCFO))
@@ -89,7 +82,5 @@ public class BudgetHistory extends BaseEntity {
         this.income = income;
         this.outcome = outcome;
         this.personReceived = personReceived;
-
-        return this;
     }
 }
