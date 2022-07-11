@@ -3,6 +3,7 @@ package com.inhabas.api.domain.budget.domain;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
 import com.inhabas.api.domain.budget.ApplicationNotFoundException;
+import com.inhabas.api.domain.budget.converter.StatusConverter;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.AccessLevel;
@@ -37,7 +38,8 @@ public class BudgetSupportApplication extends BaseEntity {
     @AttributeOverride(name = "id", column = @Column(name = "person_in_charge"))
     private MemberId personInCharge;
 
-    @Column(nullable = false) // converter 필요함.
+    @Convert(converter = StatusConverter.class)
+    @Column(nullable = false)
     private ApplicationStatus status;
 
     @Column(name = "reject_reason")
