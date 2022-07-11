@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.budget.usecase;
 
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
-import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
+import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
@@ -38,7 +38,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     public void modifyHistory(BudgetHistoryModifyForm form, MemberId CFO) {
 
         BudgetHistory budgetHistory = repository.findById(form.getId())
-                .orElseThrow(NotFoundBudgetHistoryException::new);
+                .orElseThrow(BudgetHistoryNotFoundException::new);
 
         budgetHistory.modify(
                 CFO, form.getIncome(), form.getOutcome(), form.getDateUsed(),
@@ -53,7 +53,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     public void deleteHistory(Integer historyId, MemberId CFO) {
 
         BudgetHistory budgetHistory = repository.findById(historyId)
-                .orElseThrow(NotFoundBudgetHistoryException::new);
+                .orElseThrow(BudgetHistoryNotFoundException::new);
 
         if (budgetHistory.cannotModifiableBy(CFO)) {
             throw new HistoryCannotModifiableException();
@@ -71,7 +71,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     @Override
     public BudgetHistoryDetailDto getHistory(Integer id) {
         return repository.findDtoById(id)
-                .orElseThrow(NotFoundBudgetHistoryException::new);
+                .orElseThrow(BudgetHistoryNotFoundException::new);
     }
 
     @Override

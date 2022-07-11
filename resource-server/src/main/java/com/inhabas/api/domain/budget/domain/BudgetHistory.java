@@ -1,43 +1,45 @@
 package com.inhabas.api.domain.budget.domain;
 
 import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
-import com.inhabas.api.domain.budget.NotFoundBudgetHistoryException;
+import com.inhabas.api.domain.budget.domain.valueObject.Account;
+import com.inhabas.api.domain.budget.domain.valueObject.Details;
+import com.inhabas.api.domain.budget.domain.valueObject.Price;
+import com.inhabas.api.domain.budget.domain.valueObject.Title;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import java.time.LocalDateTime;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "budget")
+@Table(name = "budget_history")
 public class BudgetHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer income;
+    @AttributeOverride(name = "value", column = @Column(name = "income", nullable = false))
+    private Price income;
 
-    private Integer outcome;
+    @AttributeOverride(name = "value", column = @Column(name = "outcome", nullable = false))
+    private Price outcome;
 
+    @Column(name = "date_used", nullable = false)
     private LocalDateTime dateUsed;
 
-    private String title;
+    private Title title;
 
-    private String details;
+    private Details details;
+
+    private Account account;
 
 //    private List<File> receipts;
 
@@ -46,7 +48,7 @@ public class BudgetHistory extends BaseEntity {
     private MemberId personInCharge;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "person_received"))
+    @AttributeOverride(name = "id", column = @Column(name = "person_received", nullable = false))
     private MemberId personReceived;
 
     public MemberId getPersonReceived() {
@@ -64,32 +66,30 @@ public class BudgetHistory extends BaseEntity {
     @Builder
     public BudgetHistory(Integer income, Integer outcome, LocalDateTime dateUsed,
             String title, String details, MemberId personInCharge, MemberId personReceived) {
-        this.income = income;
-        this.outcome = outcome;
+        this.income = new Price(income);
+        this.outcome = new Price(outcome);
         this.dateUsed = dateUsed;
-        this.title = title;
-        this.details = details;
+        this.title = new Title(title);
+        this.details = new Details(details);
         this.personInCharge = personInCharge;
         this.personReceived = personReceived;
     }
 
-    public BudgetHistory modify(MemberId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
+    public void modify(MemberId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
             String title, String details, MemberId personReceived) {
 
         if (this.id == null) {
-            throw new NotFoundBudgetHistoryException("cannot modify this entity, because not persisted ever!");
+            throw new BudgetHistoryNotFoundException("cannot modify this entity, because not persisted ever!");
         }
 
         if (this.cannotModifiableBy(currentCFO))
             throw new HistoryCannotModifiableException();
 
-        this.title = title;
-        this.details = details;
+        this.title = new Title(title);
+        this.details = new Details(details);
         this.dateUsed = dateUsed;
-        this.income = income;
-        this.outcome = outcome;
+        this.income = new Price(income);
+        this.outcome = new Price(outcome);
         this.personReceived = personReceived;
-
-        return this;
     }
 }
