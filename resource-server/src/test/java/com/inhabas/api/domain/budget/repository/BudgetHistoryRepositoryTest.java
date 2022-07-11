@@ -64,11 +64,15 @@ public class BudgetHistoryRepositoryTest {
                 .orElseThrow();
 
         //then
-        assertThat(budgetHistoryDetailDto.getDateCreated()).isNotNull();
-        assertThat(budgetHistoryDetailDto.getTitle()).isEqualTo("간식비");
-        assertThat(budgetHistoryDetailDto.getOutcome()).isEqualTo(500000);
-        assertThat(budgetHistoryDetailDto.getReceivedMemberName()).isEqualTo("유동현");
-        assertThat(budgetHistoryDetailDto.getMemberNameInCharge()).isEqualTo("김민겸");
+        assertThat(getField(budgetHistoryDetailDto, "dateCreated")).isNotNull();
+        assertThat(getField(budgetHistoryDetailDto, "title")).isEqualTo("간식비");
+        assertThat(getField(budgetHistoryDetailDto, "outcome")).isEqualTo(500000);
+        assertThat(getField(budgetHistoryDetailDto, "receivedMemberName")).isEqualTo("유동현");
+        assertThat(getField(budgetHistoryDetailDto, "memberNameInCharge")).isEqualTo("김민겸");
+    }
+
+    private Object getField(Object target, String field) {
+        return ReflectionTestUtils.getField(target, field);
     }
 
     @DisplayName("예산 내역 페이지 객체를 가져온다.")

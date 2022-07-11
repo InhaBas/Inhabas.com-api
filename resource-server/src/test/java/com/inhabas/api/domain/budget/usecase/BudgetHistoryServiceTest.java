@@ -211,7 +211,7 @@ public class BudgetHistoryServiceTest {
                 .willReturn(Optional.of(new BudgetHistoryDetailDto(
                         null, null, null, null, null, null,
                         null, null, null, null,
-                        null)));
+                        null, null, null)));
 
         //when
         budgetHistoryService.getHistory(2);

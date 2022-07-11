@@ -83,6 +83,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
 
         return queryFactory.select(
                         Projections.constructor(BudgetHistoryDetailDto.class,
+                                budgetHistory.id,
                                 budgetHistory.dateUsed,
                                 budgetHistory.created,
                                 budgetHistory.updated,
@@ -90,6 +91,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
                                 budgetHistory.income,
                                 budgetHistory.outcome,
                                 budgetHistory.details,
+                                budgetHistory.account,
                                 budgetHistory.personReceived.id,
                                 memberReceived.name.value,
                                 budgetHistory.personInCharge.id,

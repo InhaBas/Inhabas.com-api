@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "budget")
+@Table(name = "budget_history")
 public class BudgetHistory extends BaseEntity {
 
     @Id
@@ -26,11 +26,14 @@ public class BudgetHistory extends BaseEntity {
 
     private Integer outcome;
 
+    @Column(name = "date_used", nullable = false)
     private LocalDateTime dateUsed;
 
     private String title;
 
     private String details;
+
+    private String account;
 
 //    private List<File> receipts;
 
@@ -39,7 +42,7 @@ public class BudgetHistory extends BaseEntity {
     private MemberId personInCharge;
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "person_received"))
+    @AttributeOverride(name = "id", column = @Column(name = "person_received", nullable = false))
     private MemberId personReceived;
 
     public MemberId getPersonReceived() {

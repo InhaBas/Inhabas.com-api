@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BudgetHistoryDetailDto {
 
+    private Integer id;
+
     private LocalDateTime dateUsed;
 
     private LocalDateTime dateCreated;
@@ -22,6 +24,8 @@ public class BudgetHistoryDetailDto {
     private Integer outcome;
 
     private String details;
+
+    private String account;
 
     private Integer receivedMemberId;
 

@@ -13,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "budget_support_application")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BudgetSupportApplication extends BaseEntity {
 
@@ -39,6 +40,7 @@ public class BudgetSupportApplication extends BaseEntity {
     @Column(nullable = false) // converter 필요함.
     private ApplicationStatus status;
 
+    @Column(name = "reject_reason")
     private String rejectReason;
 
     //private List<File> receipts;
