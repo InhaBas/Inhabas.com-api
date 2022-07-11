@@ -45,7 +45,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                 queryFactory.select(
                         Projections.constructor(BudgetApplicationListDto.class,
                                 budgetSupportApplication.id,
-                                budgetSupportApplication.title,
+                                budgetSupportApplication.title.value,
                                 budgetSupportApplication.applicationWriter.id,
                                 applicant.name.value,
                                 budgetSupportApplication.created,
@@ -80,18 +80,18 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
         return queryFactory.select(
                         Projections.constructor(BudgetApplicationDetailDto.class,
                                 budgetSupportApplication.id,
-                                budgetSupportApplication.title,
+                                budgetSupportApplication.title.value,
                                 budgetSupportApplication.dateUsed,
                                 budgetSupportApplication.created,
-                                budgetSupportApplication.details,
-                                budgetSupportApplication.outcome,
-                                budgetSupportApplication.account,
+                                budgetSupportApplication.details.value,
+                                budgetSupportApplication.outcome.value,
+                                budgetSupportApplication.applicantAccount.value,
                                 budgetSupportApplication.applicationWriter.id,
                                 applicant.name.value,
                                 budgetSupportApplication.personInCharge.id,
                                 pic.name.value,
                                 budgetSupportApplication.status,
-                                budgetSupportApplication.rejectReason
+                                budgetSupportApplication.rejectReason.value
                         ))
                 .from(budgetSupportApplication)
                 .innerJoin(applicant).on(budgetSupportApplication.applicationWriter.eq(applicant.id))

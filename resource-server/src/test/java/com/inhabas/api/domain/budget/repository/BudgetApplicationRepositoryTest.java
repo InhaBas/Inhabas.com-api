@@ -45,7 +45,7 @@ public class BudgetApplicationRepositoryTest {
         BudgetSupportApplication application =
                 new BudgetSupportApplication("스터디 지원금 신청",
                         LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-                        "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "", member.getId());
+                        "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "국민 123 홍길동", member.getId());
         repository.save(application);
         Integer id = (Integer) ReflectionTestUtils.getField(application, "id");
 
@@ -69,7 +69,7 @@ public class BudgetApplicationRepositoryTest {
             BudgetSupportApplication application =
                     new BudgetSupportApplication("스터디 지원금 신청",
                             LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-                            "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "", member.getId());
+                            "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "국민 123 홍길동", member.getId());
             ReflectionTestUtils.setField(application, "status", ApplicationStatus.values()[i % 4]);
             applicationList.add(application);
         }
@@ -98,7 +98,7 @@ public class BudgetApplicationRepositoryTest {
             BudgetSupportApplication application =
                     new BudgetSupportApplication("스터디 지원금 신청",
                             LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-                            "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "", member.getId());
+                            "머신러닝 논문 스터디 온라인 강의비 청구", 10000, "국민 123 홍길동", member.getId());
             ReflectionTestUtils.setField(application, "status", ApplicationStatus.values()[i % 4]);
             applicationList.add(application);
         }

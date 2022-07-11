@@ -4,7 +4,7 @@ import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
 import com.inhabas.api.domain.budget.ApplicationNotFoundException;
 import com.inhabas.api.domain.budget.converter.StatusConverter;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import com.inhabas.api.domain.budget.domain.valueObject.*;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,15 +22,16 @@ public class BudgetSupportApplication extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String title;
+    private Title title;
 
     private LocalDateTime dateUsed;
 
-    private String details;
+    private Details details;
 
-    private Integer outcome;
+    @AttributeOverride(name = "value", column = @Column(name = "outcome", nullable = false))
+    private Price outcome;
 
-    private String account;
+    private ApplicantAccount applicantAccount;
 
     @AttributeOverride(name = "id", column = @Column(nullable = false, name = "applicant"))
     private MemberId applicationWriter;
@@ -42,8 +43,7 @@ public class BudgetSupportApplication extends BaseEntity {
     @Column(nullable = false)
     private ApplicationStatus status;
 
-    @Column(name = "reject_reason")
-    private String rejectReason;
+    private RejectReason rejectReason;
 
     //private List<File> receipts;
 
@@ -51,16 +51,16 @@ public class BudgetSupportApplication extends BaseEntity {
     @Builder
     public BudgetSupportApplication(String title, LocalDateTime dateUsed, String details, Integer outcome,
                                     String account, MemberId applicationWriter) {
-        this.title = title;
+        this.title = new Title(title);
         this.dateUsed = dateUsed;
-        this.details = details;
-        this.outcome = outcome;
-        this.account = account;
+        this.details = new Details(details);
+        this.outcome = new Price(outcome);
+        this.applicantAccount = new ApplicantAccount(account);
         this.applicationWriter = applicationWriter;
         this.status = ApplicationStatus.WAITING;
     }
 
-    public void modify(String title, LocalDateTime dateUsed, String details, Integer outcome, String accounts, MemberId currentApplicant) {
+    public void modify(String title, LocalDateTime dateUsed, String details, Integer outcome, String account, MemberId currentApplicant) {
 
         if (this.id == null)
             throw new ApplicationNotFoundException("cannot modify this entity, because not persisted ever!");
@@ -68,11 +68,11 @@ public class BudgetSupportApplication extends BaseEntity {
         if (this.cannotModifiableBy(currentApplicant))
             throw new ApplicationCannotModifiableException();
 
-        this.title = title;
-        this.details = details;
+        this.title = new Title(title);
         this.dateUsed = dateUsed;
-        this.outcome = outcome;
-        this.account = accounts;
+        this.details = new Details(details);
+        this.outcome = new Price(outcome);
+        this.applicantAccount = new ApplicantAccount(account);
     }
 
     public boolean cannotModifiableBy(MemberId currentApplicant) {
