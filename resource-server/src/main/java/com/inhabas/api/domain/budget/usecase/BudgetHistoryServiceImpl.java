@@ -5,6 +5,7 @@ import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
@@ -63,9 +64,11 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     }
 
     @Override
-    public Page<BudgetHistoryDetailDto> searchHistoryList(Integer year, Pageable pageable) {
+    public BudgetHistoryListResponse searchHistoryList(Integer year, Pageable pageable) {
 
-        return repository.search(year, pageable);
+        Page<BudgetHistoryDetailDto> listPage = repository.search(year, pageable);
+        Integer balance = repository.getBalance();
+        return new BudgetHistoryListResponse(listPage, balance);
     }
 
     @Override

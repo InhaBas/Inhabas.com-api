@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
@@ -10,17 +11,23 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "회계내역")
@@ -78,14 +85,15 @@ public class BudgetHistoryController {
 
     @Operation(summary = "회계 내역을 검색한다.")
     @GetMapping("/search")
-    @ApiResponse(responseCode = "200", description = "검색 결과를 pagination 적용해서 반환, year 값 안주면 전체기간으로 적용됨.")
-    public ResponseEntity<Page<BudgetHistoryDetailDto>> searchBudgetHistory(
+    @ApiResponse(responseCode = "200", description = "검색 결과를 pagination 적용해서 현재 잔고와 함께 반환, year 값 안주면 전체기간으로 적용됨.")
+    public ResponseEntity<BudgetHistoryListResponse> searchBudgetHistory(
             @Nullable @RequestParam Integer year,
             @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
 
-        Page<BudgetHistoryDetailDto> historyList = budgetHistoryService.searchHistoryList(year, pageable);
+        BudgetHistoryListResponse response = budgetHistoryService.searchHistoryList(
+                year, pageable);
 
-        return ResponseEntity.ok(historyList);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "단일 회계 내역을 조회한다.")
