@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.budget.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
@@ -7,6 +9,9 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
 import com.inhabas.api.domain.member.domain.MemberTest;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
 public class BudgetApplicationRepositoryTest {
@@ -60,7 +59,7 @@ public class BudgetApplicationRepositoryTest {
         assertThat(getField(detailDto, "memberIdInCharge")).isNull();
     }
 
-    @DisplayName("모든 예산지원신청서를 검색한다.")
+    @DisplayName("처리 완료된 것을 제외한 모든 예산지원신청서를 검색한다.")
     @Test
     public void searchAllTest() {
         //given
@@ -77,10 +76,10 @@ public class BudgetApplicationRepositoryTest {
 
         //when
         Page<BudgetApplicationListDto> page =
-                repository.search(null, PageRequest.of(1, 15, Sort.Direction.DESC, "dateUsed"));
+                repository.search(null, PageRequest.of(1, 10, Sort.Direction.DESC, "dateUsed"));
 
         //then
-        assertThat(page.getTotalElements()).isEqualTo(20);
+        assertThat(page.getTotalElements()).isEqualTo(15);
         assertThat(page.getNumberOfElements()).isEqualTo(5);
         assertThat(page.getTotalPages()).isEqualTo(2);
     }
