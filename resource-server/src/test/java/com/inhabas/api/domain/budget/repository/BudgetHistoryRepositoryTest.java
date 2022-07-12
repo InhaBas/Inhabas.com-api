@@ -1,10 +1,17 @@
 package com.inhabas.api.domain.budget.repository;
 
+import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,14 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
 public class BudgetHistoryRepositoryTest {
@@ -99,7 +98,6 @@ public class BudgetHistoryRepositoryTest {
         Page<BudgetHistoryDetailDto> page = budgetHistoryRepository.search(null,
                 PageRequest.of(1, 20, Direction.DESC, "dateUsed"));
 
-
         //then
         assertThat(page.getTotalElements()).isEqualTo(30);
         assertThat(page.getNumberOfElements()).isEqualTo(10);
@@ -162,5 +160,47 @@ public class BudgetHistoryRepositoryTest {
         //then
         assertThat(allYear).containsExactly(2006, 2005, 2004, 2003, 2002, 2001, 2000);
         assertThat(allYear).hasSize(7);
+    }
+
+    @DisplayName("잔액을 구한다.")
+    @Test
+    public void getBalanceTest() {
+        //given
+        budgetHistoryRepository.save(
+                BudgetHistory.builder()
+                        .title("간식비")
+                        .details("과자")
+                        .income(0)
+                        .outcome(500000)
+                        .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
+                        .personReceived(received)
+                        .personInCharge(inCharge)
+                        .build());
+        budgetHistoryRepository.save(
+                BudgetHistory.builder()
+                        .title("동아리 지원금")
+                        .details("학사 지원")
+                        .income(3000000)
+                        .outcome(0)
+                        .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
+                        .personReceived(inCharge)
+                        .personInCharge(inCharge)
+                        .build());
+        budgetHistoryRepository.save(
+                BudgetHistory.builder()
+                        .title("강의 지원금")
+                        .details("강의 결제 비용")
+                        .income(0)
+                        .outcome(200000)
+                        .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
+                        .personReceived(received)
+                        .personInCharge(inCharge)
+                        .build());
+
+        //when
+        Integer balance = budgetHistoryRepository.getBalance();
+
+        //then
+        assertThat(balance).isEqualTo(2300000);
     }
 }
