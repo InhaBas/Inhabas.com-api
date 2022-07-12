@@ -44,7 +44,7 @@ public class BudgetApplicationProcessorImpl implements BudgetApplicationProcesso
             case PROCESSED:
                 application.process(inCharge);
                 historyRepository.save(application.makeHistory());  // application to history
-                applicationRepository.delete(application);
+                applicationRepository.save(application);
                 break;
         }
     }
