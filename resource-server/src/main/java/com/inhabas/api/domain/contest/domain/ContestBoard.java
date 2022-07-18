@@ -5,6 +5,7 @@ import com.inhabas.api.domain.board.domain.valueObject.Contents;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +46,9 @@ public class ContestBoard extends NormalBoard {
 
     /* Constructor */
 
+    @Builder
     public ContestBoard(String title, String contents, String association, String topic, LocalDate start, LocalDate deadline){
+
         this.title = new Title(title);
         this.contents = new Contents(contents);
         this.association = new Association(association);
@@ -54,13 +57,13 @@ public class ContestBoard extends NormalBoard {
         this.deadline = deadline;
     }
 
-    @Builder
-    public ContestBoard(Integer id, String title, String contents,String association, String topic, LocalDate start , LocalDate deadline){
-        super(id, title, contents);
+    public void modify(String title, String contents, String association, String topic,
+            LocalDate start, LocalDate deadline, MemberId loginMember) {
+
+        super.modify(title, contents, loginMember);
         this.association = new Association(association);
         this.topic = new Topic(topic);
         this.start = start;
-        this.deadline =deadline;
+        this.deadline = deadline;
     }
-
 }

@@ -95,7 +95,7 @@ public class BoardControllerTest {
     @Test
     public void deleteBoard() throws Exception{
         //given
-        doNothing().when(boardService).delete(anyInt());
+        doNothing().when(boardService).delete(any(), anyInt());
 
         // when
         mvc.perform(delete("/board")

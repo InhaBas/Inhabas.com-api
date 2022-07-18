@@ -14,7 +14,7 @@ public interface ContestBoardService {
 
     Integer update(MemberId memberId, UpdateContestBoardDto dto);
 
-    void delete(Integer id);
+    void delete(MemberId memberId, Integer id);
 
     DetailContestBoardDto getBoard(Integer id);
 

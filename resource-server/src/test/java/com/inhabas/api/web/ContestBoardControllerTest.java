@@ -85,7 +85,7 @@ public class ContestBoardControllerTest {
     @Test
     public void deleteContestBoard() throws Exception{
         //given
-        doNothing().when(contestBoardService).delete(anyInt());
+        doNothing().when(contestBoardService).delete(any(), anyInt());
 
         // when
         mvc.perform(delete("/contest")

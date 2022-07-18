@@ -2,27 +2,28 @@ package com.inhabas.api.domain.contestBoard.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
+import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
-import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
 import com.inhabas.api.domain.contest.dto.ListContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.dto.UpdateContestBoardDto;
+import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contest.usecase.ContestBoardServiceImpl;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +35,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
 public class ContestBoardServiceTest {
@@ -47,13 +46,6 @@ public class ContestBoardServiceTest {
     ContestBoardRepository contestBoardRepository;
 
 
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp(){
-        mockMvc = MockMvcBuilders.standaloneSetup(contestBoardService).build();
-    }
-
     @DisplayName("공모전 게시글을 성공적으로 생성한다.")
     @Test
     public void createContestBoard() {
@@ -61,13 +53,10 @@ public class ContestBoardServiceTest {
         MemberId memberId = new MemberId(12201863);
         SaveContestBoardDto saveContestBoardDto =
                 new SaveContestBoardDto("title", "contents", "association", "topic",
-                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26) );
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26));
         ContestBoard contestBoard =
-                new ContestBoard(1, "title", "contents", "association", "topic",
-                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26) );
-        Member writer =
-                new Member(memberId, "mingyeom", "010-0000-0000", "my@gmail.com", "picture",
-                        null, null);
+                new ContestBoard("title", "contents", "association", "topic",
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26));
 
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
 
@@ -76,24 +65,22 @@ public class ContestBoardServiceTest {
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());
-        assertThat(returnedId).isNotNull();
-        assertThat(returnedId).isEqualTo(contestBoard.getId());
     }
 
     @DisplayName("공모전 게시판의 목록을 조회한다.")
     @Test
     public void getContestBoardList() {
         //given
-        Pageable pageable = PageRequest.of(0,10, Sort.Direction.DESC, "deadline");
+        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "deadline");
 
         ListContestBoardDto contestBoardDto1 =
-                new ListContestBoardDto("title1", "contents1", LocalDate.of(2022,1,1),
+                new ListContestBoardDto("title1", "contents1", LocalDate.of(2022, 1, 1),
                         LocalDate.of(2022, 3, 4));
         ListContestBoardDto contestBoardDto2 =
-                new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,1,1),
+                new ListContestBoardDto("title2", "contents2", LocalDate.of(2022, 1, 1),
                         LocalDate.of(2022, 5, 28));
         ListContestBoardDto contestBoardDto3 =
-                new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,1,1),
+                new ListContestBoardDto("title2", "contents2", LocalDate.of(2022, 1, 1),
                         LocalDate.of(2022, 2, 20));
 
         List<ListContestBoardDto> results = new ArrayList<>();
@@ -101,13 +88,15 @@ public class ContestBoardServiceTest {
         results.add(contestBoardDto1);
         results.add(contestBoardDto2);
 
+        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable,
+                results.size());
 
-        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
-
-        given(contestBoardRepository.findAllByMenuId(any(), any())).willReturn(expectedContestBoardDto);
+        given(contestBoardRepository.findAllByMenuId(any(), any())).willReturn(
+                expectedContestBoardDto);
 
         //when
-        Page<ListContestBoardDto> returnedBoardList = contestBoardService.getBoardList(new MenuId(1), pageable);
+        Page<ListContestBoardDto> returnedBoardList = contestBoardService.getBoardList(
+                new MenuId(1), pageable);
 
         //then
         assertThat(returnedBoardList).isEqualTo(expectedContestBoardDto);
@@ -120,7 +109,7 @@ public class ContestBoardServiceTest {
         //given
         DetailContestBoardDto contestBoardDto =
                 new DetailContestBoardDto(1, "mingyeom", "title", "contents",
-                        "association","topic",  LocalDate.of(2022,1,1),
+                        "association", "topic", LocalDate.of(2022, 1, 1),
                         LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
         given(contestBoardRepository.findDtoById(any())).willReturn(Optional.of(contestBoardDto));
 
@@ -136,10 +125,16 @@ public class ContestBoardServiceTest {
     @Test
     public void deleteContestBoard() {
         //given
+        MemberId memberId = new MemberId(12201863);
+        ContestBoard contestBoard =
+                new ContestBoard("title", "contents", "association", "topic",
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
+                        .writtenBy(memberId);
+        given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));
         doNothing().when(contestBoardRepository).deleteById(any());
 
         // when
-        contestBoardService.delete(1);
+        contestBoardService.delete(memberId, 1);
 
         // then
         then(contestBoardRepository).should(times(1)).deleteById(any());
@@ -151,21 +146,65 @@ public class ContestBoardServiceTest {
         //given
         MemberId memberId = new MemberId(12201863);
         ContestBoard expectedContestBoard =
-                new ContestBoard(1, "title", "contents", "association", "topic",
-                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26))
-                .writtenBy(memberId);
+                new ContestBoard("title", "contents", "association", "topic",
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
+                        .writtenBy(memberId);
 
         given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
         given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
 
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제",LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26) );
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목",
+                "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1),
+                LocalDate.of(2022, 1, 26));
 
         // when
-        Integer returnedId = contestBoardService.update(memberId, updateContestBoardDto);
+        contestBoardService.update(memberId, updateContestBoardDto);
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());
-        assertThat(returnedId).isNotNull();
-        assertThat(returnedId).isEqualTo(expectedContestBoard.getId());
+    }
+
+    @DisplayName("작성자가 아니면 수정할 수 없다.")
+    @Test
+    public void failToModifyTest() {
+        //given
+        MemberId badUser = new MemberId(44444444);
+        MemberId originalWriter = new MemberId(12201863);
+        ContestBoard expectedContestBoard =
+                new ContestBoard("title", "contents", "association", "topic",
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
+                        .writtenBy(originalWriter);
+        given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
+
+        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목",
+                "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1),
+                LocalDate.of(2022, 1, 26));
+
+        // when
+        Assertions.assertThrows(BoardCannotModifiableException.class,
+                ()->contestBoardService.update(badUser, updateContestBoardDto));
+
+        //then
+        then(contestBoardRepository).should(times(0)).save(any());
+    }
+
+    @DisplayName("작성자가 아니면 삭제할 수 없다.")
+    @Test
+    public void failToDeleteTest() {
+        //given
+        MemberId badUser = new MemberId(44444444);
+        MemberId memberId = new MemberId(12201863);
+        ContestBoard contestBoard =
+                new ContestBoard("title", "contents", "association", "topic",
+                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
+                        .writtenBy(memberId);
+        given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));
+
+        // when
+        Assertions.assertThrows(BoardCannotModifiableException.class,
+                ()->contestBoardService.delete(badUser, 1));
+
+        // then
+        then(contestBoardRepository).should(times(0)).deleteById(any());
     }
 }
