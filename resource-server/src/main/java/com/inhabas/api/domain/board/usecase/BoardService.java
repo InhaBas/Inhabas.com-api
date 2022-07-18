@@ -13,7 +13,7 @@ public interface BoardService {
 
     Integer update(MemberId memberId, UpdateBoardDto updateBoardDto);
 
-    void delete(Integer id);
+    void delete(MemberId memberId, Integer boardId);
 
     BoardDto getBoard(Integer boardId);
 

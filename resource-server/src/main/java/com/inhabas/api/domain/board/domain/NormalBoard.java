@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.board.domain;
 
 import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.domain.valueObject.Contents;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
@@ -48,12 +49,6 @@ public class NormalBoard extends BaseBoard {
 
     /* constructor */
 
-    public NormalBoard(Integer id, String title, String contents) {
-        this.id = id;
-        this.title = new Title(title);
-        this.contents = new Contents(contents);
-    }
-
     public NormalBoard(String title, String contents) {
         this.title = new Title(title);
         this.contents = new Contents(contents);
@@ -89,4 +84,17 @@ public class NormalBoard extends BaseBoard {
         comments.add(newComment);
     }
 
+    public void modify(String title, String contents, MemberId loginMember) {
+
+        if (cannotModifiableBy(loginMember)) {
+            throw new BoardCannotModifiableException();
+        }
+
+        this.title = new Title(title);
+        this.contents = new Contents(contents);
+    }
+
+    public boolean cannotModifiableBy(MemberId loginMember) {
+        return !this.writerId.equals(loginMember);
+    }
 }

@@ -118,14 +118,11 @@ public class NormalBoardRepositoryTest {
         boardRepository.save(FREE_BOARD);
 
         //when
-        NormalBoard param =
-                new NormalBoard(FREE_BOARD.getId(), "제목이 수정되었습니다.", "내용이 수정되었습니다.")
-                .writtenBy(saveMember.getId());
-        boardRepository.save(param);
-
-        //then
+        FREE_BOARD.modify("제목이 수정되었습니다.", "내용이 수정되었습니다.", saveMember.getId());
         NormalBoard findBoard = boardRepository.findById(FREE_BOARD.getId())
                 .orElseThrow(EntityNotFoundException::new);
+
+        //then
         assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다.");
         assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
     }

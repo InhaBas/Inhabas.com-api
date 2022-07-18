@@ -36,6 +36,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                 .where(eqMenuId(menuId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(normalBoard.created.desc())
                 .fetch();
 
         return new PageImpl<>(results, pageable, this.getCount(menuId));

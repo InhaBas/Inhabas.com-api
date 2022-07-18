@@ -65,10 +65,8 @@ public class BaseEntityTest {
         em.persist(board);
 
         //when
-        NormalBoard param = new NormalBoard(board.getId(), "new title", "new contents")
-                .writtenBy(member.getId())
-                .inMenu(freeBoardMenu.getId());
-        em.merge(param);
+        board.modify("title2", "modified contents", member.getId());
+        em.merge(board);
         em.flush();em.clear();
 
         //then
