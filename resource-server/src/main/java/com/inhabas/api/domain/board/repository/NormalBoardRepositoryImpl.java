@@ -32,7 +32,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         normalBoard.created,
                         normalBoard.updated))
                 .from(normalBoard)
-                .innerJoin(member).on(normalBoard.writerId.eq(member.id))
+                .innerJoin(member).on(eqMemberId())
                 .where(menuEq(menuId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -57,10 +57,14 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         normalBoard.created,
                         normalBoard.updated))
                 .from(normalBoard)
-                .innerJoin(member).on(normalBoard.writerId.eq(member.id))
-                .limit(1)
+                .innerJoin(member).on(eqMemberId())
+                .where(normalBoard.id.eq(id))
                 .fetchOne();
 
         return Optional.ofNullable(target);
+    }
+
+    private BooleanExpression eqMemberId() {
+        return normalBoard.writerId.eq(member.id);
     }
 }

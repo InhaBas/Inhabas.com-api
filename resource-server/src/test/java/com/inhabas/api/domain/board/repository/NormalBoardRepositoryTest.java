@@ -90,17 +90,18 @@ public class NormalBoardRepositoryTest {
     public void findDtoById() {
         //given
         boardRepository.save(FREE_BOARD);
+        boardRepository.save(NOTICE_BOARD);
 
         //when
-        BoardDto find = boardRepository.findDtoById(FREE_BOARD.getId())
+        BoardDto find = boardRepository.findDtoById(NOTICE_BOARD.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
         //then
         assertAll(
-                () -> assertThat(find.getId()).isEqualTo(FREE_BOARD.getId()),
-                () -> assertThat(find.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
-                () -> assertThat(find.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(find.getMenuId()).isEqualTo(FREE_BOARD.getMenuId()),
+                () -> assertThat(find.getId()).isEqualTo(NOTICE_BOARD.getId()),
+                () -> assertThat(find.getTitle()).isEqualTo(NOTICE_BOARD.getTitle()),
+                () -> assertThat(find.getContents()).isEqualTo(NOTICE_BOARD.getContents()),
+                () -> assertThat(find.getMenuId()).isEqualTo(NOTICE_BOARD.getMenuId()),
                 () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
         );
     }
