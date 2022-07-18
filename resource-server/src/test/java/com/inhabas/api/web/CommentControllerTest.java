@@ -1,5 +1,17 @@
 package com.inhabas.api.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
@@ -7,6 +19,8 @@ import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,18 +32,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @NoSecureWebMvcTest(CommentController.class)
 public class CommentControllerTest {
@@ -64,8 +66,7 @@ public class CommentControllerTest {
         given(commentService.getComments(anyInt())).willReturn(commentList);
 
         //when
-        MvcResult result = mockMvc.perform(get("/comment")
-                        .param("boardId", String.valueOf(3)))
+        MvcResult result = mockMvc.perform(get("/board/3/comments"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -168,13 +169,10 @@ public class CommentControllerTest {
     @Test
     void deleteComment() throws Exception {
         //given
-        Integer commentIdToDelete = 1;
         doNothing().when(commentService).delete(anyInt());
 
         //when
-        mockMvc.perform(delete("/comment")
-                        .param("commentId", String.valueOf(commentIdToDelete))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/comment/1"))
                 .andExpect(status().isNoContent());
     }
 
@@ -182,13 +180,10 @@ public class CommentControllerTest {
     @Test
     void illegalTryToDeleteComment() throws Exception {
         //given
-        Integer commentIdToDelete = 1;
         doThrow(RuntimeException.class).when(commentService).delete(anyInt());
 
         //when
-        mockMvc.perform(delete("/comment")
-                        .param("commentId", String.valueOf(commentIdToDelete))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(delete("/comment/1"))
                 .andExpect(status().isBadRequest());
 
     }

@@ -16,13 +16,12 @@ import java.util.List;
 
 @Tag(name = "부서(team)", description = "id 에 맞는 부서 없으면, 400 BadRequest.")
 @RestController
-@RequestMapping("/team")
 @RequiredArgsConstructor
 public class TeamController {
 
     private final TeamService teamService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/team/{id}")
     @Operation(summary = "해당하는 부서 id 에 맞는 이름을 반환한다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<TeamDto> getTeamInfo(@PathVariable Integer id) {
@@ -30,7 +29,7 @@ public class TeamController {
         return ResponseEntity.ok(teamInfo);
     }
 
-    @GetMapping
+    @GetMapping("/teams")
     @Operation(summary = "모든 부서 정보를 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<TeamDto>> getAllTeamInfo() {
@@ -38,7 +37,7 @@ public class TeamController {
         return ResponseEntity.ok(allTeamInfo);
     }
 
-    @PutMapping
+    @PutMapping("/team")
     @Operation(summary = "id 에 해당하는 부서 이름을 변경한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
@@ -49,7 +48,7 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/team/{id}")
     @Operation(summary = "id 해당하는 부서를 삭제한다.")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<?> deleteTeamInfo(@PathVariable Integer id) {
@@ -57,7 +56,7 @@ public class TeamController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping
+    @PostMapping("/team")
     @Operation(summary = "부서를 새로 생성한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),

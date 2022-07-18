@@ -1,27 +1,31 @@
 package com.inhabas.api.web;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.domain.team.SuchTeamNotFoundException;
 import com.inhabas.api.domain.team.dto.TeamDto;
 import com.inhabas.api.domain.team.dto.TeamSaveDto;
-import com.inhabas.api.domain.team.SuchTeamNotFoundException;
 import com.inhabas.api.domain.team.usecase.TeamService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @NoSecureWebMvcTest(TeamController.class)
 public class TeamControllerTest {
@@ -78,7 +82,7 @@ public class TeamControllerTest {
         given(teamService.getAllTeamInfo()).willReturn(List.of());
 
         //when
-        mvc.perform(get("/team"))
+        mvc.perform(get("/teams"))
                 .andExpect(status().isOk());
 
         then(teamService).should(times(1)).getAllTeamInfo();

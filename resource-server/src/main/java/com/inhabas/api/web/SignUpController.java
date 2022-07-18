@@ -24,14 +24,13 @@ import java.util.List;
 @Tag(name = "회원가입", description = "회원가입 기간이 아니면 403 Forbidden")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/signUp")
 public class SignUpController {
 
     private final SignUpService signUpService;
 
     /* profile */
 
-    @PostMapping
+    @PostMapping("/signUp")
     @Operation(summary = "회원가입 시 개인정보를 저장한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
@@ -45,7 +44,7 @@ public class SignUpController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping("/signUp")
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<SignUpDto> loadProfile(
@@ -57,7 +56,7 @@ public class SignUpController {
     }
 
 
-    @GetMapping("/majorInfo")
+    @GetMapping("/signUp/majorInfo")
     @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
@@ -65,7 +64,7 @@ public class SignUpController {
         return ResponseEntity.ok(signUpService.getMajorInfo());
     }
 
-    @GetMapping("/isDuplicated")
+    @GetMapping("/signUp/isDuplicated")
     @Operation(summary = "회원가입 시 필요한 중복검사를 진행한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -81,7 +80,7 @@ public class SignUpController {
 
     /* questionnaire */
 
-    @GetMapping("/questionnaire")
+    @GetMapping("/signUp/questionnaires")
     @Operation(summary = "회원가입에 필요한 질문들을 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<QuestionnaireDto>> loadQuestionnaire() {
@@ -91,7 +90,7 @@ public class SignUpController {
 
     /* answer */
 
-    @GetMapping("/answer")
+    @GetMapping("/signUp/answers")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated MemberId memberId) {
@@ -101,7 +100,7 @@ public class SignUpController {
         return ResponseEntity.ok(answers);
     }
 
-    @PostMapping("/answer")
+    @PostMapping("/signUp/answers")
     @Operation(summary = "회원가입 시 작성한 답변을 저장한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
@@ -116,7 +115,7 @@ public class SignUpController {
     }
 
     /* finish signUp */
-    @PutMapping("/finish")
+    @PutMapping("/signUp")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<?> finishSignUp(@Authenticated MemberId memberId) {

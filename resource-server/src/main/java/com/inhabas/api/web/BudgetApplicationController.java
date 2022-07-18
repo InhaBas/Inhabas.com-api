@@ -23,7 +23,6 @@ import javax.validation.Valid;
 
 @RestController
 @Tag(name = "예산 지원 신청")
-@RequestMapping("/budget/application")
 @RequiredArgsConstructor
 public class BudgetApplicationController {
 
@@ -31,7 +30,7 @@ public class BudgetApplicationController {
     private final BudgetApplicationProcessor applicationProcessor;
 
     @Operation(summary = "새로운 예산지원신청글을 추가한다.")
-    @PostMapping
+    @PostMapping("/budget/application")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력"),
@@ -45,7 +44,7 @@ public class BudgetApplicationController {
     }
 
     @Operation(summary = "예산지원신청글을 수정한다.")
-    @PutMapping
+    @PutMapping("/budget/application")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 게시글이 존재하지 않는 경우"),
@@ -60,7 +59,7 @@ public class BudgetApplicationController {
     }
 
     @Operation(summary = "예산지원신청글을 삭제한다.")
-    @DeleteMapping("/{applicationId}")
+    @DeleteMapping("/budget/application/{applicationId}")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 게시글이 존재하지 않는 경우"),
@@ -75,7 +74,7 @@ public class BudgetApplicationController {
     }
 
     @Operation(summary = "예산지원신청글 내용을 조회한다.")
-    @GetMapping("/{applicationId}")
+    @GetMapping("/budget/application/{applicationId}")
 
     public ResponseEntity<BudgetApplicationDetailDto> getApplication(@PathVariable Integer applicationId) {
 
@@ -85,7 +84,7 @@ public class BudgetApplicationController {
     }
 
     @Operation(summary = "예산지원 요청 게시글 목록을 조회한다.")
-    @GetMapping("/search")
+    @GetMapping("/budget/applications")
     @ApiResponse(responseCode = "200", description = "검색 결과를 pagination 적용해서 반환, status 값 안주면 전체 상태를 검색함.")
     public ResponseEntity<Page<BudgetApplicationListDto>> getApplications(
             @Nullable @RequestParam ApplicationStatus status,
@@ -97,7 +96,7 @@ public class BudgetApplicationController {
     }
 
     @Operation(summary = "총무가 예산지원요청글의 상태를 변경한다.")
-    @PutMapping("/{applicationId}/status")
+    @PutMapping("/budget/application/{applicationId}/status")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 status 정보이거나, 또는 게시글이 존재하지 않는 경우"),

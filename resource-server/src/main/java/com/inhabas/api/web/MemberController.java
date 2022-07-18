@@ -19,7 +19,6 @@ import java.util.List;
 @Slf4j
 @Tag(name = "회원관리")
 @RestController
-@RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -27,25 +26,25 @@ public class MemberController {
     private final MemberTeamService memberTeamService;
 
     @Operation(description = "멤버 조회")
-    @GetMapping
+    @GetMapping("/member")
     public Member member(@RequestParam MemberId id) {
         return memberService.findById(id);
     }
 
     @Operation(description = "모든 유저 조회")
-    @GetMapping("/all")
+    @GetMapping("/members")
     public List<Member> members() {
         return memberService.findMembers();
     }
 
     @Operation(description = "유저 정보 변경")
-    @PutMapping
+    @PutMapping("/member")
     public Member updateMember(@RequestBody Member member) {
         return memberService.updateMember(member).get();
     }
 
     @Operation(summary = "회장 연락처 정보 불러오기")
-    @GetMapping("/chief")
+    @GetMapping("/member/chief")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<ContactDto> getChiefContact() {
         ContactDto contact = memberService.getChiefContact();
@@ -53,7 +52,7 @@ public class MemberController {
     }
 
     @Operation(summary = "회원을 팀에 포함시킨다.")
-    @PostMapping("/team")
+    @PostMapping("/member/team")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
@@ -66,12 +65,12 @@ public class MemberController {
     }
 
     @Operation(summary = "회원을 팀에서 제외시킨다.")
-    @DeleteMapping("/team")
+    @DeleteMapping("/member/{memberId}/team/{teamId}")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
     })
-    public ResponseEntity<?> deleteOneTeamOfMember(@RequestParam MemberId memberId, @RequestParam Integer teamId) {
+    public ResponseEntity<?> deleteOneTeamOfMember(@PathVariable MemberId memberId, @PathVariable Integer teamId) {
 
         memberTeamService.deleteMemberFromTeam(memberId, teamId);
 

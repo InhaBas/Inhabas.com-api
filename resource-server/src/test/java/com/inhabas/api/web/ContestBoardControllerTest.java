@@ -88,9 +88,7 @@ public class ContestBoardControllerTest {
         doNothing().when(contestBoardService).delete(anyInt());
 
         // when
-        mvc.perform(delete("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("id", "1"))
+        mvc.perform(delete("/contest/1"))
                 .andExpect(status().isNoContent());
     }
 
@@ -109,7 +107,7 @@ public class ContestBoardControllerTest {
         given(contestBoardService.getBoardList(any(), any())).willReturn(expectedContestBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/contest/all")
+        String responseBody = mvc.perform(get("/contests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .param("menuId", "9")
@@ -133,9 +131,7 @@ public class ContestBoardControllerTest {
         given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("id", "1"))
+        String responseBody = mvc.perform(get("/contest/1"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse().getContentAsString();

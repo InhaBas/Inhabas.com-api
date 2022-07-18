@@ -98,9 +98,7 @@ public class BoardControllerTest {
         doNothing().when(boardService).delete(anyInt());
 
         // when
-        mvc.perform(delete("/board")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .param("id", "1"))
+        mvc.perform(delete("/board/1"))
                     .andExpect(status().isNoContent());
     }
 
@@ -122,7 +120,7 @@ public class BoardControllerTest {
         given(boardService.getBoardList(any(), any())).willReturn(expectedBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/board/all")
+        String responseBody = mvc.perform(get("/boards")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("menuId", "2")
                         .param("page", "2")
