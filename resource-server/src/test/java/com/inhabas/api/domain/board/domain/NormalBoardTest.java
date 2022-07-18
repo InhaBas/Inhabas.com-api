@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.board.domain;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 public class NormalBoardTest {
 
     public static NormalBoard getBoard1() {
@@ -13,7 +15,9 @@ public class NormalBoardTest {
     }
 
     public static NormalBoard getTestBoard(Integer id) {
-        return new NormalBoard(id, "이건 공지2", "이건 공지2입니다.");
+        NormalBoard board = new NormalBoard("이건 공지2", "이건 공지2입니다.");
+        ReflectionTestUtils.setField(board, "id", id);
+        return board;
     }
 
 }

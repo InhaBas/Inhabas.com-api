@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.board.usecase;
 
+import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.repository.NormalBoardRepository;
@@ -38,26 +39,35 @@ public class BoardServiceImpl implements BoardService {
 
         NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
                 .orElseThrow(BoardNotFoundException::new);
-        NormalBoard updatedBoard = new NormalBoard(updateBoardDto.getId(), updateBoardDto.getTitle(), updateBoardDto.getContents())
-                .writtenBy(memberId)
-                .inMenu(savedBoard.getMenuId());
 
-        return boardRepository.save(updatedBoard).getId();
+        savedBoard.modify(updateBoardDto.getTitle(), updateBoardDto.getContents(), memberId);
+
+        return boardRepository.save(savedBoard).getId();
     }
 
     @Override
-    public void delete(Integer id) {
-        boardRepository.deleteById(id);
+    public void delete(MemberId memberId, Integer boardId) {
+
+        NormalBoard board = boardRepository.findById(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        if (board.cannotModifiableBy(memberId)) {
+            throw new BoardCannotModifiableException();
+        }
+
+        boardRepository.deleteById(boardId);
     }
 
     @Override
     public BoardDto getBoard(Integer id) {
+
         return boardRepository.findDtoById(id)
                 .orElseThrow(BoardNotFoundException::new);
     }
 
     @Override
     public Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable) {
+
             return boardRepository.findAllByMenuId(menuId, pageable);
     }
 }

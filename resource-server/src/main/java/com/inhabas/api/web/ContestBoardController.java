@@ -15,6 +15,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,7 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<DetailContestBoardDto> getBoard(@PathVariable Integer id) {
+
         return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
     }
 
@@ -46,7 +49,10 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 목록 조회 URL 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Page<ListContestBoardDto>> getBoardList(@RequestParam MenuId menuId, Pageable pageable) {
+    public ResponseEntity<Page<ListContestBoardDto>> getBoardList(
+            @RequestParam MenuId menuId,
+            @PageableDefault(size = 8, direction = Direction.DESC, sort = "created") Pageable pageable) {
+
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
     }
 
@@ -68,8 +74,10 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Integer> updateBoard(@Authenticated MemberId memberId , @Valid @RequestBody UpdateContestBoardDto dto) {
-        return new ResponseEntity<>( boardService.update(memberId, dto), HttpStatus.OK);
+    public ResponseEntity<Integer> updateBoard(
+            @Authenticated MemberId memberId, @Valid @RequestBody UpdateContestBoardDto dto) {
+
+        return new ResponseEntity<>(boardService.update(memberId, dto), HttpStatus.OK);
     }
 
     @Operation(description = "공모전 게시판의 게시글 삭제")
@@ -79,8 +87,10 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<?> deleteBoard(@PathVariable Integer id) {
-        boardService.delete(id);
+    public ResponseEntity<?> deleteBoard(
+            @Authenticated MemberId memberId, @PathVariable Integer id) {
+
+        boardService.delete(memberId, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

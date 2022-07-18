@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.contest.usecase;
 
+import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
@@ -41,28 +42,33 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     @Override
     public Integer update(MemberId memberId, UpdateContestBoardDto dto) {
 
-        ContestBoard savedContestBoard = contestBoardRepository.findById(dto.getId())
+        ContestBoard contestBoard = contestBoardRepository.findById(dto.getId())
                 .orElseThrow(BoardNotFoundException::new);
 
-        ContestBoard entity = ContestBoard.builder()
-                .id(dto.getId())
-                .title(dto.getTitle())
-                .contents(dto.getContents())
-                .association(dto.getAssociation())
-                .topic(dto.getTopic())
-                .start(dto.getStart())
-                .deadline(dto.getDeadline())
-                .build()
-                .writtenBy(memberId)
-                .inMenu(savedContestBoard.getMenuId());
+        contestBoard.modify(
+                dto.getTitle(),
+                dto.getContents(),
+                dto.getAssociation(),
+                dto.getTopic(),
+                dto.getStart(),
+                dto.getDeadline(),
+                memberId);
 
-        return contestBoardRepository.save(entity).getId();
+        return contestBoardRepository.save(contestBoard).getId();
     }
 
 
     @Override
-    public void delete(Integer id) {
-        contestBoardRepository.deleteById(id);
+    public void delete(MemberId memberId, Integer boardId) {
+
+        ContestBoard contestBoard = contestBoardRepository.findById(boardId)
+                .orElseThrow(BoardNotFoundException::new);
+
+        if (contestBoard.cannotModifiableBy(memberId)) {
+            throw new BoardCannotModifiableException("삭제 권한이 없습니다.");
+        }
+
+        contestBoardRepository.deleteById(boardId);
     }
 
     @Override
