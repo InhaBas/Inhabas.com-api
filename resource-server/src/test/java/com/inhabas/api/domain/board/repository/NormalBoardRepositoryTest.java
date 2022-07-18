@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.NormalBoardTest;
+import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
-import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 
 @DefaultDataJpaTest
 public class NormalBoardRepositoryTest {
@@ -35,13 +38,14 @@ public class NormalBoardRepositoryTest {
     NormalBoard FREE_BOARD;
     NormalBoard NOTICE_BOARD;
     NormalBoard NOTICE_BOARD_2;
+    Menu freeBoardMenu;
     Member writer;
 
     @BeforeEach
     public void setUp() {
         writer = em.persist(MEMBER1());
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        Menu NoticeBoardMenu = em.persist(
+        Menu noticeBoardMenu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(1)
@@ -49,7 +53,7 @@ public class NormalBoardRepositoryTest {
                         .name("공지사항")
                         .description("부원이 알아야 할 내용을 게시합니다.")
                         .build());
-        Menu freeBoardMenu = em.persist(
+        freeBoardMenu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
                         .priority(2)
@@ -61,9 +65,9 @@ public class NormalBoardRepositoryTest {
         FREE_BOARD = NormalBoardTest.getBoard1()
                 .writtenBy(writer.getId()).inMenu(freeBoardMenu.getId());
         NOTICE_BOARD = NormalBoardTest.getBoard2()
-                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu.getId());
+                .writtenBy(writer.getId()).inMenu(noticeBoardMenu.getId());
         NOTICE_BOARD_2 = NormalBoardTest.getBoard3()
-                .writtenBy(writer.getId()).inMenu(NoticeBoardMenu.getId());
+                .writtenBy(writer.getId()).inMenu(noticeBoardMenu.getId());
     }
 
 
@@ -176,6 +180,32 @@ public class NormalBoardRepositoryTest {
         assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
         noticeBoards.forEach(
                 board->assertThat(board.getMenuId()).isEqualTo(noticeBoardMenuId));
+    }
+
+    @DisplayName("게시글 목록 페이지를 잘 불러온다.")
+    @Test
+    public void getBoardListPageTest() {
+        //given
+        ArrayList<NormalBoard> boards = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            boards.add(new NormalBoard("이건 제목" + i, "이건 내용입니다.")
+                    .writtenBy(writer.getId())
+                    .inMenu(freeBoardMenu.getId()));
+        }
+        boardRepository.saveAll(boards);
+
+        //when
+        Page<BoardDto> page =
+                boardRepository.findAllByMenuId(
+                        freeBoardMenu.getId(),
+                        PageRequest.of(2, 11, Direction.DESC, "created")
+                );
+
+        //then
+        assertThat(page.getTotalElements()).isEqualTo(30);
+        assertThat(page.getTotalPages()).isEqualTo(3);
+        assertThat(page.getNumber()).isEqualTo(2);
+        assertThat(page.getNumberOfElements()).isEqualTo(8);
     }
 
 }

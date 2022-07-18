@@ -33,16 +33,24 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         normalBoard.updated))
                 .from(normalBoard)
                 .innerJoin(member).on(eqMemberId())
-                .where(menuEq(menuId))
+                .where(eqMenuId(menuId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return new PageImpl<>(results, pageable, results.size());
+        return new PageImpl<>(results, pageable, this.getCount(menuId));
     }
 
-    private BooleanExpression menuEq(MenuId menuId) {
+    private BooleanExpression eqMenuId(MenuId menuId) {
         return normalBoard.menuId.eq(menuId);
+    }
+
+    // 캐시 필요함.
+    private Integer getCount(MenuId menuId) {
+        return queryFactory.selectFrom(normalBoard)
+                .where(eqMenuId(menuId))
+                .fetch()
+                .size();
     }
 
     @Override
