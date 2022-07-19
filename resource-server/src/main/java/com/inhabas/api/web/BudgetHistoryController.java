@@ -25,20 +25,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "회계내역")
-@RequestMapping("/budget/history")
 @RequiredArgsConstructor
 public class BudgetHistoryController {
 
     private final BudgetHistoryService budgetHistoryService;
 
     @Operation(summary = "새로운 회계 내역을 추가한다.")
-    @PostMapping
+    @PostMapping("/budget/history")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력"),
@@ -53,7 +51,7 @@ public class BudgetHistoryController {
     }
 
     @Operation(summary = "회계 내역을 수정한다.")
-    @PutMapping
+    @PutMapping("/budget/history")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 id가 존재하지 않는 경우"),
@@ -68,7 +66,7 @@ public class BudgetHistoryController {
     }
 
     @Operation(summary = "회계 내역을 삭제한다.")
-    @DeleteMapping("/{historyId}")
+    @DeleteMapping("/budget/history/{historyId}")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 id가 존재하지 않는 경우"),
@@ -83,21 +81,8 @@ public class BudgetHistoryController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "회계 내역을 검색한다.")
-    @GetMapping("/search")
-    @ApiResponse(responseCode = "200", description = "검색 결과를 pagination 적용해서 현재 잔고와 함께 반환, year 값 안주면 전체기간으로 적용됨.")
-    public ResponseEntity<BudgetHistoryListResponse> searchBudgetHistory(
-            @Nullable @RequestParam Integer year,
-            @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
-
-        BudgetHistoryListResponse response = budgetHistoryService.searchHistoryList(
-                year, pageable);
-
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "단일 회계 내역을 조회한다.")
-    @GetMapping("/{historyId}")
+    @GetMapping("/budget/history/{historyId}")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 id가 존재하지 않는 경우"),
@@ -109,8 +94,21 @@ public class BudgetHistoryController {
         return ResponseEntity.ok(history);
     }
 
+    @Operation(summary = "회계 내역을 검색한다.")
+    @GetMapping("/budget/histories")
+    @ApiResponse(responseCode = "200", description = "검색 결과를 pagination 적용해서 현재 잔고와 함께 반환, year 값 안주면 전체기간으로 적용됨.")
+    public ResponseEntity<BudgetHistoryListResponse> searchBudgetHistory(
+            @Nullable @RequestParam Integer year,
+            @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
+
+        BudgetHistoryListResponse response = budgetHistoryService.searchHistoryList(
+                year, pageable);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "회계 내역이 작성된 기간동안의 연도 목록을 가져온다.")
-    @GetMapping("/years")
+    @GetMapping("/budget/histories/years")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<List<Integer>> getAllYearsOfHistory() {
 

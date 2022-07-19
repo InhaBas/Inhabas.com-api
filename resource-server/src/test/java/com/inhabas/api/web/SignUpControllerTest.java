@@ -1,22 +1,36 @@
 package com.inhabas.api.web;
 
+import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
+import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.domain.member.NoQueryParameterException;
+import com.inhabas.api.domain.member.domain.entity.Answer;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.member.domain.valueObject.MemberType;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
-import com.inhabas.api.domain.member.domain.entity.Answer;
-import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.domain.member.dto.AnswerDto;
 import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.member.NoQueryParameterException;
 import com.inhabas.api.domain.member.usecase.SignUpService;
+import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.testAnnotataion.DefaultWebMvcTest;
+import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,19 +39,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Disabled
 @DefaultWebMvcTest(SignUpController.class)
@@ -260,7 +261,7 @@ public class SignUpControllerTest {
         given(signUpService.getQuestionnaire()).willReturn(questionnaireInDatabase);
 
         //when
-        String response = mvc.perform(get("/signUp/questionnaire"))
+        String response = mvc.perform(get("/signUp/questionnaires"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -284,7 +285,7 @@ public class SignUpControllerTest {
         given(signUpService.getAnswers(any())).willReturn(savedDTOs);
 
         //when
-        String response = mvc.perform(get("/signUp/answer"))
+        String response = mvc.perform(get("/signUp/answers"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -308,7 +309,7 @@ public class SignUpControllerTest {
         }};
 
         //when then
-        mvc.perform(post("/signUp/answer")
+        mvc.perform(post("/signUp/answers")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(submittedAnswers)))
@@ -321,7 +322,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 회원가입을_완료처리한다() throws Exception {
         //when
-        mvc.perform(put("/signUp/finish").with(csrf()))
+        mvc.perform(put("/signUp").with(csrf()))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }

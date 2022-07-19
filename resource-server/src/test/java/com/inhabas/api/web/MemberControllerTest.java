@@ -1,7 +1,17 @@
 package com.inhabas.api.web;
 
-import com.inhabas.api.domain.member.dto.ContactDto;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.inhabas.api.domain.member.domain.MemberService;
+import com.inhabas.api.domain.member.dto.ContactDto;
 import com.inhabas.api.domain.team.usecase.MemberTeamService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
@@ -9,14 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @NoSecureWebMvcTest(MemberController.class)
 public class MemberControllerTest {
@@ -46,9 +48,7 @@ public class MemberControllerTest {
     public void expelMemberFromTeamTest() throws Exception {
         doNothing().when(memberTeamService).deleteMemberFromTeam(any(), anyInt());
 
-        mvc.perform(delete("/member/team").with(csrf())
-                        .param("memberId", "12171652")
-                        .param("teamId", "1"))
+        mvc.perform(delete("/member/12171652/team/1").with(csrf()))
                 .andExpect(status().isNoContent());
     }
 

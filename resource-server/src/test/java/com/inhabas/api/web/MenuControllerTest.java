@@ -37,7 +37,7 @@ public class MenuControllerTest {
         given(menuService.getAllMenuInfo()).willReturn(
                 List.of(new MenuGroupDto(1, "IBAS", List.of(new MenuDto(new MenuId(6),1,"동아리 소개", MenuType.INTRODUCE, "")))));
 
-        mvc.perform(get("/menu/all"))
+        mvc.perform(get("/menus"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"id\":1,\"group_name\":\"IBAS\",\"menu_list\":[{\"menu_id\":6,\"priority\":1,\"name\":\"ë\u008F\u0099ì\u0095\u0084ë¦¬ ì\u0086\u008Cê°\u009C\",\"type\":\"INTRODUCE\",\"description\":\"\"}]}]"))
@@ -53,8 +53,7 @@ public class MenuControllerTest {
         given(menuService.getMenuInfoById(any())).willReturn(
                 new MenuDto(new MenuId(6),1,"공지사항", MenuType.LIST, ""));
 
-        mvc.perform(get("/menu")
-                        .param("menuId", "6"))
+        mvc.perform(get("/menu/6"))
                 .andExpect(content().string("{\"menu_id\":6,\"priority\":1,\"name\":\"ê³µì§\u0080ì\u0082¬í\u0095\u00AD\",\"type\":\"LIST\",\"description\":\"\"}"))
                 .andExpect(status().isOk())
                 .andReturn();

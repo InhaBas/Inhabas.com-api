@@ -1,11 +1,11 @@
 package com.inhabas.api.web;
 
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
 import com.inhabas.api.domain.board.dto.UpdateBoardDto;
 import com.inhabas.api.domain.board.usecase.BoardService;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,10 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,14 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Tag(name = "Board")
 @RestController
-@RequestMapping("/board")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
 
     @Operation(description = "게시글 조회")
-    @GetMapping
+    @GetMapping("/board")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 조회 URL 요청"),
@@ -52,7 +51,7 @@ public class BoardController {
     }
 
     @Operation(description = "모든 게시글 조회")
-    @GetMapping("/all")
+    @GetMapping("/boards")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 목록 조회 URL 요청"),
@@ -66,7 +65,7 @@ public class BoardController {
     }
 
     @Operation(description = "게시글 추가")
-    @PostMapping
+    @PostMapping("/board")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
@@ -79,7 +78,7 @@ public class BoardController {
     }
 
     @Operation(description = "게시글 수정")
-    @PutMapping
+    @PutMapping("/board")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
@@ -92,13 +91,14 @@ public class BoardController {
     }
 
     @Operation(description = "게시글 삭제")
-    @DeleteMapping
+    @DeleteMapping("/board/{id}")
     @ApiResponses({
             @ApiResponse(responseCode = "204"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<?> deleteBoard(@Authenticated MemberId memberId, @RequestParam Integer id) {
+    public ResponseEntity<?> deleteBoard(
+            @Authenticated MemberId memberId, @PathVariable Integer id) {
 
         boardService.delete(memberId, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

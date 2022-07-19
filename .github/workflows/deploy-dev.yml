@@ -32,4 +32,5 @@ jobs:
           kill -9 $(cat application.pid)
           nohup java -jar -Dspring.profiles.active=dev resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
           
-          exit
+          echo "done"
+          exit 0
