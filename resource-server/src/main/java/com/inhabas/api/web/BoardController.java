@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,14 +19,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @Slf4j
@@ -39,13 +33,13 @@ public class BoardController {
     private final BoardService boardService;
 
     @Operation(description = "게시글 조회")
-    @GetMapping("/board")
+    @GetMapping("/board/{id}")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 조회 URL 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<BoardDto> getBoard(@RequestParam Integer id) {
+    public ResponseEntity<BoardDto> getBoard(@PathVariable Integer id) {
 
         return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
     }
