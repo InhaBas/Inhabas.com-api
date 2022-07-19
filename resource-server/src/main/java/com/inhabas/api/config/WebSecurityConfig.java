@@ -48,12 +48,16 @@ public class WebSecurityConfig {
 
                     .authorizeRequests()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    // jwt 토큰
                         .antMatchers("/jwt/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
+                    // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
+                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
+                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/application/**").permitAll()
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 그 외
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString())
 
                     .expressionHandler(expressionHandler());
@@ -92,12 +96,18 @@ public class WebSecurityConfig {
                     .authorizeRequests()
                         .expressionHandler(expressionHandler())
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .antMatchers("/swagger", "/swagger-ui/**", "/docs/**", "/jwt/**").permitAll()
-                        .antMatchers(HttpMethod.GET, "/menu/**", "/signUp/schedule", "/member/chief").permitAll()
-                    // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/application/**").permitAll()
-                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // swagger 명세
+                        .antMatchers("/swagger", "/swagger-ui/**", "/docs/**").permitAll()
+                    // jwt 토큰
+                        .antMatchers("/jwt/**").permitAll()
+                    // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
+                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
+                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                    // 회계내역
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
+                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 그 외
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
 
