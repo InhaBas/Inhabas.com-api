@@ -21,7 +21,6 @@ jobs:
       with:
         host: ${{ secrets.IBAS_DEV_HOST }}
         username: ${{ secrets.IBAS_DEV_USERNAME }}
-        passphrase: ${{ secrets.IBAS_DEV_PASSWORD }}
         key: ${{ secrets.IBAS_DEV_SSH_KEY }}
         # port: ${{ secrets.PORT }} # default : 22
         script: |
@@ -30,7 +29,7 @@ jobs:
           chmod u+x gradlew && ./gradlew build -x build
           
           kill -9 $(cat application.pid)
-          nohup java -jar -Dspring.profiles.active=dev resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+          nohup java -jar -Dspring.profiles.active=dev resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar 1>output.log 2>&1 &
           
           echo "done"
           exit 0
