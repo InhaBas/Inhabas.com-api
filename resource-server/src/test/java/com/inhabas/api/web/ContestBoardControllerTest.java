@@ -107,10 +107,9 @@ public class ContestBoardControllerTest {
         given(contestBoardService.getBoardList(any(), any())).willReturn(expectedContestBoardDto);
 
         // when
-        String responseBody = mvc.perform(get("/contests")
+        String responseBody = mvc.perform(get("/contests?menu_id=9")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
-                        .param("menuId", "9")
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "DESC")

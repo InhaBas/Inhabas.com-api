@@ -50,7 +50,7 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<Page<ListContestBoardDto>> getBoardList(
-            @RequestParam MenuId menuId,
+            @RequestParam("menu_id") MenuId menuId,
             @PageableDefault(size = 8, direction = Direction.DESC, sort = "created") Pageable pageable) {
 
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);

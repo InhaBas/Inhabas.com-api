@@ -32,7 +32,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(description = "게시글 조회")
+    @Operation(description = "게시글 단일 조회")
     @GetMapping("/board/{id}")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -44,7 +44,7 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
     }
 
-    @Operation(description = "모든 게시글 조회")
+    @Operation(description = "게시글 목록 조회")
     @GetMapping("/boards")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -53,7 +53,7 @@ public class BoardController {
         })
     public ResponseEntity<Page<BoardDto>> getBoardList(
             @PageableDefault(size = 15, direction = Direction.DESC, sort = "created") Pageable pageable,
-            @RequestParam MenuId menuId) {
+            @RequestParam("menu_id") MenuId menuId) {
 
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
     }
