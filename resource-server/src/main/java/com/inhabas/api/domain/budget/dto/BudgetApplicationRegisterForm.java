@@ -48,6 +48,7 @@ public class BudgetApplicationRegisterForm {
                 .details(this.details)
                 .outcome(this.outcome)
                 .account(this.accounts)
+                .applicationWriter(applicationWriter)
                 .build();
     }
 }
