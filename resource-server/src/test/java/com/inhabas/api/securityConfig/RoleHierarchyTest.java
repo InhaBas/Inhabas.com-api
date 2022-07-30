@@ -82,13 +82,13 @@ public class RoleHierarchyTest {
 
     private void 공지사항_게시판_접근() throws Exception {
         mockMvc.perform(get("/boards")
-                        .param("menuId", "6"))
+                        .param("menu_id", "6"))
                 .andExpect(status().isOk());
     }
 
     private void 공지사항_게시판_접근_불가() throws Exception {
         mockMvc.perform(get("/boards")
-                        .param("menuId", "6"))
+                        .param("menu_id", "6"))
                 .andExpect(status().isForbidden());
     }
 }

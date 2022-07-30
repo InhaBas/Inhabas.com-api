@@ -21,7 +21,6 @@ import com.inhabas.api.domain.board.dto.UpdateBoardDto;
 import com.inhabas.api.domain.board.usecase.BoardService;
 import com.inhabas.api.domain.member.domain.MemberService;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
-import com.inhabas.api.web.converter.MenuIdConverter;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
 import java.time.LocalDateTime;
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +39,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @NoSecureWebMvcTest(BoardController.class)
-@Import(MenuIdConverter.IntegerToMenuIdConverter.class)
 public class BoardControllerTest {
 
     @Autowired
