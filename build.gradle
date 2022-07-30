@@ -42,8 +42,6 @@ subprojects {
         /* 로컬 개발용 db ssh tunneling */
         // https://mavenlibs.com/maven/dependency/com.jcraft/jsch
         implementation 'com.jcraft:jsch:0.1.55'
-        // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
-        compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 
         annotationProcessor(
                 'org.projectlombok:lombok',

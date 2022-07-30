@@ -8,11 +8,12 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Profile;
 
 /**
  * 로컬 개발용 ssh 터널링 설정. profile 이 local 일때만 유효
  */
-//@Profile("local")
+@Profile("local")
 @ConfigurationProperties(prefix = "ssh")
 @Setter @Getter
 public class SshConfig {
