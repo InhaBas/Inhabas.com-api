@@ -37,7 +37,7 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
         commentList.forEach(c -> {
             CommentDetailDto dto = CommentDetailDto.fromEntity(c);
             if (isRootComment(c)) {
-                map.put(dto.getId(), dto);
+                map.put(dto.getCommentId(), dto);
                 result.add(dto);
             }
             else {

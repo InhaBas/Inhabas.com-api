@@ -1,27 +1,25 @@
 package com.inhabas.api.domain.comment.usecase;
 
 import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.board.repository.NormalBoardRepository;
 import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.domain.comment.repository.CommentRepository;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.repository.MemberRepository;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
+import com.inhabas.api.domain.comment.repository.CommentRepository;
+import com.inhabas.api.domain.member.domain.entity.Member;
+import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final NormalBoardRepository boardRepository;
-    private final MemberRepository memberRepository;
+    private final EntityManager em;
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
@@ -29,48 +27,43 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAllByParentBoardIdOrderByCreated(boardId);
     }
 
-    @Transactional
-    public Integer create(CommentSaveDto commentSaveDto) {
-        Member writer = getWriterFrom(commentSaveDto);
-        NormalBoard board = getBoardFrom(commentSaveDto);
 
-        Comment newComment = new Comment(commentSaveDto.getContents())
-                .toBoard(board)
-                .writtenBy(writer);
+    @Transactional
+    public Integer create(CommentSaveDto commentSaveDto, MemberId writerId) {
+
+        NormalBoard parentBoard = em.getReference(NormalBoard.class, commentSaveDto.getBoardId());
+        Member writer = em.getReference(Member.class, writerId);
+        Comment newComment= new Comment(commentSaveDto.getContents(), writer, parentBoard);
+
+        if (commentSaveDto.isNotRootComment()) {
+            Comment parentComment = em.getReference(Comment.class, commentSaveDto.getParentCommentId());
+            newComment.replyTo(parentComment);
+        }
 
         return commentRepository.save(newComment).getId();
     }
 
-    private NormalBoard getBoardFrom(CommentSaveDto commentSaveDto) {
-        return boardRepository.getById(commentSaveDto.getBoardId());
-    }
-
-    private Member getWriterFrom(CommentSaveDto commentSaveDto) {
-        return memberRepository.getById(commentSaveDto.getWriterId());
-    }
 
     @Transactional
-    public Integer update(CommentUpdateDto commentUpdateDto) {
+    public Integer update(CommentUpdateDto commentUpdateDto, MemberId memberId) {
 
-        Integer id = commentUpdateDto.getId();
+        Integer id = commentUpdateDto.getCommentId();
         Comment OldComment = commentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        MemberId updaterId = commentUpdateDto.getWriterId();
-        if (OldComment.isWrittenBy(updaterId)) {
-            OldComment.setContents(commentUpdateDto.getContents());
-            commentRepository.save(OldComment);
-
-            return id;
-        }
-        else {
-            throw new RuntimeException("작성자만 수정 가능합니다.");
-        }
+        return OldComment.update(commentUpdateDto.getContents(), memberId);
     }
 
     @Transactional
-    public void delete(Integer id) {
-        // 향후 로그인 유저 받아서 처리해야함.
-        commentRepository.deleteById(id);
+    public void delete(Integer id, MemberId memberId) {
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+
+        if (comment.isWrittenBy(memberId))
+            commentRepository.deleteById(id);
+        else
+            throw new RuntimeException("다른 사람이 쓴 댓글은 수정할 수 없습니다.");
+
     }
 }

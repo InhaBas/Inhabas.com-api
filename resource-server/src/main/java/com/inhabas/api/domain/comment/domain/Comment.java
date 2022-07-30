@@ -42,13 +42,10 @@ public class Comment extends BaseEntity {
 
     /* constructor */
 
-    public Comment(String contents) {
+    public Comment(String contents, Member writer, NormalBoard board) {
         this.contents = new Contents(contents);
-    }
-
-    public Comment(Integer id, String contents) {
-        this.id = id;
-        this.contents = new Contents(contents);
+        this.writtenBy(writer);
+        this.toBoard(board);
     }
 
     /* getter */
@@ -77,10 +74,16 @@ public class Comment extends BaseEntity {
         return this.contents.getValue();
     }
 
-    /* setter */
-    public void setContents(String contents) {
-        this.contents = new Contents(contents);
+    public Integer update(String contents, MemberId writerId) {
+
+        if (isWrittenBy(writerId)) {
+            this.contents = new Contents(contents);
+            return this.id;
+        }
+        else
+            throw new RuntimeException("작성자만 수정 가능합니다.");
     }
+
 
     /* relation methods */
 

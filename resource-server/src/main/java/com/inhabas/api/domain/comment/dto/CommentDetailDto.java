@@ -1,24 +1,24 @@
 package com.inhabas.api.domain.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.majorInfo.domain.valueObject.Major;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
 public class CommentDetailDto {
 
-    private Integer id;
+    private Integer commentId;
     private String contents;
+    @JsonUnwrapped(prefix = "writer_")
     private MemberId writerId;
     private String writerName;
-    private Major writerMajor;
+    private String writerMajor;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime created;
     private List<CommentDetailDto> children;
@@ -34,13 +34,15 @@ public class CommentDetailDto {
         );
     }
 
-    public CommentDetailDto(Integer id, String contents, MemberId memberId, String memberName, String major, LocalDateTime created) {
-        this.id = id;
+    public CommentDetailDto(Integer id, String contents, MemberId writerId, String memberName, String major, LocalDateTime created) {
+        this.commentId = id;
         this.contents = contents;
-        this.writerId = memberId;
+        this.writerId = writerId;
         this.writerName = memberName;
-        this.writerMajor = new Major(major);
+        this.writerMajor = major;
         this.created = created;
         this.children = new ArrayList<>();
     }
+
+
 }

@@ -32,7 +32,7 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @Operation(description = "게시글 단일 조회")
+    @Operation(summary = "게시글 단일 조회")
     @GetMapping("/board/{id}")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -44,7 +44,7 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
     }
 
-    @Operation(description = "게시글 목록 조회")
+    @Operation(summary = "게시글 목록 조회")
     @GetMapping("/boards")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
@@ -58,7 +58,7 @@ public class BoardController {
         return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
     }
 
-    @Operation(description = "게시글 추가")
+    @Operation(summary = "게시글 추가")
     @PostMapping("/board")
     @ApiResponses({
             @ApiResponse(responseCode = "201"),
@@ -71,7 +71,7 @@ public class BoardController {
         return new ResponseEntity<>(boardService.write(memberId, saveBoardDto), HttpStatus.CREATED);
     }
 
-    @Operation(description = "게시글 수정")
+    @Operation(summary = "게시글 수정")
     @PutMapping("/board")
     @ApiResponses({
             @ApiResponse(responseCode = "200"),
