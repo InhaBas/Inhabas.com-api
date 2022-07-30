@@ -21,6 +21,7 @@ jobs:
       with:
         host: ${{ secrets.IBAS_DEV_HOST }}
         username: ${{ secrets.IBAS_DEV_USERNAME }}
+        passphrase: ${{ secrets.IBAS_DEV_PASSWORD }}
         key: ${{ secrets.IBAS_DEV_SSH_KEY }}
         # port: ${{ secrets.PORT }} # default : 22
         script: |
