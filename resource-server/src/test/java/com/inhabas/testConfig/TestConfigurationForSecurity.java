@@ -5,7 +5,7 @@ import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationFailureHandler;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import com.inhabas.api.config.InterceptorConfig;
+import com.inhabas.api.web.interceptor.InterceptorConfig;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
