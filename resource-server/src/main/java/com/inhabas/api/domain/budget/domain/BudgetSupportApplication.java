@@ -73,6 +73,7 @@ public class BudgetSupportApplication extends BaseEntity {
         this.details = new Details(details);
         this.outcome = new Price(outcome);
         this.applicantAccount = new ApplicantAccount(account);
+        this.status = ApplicationStatus.WAITING;
     }
 
     public boolean cannotModifiableBy(MemberId currentApplicant) {
