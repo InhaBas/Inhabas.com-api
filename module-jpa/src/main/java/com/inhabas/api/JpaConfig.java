@@ -1,4 +1,4 @@
-package com.inhabas.api.config;
+package com.inhabas.api;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.context.annotation.Bean;
