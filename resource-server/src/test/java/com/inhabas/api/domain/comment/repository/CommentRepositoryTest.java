@@ -57,7 +57,7 @@ public class CommentRepositoryTest {
     @Test
     public void Success_Save_Comment() {
         //when
-        Comment newComment = new Comment("필력 좋다 쓴이야").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment newComment = new Comment("필력 좋다 쓴이야", commentWriter, normalBoard);
         Comment saveComment = commentRepository.save(newComment);
 
         em.clear();
@@ -71,13 +71,13 @@ public class CommentRepositoryTest {
     @Test
     public void Success_Save_Reply() {
         //given
-        Comment comment = new Comment("필력 좋다 쓴이야").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment = new Comment("필력 좋다 쓴이야", commentWriter, normalBoard);
         commentRepository.save(comment);
 
         em.clear();
 
         //when
-        Comment reply = new Comment("익1 고마워").toBoard(normalBoard).writtenBy(writer).replyTo(comment);
+        Comment reply = new Comment("익1 고마워", writer, normalBoard).replyTo(comment);
         Comment savedReply = commentRepository.save(reply);
 
         //then
@@ -91,23 +91,23 @@ public class CommentRepositoryTest {
     public void Hierarchical_Comment_List() {
         //given
         // 댓글을 달았다.
-        Comment comment1 = new Comment("1) 필력 좋다 쓴이야").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment1 = new Comment("1) 필력 좋다 쓴이야", commentWriter, normalBoard);
         commentRepository.save(comment1);
 
         // 대댓글을 달았다.
-        Comment reply1 = new Comment("1-1) 고마워").toBoard(normalBoard).writtenBy(writer).replyTo(comment1);
+        Comment reply1 = new Comment("1-1) 고마워", writer, normalBoard).replyTo(comment1);
         commentRepository.save(reply1);
 
         // 댓글을 달았다.
-        Comment comment2 = new Comment("2) 쓴이야 분발하자").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment2 = new Comment("2) 쓴이야 분발하자", commentWriter, normalBoard);
         commentRepository.save(comment2);
 
         // 대댓글을 달았다.
-        Comment reply2_1 = new Comment("2-1) 너 누구야?").toBoard(normalBoard).writtenBy(writer).replyTo(comment2);
+        Comment reply2_1 = new Comment("2-1) 너 누구야?", writer, normalBoard).replyTo(comment2);
         commentRepository.save(reply2_1);
 
         // 대댓글을 달았다.
-        Comment reply2_2 = new Comment("2-2) 나? 김첨지").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment2);
+        Comment reply2_2 = new Comment("2-2) 나? 김첨지", commentWriter, normalBoard).replyTo(comment2);
         commentRepository.save(reply2_2);
 
         em.clear();
@@ -141,13 +141,13 @@ public class CommentRepositoryTest {
     @Test
     public void Remove_Root_Comment() {
         //given
-        Comment comment = new Comment("root) 첫 댓글").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment = new Comment("root) 첫 댓글", commentWriter, normalBoard);
         commentRepository.save(comment);
 
-        Comment reply_1 = new Comment("reply1) 대댓글1").toBoard(normalBoard).writtenBy(writer).replyTo(comment);
+        Comment reply_1 = new Comment("reply1) 대댓글1", writer, normalBoard).replyTo(comment);
         commentRepository.save(reply_1);
 
-        Comment reply_2 = new Comment("reply2) 대댓글2").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment);
+        Comment reply_2 = new Comment("reply2) 대댓글2", commentWriter, normalBoard).replyTo(comment);
         commentRepository.save(reply_2);
 
         em.clear();
@@ -165,16 +165,16 @@ public class CommentRepositoryTest {
     @Test
     public void Remove_Reply() {
         //given
-        Comment comment = new Comment("root) 첫 댓글").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment = new Comment("root) 첫 댓글", commentWriter, normalBoard);
         commentRepository.save(comment);
 
-        Comment reply_1 = new Comment("reply1) 대댓글1").toBoard(normalBoard).writtenBy(writer).replyTo(comment);
+        Comment reply_1 = new Comment("reply1) 대댓글1", writer, normalBoard).replyTo(comment);
         commentRepository.save(reply_1);
 
-        Comment reply_2 = new Comment("reply2) 대댓글2").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment);
+        Comment reply_2 = new Comment("reply2) 대댓글2", commentWriter, normalBoard).replyTo(comment);
         commentRepository.save(reply_2);
 
-        Comment reply_3 = new Comment("reply3) 대댓글3").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment);
+        Comment reply_3 = new Comment("reply3) 대댓글3", commentWriter, normalBoard).replyTo(comment);
         commentRepository.save(reply_3);
 
         em.clear();
@@ -203,16 +203,16 @@ public class CommentRepositoryTest {
     @Test
     public void Remove_Board_Then_All_The_Comments_Of_The_Board_Are_Gone() {
         //given
-        Comment comment = new Comment("root) 첫 댓글").toBoard(normalBoard).writtenBy(commentWriter);
+        Comment comment = new Comment("root) 첫 댓글", commentWriter, normalBoard);
         commentRepository.save(comment);
 
-        Comment reply_1 = new Comment("reply1) 대댓글1").toBoard(normalBoard).writtenBy(writer).replyTo(comment);
+        Comment reply_1 = new Comment("reply1) 대댓글1", writer, normalBoard).replyTo(comment);
         commentRepository.save(reply_1);
 
-        Comment reply_2 = new Comment("reply2) 대댓글2").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment);
+        Comment reply_2 = new Comment("reply2) 대댓글2", commentWriter, normalBoard).replyTo(comment);
         commentRepository.save(reply_2);
 
-        Comment reply_3 = new Comment("reply3) 대댓글3").toBoard(normalBoard).writtenBy(commentWriter).replyTo(comment);
+        Comment reply_3 = new Comment("reply3) 대댓글3", commentWriter, normalBoard).replyTo(comment);
         commentRepository.save(reply_3);
 
         em.clear();

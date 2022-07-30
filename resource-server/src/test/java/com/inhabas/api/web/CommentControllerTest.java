@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
-import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
@@ -82,7 +81,7 @@ public class CommentControllerTest {
         //given
         String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"board_id\":13}";
         Integer newCommentId = 1;
-        given(commentService.create(any(CommentSaveDto.class))).willReturn(newCommentId);
+        given(commentService.create(any(), any())).willReturn(newCommentId);
 
         //when
         String responseBody = mockMvc.perform(post("/comment")
@@ -95,6 +94,27 @@ public class CommentControllerTest {
         //then
         assertThat(responseBody).isNotBlank();
         assertThat(responseBody).isEqualTo(String.valueOf(newCommentId));
+    }
+
+    @DisplayName("대댓글 추가 요청")
+    @Test
+    void createNewReply() throws Exception {
+        //given
+        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"board_id\":13, \"parent_comment_id\":1}";
+        Integer newReplyId = 2;
+        given(commentService.create(any(), any())).willReturn(newReplyId);
+
+        //when
+        String responseBody = mockMvc.perform(post("/comment")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse().getContentAsString();
+
+        //then
+        assertThat(responseBody).isNotBlank();
+        assertThat(responseBody).isEqualTo(String.valueOf(newReplyId));
     }
 
     @DisplayName("500자 이상의 댓글 추가 요청은 유효성 검사 실패 후 400 반환")
@@ -119,8 +139,8 @@ public class CommentControllerTest {
     @Test
     void updateComment() throws Exception {
         //given
-        String jsonRequest = "{\"id\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
-        given(commentService.update(any(CommentUpdateDto.class))).willReturn(1);
+        String jsonRequest = "{\"comment_id\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
+        given(commentService.update(any(), any())).willReturn(1);
 
         String responseBody = mockMvc.perform(put("/comment")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,12 +153,13 @@ public class CommentControllerTest {
         assertThat(responseBody).isBlank();
     }
 
+
     @DisplayName("500자 이상의 댓글 수정은 유효성 검사 실패 후 400 반환")
     @Test
     void tryToUpdateTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(1217162), tooLongContents, 13);
+        CommentUpdateDto param = new CommentUpdateDto(1, tooLongContents);
 
         //when
         String errorMessage = mockMvc.perform(put("/comment")
@@ -155,8 +176,8 @@ public class CommentControllerTest {
     @Test
     void illegalTryToUpdateComment() throws Exception {
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1, new MemberId(1217162), "1등이 아니네,,,", 12);
-        given(commentService.update(any(CommentUpdateDto.class))).willThrow(RuntimeException.class);
+        CommentUpdateDto param = new CommentUpdateDto(1, "1등이 아니네,,,");
+        given(commentService.update(any(), any())).willThrow(RuntimeException.class);
 
         //when
         mockMvc.perform(put("/comment")
@@ -169,7 +190,7 @@ public class CommentControllerTest {
     @Test
     void deleteComment() throws Exception {
         //given
-        doNothing().when(commentService).delete(anyInt());
+        doNothing().when(commentService).delete(any(), any());
 
         //when
         mockMvc.perform(delete("/comment/1"))
@@ -180,7 +201,7 @@ public class CommentControllerTest {
     @Test
     void illegalTryToDeleteComment() throws Exception {
         //given
-        doThrow(RuntimeException.class).when(commentService).delete(anyInt());
+        doThrow(RuntimeException.class).when(commentService).delete(any(), any());
 
         //when
         mockMvc.perform(delete("/comment/1"))
