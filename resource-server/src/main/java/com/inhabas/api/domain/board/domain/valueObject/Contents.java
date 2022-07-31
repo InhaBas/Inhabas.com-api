@@ -12,7 +12,7 @@ public class Contents {
     private String value;
 
     @Transient
-    private final int MAX_SIZE = 2 << 24 - 1; //16MB
+    private final int MAX_SIZE = 1 << 24 - 1; //16MB
 
     public Contents() {}
 

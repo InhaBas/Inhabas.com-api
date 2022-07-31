@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.budget.converter;
+package com.inhabas.api.domain.budget.domain.converter;
 
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 

@@ -3,7 +3,7 @@ package com.inhabas.api.domain.budget.domain;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
 import com.inhabas.api.domain.budget.ApplicationNotFoundException;
-import com.inhabas.api.domain.budget.converter.StatusConverter;
+import com.inhabas.api.domain.budget.domain.converter.StatusConverter;
 import com.inhabas.api.domain.budget.domain.valueObject.*;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.AccessLevel;
