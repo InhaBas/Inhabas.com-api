@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PreDestroy;
 import javax.validation.constraints.NotNull;
 import java.util.Properties;
 
@@ -25,13 +26,14 @@ public class SshTunnelingInitializer {
     @NotNull private String user;
     @NotNull private int sshPort;
     @NotNull private String privateKey;
-    @NotNull private String databaseHost;
     @NotNull private int databasePort;
 
     private Session session;
 
+    @PreDestroy
     public void closeSSH() {
-        session.disconnect();
+        if (session.isConnected())
+            session.disconnect();
     }
 
     public Integer buildSshConnection() {
@@ -57,11 +59,12 @@ public class SshTunnelingInitializer {
             log.info("success connecting ssh connection ");
 
             log.info("start forwarding");
-            forwardedPort = session.setPortForwardingL(0, databaseHost, databasePort);
+            forwardedPort = session.setPortForwardingL(0, "localhost", databasePort);
             log.info("successfully connected to database");
 
         } catch (Exception e){
             log.error("fail to make ssh tunneling");
+            this.closeSSH();
             e.printStackTrace();
             exit(1);
         }
