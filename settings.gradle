@@ -1,6 +1,6 @@
 rootProject.name = 'api'
 include 'resource-server'
-include 'file-server'
-include 'auth-module'
+include 'module-fileStorage'
+include 'module-auth'
 include 'module-jpa'
 

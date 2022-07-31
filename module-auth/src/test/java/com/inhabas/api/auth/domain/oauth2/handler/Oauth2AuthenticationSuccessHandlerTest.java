@@ -1,21 +1,9 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
-import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.token.TokenProvider;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +17,19 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+
+import javax.servlet.http.Cookie;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class Oauth2AuthenticationSuccessHandlerTest {
@@ -49,7 +50,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
     private AuthProperties.OAuth2 oAuth2Utils;
 
     private DefaultOAuth2User defaultOAuth2User;
-    private Set<SimpleGrantedAuthority> authorities =
+    private final Set<SimpleGrantedAuthority> authorities =
             Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC_MEMBER"));
 
     @BeforeEach

@@ -84,7 +84,7 @@ project(':module-jpa') {
     }
 }
 
-project(':auth-module') {
+project(':module-auth') {
     bootJar {enabled = false}
     jar {enabled = true}
 
@@ -107,7 +107,7 @@ project(':auth-module') {
     }
 }
 
-project(':file-server') {
+project(':module-fileStorage') {
     bootJar {enabled = false}
     jar {enabled = false}
 }
@@ -115,7 +115,7 @@ project(':file-server') {
 
 project(':resource-server') {
     dependencies {
-        api project(':auth-module')
+        api project(':module-auth')
         testImplementation 'org.springframework.security:spring-security-test'
     }
 
