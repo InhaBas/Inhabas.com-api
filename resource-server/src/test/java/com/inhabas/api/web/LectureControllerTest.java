@@ -308,7 +308,7 @@ public class LectureControllerTest {
         doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any());
 
         //when
-        mockMvc.perform(put("/lecture/student/121/status")
+        mockMvc.perform(put("/lecture/1/student/121/status")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("\"BLOCKED\""))
                 .andExpect(status().isNoContent());
@@ -324,7 +324,7 @@ public class LectureControllerTest {
         doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any());
 
         //when
-        mockMvc.perform(put("/lecture/students/status")
+        mockMvc.perform(put("/lecture/1/students/status")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"12\":\"BLOCKED\"}, {\"15\":\"BLOCKED\"}"))
                 .andExpect(status().isNoContent());

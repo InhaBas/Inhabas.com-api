@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -88,6 +89,7 @@ public class LectureController {
             @ApiResponse(responseCode = "401", description = "작성자가 아닌 경우 접근 불가"),
     })
     @DeleteMapping("/lecture/{id}")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
     public ResponseEntity<?> deleteLecture(
             @Authenticated MemberId memberId, @PathVariable Integer id) {
 
@@ -132,9 +134,10 @@ public class LectureController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "401", description = "강의자만 변경가능"),
     })
-    @PutMapping("/lecture/student/{sId}/status")
+    @PutMapping("/lecture/{id}/student/{sId}/status")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
     public ResponseEntity<?> changeStudentStatus(
-            @Authenticated MemberId memberId, @PathVariable Integer sId,
+            @Authenticated MemberId memberId, @PathVariable Integer sId, @PathVariable Integer id,
             @NotNull @RequestBody StudentStatus status) {
 
         studentService.changeStatusOfOneStudentByLecturer(sId, memberId, status);
@@ -149,9 +152,10 @@ public class LectureController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "401", description = "강의자만 변경가능")
     })
-    @PutMapping("/lecture/students/status")
+    @PutMapping("/lecture/{id}/students/status")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
     public ResponseEntity<?> changeStudentsStatus(
-            @Authenticated MemberId memberId,
+            @Authenticated MemberId memberId, @PathVariable Integer id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "additionalProp 대신 studentId 값에 해당하는 정수값을 넣어야함. 단 학번이 아니라 강의등록명단 상의 번호임을 명심할 것")
             @NotNull @RequestBody Map<Integer, StudentStatus> list) {
 
@@ -181,6 +185,7 @@ public class LectureController {
             @ApiResponse(responseCode = "401", description = "강의자만 조회가능")
     })
     @GetMapping("/lecture/{id}/students")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
     public ResponseEntity<Page<StudentListDto>> searchStudents(
             @PathVariable Integer id, @PageableDefault(size = 25) Pageable pageable) {
 
