@@ -75,6 +75,7 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Override
     public Page<StudentListDto> searchStudents(Integer lectureId, Pageable pageable) {
-        return null;
+
+        return studentRepository.searchStudents(lectureId, pageable);
     }
 }

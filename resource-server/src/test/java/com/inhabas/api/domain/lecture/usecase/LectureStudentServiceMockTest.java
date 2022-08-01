@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -121,5 +123,19 @@ public class LectureStudentServiceMockTest {
         StudentStatus status = (StudentStatus) ReflectionTestUtils.getField(student, "status");
         assertThat(status).isEqualTo(StudentStatus.EXIT);
         then(studentRepository).should(times(1)).findByLectureIdAndMemberId(any(), any());
+    }
+
+    @DisplayName("수강생 정보 조회")
+    @Test
+    public void searchStudentsTest() {
+
+        //given
+        given(studentRepository.searchStudents(any(), any())).willReturn(Page.empty());
+
+        //when
+        studentService.searchStudents(1, PageRequest.of(0, 25));
+
+        //then
+        then(studentRepository).should(times(1)).searchStudents(any(), any());
     }
 }
