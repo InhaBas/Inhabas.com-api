@@ -7,7 +7,7 @@ import javax.persistence.Converter;
 import java.util.Objects;
 
 @Converter
-public class StatusConverter implements AttributeConverter<LectureStatus, Integer> {
+public class LectureStatusConverter implements AttributeConverter<LectureStatus, Integer> {
 
     @Override
     public Integer convertToDatabaseColumn(LectureStatus status) {

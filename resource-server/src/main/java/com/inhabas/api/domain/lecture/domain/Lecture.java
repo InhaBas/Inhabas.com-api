@@ -2,7 +2,7 @@ package com.inhabas.api.domain.lecture.domain;
 
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.lecture.LectureCannotModifiableException;
-import com.inhabas.api.domain.lecture.domain.converter.StatusConverter;
+import com.inhabas.api.domain.lecture.domain.converter.LectureStatusConverter;
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.AccessLevel;
@@ -30,7 +30,7 @@ public class Lecture extends BaseEntity {
     @AttributeOverride(name = "id", column = @Column(name = "chief", nullable = false, updatable = false))
     private MemberId chief;
 
-    @Convert(converter = StatusConverter.class)
+    @Convert(converter = LectureStatusConverter.class)
     @NotNull
     private LectureStatus status;
 
@@ -99,6 +99,9 @@ public class Lecture extends BaseEntity {
         return !this.chief.equals(memberId);
     }
 
+    public boolean isHeldBy(MemberId memberId) {
+        return this.chief.equals(memberId);
+    }
 
     /**
      * 개설 신청된 강의를 승인 또는 거절하는 함수

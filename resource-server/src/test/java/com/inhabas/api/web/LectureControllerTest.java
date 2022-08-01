@@ -1,9 +1,12 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
+import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
 import com.inhabas.api.domain.lecture.dto.LectureListDto;
+import com.inhabas.api.domain.lecture.dto.StudentListDto;
 import com.inhabas.api.domain.lecture.usecase.LectureService;
+import com.inhabas.api.domain.lecture.usecase.LectureStudentService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +40,9 @@ public class LectureControllerTest {
 
     @MockBean
     private LectureService lectureService;
+
+    @MockBean
+    private LectureStudentService studentService;
 
     @DisplayName("강의 등록 uri 를 정상적으로 호출 및 응답.")
     @Test
@@ -268,15 +275,148 @@ public class LectureControllerTest {
 
         //when
         mockMvc.perform(put("/lecture/1/status")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\n" +
-                        "  \"status\": \"PROGRESSING\",\n" +
-                        "  \"reject_reason\": null\n" +
-                        "}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\n" +
+                                "  \"status\": \"PROGRESSING\",\n" +
+                                "  \"reject_reason\": null\n" +
+                                "}"))
                 .andExpect(status().isNoContent());
 
         //then
         then(lectureService).should(times(1)).approveOrDeny(any(), any());
     }
 
+    @DisplayName("수강생으로 등록한다.")
+    @Test
+    public void enrollTest() throws Exception {
+
+        //given
+        doNothing().when(studentService).enroll(any(), any());
+
+        //when
+        mockMvc.perform(post("/lecture/1/student"))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(studentService).should(times(1)).enroll(any(), any());
+    }
+
+    @DisplayName("수강생 한명의 수강상태를 변경한다.")
+    @Test
+    public void changeStudentStatusTest() throws Exception {
+
+        doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any());
+
+        //when
+        mockMvc.perform(put("/lecture/student/121/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("\"BLOCKED\""))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(studentService).should(times(1)).changeStatusOfOneStudentByLecturer(any(), any(), any());
+    }
+
+    @DisplayName("다수의 수강생 상태를 변경한다.")
+    @Test
+    public void changeStudentsStatusTest() throws Exception {
+
+        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any());
+
+        //when
+        mockMvc.perform(put("/lecture/students/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"12\":\"BLOCKED\"}, {\"15\":\"BLOCKED\"}"))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(studentService).should(times(1)).changeStatusOfStudentsByLecturer(any(), any());
+    }
+
+    @DisplayName("수강생이 강의를 탈퇴한다.")
+    @Test
+    public void exitLectureTest() throws Exception {
+
+        doNothing().when(studentService).exitBySelf(any(), any());
+
+        //when
+        mockMvc.perform(delete("/lecture/1/student"))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(studentService).should(times(1)).exitBySelf(any(), any());
+    }
+
+    @DisplayName("수강생들의 정보를 조회한다.")
+    @Test
+    public void searchStudentsInformation() throws Exception {
+
+        //given
+        List<StudentListDto> students = new ArrayList<>();
+        for (int i = 0; i < 51; i++) {
+            students.add(
+                    StudentListDto.builder()
+                            .name("홍길동"+i)
+                            .memberId(1000000+i)
+                            .email("my@gmail.com")
+                            .assignmentCount(0)
+                            .attendanceCount(0)
+                            .phone("010-0000-0000")
+                            .status(StudentStatus.PROGRESS)
+                            .sid(i)
+                            .build()
+            );
+        }
+        PageImpl<StudentListDto> page =
+                new PageImpl<>(students.subList(50, students.size()), PageRequest.of(2, 25, Sort.Direction.ASC, "memberId"), students.size());
+        given(studentService.searchStudents(any(), any())).willReturn(page);
+
+        //when
+        String response = mockMvc.perform(get("/lecture/1/students"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        //then
+        then(studentService).should(times(1)).searchStudents(any(), any());
+        JSONAssert.assertEquals("{\n" +
+                "  \"total_pages\": 3,\n" +
+                "  \"total_elements\": 51,\n" +
+                "  \"size\": 25,\n" +
+                "  \"content\": [\n" +
+                "    {\n" +
+                "      \"name\": \"홍길동50\",\n" +
+                "      \"member_id\": 1000050,\n" +
+                "      \"phone\": \"010-0000-0000\",\n" +
+                "      \"email\": \"my@gmail.com\",\n" +
+                "      \"assignment_count\": 0,\n" +
+                "      \"attendance_count\": 0,\n" +
+                "      \"status\": \"PROGRESS\",\n" +
+                "      \"sid\": 50\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"number\": 2,\n" +
+                "  \"sort\": {\n" +
+                "    \"empty\": false,\n" +
+                "    \"sorted\": true,\n" +
+                "    \"unsorted\": false\n" +
+                "  },\n" +
+                "  \"first\": false,\n" +
+                "  \"last\": true,\n" +
+                "  \"number_of_elements\": 1,\n" +
+                "  \"pageable\": {\n" +
+                "    \"offset\": 50,\n" +
+                "    \"sort\": {\n" +
+                "      \"empty\": false,\n" +
+                "      \"sorted\": true,\n" +
+                "      \"unsorted\": false\n" +
+                "    },\n" +
+                "    \"page_number\": 2,\n" +
+                "    \"page_size\": 25,\n" +
+                "    \"paged\": true,\n" +
+                "    \"unpaged\": false\n" +
+                "  },\n" +
+                "  \"empty\": false\n" +
+                "}", response, false);
+    }
 }

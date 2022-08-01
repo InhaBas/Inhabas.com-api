@@ -6,7 +6,7 @@ import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
 import com.inhabas.api.domain.lecture.dto.LectureRegisterForm;
 import com.inhabas.api.domain.lecture.dto.LectureUpdateForm;
-import com.inhabas.api.domain.lecture.dto.StatusUpdateRequest;
+import com.inhabas.api.domain.lecture.dto.LectureStatusUpdateRequest;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.junit.jupiter.api.Assertions;
@@ -270,7 +270,7 @@ public class LectureServiceImplTest {
         given(repository.findById(any())).willReturn(Optional.of(origin));
 
         //when
-        StatusUpdateRequest request = new StatusUpdateRequest();
+        LectureStatusUpdateRequest request = new LectureStatusUpdateRequest();
         ReflectionTestUtils.setField(request, "status", LectureStatus.PROGRESSING);
         service.approveOrDeny(1, request);
 
@@ -298,7 +298,7 @@ public class LectureServiceImplTest {
         given(repository.findById(any())).willReturn(Optional.of(origin));
 
         //when
-        StatusUpdateRequest request = new StatusUpdateRequest();
+        LectureStatusUpdateRequest request = new LectureStatusUpdateRequest();
         ReflectionTestUtils.setField(request, "status", LectureStatus.DENIED);
         service.approveOrDeny(1, request);
 
@@ -327,11 +327,11 @@ public class LectureServiceImplTest {
         given(repository.findById(any())).willReturn(Optional.of(origin));
 
         //when
-        StatusUpdateRequest request = new StatusUpdateRequest();
+        LectureStatusUpdateRequest request = new LectureStatusUpdateRequest();
         ReflectionTestUtils.setField(request, "status", LectureStatus.TERMINATED);
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                ()->service.approveOrDeny(1, request));
+                () -> service.approveOrDeny(1, request));
     }
 
     @DisplayName("강의를 다시 대기 상태로 되돌릴 수 없다.")
@@ -354,10 +354,10 @@ public class LectureServiceImplTest {
         given(repository.findById(any())).willReturn(Optional.of(origin));
 
         //when
-        StatusUpdateRequest request = new StatusUpdateRequest();
+        LectureStatusUpdateRequest request = new LectureStatusUpdateRequest();
         ReflectionTestUtils.setField(request, "status", LectureStatus.WAITING);
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                ()->service.approveOrDeny(1, request));
+                () -> service.approveOrDeny(1, request));
     }
 }

@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class StatusUpdateRequest {
+public class LectureStatusUpdateRequest {
 
     @NotNull
     private LectureStatus status;

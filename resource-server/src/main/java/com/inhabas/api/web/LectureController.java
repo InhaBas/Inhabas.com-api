@@ -1,7 +1,9 @@
 package com.inhabas.api.web;
 
+import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import com.inhabas.api.domain.lecture.dto.*;
 import com.inhabas.api.domain.lecture.usecase.LectureService;
+import com.inhabas.api.domain.lecture.usecase.LectureStudentService;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 @Tag(name = "강의실 관리")
 @RestController
@@ -23,6 +27,7 @@ import javax.validation.Valid;
 public class LectureController {
 
     private final LectureService lectureService;
+    private final LectureStudentService studentService;
 
     @Operation(summary = "강의실 단건 조회")
     @ApiResponses({
@@ -99,10 +104,86 @@ public class LectureController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     @PutMapping("/lecture/{id}/status")
-    public ResponseEntity<?> updateLectureStatus(@PathVariable Integer id, @Valid @RequestBody StatusUpdateRequest request) {
+    public ResponseEntity<?> updateLectureStatus(@PathVariable Integer id, @Valid @RequestBody LectureStatusUpdateRequest request) {
 
         lectureService.approveOrDeny(id, request);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "수강생이 강의실 직접 신청하여 등록")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 lecture_id 값"),
+    })
+    @PostMapping("/lecture/{id}/student")
+    public ResponseEntity<?> enroll(
+            @Authenticated MemberId memberId, @PathVariable Integer id) {
+
+        studentService.enroll(id, memberId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "수강생 한명의 수강상태를 변경",
+            description = "'정상수강' or '수강정지' 만 가능 / sId 는 학번이 아니고 강의등록명단 상의 번호임을 명심할 것.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "강의자만 변경가능"),
+    })
+    @PutMapping("/lecture/student/{sId}/status")
+    public ResponseEntity<?> changeStudentStatus(
+            @Authenticated MemberId memberId, @PathVariable Integer sId,
+            @NotNull @RequestBody StudentStatus status) {
+
+        studentService.changeStatusOfOneStudentByLecturer(sId, memberId, status);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "다수의 수강생 상태를 일괄 변경",
+            description = "'정상수강' or '수강정지' 만 가능 / 단 한명이라도 오류가 발생하면 전체 rollback 됨.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "강의자만 변경가능")
+    })
+    @PutMapping("/lecture/students/status")
+    public ResponseEntity<?> changeStudentsStatus(
+            @Authenticated MemberId memberId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "additionalProp 대신 studentId 값에 해당하는 정수값을 넣어야함. 단 학번이 아니라 강의등록명단 상의 번호임을 명심할 것")
+            @NotNull @RequestBody Map<Integer, StudentStatus> list) {
+
+        studentService.changeStatusOfStudentsByLecturer(list, memberId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "수강생이 강의실을 탈퇴한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+    })
+    @DeleteMapping("/lecture/{id}/student")
+    public ResponseEntity<?> exit(
+            @Authenticated MemberId memberId, @PathVariable Integer id) {
+
+        studentService.exitBySelf(id, memberId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "수강생들의 수강상태정보를 불러온다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "401", description = "강의자만 조회가능")
+    })
+    @GetMapping("/lecture/{id}/students")
+    public ResponseEntity<Page<StudentListDto>> searchStudents(
+            @PathVariable Integer id, @PageableDefault(size = 25) Pageable pageable) {
+
+        return ResponseEntity.ok(studentService.searchStudents(id, pageable));
     }
 }

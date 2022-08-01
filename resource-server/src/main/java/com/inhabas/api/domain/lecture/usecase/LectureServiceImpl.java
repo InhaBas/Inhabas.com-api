@@ -67,7 +67,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public void approveOrDeny(Integer lectureId, StatusUpdateRequest request) {
+    public void approveOrDeny(Integer lectureId, LectureStatusUpdateRequest request) {
 
         Lecture lecture = repository.findById(lectureId)
                 .orElseThrow(EntityNotFoundException::new);

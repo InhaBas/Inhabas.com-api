@@ -17,5 +17,5 @@ public interface LectureService {
 
     Page<LectureListDto> getList(Pageable pageable);
 
-    void approveOrDeny(Integer lectureId, StatusUpdateRequest request);
+    void approveOrDeny(Integer lectureId, LectureStatusUpdateRequest request);
 }
