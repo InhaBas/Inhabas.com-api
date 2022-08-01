@@ -43,8 +43,7 @@ public class WebSecurityConfig {
                     .csrf()
                         .disable()
 
-                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class
-                    )
+                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
 
                     .authorizeRequests()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -57,8 +56,11 @@ public class WebSecurityConfig {
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 강의
+                        .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.BASIC_MEMBER.toString())
+                        .anyRequest().hasRole(Role.DEACTIVATED_MEMBER.toString())
 
                     .expressionHandler(expressionHandler());
         }
@@ -107,6 +109,9 @@ public class WebSecurityConfig {
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 강의
+                        .antMatchers("/lecture/status").hasRole(Role.EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
                     // 그 외
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }

@@ -2,10 +2,7 @@ package com.inhabas.api.domain.lecture.usecase;
 
 import com.inhabas.api.domain.lecture.LectureCannotModifiableException;
 import com.inhabas.api.domain.lecture.domain.Lecture;
-import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
-import com.inhabas.api.domain.lecture.dto.LectureListDto;
-import com.inhabas.api.domain.lecture.dto.LectureRegisterForm;
-import com.inhabas.api.domain.lecture.dto.LectureUpdateForm;
+import com.inhabas.api.domain.lecture.dto.*;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import lombok.RequiredArgsConstructor;
@@ -67,5 +64,14 @@ public class LectureServiceImpl implements LectureService {
     public Page<LectureListDto> getList(Pageable pageable) {
 
         return repository.getList(pageable);
+    }
+
+    @Override
+    public void approveOrDeny(Integer lectureId, StatusUpdateRequest request) {
+
+        Lecture lecture = repository.findById(lectureId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        lecture.approveOrDeny(request.getStatus(), request.getRejectReason());
     }
 }

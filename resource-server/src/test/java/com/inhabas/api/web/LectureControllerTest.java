@@ -180,10 +180,10 @@ public class LectureControllerTest {
 
         //given
         List<LectureListDto> list = List.of(
-                new LectureListDto(1, "title1", 1000001, "intro1", LocalDateTime.of(2001,1,1,1,1,1), LectureStatus.PROGRESSING, 1, 30, 2),
-                new LectureListDto(2, "title2", 1000002, "intro2", LocalDateTime.of(2002,2,2,2,2,2), LectureStatus.PROGRESSING, 1, 31, 3),
-                new LectureListDto(3, "title3", 1000003, "intro3", LocalDateTime.of(2003,3,3,3,3,3), LectureStatus.PROGRESSING, 1, 32, 4)
-                );
+                new LectureListDto(1, "title1", 1000001, "intro1", LocalDateTime.of(2001, 1, 1, 1, 1, 1), LectureStatus.PROGRESSING, 1, 30, 2),
+                new LectureListDto(2, "title2", 1000002, "intro2", LocalDateTime.of(2002, 2, 2, 2, 2, 2), LectureStatus.PROGRESSING, 1, 31, 3),
+                new LectureListDto(3, "title3", 1000003, "intro3", LocalDateTime.of(2003, 3, 3, 3, 3, 3), LectureStatus.PROGRESSING, 1, 32, 4)
+        );
         PageImpl<LectureListDto> page = new PageImpl<>(list, PageRequest.of(0, 6, Sort.Direction.DESC, "apply_deadline"), list.size());
         given(lectureService.getList(any())).willReturn(page);
 
@@ -258,4 +258,25 @@ public class LectureControllerTest {
                 "  \"empty\": false\n" +
                 "}", response, false);
     }
+
+    @DisplayName("강의 상태 변경 api 를 호출한다.")
+    @Test
+    public void updateLectureStatusTest() throws Exception {
+
+        //given
+        doNothing().when(lectureService).approveOrDeny(any(), any());
+
+        //when
+        mockMvc.perform(put("/lecture/1/status")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "  \"status\": \"PROGRESSING\",\n" +
+                        "  \"reject_reason\": null\n" +
+                        "}"))
+                .andExpect(status().isNoContent());
+
+        //then
+        then(lectureService).should(times(1)).approveOrDeny(any(), any());
+    }
+
 }

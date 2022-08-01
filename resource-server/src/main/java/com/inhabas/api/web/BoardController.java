@@ -25,7 +25,7 @@ import javax.validation.Valid;
 
 
 @Slf4j
-@Tag(name = "Board")
+@Tag(name = "게시글 관리")
 @RestController
 @RequiredArgsConstructor
 public class BoardController {

@@ -6,6 +6,7 @@ import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
 import com.inhabas.api.domain.lecture.dto.LectureRegisterForm;
 import com.inhabas.api.domain.lecture.dto.LectureUpdateForm;
+import com.inhabas.api.domain.lecture.dto.StatusUpdateRequest;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -246,5 +248,116 @@ public class LectureServiceImplTest {
 
         //then
         then(repository).should(times(1)).getList(any());
+    }
+
+    @DisplayName("대기 강의를 승인한다.")
+    @Test
+    public void approveTest() {
+
+        //given
+        Lecture origin = Lecture.builder()
+                .title("절권도 배우기")
+                .chief(new MemberId(12171652))
+                .applyDeadline(LocalDateTime.of(9011, 1, 1, 1, 1, 1))
+                .curriculumDetails("1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...")
+                .daysOfWeek("월 금")
+                .introduction("호신술을 배워보자")
+                .method(1)
+                .participantsLimits(30)
+                .place("6호관 옥상")
+                .build();
+        ReflectionTestUtils.setField(origin, "id", 1);
+        given(repository.findById(any())).willReturn(Optional.of(origin));
+
+        //when
+        StatusUpdateRequest request = new StatusUpdateRequest();
+        ReflectionTestUtils.setField(request, "status", LectureStatus.PROGRESSING);
+        service.approveOrDeny(1, request);
+
+        //then
+        LectureStatus status = (LectureStatus) ReflectionTestUtils.getField(request, "status");
+        assertThat(status).isEqualTo(LectureStatus.PROGRESSING);
+    }
+
+    @DisplayName("대기 강의를 거절한다.")
+    @Test
+    public void denyTest() {
+        //given
+        Lecture origin = Lecture.builder()
+                .title("절권도 배우기")
+                .chief(new MemberId(12171652))
+                .applyDeadline(LocalDateTime.of(9011, 1, 1, 1, 1, 1))
+                .curriculumDetails("1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...")
+                .daysOfWeek("월 금")
+                .introduction("호신술을 배워보자")
+                .method(1)
+                .participantsLimits(30)
+                .place("6호관 옥상")
+                .build();
+        ReflectionTestUtils.setField(origin, "id", 1);
+        given(repository.findById(any())).willReturn(Optional.of(origin));
+
+        //when
+        StatusUpdateRequest request = new StatusUpdateRequest();
+        ReflectionTestUtils.setField(request, "status", LectureStatus.DENIED);
+        service.approveOrDeny(1, request);
+
+        //then
+        LectureStatus status = (LectureStatus) ReflectionTestUtils.getField(request, "status");
+        assertThat(status).isEqualTo(LectureStatus.DENIED);
+    }
+
+    @DisplayName("강의를 강제 종료시킬 수는 없다.")
+    @Test
+    public void cannotTerminateLectureTest() {
+
+        //given
+        Lecture origin = Lecture.builder()
+                .title("절권도 배우기")
+                .chief(new MemberId(12171652))
+                .applyDeadline(LocalDateTime.of(9011, 1, 1, 1, 1, 1))
+                .curriculumDetails("1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...")
+                .daysOfWeek("월 금")
+                .introduction("호신술을 배워보자")
+                .method(1)
+                .participantsLimits(30)
+                .place("6호관 옥상")
+                .build();
+        ReflectionTestUtils.setField(origin, "id", 1);
+        given(repository.findById(any())).willReturn(Optional.of(origin));
+
+        //when
+        StatusUpdateRequest request = new StatusUpdateRequest();
+        ReflectionTestUtils.setField(request, "status", LectureStatus.TERMINATED);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                ()->service.approveOrDeny(1, request));
+    }
+
+    @DisplayName("강의를 다시 대기 상태로 되돌릴 수 없다.")
+    @Test
+    public void cannotMakeLectureWaitedTest() {
+
+        //given
+        Lecture origin = Lecture.builder()
+                .title("절권도 배우기")
+                .chief(new MemberId(12171652))
+                .applyDeadline(LocalDateTime.of(9011, 1, 1, 1, 1, 1))
+                .curriculumDetails("1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...")
+                .daysOfWeek("월 금")
+                .introduction("호신술을 배워보자")
+                .method(1)
+                .participantsLimits(30)
+                .place("6호관 옥상")
+                .build();
+        ReflectionTestUtils.setField(origin, "id", 1);
+        given(repository.findById(any())).willReturn(Optional.of(origin));
+
+        //when
+        StatusUpdateRequest request = new StatusUpdateRequest();
+        ReflectionTestUtils.setField(request, "status", LectureStatus.WAITING);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                ()->service.approveOrDeny(1, request));
     }
 }

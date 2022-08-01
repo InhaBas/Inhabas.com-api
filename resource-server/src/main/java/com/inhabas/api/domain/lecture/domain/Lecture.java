@@ -98,4 +98,25 @@ public class Lecture extends BaseEntity {
     public boolean notModifiableBy(MemberId memberId) {
         return !this.chief.equals(memberId);
     }
+
+
+    /**
+     * 개설 신청된 강의를 승인 또는 거절하는 함수
+     * @param status {@code LectureStatus.PROGRESSING}, {@code LectureStatus.DENIED} 둘 중 하나만 가능
+     * @param rejectReason null 이어도 된다.
+     */
+    public void approveOrDeny(LectureStatus status, String rejectReason) {
+
+        if (status == null)
+            throw new IllegalArgumentException("status 값은 null 일 수 없습니다.");
+        else if (status == LectureStatus.TERMINATED)
+            throw new IllegalArgumentException("강제로 강의를 종료시킬 수 없습니다.");
+        else if (status == LectureStatus.WAITING)
+            throw new IllegalArgumentException("강의를 대기 상태롤 돌릴 수 없습니다.");
+
+        this.status = status;
+        this.rejectReason = rejectReason;
+    }
+
+
 }
