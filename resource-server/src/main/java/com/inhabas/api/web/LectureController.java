@@ -134,13 +134,13 @@ public class LectureController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "401", description = "강의자만 변경가능"),
     })
-    @PutMapping("/lecture/{id}/student/{sId}/status")
-    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
+    @PutMapping("/lecture/{lectureId}/student/{sid}/status")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#lectureId)")
     public ResponseEntity<?> changeStudentStatus(
-            @Authenticated MemberId memberId, @PathVariable Integer sId, @PathVariable Integer id,
+            @Authenticated MemberId currentUser, @PathVariable Integer sid, @PathVariable Integer lectureId,
             @NotNull @RequestBody StudentStatus status) {
 
-        studentService.changeStatusOfOneStudentByLecturer(sId, memberId, status);
+        studentService.changeStatusOfOneStudentByLecturer(sid, currentUser, status, lectureId);
 
         return ResponseEntity.noContent().build();
     }
@@ -152,14 +152,14 @@ public class LectureController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "401", description = "강의자만 변경가능")
     })
-    @PutMapping("/lecture/{id}/students/status")
-    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
+    @PutMapping("/lecture/{lectureId}/students/status")
+    @PreAuthorize("@lectureSecurityChecker.instructorOnly(#lectureId)")
     public ResponseEntity<?> changeStudentsStatus(
-            @Authenticated MemberId memberId, @PathVariable Integer id,
+            @Authenticated MemberId memberId, @PathVariable Integer lectureId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "additionalProp 대신 studentId 값에 해당하는 정수값을 넣어야함. 단 학번이 아니라 강의등록명단 상의 번호임을 명심할 것")
             @NotNull @RequestBody Map<Integer, StudentStatus> list) {
 
-        studentService.changeStatusOfStudentsByLecturer(list, memberId);
+        studentService.changeStatusOfStudentsByLecturer(list, memberId, lectureId);
 
         return ResponseEntity.noContent().build();
     }
@@ -180,7 +180,7 @@ public class LectureController {
 
     @Operation(summary = "수강생들의 수강상태정보를 불러온다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "401", description = "강의자만 조회가능")
     })

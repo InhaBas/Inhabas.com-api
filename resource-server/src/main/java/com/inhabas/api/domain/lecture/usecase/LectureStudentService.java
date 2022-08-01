@@ -16,9 +16,9 @@ public interface LectureStudentService {
      * 학생 한명의 상태를 {@code PROGRESS} 또는 {@code BLOCKED} 상태로 변경한다. 탈주시킬 수 없다.
      * @param studentId 학번이 아닌 강의등록명단에서의 id
      */
-    void changeStatusOfOneStudentByLecturer(Integer studentId, MemberId lecturerId, StudentStatus status);
+    void changeStatusOfOneStudentByLecturer(Integer studentId, MemberId lecturerId, StudentStatus status, Integer lectureId);
 
-    void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, MemberId lecturerId);
+    void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, MemberId lecturerId, Integer lectureId);
 
     void exitBySelf(Integer lectureId, MemberId studentId);
 

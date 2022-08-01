@@ -77,6 +77,7 @@ public class WebSecurityConfig {
 
 
     @Order(1)
+    @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"local", "dev", "default_mvc_test"})

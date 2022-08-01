@@ -39,9 +39,9 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Transactional
     @Override
-    public void changeStatusOfOneStudentByLecturer(Integer studentId, MemberId lecturerId, StudentStatus status) {
+    public void changeStatusOfOneStudentByLecturer(Integer studentId, MemberId lecturerId, StudentStatus status, Integer lectureId) {
 
-        studentRepository.findById(studentId)
+        studentRepository.findByLectureIdAndId(lectureId, studentId)
                 .orElseThrow(EntityNotFoundException::new)
                 .changeStatusByLecturer(status, lecturerId);
     }
@@ -49,13 +49,13 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Transactional
     @Override
-    public void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, MemberId lecturerId) {
+    public void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, MemberId instructorId, Integer lectureId) {
 
         Set<Integer> keySet = list.keySet();
 
-        List<Student> students = studentRepository.findAllById(keySet)
+        List<Student> students = studentRepository.findAllById(keySet, lectureId)
                 .stream()
-                .map(student -> student.changeStatusByLecturer(list.get(student.getId()), lecturerId))
+                .map(student -> student.changeStatusByLecturer(list.get(student.getId()), instructorId))
                 .collect(Collectors.toList());
 
         studentRepository.saveAll(students);
