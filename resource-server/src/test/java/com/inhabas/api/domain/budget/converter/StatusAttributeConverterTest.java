@@ -55,7 +55,7 @@ public class StatusAttributeConverterTest {
         assertThat(status).isEqualTo(ApplicationStatus.WAITING);
     }
 
-    @DisplayName("APPROVED 상태가 db에 2로 저장된다.")
+    @DisplayName("APPROVED 상태가 db에 3로 저장된다.")
     @Test
     public void convertApprovedStatusTo2Test() {
         //given
@@ -67,7 +67,7 @@ public class StatusAttributeConverterTest {
         repository.save(application);
 
         Query query = em.createNativeQuery("select * from budget_support_application where status = :status", BudgetSupportApplication.class);
-        query.setParameter("status", 2);
+        query.setParameter("status", 3);
         BudgetSupportApplication result = (BudgetSupportApplication) query.getSingleResult();
 
 
@@ -75,7 +75,7 @@ public class StatusAttributeConverterTest {
         assertThat(status).isEqualTo(ApplicationStatus.APPROVED);
     }
 
-    @DisplayName("DENIED 상태가 db에 3로 저장된다.")
+    @DisplayName("DENIED 상태가 db에 2로 저장된다.")
     @Test
     public void convertDeniedStatusTo3Test() {
         //given
@@ -87,7 +87,7 @@ public class StatusAttributeConverterTest {
         repository.save(application);
 
         Query query = em.createNativeQuery("select * from budget_support_application where status = :status", BudgetSupportApplication.class);
-        query.setParameter("status", 3);
+        query.setParameter("status", 2);
         BudgetSupportApplication result = (BudgetSupportApplication) query.getSingleResult();
 
 

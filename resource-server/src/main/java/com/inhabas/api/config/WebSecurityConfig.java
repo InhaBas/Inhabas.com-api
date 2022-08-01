@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -24,6 +25,7 @@ import org.springframework.web.cors.CorsUtils;
 public class WebSecurityConfig {
 
     @Order(1)
+    @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
     @EnableWebSecurity
     @RequiredArgsConstructor
     @Profile({"production"})
@@ -43,8 +45,7 @@ public class WebSecurityConfig {
                     .csrf()
                         .disable()
 
-                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class
-                    )
+                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
 
                     .authorizeRequests()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -57,8 +58,11 @@ public class WebSecurityConfig {
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 강의
+                        .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.BASIC_MEMBER.toString())
+                        .anyRequest().hasRole(Role.DEACTIVATED_MEMBER.toString())
 
                     .expressionHandler(expressionHandler());
         }
@@ -107,6 +111,9 @@ public class WebSecurityConfig {
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                    // 강의
+                        .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
                     // 그 외
                         .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
         }
