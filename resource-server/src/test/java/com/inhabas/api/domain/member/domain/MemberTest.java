@@ -27,5 +27,12 @@ public class MemberTest {
                 , new IbasInformation(Role.BASIC_MEMBER));
     }
 
+    public static Member getTestMember(Integer id, String phone) {
+        return new Member(
+                new MemberId(id), "유동현", phone, "my@gmail.com", ""
+                , SchoolInformation.ofUnderGraduate("건축공학과", 3)
+                , new IbasInformation(Role.BASIC_MEMBER));
+    }
+
 
 }

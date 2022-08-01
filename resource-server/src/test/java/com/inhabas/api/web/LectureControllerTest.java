@@ -305,7 +305,7 @@ public class LectureControllerTest {
     @Test
     public void changeStudentStatusTest() throws Exception {
 
-        doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any());
+        doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
 
         //when
         mockMvc.perform(put("/lecture/1/student/121/status")
@@ -314,14 +314,14 @@ public class LectureControllerTest {
                 .andExpect(status().isNoContent());
 
         //then
-        then(studentService).should(times(1)).changeStatusOfOneStudentByLecturer(any(), any(), any());
+        then(studentService).should(times(1)).changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
     }
 
     @DisplayName("다수의 수강생 상태를 변경한다.")
     @Test
     public void changeStudentsStatusTest() throws Exception {
 
-        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any());
+        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any(), any());
 
         //when
         mockMvc.perform(put("/lecture/1/students/status")
@@ -330,7 +330,7 @@ public class LectureControllerTest {
                 .andExpect(status().isNoContent());
 
         //then
-        then(studentService).should(times(1)).changeStatusOfStudentsByLecturer(any(), any());
+        then(studentService).should(times(1)).changeStatusOfStudentsByLecturer(any(), any(), any());
     }
 
     @DisplayName("수강생이 강의를 탈퇴한다.")
