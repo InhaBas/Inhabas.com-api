@@ -48,6 +48,9 @@ public class LectureServiceImpl implements LectureService {
         if (lecture.notModifiableBy(memberId))
             throw new LectureCannotModifiableException();
 
+        if (!lecture.canBeDeleted())
+            throw new LectureCannotModifiableException("이미 진행된 강의는 삭제할 수 없습니다.");
+
         repository.delete(lecture);
     }
 

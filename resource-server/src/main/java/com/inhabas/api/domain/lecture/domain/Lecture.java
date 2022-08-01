@@ -121,5 +121,13 @@ public class Lecture extends BaseEntity {
         this.rejectReason = rejectReason;
     }
 
+    /**
+     * 이미 진행된 강의는 삭제할 수 없다.
+     * @return 승인 대기 상태 또는 거절 상태라면 true
+     */
+    public boolean canBeDeleted() {
+
+        return status == LectureStatus.WAITING || status == LectureStatus.DENIED;
+    }
 
 }
