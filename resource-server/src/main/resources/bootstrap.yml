@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: api
+  cloud:
+    config:
+      uri: http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local, default_mvc_test, no_security_mvc_test, test
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+      discovery:
+        enabled: false

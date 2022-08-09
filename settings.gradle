@@ -1,1 +1,6 @@
 rootProject.name = 'api'
+include 'resource-server'
+include 'module-fileStorage'
+include 'module-auth'
+include 'module-jpa'
+

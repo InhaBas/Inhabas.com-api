@@ -1,0 +1,27 @@
+name: Gradle Build
+
+on:
+  pull_request:
+    branches: [dev, master, feature/*, refactor/* ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: build_gradle
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+        
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
+      with:
+        arguments: build
