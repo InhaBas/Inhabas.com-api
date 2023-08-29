@@ -8,7 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Introduce {
 
-    @Column(name = "USER_INTRO")
+    @Column(name = "INTRO")
     private String value;
 
     @Transient

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 @Embeddable
 public class Email {
 
-    @Column(name = "email", length = 150, nullable = false)
+    @Column(name = "EMAIL", length = 150, nullable = false)
     private String value;
 
     @Transient

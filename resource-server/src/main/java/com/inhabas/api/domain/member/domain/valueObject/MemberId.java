@@ -13,7 +13,7 @@ public class MemberId implements Serializable {
 
     private static final long serialVersionUID = -2924578165705238561L;
 
-    @Column(name = "id")
+    @Column(name = "STUDENT_ID")
     private Integer id;
 
     public MemberId(Integer id) {

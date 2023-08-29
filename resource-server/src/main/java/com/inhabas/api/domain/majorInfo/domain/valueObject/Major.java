@@ -8,7 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Major {
 
-    @Column(name = "major", length = 50, nullable = false)
+    @Column(name = "MAJOR_NAME", length = 50, nullable = false)
     private String value;
 
     @Transient

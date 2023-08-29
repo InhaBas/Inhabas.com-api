@@ -14,7 +14,7 @@ import java.util.Objects;
 @Getter
 public class Generation {
 
-    @Column(name = "gen")
+    @Column(name = "GENERATION")
     private int value;
 
     public Generation() {}

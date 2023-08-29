@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 @Getter
 public class Phone {
 
-    @Column(name = "phone", nullable = false, length = 20)
+    @Column(name = "PHONE", nullable = false, length = 15)
     private String value;
 
     public Phone() {}

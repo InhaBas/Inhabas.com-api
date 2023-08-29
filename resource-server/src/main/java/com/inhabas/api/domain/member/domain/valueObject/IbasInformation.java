@@ -21,19 +21,19 @@ public class IbasInformation {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<MemberTeam> teamList = new ArrayList<>();
 
-    @Column(name = "joined")
-    private LocalDateTime joinedDate;
+    @Column(name = "DATE_JOINED", nullable = false)
+    private LocalDateTime dateJoined;
 
     @Embedded
     private Introduce introduce;
 
-    @Column(name = "USER_APPLY_PUBLISH", nullable = false)
-    private Integer applyPublish = 0;
+    @Column(name = "IS_HOF", nullable = false)
+    private int isHOF = 0;
 
     public IbasInformation(Role role) {
         this.role = role;
         this.introduce = new Introduce();
-        this.applyPublish = 0;
+        this.isHOF = 0;
     }
 
     public String getIntroduce() {
@@ -54,16 +54,16 @@ public class IbasInformation {
         if (!(o instanceof IbasInformation)) return false;
         IbasInformation that = (IbasInformation) o;
         return getRole() == that.getRole()
-                && getJoinedDate().equals(that.getJoinedDate())
+                && getDateJoined().equals(that.getDateJoined())
                 && getIntroduce().equals(that.getIntroduce())
-                && getApplyPublish().equals(that.getApplyPublish());
+                && getIsHOF() == (that.getIsHOF());
     }
 
     public boolean isCompleteToSignUp() {
-        return Objects.nonNull(this.joinedDate);
+        return Objects.nonNull(this.dateJoined);
     }
 
     public void finishSignUp() {
-        this.joinedDate = LocalDateTime.now();
+        this.dateJoined = LocalDateTime.now();
     }
 }

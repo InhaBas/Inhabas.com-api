@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "unique_phone", columnNames = "phone")})
+@Table(name = "USER", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_PHONE", columnNames = "PHONE")})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -48,7 +48,7 @@ public class Member {
     @Embedded
     private IbasInformation ibasInformation;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column(name = "IS_DELETED", nullable = false)
     private boolean isDeleted = false;
 
     @Builder

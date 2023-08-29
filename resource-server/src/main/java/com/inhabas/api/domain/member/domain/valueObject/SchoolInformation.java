@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.Objects;
 
+import static com.inhabas.api.domain.member.domain.valueObject.MemberType.*;
+
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SchoolInformation {
@@ -14,14 +16,27 @@ public class SchoolInformation {
     private Major major;
 
     @Embedded
+    private Grade grade;
+
+    @Embedded
     private Generation generation;
 
-    @Column(name = "usertype")
+    @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
+    private static final int DEFAULT_GRADE = 0; // 학생이 아닌 경우 0학년
+
     public SchoolInformation(String major, Integer generation, MemberType memberType) {
         this.major = new Major(major);
+        this.grade = new Grade(DEFAULT_GRADE);
+        this.generation = new Generation(generation);
+        this.memberType = memberType;
+    }
+
+    public SchoolInformation(String major, Integer grade, Integer generation, MemberType memberType) {
+        this.major = new Major(major);
+        this.grade = new Grade(grade);
         this.generation = new Generation(generation);
         this.memberType = memberType;
     }
@@ -29,24 +44,24 @@ public class SchoolInformation {
 
     /* factory methods */
 
-    public static SchoolInformation ofUnderGraduate(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.UNDERGRADUATE);
+    public static SchoolInformation ofUnderGraduate(String major, Integer grade, Integer generation) {
+        return new SchoolInformation(major, generation, UNDERGRADUATE);
     }
 
     public static SchoolInformation ofProfessor(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.PROFESSOR);
+        return new SchoolInformation(major, generation, PROFESSOR);
     }
 
     public static SchoolInformation ofGraduated(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.GRADUATED);
+        return new SchoolInformation(major, generation, GRADUATED);
     }
 
     public static SchoolInformation ofBachelor(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.BACHELOR);
+        return new SchoolInformation(major, generation, BACHELOR);
     }
 
     public static SchoolInformation ofOther(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.OTHER);
+        return new SchoolInformation(major, generation, OTHER);
     }
 
     public String getMajor() {
