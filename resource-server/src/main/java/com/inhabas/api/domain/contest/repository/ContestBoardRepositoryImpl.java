@@ -40,8 +40,8 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             contestBoard.topic.value,
                             contestBoard.start,
                             contestBoard.deadline,
-                            contestBoard.created,
-                            contestBoard.updated
+                            contestBoard.dateCreated,
+                            contestBoard.dateUpdated
                         ))
                 .from(contestBoard)
                 .innerJoin(member).on(contestBoard.writerId.eq(member.id))

@@ -45,8 +45,8 @@ public class LectureRepositoryImpl implements LectureRepositoryCustom {
                         lecture.status,
                         lecture.rejectReason,
                         lecture.paid,
-                        lecture.created,
-                        lecture.updated
+                        lecture.dateCreated,
+                        lecture.dateUpdated
                         ))
                 .from(lecture)
                 .innerJoin(member).on(member.id.eq(lecture.chief))

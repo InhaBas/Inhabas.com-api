@@ -30,7 +30,7 @@ public class CommentDetailDto {
                 comment.getWriter().getId(),
                 comment.getWriter().getName(),
                 comment.getWriter().getSchoolInformation().getMajor(),
-                comment.getCreated()
+                comment.getDateCreated()
         );
     }
 
