@@ -13,10 +13,10 @@ public class Email {
     private String value;
 
     @Transient
-    private final int MAX_LENGTH = 150;
+    private static final int MAX_LENGTH = 150;
 
     @Transient
-    private final String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
     public Email() {}
 
@@ -31,9 +31,9 @@ public class Email {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String))  return false;
 
-        String o = (String) value;
-        if (o.isBlank()) return false;
-        return o.length() < MAX_LENGTH && Pattern.compile(regex).matcher(o).matches();
+        String obj = (String) value;
+        if (obj.isBlank()) return false;
+        return obj.length() < MAX_LENGTH && EMAIL_PATTERN.matcher(obj).matches();
     }
 
     public String getValue() {

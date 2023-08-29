@@ -14,6 +14,8 @@ public class Phone {
     @Column(name = "PHONE", nullable = false, length = 15)
     private String value;
 
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^(010)-\\d{4}-\\d{4}$");
+
     public Phone() {}
 
     public Phone(String value) {
@@ -26,7 +28,7 @@ public class Phone {
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String)) return false;
-        String o = (String) value;
-        return Pattern.compile("^(010)-\\d{4}-\\d{4}$").matcher(o).matches();  // 010-xxxx-xxxx 형태만 받음.
+        String obj = (String) value;
+        return PHONE_PATTERN.matcher(obj).matches();  // only 010-****-****
     }
 }

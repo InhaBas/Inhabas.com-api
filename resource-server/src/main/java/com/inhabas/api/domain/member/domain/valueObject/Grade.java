@@ -25,9 +25,8 @@ public class Grade {
     boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof Integer))  return false;
-        int o = (Integer) value;
-        return 0 < o && o <= 5; // 1학년부터 5학년(초과학기)까지 가능
+        int obj = (Integer) value;
+        return 0 <= obj && obj <= 5; // 1학년부터 5학년(초과학기)까지 가능, 0학년은 학생이 아닐때
     }
-
 
 }

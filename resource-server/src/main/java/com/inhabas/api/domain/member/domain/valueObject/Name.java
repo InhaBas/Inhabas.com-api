@@ -12,7 +12,7 @@ public class Name {
     private String value;
 
     @Transient
-    private final int MAX_LENGTH = 50;
+    private static final int MAX_LENGTH = 50;
 
     public Name() {}
 

@@ -12,7 +12,7 @@ public class Introduce {
     private String value;
 
     @Transient
-    private final int MAX_LENGTH = 300;
+    private static final int MAX_LENGTH = 300;
 
     public Introduce() {}
 
@@ -28,8 +28,8 @@ public class Introduce {
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String))  return false;
-        String o = (String) value;
-        return o.length() < MAX_LENGTH;
+        String obj = (String) value;
+        return obj.length() < MAX_LENGTH;
     }
 
     public String getValue() {

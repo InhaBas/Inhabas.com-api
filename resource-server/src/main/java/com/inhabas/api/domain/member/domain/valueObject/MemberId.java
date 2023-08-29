@@ -25,7 +25,7 @@ public class MemberId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MemberId memberId = (MemberId) o;
-        return id.equals(memberId.id);
+        return this.id.equals(memberId.id);
     }
 
     @Override
