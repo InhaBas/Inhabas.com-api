@@ -17,9 +17,9 @@ public class MemberDuplicationQueryCondition {
 
     private Phone phoneNumber;
 
-    public MemberDuplicationQueryCondition(MemberId memberId, String phone) {
+    public MemberDuplicationQueryCondition(MemberId memberId, String phoneNumber) {
         this.memberId = memberId;
-        setPhoneNumber(phone);
+        setPhoneNumber(phoneNumber);
     }
 
     public void verityAtLeastOneParameter() {

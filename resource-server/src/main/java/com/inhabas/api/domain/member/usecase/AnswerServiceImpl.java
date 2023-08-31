@@ -33,7 +33,7 @@ public class AnswerServiceImpl implements AnswerService {
     public List<AnswerDto> getAnswers(MemberId memberId) {
 
         return answerRepository.findByMember_Id(memberId).stream()
-                .map(a-> new AnswerDto(a.getQuestNo(), a.getCONTENT()))
+                .map(a-> new AnswerDto(a.getQuestionNo(), a.getContent()))
                 .collect(Collectors.toList());
     }
 

@@ -88,6 +88,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     private BooleanExpression eqPhone(Phone phoneNumber) {
-        return Objects.isNull(phoneNumber) ? null : member.phone.eq(phoneNumber);
+        return Objects.isNull(phoneNumber) ? null : member.phoneNumber.eq(phoneNumber);
     }
 }

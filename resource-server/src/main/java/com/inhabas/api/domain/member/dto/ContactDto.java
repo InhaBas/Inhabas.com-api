@@ -9,13 +9,13 @@ public class ContactDto {
 
     private String name;
 
-    private String phone;
+    private String phoneNumber;
 
     private String email;
 
-    public ContactDto(String name, String phone, String email) {
+    public ContactDto(String name, String phoneNumber, String email) {
         this.name = name;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.email = email;
     }
 }

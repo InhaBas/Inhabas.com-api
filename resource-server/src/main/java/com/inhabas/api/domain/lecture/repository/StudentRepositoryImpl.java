@@ -24,7 +24,7 @@ public class StudentRepositoryImpl implements StudentRepositoryCustom {
         List<StudentListDto> students = queryFactory.select(Projections.constructor(StudentListDto.class,
                         member.name.value,
                         member.id.id,
-                        member.phone.value,
+                        member.phoneNumber.value,
                         member.email.value,
                         Expressions.asNumber(0),
                         Expressions.asNumber(0),

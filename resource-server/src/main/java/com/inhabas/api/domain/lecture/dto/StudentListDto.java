@@ -14,7 +14,7 @@ public class StudentListDto {
 
     private Integer memberId;
 
-    private String phone;
+    private String phoneNumber;
 
     private String email;
 
@@ -27,10 +27,10 @@ public class StudentListDto {
     private Integer sid;
 
     @Builder
-    public StudentListDto(String name, Integer memberId, String phone, String email, Integer assignmentCount, Integer attendanceCount, StudentStatus status, Integer sid) {
+    public StudentListDto(String name, Integer memberId, String phoneNumber, String email, Integer assignmentCount, Integer attendanceCount, StudentStatus status, Integer sid) {
         this.name = name;
         this.memberId = memberId;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.email = email;
         this.assignmentCount = assignmentCount;
         this.attendanceCount = attendanceCount;

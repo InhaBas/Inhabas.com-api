@@ -29,15 +29,15 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "USER_STUDENT_ID", foreignKey = @ForeignKey(name = "FK_ANSWER_OF_MEMBER"))
     private Member member;
 
-    @Column(name = "QUEST_NO", nullable = false)
-    private Integer questNo;
+    @Column(name = "QUESTION_NO", nullable = false)
+    private Integer questionNo;
 
     @Column(name = "CONTENT", nullable = false, length = 1000)
-    private String CONTENT;
+    private String content;
 
     public Answer(Member member, Integer questionNo, String content) {
         this.member = member;
-        this.questNo = questionNo;
-        this.CONTENT = content;
+        this.questionNo = questionNo;
+        this.content = content;
     }
 }

@@ -34,7 +34,7 @@ public class Member {
     private Name name;
 
     @Embedded
-    private Phone phone;
+    private Phone phoneNumber;
 
     @Embedded
     private Email email;
@@ -52,10 +52,10 @@ public class Member {
     private boolean isDeleted = false;
 
     @Builder
-    public Member(MemberId id, String name, String phone, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
+    public Member(MemberId id, String name, String phoneNumber, String email, String picture, SchoolInformation schoolInformation, IbasInformation ibasInformation) {
         this.id = id;
         this.name = new Name(name);
-        this.phone = new Phone(phone);
+        this.phoneNumber = new Phone(phoneNumber);
         this.email = new Email(email);
         this.picture = picture;
         this.schoolInformation = schoolInformation;
@@ -67,7 +67,7 @@ public class Member {
     }
 
     public String getPhone() {
-        return this.phone.getValue();
+        return this.phoneNumber.getValue();
     }
 
     public String getEmail() {
