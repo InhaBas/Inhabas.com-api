@@ -17,9 +17,9 @@ public class DefaultRoleHierarchy implements Hierarchical {
     private static final String ADMIN = "ROLE_ADMIN";
     private static final String CHIEF = "ROLE_CHIEF";
     private static final String EXECUTIVES = "ROLE_EXECUTIVES";
-    private static final String BASIC_MEMBER = "ROLE_BASIC_MEMBER";
-    private static final String DEACTIVATED_MEMBER = "ROLE_DEACTIVATED_MEMBER";
-    private static final String NOT_APPROVED_MEMBER = "ROLE_NOT_APPROVED_MEMBER";
+    private static final String BASIC = "ROLE_BASIC";
+    private static final String DEACTIVATED = "ROLE_DEACTIVATED";
+    private static final String NOT_APPROVED = "ROLE_NOT_APPROVED";
 
 
     @Override
@@ -30,19 +30,19 @@ public class DefaultRoleHierarchy implements Hierarchical {
         Map<String, List<String>> roleHierarchyMap = new HashMap<>() {{
             put(
                     ADMIN,
-                    Arrays.asList(CHIEF, EXECUTIVES, BASIC_MEMBER, DEACTIVATED_MEMBER, NOT_APPROVED_MEMBER));
+                    Arrays.asList(CHIEF, EXECUTIVES, BASIC, DEACTIVATED, NOT_APPROVED));
             put(
                     CHIEF,
-                    Arrays.asList(EXECUTIVES, BASIC_MEMBER, DEACTIVATED_MEMBER, NOT_APPROVED_MEMBER));
+                    Arrays.asList(EXECUTIVES, BASIC, DEACTIVATED, NOT_APPROVED));
             put(
                     EXECUTIVES,
-                    Arrays.asList(BASIC_MEMBER, DEACTIVATED_MEMBER, NOT_APPROVED_MEMBER));
+                    Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED));
             put(
-                    BASIC_MEMBER,
-                    Arrays.asList(DEACTIVATED_MEMBER, NOT_APPROVED_MEMBER));
+                    BASIC,
+                    Arrays.asList(DEACTIVATED, NOT_APPROVED));
             put(
-                    DEACTIVATED_MEMBER,
-                    List.of(NOT_APPROVED_MEMBER));
+                    DEACTIVATED,
+                    List.of(NOT_APPROVED));
         }};
 
         String roles = RoleHierarchyUtils.roleHierarchyFromMap(roleHierarchyMap);

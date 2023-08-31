@@ -60,9 +60,9 @@ public class WebSecurityConfig {
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                     // 강의
                         .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
-                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.DEACTIVATED_MEMBER.toString())
+                        .anyRequest().hasRole(Role.DEACTIVATED.toString())
 
                     .expressionHandler(expressionHandler());
         }
@@ -114,9 +114,9 @@ public class WebSecurityConfig {
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                     // 강의
                         .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
-                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED_MEMBER.toString())
+                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.BASIC_MEMBER.toString());
+                        .anyRequest().hasRole(Role.BASIC.toString());
         }
 
         @Bean

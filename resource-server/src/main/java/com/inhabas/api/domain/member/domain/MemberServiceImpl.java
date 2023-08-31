@@ -15,12 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = Role.NOT_APPROVED_MEMBER;
+    private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = NOT_APPROVED;
 
     private final MemberRepository memberRepository;
     private final MemberDuplicationChecker duplicationChecker;
@@ -70,7 +72,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public ContactDto getChiefContact() {
         try {
-            Member chief = memberRepository.searchByRoleLimit(Role.CHIEF, 1).get(0);
+            Member chief = memberRepository.searchByRoleLimit(CHIEF, 1).get(0);
             return new ContactDto(chief.getName(), chief.getPhone(), chief.getEmail());
         } catch (IndexOutOfBoundsException e) {
             return new ContactDto("", "", "");

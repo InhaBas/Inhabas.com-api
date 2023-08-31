@@ -8,9 +8,9 @@ public enum Role {
     CHIEF, // 회장
     EXECUTIVES, // 회장단
     SECRETARY, // 총무
-    BASIC_MEMBER, // 활동 일반회원 (교수 포함)
-    DEACTIVATED_MEMBER, // 비활동회원 (졸업생 포험)
-    NOT_APPROVED_MEMBER, // 가입 후 아직 승인되지 않은 회원
+    BASIC, // 활동 일반회원 (교수 포함)
+    DEACTIVATED, // 비활동회원 (졸업생 포험)
+    NOT_APPROVED, // 가입 후 아직 승인되지 않은 회원
     ANONYMOUS // 익명. 유일하게 회원가입을 시도할 수 있는 권한. 즉 상위의 권한으로 회원가입 시도 불가
 }
 
