@@ -60,15 +60,15 @@ public class SignUpIntegrationTest {
 
     @Test
     public void 기존_일반회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.BASIC_MEMBER);
+        forbiddenWhenAccessEverySignUpApi(Role.BASIC);
     }
     @Test
     public void 비활동회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.DEACTIVATED_MEMBER);
+        forbiddenWhenAccessEverySignUpApi(Role.DEACTIVATED);
     }
     @Test
     public void 미승인회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.NOT_APPROVED_MEMBER);
+        forbiddenWhenAccessEverySignUpApi(Role.NOT_APPROVED);
     }
     @Test
     public void 회장단_회원가입_비정상_접근() throws Exception {
@@ -182,7 +182,7 @@ public class SignUpIntegrationTest {
 
         //then
         Member 유동현 = memberRepository.findById(new MemberId(12171652)).orElseThrow(MemberNotFoundException::new);
-        assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
+        assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(12171652);
 //        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
@@ -248,7 +248,7 @@ public class SignUpIntegrationTest {
         //then
         Member 유동현_교수 = memberRepository.findById(new MemberId(228761))
                 .orElseThrow(MemberNotFoundException::new);
-        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED_MEMBER);
+        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);
 //        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);

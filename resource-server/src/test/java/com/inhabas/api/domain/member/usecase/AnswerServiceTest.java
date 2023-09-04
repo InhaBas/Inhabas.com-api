@@ -42,7 +42,7 @@ public class AnswerServiceTest {
     @Test
     public void saveAnswersTest() {
         //given
-        Member member = MemberTest.MEMBER1();
+        Member member = MemberTest.basicMember1();
         MemberId currentUserId = member.getId();
         given(memberRepository.getById(any())).willReturn(member);
 
@@ -78,7 +78,7 @@ public class AnswerServiceTest {
     @Test
     public void loadAnswersTest() {
         //given
-        Member member = MemberTest.MEMBER1();
+        Member member = MemberTest.basicMember1();
         MemberId currentUserId = member.getId();
 
         ArrayList<Answer> savedAnswers = new ArrayList<>() {{

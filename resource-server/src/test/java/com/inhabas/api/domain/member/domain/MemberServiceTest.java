@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.member.domain;
 
+import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,7 +11,6 @@ import com.inhabas.api.domain.member.DuplicatedMemberFieldException;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.IbasInformation;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.domain.valueObject.SchoolInformation;
 import com.inhabas.api.domain.member.repository.MemberRepository;
 import com.inhabas.api.domain.member.dto.ContactDto;
@@ -83,8 +83,8 @@ public class MemberServiceTest {
                 .phone("010-0000-0000")
                 .email("my@gmail.com")
                 .picture("")
-                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
+                .ibasInformation(new IbasInformation(BASIC))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1, 1))
                 .build();
 
         //then
@@ -105,8 +105,8 @@ public class MemberServiceTest {
                 .phone("010-0000-0000")
                 .email("my@gmail.com")
                 .picture("")
-                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
+                .ibasInformation(new IbasInformation(BASIC))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1, 1))
                 .build();
         //then
         assertThrows(DuplicatedMemberFieldException.class,
@@ -124,8 +124,8 @@ public class MemberServiceTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1, 1))
+                .ibasInformation(new IbasInformation(ANONYMOUS))
                 .build();
 
         assert targetMember != null;
@@ -136,17 +136,17 @@ public class MemberServiceTest {
                 .email("my@gmail.com")
                 .phone(targetMember.getPhone())
                 .schoolInformation(targetMember.getSchoolInformation())
-                .ibasInformation(new IbasInformation(Role.NOT_APPROVED_MEMBER))
+                .ibasInformation(new IbasInformation(NOT_APPROVED))
                 .build();
         given(memberRepository.save(any(Member.class)))
                 .willReturn(result); // NOT care about this return-value of save() in Service logic
 
         //when
-        memberService.changeRole(targetMember, Role.NOT_APPROVED_MEMBER);
+        memberService.changeRole(targetMember, NOT_APPROVED);
 
         //then
         assertThat(targetMember.getIbasInformation().getRole())
-                .isEqualTo(Role.NOT_APPROVED_MEMBER);
+                .isEqualTo(NOT_APPROVED);
     }
 
     @Disabled
@@ -159,7 +159,7 @@ public class MemberServiceTest {
 
         //when
 //        assertThrows(MemberNotFoundException.class,
-//                () -> memberService.changeRole(new MemberId(12171652), Role.BASIC_MEMBER));
+//                () -> memberService.changeRole(new MemberId(12171652), Role.BASIC));
     }
 
     @DisplayName("회장 연락처 불러오기")
@@ -171,8 +171,8 @@ public class MemberServiceTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
-                .ibasInformation(new IbasInformation(Role.CHIEF))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1, 1))
+                .ibasInformation(new IbasInformation(CHIEF))
                 .build();
         given(memberRepository.searchByRoleLimit(any(), anyInt())).willReturn(List.of(chief));
 

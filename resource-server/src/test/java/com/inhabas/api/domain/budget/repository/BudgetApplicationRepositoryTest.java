@@ -35,7 +35,7 @@ public class BudgetApplicationRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        member = em.persist(MemberTest.MEMBER1());
+        member = em.persist(MemberTest.basicMember1());
     }
 
     @Test

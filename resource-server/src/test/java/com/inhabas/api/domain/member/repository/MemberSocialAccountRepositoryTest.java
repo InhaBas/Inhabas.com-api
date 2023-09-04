@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.member.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,7 +30,7 @@ public class MemberSocialAccountRepositoryTest {
     @Test
     public void getMemberIdBySocialAccount() {
         //given
-        Member member = em.persist(MEMBER1());
+        Member member = em.persist(basicMember1());
         memberSocialAccountRepository.save(new MemberSocialAccount(member, "my@gmail.com", "1234", OAuth2Provider.GOOGLE));
 
         //when

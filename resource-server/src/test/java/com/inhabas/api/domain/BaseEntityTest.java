@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
@@ -43,7 +43,7 @@ public class BaseEntityTest {
     @Test
     public void createdTimeTest() {
         //given
-        Member member = em.persist(MEMBER1());
+        Member member = em.persist(basicMember1());
         NormalBoard board = new NormalBoard("title", "contents")
                 .writtenBy(member.getId())
                 .inMenu(freeBoardMenu.getId());
@@ -59,7 +59,7 @@ public class BaseEntityTest {
     @Test
     public void updatedTimeTest() {
         //given
-        Member member = em.persist(MEMBER1());
+        Member member = em.persist(basicMember1());
         NormalBoard board = new NormalBoard("title", "contents")
                 .writtenBy(member.getId())
                 .inMenu(freeBoardMenu.getId());

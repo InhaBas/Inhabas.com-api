@@ -47,7 +47,7 @@ public class CommentServiceTest {
 
     @BeforeEach
     public void setUpMocking() {
-        proxyWriter = MemberTest.getTestMember(12171652);
+        proxyWriter = MemberTest.getTestBasicMember(12171652);
         proxyBoard = NormalBoardTest.getTestBoard(12);
     }
 

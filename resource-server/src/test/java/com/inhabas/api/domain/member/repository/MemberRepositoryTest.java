@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.member.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember2;
+import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,21 +37,21 @@ public class MemberRepositoryTest {
     @Test
     public void save() {
         //when
-        Member saveMember = memberRepository.save(MEMBER1());
+        Member saveMember = memberRepository.save(basicMember1());
 
         //then
         assertThat(saveMember)
                 .usingRecursiveComparison()
-                .ignoringFields("ibasInformation.joined")
-                .isEqualTo(MEMBER1());
+                .ignoringFields("ibasInformation.dateJoined")
+                .isEqualTo(basicMember1());
     }
 
     @DisplayName("학번으로 사용자를 찾을 수 있다.")
     @Test
     public void find_by_id() {
         //given
-        Member save1 = memberRepository.save(MEMBER1());
-        Member save2 = memberRepository.save(MEMBER2());
+        Member save1 = memberRepository.save(basicMember1());
+        Member save2 = memberRepository.save(basicMember2());
 
         //when
         Optional<Member> find1 = memberRepository.findById(save1.getId());
@@ -65,8 +66,8 @@ public class MemberRepositoryTest {
     @Test
     public void findAll() {
         //given
-        Member save1 = memberRepository.save(MEMBER1());
-        Member save2 = memberRepository.save(MEMBER2());
+        Member save1 = memberRepository.save(basicMember1());
+        Member save2 = memberRepository.save(basicMember2());
 
         //when
         List<Member> members = memberRepository.findAll();
@@ -80,10 +81,10 @@ public class MemberRepositoryTest {
     @Test
     public void update() {
         //given
-        Member member = memberRepository.save(MEMBER1());
+        Member member = memberRepository.save(basicMember1());
 
         //when
-        Member param = new Member(member.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2), member.getIbasInformation());
+        Member param = new Member(member.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2, 2), member.getIbasInformation());
         Member updated = memberRepository.save(param);
 
         //then
@@ -95,7 +96,7 @@ public class MemberRepositoryTest {
     @Test
     public void 같은_전화번호_저장_예외() {
         //given
-        Member member = memberRepository.save(MEMBER1());
+        Member member = memberRepository.save(basicMember1());
 
         //when
         Member samePhoneMember = Member.builder()
@@ -104,8 +105,8 @@ public class MemberRepositoryTest {
                 .phone(member.getPhone()) // 같은 전화번호
                 .email("my@gmail.com")
                 .picture("")
-                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 3))
+                .ibasInformation(new IbasInformation(BASIC))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 3, 3))
                 .build();
 
         //then
@@ -123,8 +124,8 @@ public class MemberRepositoryTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .picture("")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("공간정보공학과", 1))
-                .ibasInformation(new IbasInformation(Role.ANONYMOUS))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("공간정보공학과", 1, 1))
+                .ibasInformation(new IbasInformation(ANONYMOUS))
                 .build();
         memberRepository.save(member);
 
@@ -160,7 +161,7 @@ public class MemberRepositoryTest {
     public void validateMemberId() {
         //when
         MemberId memberId = new MemberId(12171652);
-        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171652), null));
+        boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(memberId, null));
 
         //then
         assertFalse(result);
@@ -170,7 +171,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateNoneFields() {
         //given
-        memberRepository.save(MEMBER1());
+        memberRepository.save(basicMember1());
 
         //then
         InvalidDataAccessApiUsageException e = assertThrows(InvalidDataAccessApiUsageException.class,
@@ -183,7 +184,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFieldsOnlyDuplicatedId() {
         //given
-        memberRepository.save(MEMBER1());
+        memberRepository.save(basicMember1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171234), "010-1111-1234"));
@@ -196,7 +197,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFieldsOnlyDuplicatedPhoneNumber() {
         //given
-        memberRepository.save(MEMBER1());
+        memberRepository.save(basicMember1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171111), "010-1111-1111"));
@@ -209,7 +210,7 @@ public class MemberRepositoryTest {
     @Test
     public void validateAllFields() {
         //given
-        memberRepository.save(MEMBER1());
+        memberRepository.save(basicMember1());
 
         //when
         boolean result = memberRepository.isDuplicated(new MemberDuplicationQueryCondition(new MemberId(12171234), "010-1111-1111"));
@@ -222,7 +223,7 @@ public class MemberRepositoryTest {
     @Test
     public void searchByRole() {
         //given
-        Member member = memberRepository.save(MEMBER1());
+        Member member = memberRepository.save(basicMember1());
 
         //when
         List<Member> members = memberRepository.searchAllByRole(member.getIbasInformation().getRole());

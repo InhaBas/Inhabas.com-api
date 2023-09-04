@@ -51,7 +51,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
 
     private DefaultOAuth2User defaultOAuth2User;
     private final Set<SimpleGrantedAuthority> authorities =
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC_MEMBER"));
+            Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC"));
 
     @BeforeEach
     public void setUp() {

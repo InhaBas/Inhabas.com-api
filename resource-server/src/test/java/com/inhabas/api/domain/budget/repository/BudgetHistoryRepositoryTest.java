@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.budget.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
@@ -34,8 +34,8 @@ public class BudgetHistoryRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Member member1 = MEMBER1();
-        Member member2 = MEMBER2();
+        Member member1 = basicMember1();
+        Member member2 = basicMember2();
         em.persist(member1);
         em.persist(member2);
         received = member1.getId();

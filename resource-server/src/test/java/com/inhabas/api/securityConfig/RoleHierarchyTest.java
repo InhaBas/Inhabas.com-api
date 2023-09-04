@@ -53,21 +53,21 @@ public class RoleHierarchyTest {
 
     @Test
     @DisplayName("일반회원은 일반회원 자료에 접근 가능하다.")
-    @WithMockUser(roles = "BASIC_MEMBER")
+    @WithMockUser(roles = "BASIC")
     public void basicMemberCanAccessToResourceForBasicMember() throws Exception {
         공지사항_게시판_접근();
     }
 
     @Test
     @DisplayName("비활동회원은 일반회원 자료에 접근 불가능하다.")
-    @WithMockUser(roles = "DEACTIVATED_MEMBER")
+    @WithMockUser(roles = "DEACTIVATED")
     public void deactivatedMemberCannotAccessToResourceForBasicMember() throws Exception {
         공지사항_게시판_접근_불가();
     }
 
     @Test
     @DisplayName("미승인회원은 일반회원 자료에 접근 불가능하다.")
-    @WithMockUser(roles = "NOT_APPROVED_MEMBER")
+    @WithMockUser(roles = "NOT_APPROVED")
     public void notApprovedMemberCannotAccessToResourceForBasicMember() throws Exception {
         공지사항_게시판_접근_불가();
     }

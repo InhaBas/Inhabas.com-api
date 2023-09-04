@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.comment.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.inhabas.api.domain.board.domain.NormalBoard;
@@ -33,8 +33,8 @@ public class CommentRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        writer = em.persist(MEMBER1());
-        commentWriter = em.persist(MEMBER2());
+        writer = em.persist(basicMember1());
+        commentWriter = em.persist(basicMember2());
 
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
         Menu freeBoardMenu = em.persist(

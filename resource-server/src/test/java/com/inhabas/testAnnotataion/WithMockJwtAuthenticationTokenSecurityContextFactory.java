@@ -22,7 +22,7 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockJwtAuthenticationToken principalInfo) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
+        String role = principalInfo.memberRole().toString(); // 기본은 BASIC.
         TokenAuthenticationResult token
                 = new JwtAuthenticationResult(principalInfo.uid(), principalInfo.provider(), principalInfo.email(), Collections.singleton(new SimpleGrantedAuthority(role)));
         token.setAuthenticated(true);

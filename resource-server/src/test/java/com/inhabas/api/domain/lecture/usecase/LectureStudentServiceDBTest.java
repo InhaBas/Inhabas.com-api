@@ -18,8 +18,8 @@ import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER2;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember2;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DefaultDataJpaTest
@@ -44,10 +44,10 @@ public class LectureStudentServiceDBTest {
     public void setUp() {
         studentService = new LectureStudentServiceImpl(studentRepository, lectureRepository);
 
-        lecturer = MEMBER1();
+        lecturer = basicMember1();
         entityManager.persist(lecturer);
 
-        student = MEMBER2();
+        student = basicMember2();
         entityManager.persist(student);
 
         lecture = lectureRepository.save(Lecture.builder()

@@ -32,7 +32,7 @@ public class StatusAttributeConverterTest {
 
     @BeforeEach
     public void setUp() {
-        member = MemberTest.MEMBER1();
+        member = MemberTest.basicMember1();
         em.persist(member);
     }
 

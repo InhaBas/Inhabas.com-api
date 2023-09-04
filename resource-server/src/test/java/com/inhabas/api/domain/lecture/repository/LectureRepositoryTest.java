@@ -18,7 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
@@ -34,7 +34,7 @@ public class LectureRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        chief = em.persist(MEMBER1());
+        chief = em.persist(basicMember1());
     }
 
     @DisplayName("강의글 단일 조회")

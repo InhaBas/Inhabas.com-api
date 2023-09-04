@@ -78,7 +78,7 @@ public class MemberAuthorityProviderTest {
         assertThat(simpleGrantedAuthorities)
                 .hasSize(3)
                 .extracting("role")
-                .contains("ROLE_BASIC_MEMBER", "TEAM_회계", "TEAM_운영");
+                .contains("ROLE_BASIC", "TEAM_회계", "TEAM_운영");
     }
 
     @Test

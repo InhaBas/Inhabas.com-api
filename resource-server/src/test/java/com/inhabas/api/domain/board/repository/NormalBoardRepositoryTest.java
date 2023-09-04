@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.board.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,7 +43,7 @@ public class NormalBoardRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        writer = em.persist(MEMBER1());
+        writer = em.persist(basicMember1());
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
         Menu noticeBoardMenu = em.persist(
                 Menu.builder()
@@ -74,7 +74,7 @@ public class NormalBoardRepositoryTest {
     @DisplayName("저장 후 반환값이 처음과 같다.")
     @Test
     public void save() {
-        Member saveMember = em.find(Member.class, MEMBER1().getId());
+        Member saveMember = em.find(Member.class, basicMember1().getId());
 
         //when
         NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
@@ -114,7 +114,7 @@ public class NormalBoardRepositoryTest {
     @Test
     public void update() {
         //given
-        Member saveMember = em.find(Member.class, MEMBER1().getId());
+        Member saveMember = em.find(Member.class, basicMember1().getId());
         boardRepository.save(FREE_BOARD);
 
         //when

@@ -26,5 +26,5 @@ public @interface WithMockJwtAuthenticationToken {
 
     int memberId() default 0; // 다른값으로 설정되지 않으면, authUser 의 member profile 을 null 로 간주.
 
-    Role memberRole() default Role.BASIC_MEMBER;
+    Role memberRole() default Role.BASIC;
 }

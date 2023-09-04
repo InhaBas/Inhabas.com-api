@@ -1,6 +1,6 @@
 package com.inhabas.api.web;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -300,7 +300,7 @@ public class SignUpControllerTest {
     @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
     public void 회원가입을_위한_답변을_저장한다() throws Exception {
         //given
-        Member member = MEMBER1();
+        Member member = basicMember1();
         ArrayList<Answer> submittedAnswers = new ArrayList<>() {{
             add(new Answer(member, 1, "저는 꼭 이 동아리에 입부하고 싶습니다."));
             add(new Answer(member, 2, "어렸을적부터 빅데이터를 발가락으로 전처리하며 놀았습니다."));

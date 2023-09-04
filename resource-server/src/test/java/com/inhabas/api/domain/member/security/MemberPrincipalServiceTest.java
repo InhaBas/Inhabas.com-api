@@ -38,7 +38,7 @@ public class MemberPrincipalServiceTest {
     @DisplayName("기존회원을 uid 와 provider 로 찾는다.")
     public void findMemberByUidAndProvider() {
         //given
-        Member member = MemberTest.MEMBER1();
+        Member member = MemberTest.basicMember1();
         given(memberSocialAccountRepository.findMemberIdByUidAndProvider(any(), any()))
                 .willReturn(Optional.of(member.getId()));
 
@@ -56,7 +56,7 @@ public class MemberPrincipalServiceTest {
     @DisplayName("기존회원의 uid 가 없어서 이메일과 provider 로 찾는다.")
     public void findMemberByEmailAndProvider() {
         //given
-        Member member = MemberTest.MEMBER1();
+        Member member = MemberTest.basicMember1();
         MemberSocialAccount memberSocialAccount =
                 new MemberSocialAccount(member, "my@gmail.com", "1234579123", OAuth2Provider.KAKAO);
         ReflectionTestUtils.setField(memberSocialAccount, "id", 1);

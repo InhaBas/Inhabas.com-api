@@ -3,6 +3,7 @@ package com.inhabas.api.domain.lecture.repository;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.domain.Student;
 import com.inhabas.api.domain.lecture.dto.StudentListDto;
+import com.inhabas.api.domain.member.domain.MemberTest;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.getTestMember;
+import static com.inhabas.api.domain.member.domain.MemberTest.getTestBasicMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
@@ -37,7 +38,7 @@ public class StudentRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        instructor = entityManager.persist(getTestMember(12171652));
+        instructor = entityManager.persist(MemberTest.getTestBasicMember(12171652));
 
         lecture = entityManager.persist(Lecture.builder()
                 .title("절권도 배우기")
@@ -61,7 +62,7 @@ public class StudentRepositoryTest {
         //given
         List<Student> students = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            entityManager.persist(getTestMember(100000+i, "010-0000-000" + i));
+            entityManager.persist(getTestBasicMember(100000+i, "010-0000-000" + i));
             students.add(new Student(lecture, new MemberId(100000+i)));
         }
         studentRepository.saveAll(students);

@@ -45,7 +45,7 @@ public class BudgetApplicationServiceTest {
 
     @BeforeEach
     public void setUp() {
-        applicantId = MemberTest.MEMBER1().getId();
+        applicantId = MemberTest.basicMember1().getId();
     }
 
     @DisplayName("예산 지원 신청서를 제출한다.")

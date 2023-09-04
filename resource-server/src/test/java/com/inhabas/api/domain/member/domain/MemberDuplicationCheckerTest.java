@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -34,7 +34,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.existsByPhoneOrId(any(Phone.class), any())).willReturn(false);
 
         //when
-        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
+        Assertions.assertFalse(memberDuplicationChecker.isDuplicatedMember(basicMember1()));
         then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), any());
     }
 
@@ -46,7 +46,7 @@ public class MemberDuplicationCheckerTest {
         given(memberRepository.existsByPhoneOrId(any(Phone.class), any())).willReturn(true);
 
         //when
-        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(MEMBER1()));
+        Assertions.assertTrue(memberDuplicationChecker.isDuplicatedMember(basicMember1()));
         then(memberRepository).should(times(1)).existsByPhoneOrId(any(Phone.class), any());
     }
 

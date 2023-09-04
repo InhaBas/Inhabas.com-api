@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.contestBoard.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.MEMBER1;
+import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.inhabas.api.domain.contest.domain.ContestBoard;
@@ -41,7 +41,7 @@ public class ContestBoardRepositoryTest {
     @BeforeEach
     public void settingContestBoard(){
         MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        writer = em.persist(MEMBER1());
+        writer = em.persist(basicMember1());
         menu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)

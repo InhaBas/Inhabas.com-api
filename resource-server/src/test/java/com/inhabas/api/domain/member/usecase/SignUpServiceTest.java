@@ -102,7 +102,7 @@ public class SignUpServiceTest {
 //                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
 //                .build();
 //        given(memberService.findById(anyInt())).willReturn(storedMember);
@@ -240,7 +240,7 @@ public class SignUpServiceTest {
 //                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofProfessor("전자공학과", 1))
 //                .build());
 //
@@ -271,7 +271,7 @@ public class SignUpServiceTest {
 //                .phoneNumber("010-0000-0000")
 //                .email("my@gmail.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
 //                .build());
 //        given(answerService.existAnswersWrittenBy(anyInt())).willReturn(false);
