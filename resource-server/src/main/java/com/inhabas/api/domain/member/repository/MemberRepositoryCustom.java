@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    MemberAuthorityProvider.RoleAndTeamDto fetchRoleAndTeamsByMemberId(MemberId memberId);
+    MemberAuthorityProvider.RoleDto fetchRoleByMemberId(MemberId memberId);
 
     boolean isDuplicated(MemberDuplicationQueryCondition condition);
 

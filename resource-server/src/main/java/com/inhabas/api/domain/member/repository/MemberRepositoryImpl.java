@@ -9,8 +9,6 @@ import com.inhabas.api.domain.member.domain.valueObject.Phone;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.domain.member.security.MemberAuthorityProvider;
-import com.inhabas.api.domain.team.domain.MemberTeam;
-import com.inhabas.api.domain.team.domain.Team;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,18 +27,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public MemberAuthorityProvider.RoleAndTeamDto fetchRoleAndTeamsByMemberId(MemberId memberId) {
+    public MemberAuthorityProvider.RoleDto fetchRoleByMemberId(MemberId memberId) {
         Role role = queryFactory
                 .select(member.ibasInformation.role).from(member)
                 .where(member.id.eq(memberId))
                 .fetchOne();
-        List<Team> teams = queryFactory.selectFrom(memberTeam)
-                .innerJoin(memberTeam.team).fetchJoin()
-                .where(memberTeam.member.id.eq(memberId))
-                .fetch().stream().map(MemberTeam::getTeam)
-                .collect(Collectors.toList());
 
-        return new MemberAuthorityProvider.RoleAndTeamDto(role, teams);
+        return new MemberAuthorityProvider.RoleDto(role);
     }
 
     @Override
