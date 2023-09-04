@@ -50,7 +50,7 @@ public class MemberServiceTest {
 //
 //        Member expected = Member.builder()
 //                .id(signUpForm.getMemberId())
-//                .phone(signUpForm.getPhoneNumber())
+//                .phoneNumber(signUpForm.getPhoneNumber())
 //                .name(signUpForm.getName())
 //                .picture("")
 //                .schoolInformation(SchoolInformation.ofProfessor(signUpForm.getMajor()))
@@ -181,7 +181,7 @@ public class MemberServiceTest {
 
         //then
         assertThat(chiefContact.getEmail()).isEqualTo(chief.getEmail());
-        assertThat(chiefContact.getPhone()).isEqualTo(chief.getPhone());
+        assertThat(chiefContact.getPhoneNumber()).isEqualTo(chief.getPhone());
         assertThat(chiefContact.getName()).isEqualTo(chief.getName());
     }
 }

@@ -54,7 +54,7 @@ public class SignUpServiceImpl implements SignUpService {
         Member member = Member.builder()
                 .id(signUpForm.getMemberId())
                 .name(signUpForm.getName())
-                .phoneNumber(signUpForm.getPhoneNumber())
+                .phone(signUpForm.getPhoneNumber())
                 .email(authentication.getEmail())
                 .ibasInformation(ibasInformation)
                 .schoolInformation(schoolInformation)
@@ -139,7 +139,7 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public boolean validateFieldsDuplication(MemberDuplicationQueryCondition condition) {
 
-        condition.verityAtLeastOneParameter();
+        condition.verifyAtLeastOneParameter();
 
         return memberDuplicationChecker.isDuplicatedMember(condition);
     }

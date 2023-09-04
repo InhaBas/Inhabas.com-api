@@ -27,11 +27,11 @@ public class MemberTest {
                 , new IbasInformation(Role.BASIC_MEMBER));
     }
 
-    public static Member getTestMember(Integer id, String phone) {
+    public static Member getTestBasicMember(Integer id, String phoneNumber) {
         return new Member(
-                new MemberId(id), "유동현", phone, "my@gmail.com", ""
-                , SchoolInformation.ofUnderGraduate("건축공학과", 3)
-                , new IbasInformation(Role.BASIC_MEMBER));
+                new MemberId(id), "유동현", phoneNumber, "my@gmail.com", ""
+                , SchoolInformation.ofUnderGraduate("건축공학과", 2, 3)
+                , new IbasInformation(BASIC));
     }
 
 

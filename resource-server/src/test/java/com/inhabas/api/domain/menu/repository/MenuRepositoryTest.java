@@ -47,8 +47,8 @@ public class MenuRepositoryTest {
 
         //then
         assertThat(saveActivityMenu.getId()).isNotNull();
-        assertThat(saveActivityMenu.getCreated()).isNotNull();
-        assertThat(saveActivityMenu.getUpdated()).isNotNull();
+        assertThat(saveActivityMenu.getDateCreated()).isNotNull();
+        assertThat(saveActivityMenu.getDateUpdated()).isNotNull();
         assertThat(saveActivityMenu)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "created", "updated")

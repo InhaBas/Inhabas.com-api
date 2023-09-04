@@ -22,7 +22,7 @@ public class MemberDuplicationQueryCondition {
         setPhoneNumber(phoneNumber);
     }
 
-    public void verityAtLeastOneParameter() {
+    public void verifyAtLeastOneParameter() {
         if (Objects.isNull(memberId) && Objects.isNull(phoneNumber)) {
             throw new NoQueryParameterException();
         }

@@ -17,14 +17,14 @@ import javax.validation.constraints.*;
 public class SignUpDto {
 
     @NotBlank
-    @Length(max = 25)
+    @Length(max = 50)
     private String name;
 
     @NotBlank
-    @Length(max = 15)
+    @Length(max = 50)
     private String major;
 
-    @Pattern(regexp = "\\d{3}-\\d{4}-\\d{4}")
+    @Pattern(regexp = "\"^(010)-\\\\d{4}-\\\\d{4}$\"")
     private String phoneNumber;
 
     @Email

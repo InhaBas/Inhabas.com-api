@@ -13,10 +13,10 @@ public class AnswerDto {
     private Integer questionNo;
 
     @Length(max = 1000)
-    private String answer;
+    private String content;
 
-    public AnswerDto(Integer questionNo, String answer) {
+    public AnswerDto(Integer questionNo, String content) {
         this.questionNo = questionNo;
-        this.answer = answer;
+        this.content = content;
     }
 }

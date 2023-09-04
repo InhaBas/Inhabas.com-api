@@ -87,7 +87,7 @@ public class AnswerServiceTest {
             add(new Answer(member, 3, "외주를 받아 진행했던 적이 있는데, 아주 잘 되어 스타트업 창업을 진행했습니다."));
             add(new Answer(member, 4, "이 동아리에 입부한다면, 말하는 대로 코딩해주는 인공지능 모델을 개발하고 싶습니다."));
         }};
-        given(answerRepository.findByMember_Id(any())).willReturn(savedAnswers);
+        given(answerRepository.findByMember_id(any())).willReturn(savedAnswers);
 
         ArrayList<AnswerDto> expectedConvertedDTOs = new ArrayList<>() {{
             add(new AnswerDto(1, "저는 꼭 이 동아리에 입부하고 싶습니다."));

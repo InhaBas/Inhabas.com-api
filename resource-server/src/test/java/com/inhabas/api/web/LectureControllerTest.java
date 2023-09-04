@@ -361,7 +361,7 @@ public class LectureControllerTest {
                             .email("my@gmail.com")
                             .assignmentCount(0)
                             .attendanceCount(0)
-                            .phone("010-0000-0000")
+                            .phoneNumber("010-0000-0000")
                             .status(StudentStatus.PROGRESS)
                             .sid(i)
                             .build()
@@ -387,7 +387,7 @@ public class LectureControllerTest {
                 "    {\n" +
                 "      \"name\": \"홍길동50\",\n" +
                 "      \"member_id\": 1000050,\n" +
-                "      \"phone\": \"010-0000-0000\",\n" +
+                "      \"phoneNumber\": \"010-0000-0000\",\n" +
                 "      \"email\": \"my@gmail.com\",\n" +
                 "      \"assignment_count\": 0,\n" +
                 "      \"attendance_count\": 0,\n" +

@@ -24,7 +24,7 @@ public class AnswerServiceImpl implements AnswerService {
         Member currentMember = memberRepository.getById(memberId);
 
         List<Answer> answers = submittedAnswers.stream()
-                .map(a -> new Answer(currentMember, a.getQuestionNo(), a.getAnswer()))
+                .map(a -> new Answer(currentMember, a.getQuestionNo(), a.getContent()))
                 .collect(Collectors.toList());
 
         answerRepository.saveAll(answers);
@@ -32,7 +32,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     public List<AnswerDto> getAnswers(MemberId memberId) {
 
-        return answerRepository.findByMember_Id(memberId).stream()
+        return answerRepository.findByMember_id(memberId).stream()
                 .map(a-> new AnswerDto(a.getQuestionNo(), a.getContent()))
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.member.repository;
 
 import static com.inhabas.api.domain.member.domain.entity.QMember.member;
-import static com.inhabas.api.domain.team.domain.QMemberTeam.memberTeam;
 
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
@@ -39,7 +38,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public boolean isDuplicated(MemberDuplicationQueryCondition condition) {
 
-        condition.verityAtLeastOneParameter();
+        condition.verifyAtLeastOneParameter();
 
         return !queryFactory.selectFrom(member)
                 .where(eqAny(condition))
@@ -81,6 +80,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     private BooleanExpression eqPhone(Phone phoneNumber) {
-        return Objects.isNull(phoneNumber) ? null : member.phoneNumber.eq(phoneNumber);
+        return Objects.isNull(phoneNumber) ? null : member.phone.eq(phoneNumber);
     }
 }

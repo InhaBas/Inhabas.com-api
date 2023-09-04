@@ -71,7 +71,7 @@ public class LectureRepositoryImpl implements LectureRepositoryCustom {
                 .where(lecture.status.in(LectureStatus.PROGRESSING, LectureStatus.TERMINATED))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(lecture.created.desc())
+                .orderBy(lecture.dateCreated.desc())
                 .orderBy(lecture.status.asc())
                 .fetch();
 

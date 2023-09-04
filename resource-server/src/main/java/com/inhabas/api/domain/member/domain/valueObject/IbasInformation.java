@@ -18,7 +18,7 @@ public class IbasInformation {
     private Role role;
 
 
-    @Column(name = "DATE_JOINED", nullable = false)
+    @Column(name = "DATE_JOINED")
     private LocalDateTime dateJoined;
 
     @Embedded

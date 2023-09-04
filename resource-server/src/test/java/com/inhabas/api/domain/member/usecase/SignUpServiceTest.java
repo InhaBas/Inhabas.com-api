@@ -99,7 +99,7 @@ public class SignUpServiceTest {
 //        Member storedMember = Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
 //                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
@@ -200,7 +200,7 @@ public class SignUpServiceTest {
 
         //then
         assertThrows(NoQueryParameterException.class,
-                condition::verityAtLeastOneParameter);
+                condition::verifyAtLeastOneParameter);
     }
 
     @Disabled
@@ -237,7 +237,7 @@ public class SignUpServiceTest {
 //        given(memberService.findById(anyInt())).willReturn(Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
 //                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
@@ -268,7 +268,7 @@ public class SignUpServiceTest {
 //        given(memberService.findById(anyInt())).willReturn(Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@gmail.com")
 //                .picture("")
 //                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))

@@ -6,7 +6,7 @@ import com.inhabas.api.domain.member.domain.valueObject.Phone;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, MemberId>, MemberRepositoryCustom {
-    boolean existsByPhone(Phone phoneNumber);
+    boolean existsByPhone(Phone phone);
 
-    boolean existsByPhoneOrId(Phone phoneNumber, MemberId id);
+    boolean existsByPhoneOrId(Phone phone, MemberId id);
 }
