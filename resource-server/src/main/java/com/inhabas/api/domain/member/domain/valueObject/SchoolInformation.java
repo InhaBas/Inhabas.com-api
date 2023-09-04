@@ -65,11 +65,15 @@ public class SchoolInformation {
     }
 
     public String getMajor() {
-        return major.getValue();
+        return this.major.getValue();
+    }
+
+    public Integer getGrade() {
+        return this.grade.getValue();
     }
 
     public Integer getGeneration() {
-        return generation.getValue();
+        return this.generation.getValue();
     }
 
     public MemberType getMemberType() {

@@ -28,7 +28,7 @@ public class Phone {
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String)) return false;
-        String obj = (String) value;
-        return PHONE_PATTERN.matcher(obj).matches();  // only 010-****-****
+        String o = (String) value;
+        return PHONE_PATTERN.matcher(o).matches();  // only 010-****-****
     }
 }

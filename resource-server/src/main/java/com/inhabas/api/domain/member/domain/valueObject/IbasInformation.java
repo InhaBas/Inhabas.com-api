@@ -49,10 +49,10 @@ public class IbasInformation {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof IbasInformation)) return false;
-        IbasInformation that = (IbasInformation) obj;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof IbasInformation)) return false;
+        IbasInformation that = (IbasInformation) o;
         return getRole() == that.getRole()
                 && getDateJoined().equals(that.getDateJoined())
                 && getIntroduce().equals(that.getIntroduce())

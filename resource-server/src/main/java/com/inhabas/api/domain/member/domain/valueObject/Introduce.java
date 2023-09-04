@@ -28,8 +28,8 @@ public class Introduce {
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String))  return false;
-        String obj = (String) value;
-        return obj.length() < MAX_LENGTH;
+        String o = (String) value;
+        return o.length() < MAX_LENGTH;
     }
 
     public String getValue() {

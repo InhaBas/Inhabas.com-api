@@ -31,9 +31,9 @@ public class Email {
         if (Objects.isNull(value)) return false;
         if (!(value instanceof String))  return false;
 
-        String obj = (String) value;
-        if (obj.isBlank()) return false;
-        return obj.length() < MAX_LENGTH && EMAIL_PATTERN.matcher(obj).matches();
+        String o = (String) value;
+        if (o.isBlank()) return false;
+        return o.length() < MAX_LENGTH && EMAIL_PATTERN.matcher(o).matches();
     }
 
     public String getValue() {
