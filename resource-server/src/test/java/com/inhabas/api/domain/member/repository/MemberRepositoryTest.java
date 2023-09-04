@@ -84,7 +84,7 @@ public class MemberRepositoryTest {
         Member member = memberRepository.save(basicMember1());
 
         //when
-        Member param = new Member(member.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2, 2), member.getIbasInformation());
+        Member param = new Member(member.getId(), "유동현", "010-1111-2222", "my@gmail.com", "", SchoolInformation.ofUnderGraduate("건축공학과", 2), member.getIbasInformation());
         Member updated = memberRepository.save(param);
 
         //then
@@ -106,7 +106,7 @@ public class MemberRepositoryTest {
                 .email("my@gmail.com")
                 .picture("")
                 .ibasInformation(new IbasInformation(BASIC))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 3, 3))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 3))
                 .build();
 
         //then
@@ -124,7 +124,7 @@ public class MemberRepositoryTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .picture("")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("공간정보공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("공간정보공학과", 1))
                 .ibasInformation(new IbasInformation(ANONYMOUS))
                 .build();
         memberRepository.save(member);

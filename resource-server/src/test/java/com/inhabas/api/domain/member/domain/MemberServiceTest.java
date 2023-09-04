@@ -84,7 +84,7 @@ public class MemberServiceTest {
                 .email("my@gmail.com")
                 .picture("")
                 .ibasInformation(new IbasInformation(BASIC))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
                 .build();
 
         //then
@@ -106,7 +106,7 @@ public class MemberServiceTest {
                 .email("my@gmail.com")
                 .picture("")
                 .ibasInformation(new IbasInformation(BASIC))
-                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
                 .build();
         //then
         assertThrows(DuplicatedMemberFieldException.class,
@@ -124,7 +124,7 @@ public class MemberServiceTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
                 .ibasInformation(new IbasInformation(ANONYMOUS))
                 .build();
 
@@ -171,7 +171,7 @@ public class MemberServiceTest {
                 .name("유동현")
                 .email("my@gmail.com")
                 .phone("010-0000-0000")
-                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1, 1))
+                .schoolInformation(SchoolInformation.ofUnderGraduate("정보통신공학과", 1))
                 .ibasInformation(new IbasInformation(CHIEF))
                 .build();
         given(memberRepository.searchByRoleLimit(any(), anyInt())).willReturn(List.of(chief));

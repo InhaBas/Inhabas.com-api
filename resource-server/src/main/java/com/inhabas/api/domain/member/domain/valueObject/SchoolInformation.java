@@ -16,9 +16,6 @@ public class SchoolInformation {
     private Major major;
 
     @Embedded
-    private Grade grade;
-
-    @Embedded
     private Generation generation;
 
     @Column(name = "TYPE")
@@ -29,14 +26,6 @@ public class SchoolInformation {
 
     public SchoolInformation(String major, Integer generation, MemberType memberType) {
         this.major = new Major(major);
-        this.grade = new Grade(DEFAULT_GRADE);
-        this.generation = new Generation(generation);
-        this.memberType = memberType;
-    }
-
-    public SchoolInformation(String major, Integer grade, Integer generation, MemberType memberType) {
-        this.major = new Major(major);
-        this.grade = new Grade(grade);
         this.generation = new Generation(generation);
         this.memberType = memberType;
     }
@@ -44,7 +33,7 @@ public class SchoolInformation {
 
     /* factory methods */
 
-    public static SchoolInformation ofUnderGraduate(String major, Integer grade, Integer generation) {
+    public static SchoolInformation ofUnderGraduate(String major, Integer generation) {
         return new SchoolInformation(major, generation, UNDERGRADUATE);
     }
 
@@ -66,10 +55,6 @@ public class SchoolInformation {
 
     public String getMajor() {
         return this.major.getValue();
-    }
-
-    public Integer getGrade() {
-        return this.grade.getValue();
     }
 
     public Integer getGeneration() {
