@@ -8,8 +8,6 @@ import com.inhabas.api.domain.member.domain.valueObject.Email;
 import com.inhabas.api.domain.member.domain.valueObject.Name;
 import com.inhabas.api.domain.member.domain.valueObject.Phone;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
-import com.inhabas.api.domain.team.domain.MemberTeam;
-import com.inhabas.api.domain.team.domain.Team;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -78,15 +76,6 @@ public class Member {
         return this.ibasInformation.getRole();
     }
 
-    /**
-     * N+1 쿼리 유의하면서 사용할 것.
-     * @return {@code UnmodifiableList}
-     */
-    public Collection<Team> getTeamList() {
-        return this.ibasInformation.getTeamList().stream()
-                .map(MemberTeam::getTeam)
-                .collect(Collectors.toUnmodifiableList());
-    }
 
     public boolean isDeleted() {
         return this.isDeleted;
@@ -94,10 +83,6 @@ public class Member {
 
     public void setRole(Role role) {
         this.ibasInformation.setRole(role);
-    }
-
-    public void addTeam(MemberTeam team) {
-        this.ibasInformation.addTeam(team);
     }
 
     @Override

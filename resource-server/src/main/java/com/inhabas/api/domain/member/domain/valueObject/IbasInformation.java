@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.member.domain.valueObject;
 
-import com.inhabas.api.domain.team.domain.MemberTeam;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +17,6 @@ public class IbasInformation {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    private List<MemberTeam> teamList = new ArrayList<>();
 
     @Column(name = "DATE_JOINED", nullable = false)
     private LocalDateTime dateJoined;
@@ -42,10 +39,6 @@ public class IbasInformation {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public void addTeam(MemberTeam team) {
-        this.teamList.add(team);
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.member.repository.MemberRepository;
-import com.inhabas.api.domain.team.domain.Team;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,9 +66,9 @@ public class MemberAuthorityProviderTest {
     public void memberLoginTest() {
 
         given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
-        MemberAuthorityProvider.RoleAndTeamDto roleAndTeamDto =
-                new MemberAuthorityProvider.RoleAndTeamDto(Role.BASIC_MEMBER, Arrays.asList(new Team("회계"), new Team("운영")));
-        given(memberRepository.fetchRoleAndTeamsByMemberId(any())).willReturn(roleAndTeamDto);
+        MemberAuthorityProvider.RoleDto roleDto =
+                new MemberAuthorityProvider.RoleDto(Role.BASIC);
+        given(memberRepository.fetchRoleByMemberId(any())).willReturn(roleDto);
 
         //when
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
@@ -86,8 +85,8 @@ public class MemberAuthorityProviderTest {
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")
     public void cannotFindProfileMappedFromSocialAccount() {
         given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
-        given(memberRepository.fetchRoleAndTeamsByMemberId(any()))
-                .willReturn(new MemberAuthorityProvider.RoleAndTeamDto(null, null));
+        given(memberRepository.fetchRoleByMemberId(any()))
+                .willReturn(new MemberAuthorityProvider.RoleDto(null));
 
         //then
         Assertions.assertThrows(InvalidUserInfoException.class,

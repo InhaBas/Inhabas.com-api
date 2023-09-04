@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.inhabas.api.domain.member.domain.MemberService;
 import com.inhabas.api.domain.member.dto.ContactDto;
-import com.inhabas.api.domain.team.usecase.MemberTeamService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,29 +27,6 @@ public class MemberControllerTest {
 
     @MockBean
     private MemberService memberService;
-
-    @MockBean
-    private MemberTeamService memberTeamService;
-
-    @DisplayName("회원을 한 팀에 추가시킨다.")
-    @Test
-    public void addMemberToTeamTest() throws Exception {
-        doNothing().when(memberTeamService).addMemberToTeam(any(), anyInt());
-
-        mvc.perform(post("/member/team").with(csrf())
-                        .param("memberId", "12171652")
-                        .param("teamId", "1"))
-                .andExpect(status().isNoContent());
-    }
-
-    @DisplayName("팀에서 회원을 방출시킨다.")
-    @Test
-    public void expelMemberFromTeamTest() throws Exception {
-        doNothing().when(memberTeamService).deleteMemberFromTeam(any(), anyInt());
-
-        mvc.perform(delete("/member/12171652/team/1").with(csrf()))
-                .andExpect(status().isNoContent());
-    }
 
     @DisplayName("회장 연락처 정보를 불러온다")
     @Test

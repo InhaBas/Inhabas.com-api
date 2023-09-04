@@ -4,7 +4,6 @@ import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.member.dto.ContactDto;
 import com.inhabas.api.domain.member.domain.MemberService;
-import com.inhabas.api.domain.team.usecase.MemberTeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +22,6 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MemberTeamService memberTeamService;
 
     @Operation(description = "멤버 조회")
     @GetMapping("/member")
@@ -50,33 +48,5 @@ public class MemberController {
         ContactDto contact = memberService.getChiefContact();
         return ResponseEntity.ok(contact);
     }
-
-    @Operation(summary = "회원을 팀에 포함시킨다.")
-    @PostMapping("/member/team")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
-    })
-    public ResponseEntity<?> addOneTeamToMember(@RequestParam MemberId memberId, @RequestParam Integer teamId) {
-
-        memberTeamService.addMemberToTeam(memberId, teamId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "회원을 팀에서 제외시킨다.")
-    @DeleteMapping("/member/{memberId}/team/{teamId}")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "권한이 있어야한다.")
-    })
-    public ResponseEntity<?> deleteOneTeamOfMember(@PathVariable MemberId memberId, @PathVariable Integer teamId) {
-
-        memberTeamService.deleteMemberFromTeam(memberId, teamId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-
 
 }

@@ -235,22 +235,4 @@ public class MemberRepositoryTest {
         assertThat(members.size()).isEqualTo(1);
     }
 
-    @Test
-    @DisplayName("Team 을 fetchJoin 한다.")
-    public void fetchJoinTeamTest() {
-        //given
-        Team IT = em.persist(new Team("IT 부서"));
-        Team EXEC = em.persist(new Team("운영팀"));
-        Member member = em.persist(MEMBER1());
-        em.persist(new MemberTeam(member, IT));
-        em.persist(new MemberTeam(member, EXEC));
-
-        //when
-        MemberAuthorityProvider.RoleAndTeamDto roleAndTeamDto = memberRepository.fetchRoleAndTeamsByMemberId(member.getId());
-
-        //then
-        assertThat(roleAndTeamDto.getTeams())
-                .extracting("name")
-                .contains("IT 부서", "운영팀");
-    }
 }
