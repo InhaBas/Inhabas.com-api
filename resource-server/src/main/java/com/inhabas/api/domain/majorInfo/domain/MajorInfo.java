@@ -16,7 +16,7 @@ import javax.persistence.*;
  * @see Member
  */
 @Entity
-@Table(name = "major_info")
+@Table(name = "MAJOR")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MajorInfo {
 
