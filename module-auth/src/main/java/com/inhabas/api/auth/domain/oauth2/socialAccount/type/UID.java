@@ -8,11 +8,11 @@ import java.util.Objects;
 @Embeddable
 public class UID {
 
-    @Column(name = "uid", nullable = false)
+    @Column(name = "UID", nullable = false)
     private String value;
 
     @Transient
-    private final int MAX_SIZE = 191;
+    private final int MAX_SIZE = 255;
 
     public UID() {}
 

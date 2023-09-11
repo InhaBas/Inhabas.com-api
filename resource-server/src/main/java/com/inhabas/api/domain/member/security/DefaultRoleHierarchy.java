@@ -16,6 +16,7 @@ public class DefaultRoleHierarchy implements Hierarchical {
     /* 기존 권한에 ROLE PREFIX 추가해야함. */
     private static final String ADMIN = "ROLE_ADMIN";
     private static final String CHIEF = "ROLE_CHIEF";
+    private static final String VICE_CHIEF = "ROLE_VICE_CHIEF";
     private static final String EXECUTIVES = "ROLE_EXECUTIVES";
     private static final String SECRETARY = "ROLE_SECRETARY";
     private static final String BASIC = "ROLE_BASIC";
@@ -34,6 +35,9 @@ public class DefaultRoleHierarchy implements Hierarchical {
                     Arrays.asList(CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
             put(
                     CHIEF,
+                    Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
+            put(
+                    VICE_CHIEF,
                     Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
             put(
                     EXECUTIVES,

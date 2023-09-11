@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user_socialaccount",
-        uniqueConstraints = { @UniqueConstraint(name = "user_socialaccount_uid_provider_uindex", columnNames = {"provider", "uid"})}) //
+@Table(name = "USER_SOCIALACCOUNT",
+        uniqueConstraints = { @UniqueConstraint(name = "user_socialaccount_uid_provider_uindex", columnNames = {"PROVIDER", "UID"})}) //
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberSocialAccount {
 
@@ -19,7 +19,7 @@ public class MemberSocialAccount {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_STUDENT_ID")
     private Member member;
 
     @Embedded
@@ -28,7 +28,7 @@ public class MemberSocialAccount {
     @Embedded
     private UID uid;
 
-    @Column(name = "provider")
+    @Column(name = "PROVIDER")
     @Enumerated(EnumType.STRING)
     private OAuth2Provider provider;
 

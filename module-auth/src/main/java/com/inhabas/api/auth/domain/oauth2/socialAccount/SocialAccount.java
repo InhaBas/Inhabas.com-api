@@ -13,8 +13,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity @Getter
-@Table(name = "socialaccount",
-        uniqueConstraints = { @UniqueConstraint(name = "unique_socialaccount", columnNames = {"provider", "uid"})})
+@Table(name = "SOCIALACCOUNT",
+        uniqueConstraints = { @UniqueConstraint(name = "unique_socialaccount", columnNames = {"PROVIDER", "UID"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SocialAccount {
 
