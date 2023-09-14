@@ -50,12 +50,14 @@ public class Menu extends BaseEntity {
     }
 
     @Builder
-    public Menu(MenuGroup menuGroup, Integer order, String name, String description) {
+    public Menu(MenuGroup menuGroup, Integer order, MenuType type, String name, String description) {
         this.menuGroup = menuGroup;
         this.order = order;
+        this.type = type;
         this.name = new MenuName(name);
         this.description = new Description(description);
     }
+
 
     public MenuId getId() {
         return new MenuId(this.id);
