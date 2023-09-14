@@ -29,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 
+import static com.inhabas.api.domain.member.domain.valueObject.MemberType.*;
+import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
+
 @Service
 @RequiredArgsConstructor
 public class SignUpServiceImpl implements SignUpService {
@@ -40,8 +43,8 @@ public class SignUpServiceImpl implements SignUpService {
     private final SignUpScheduler signUpScheduler;
     private final MemberDuplicationChecker memberDuplicationChecker;
 
-    private static final MemberType DEFAULT_MEMBER_TYPE = MemberType.UNDERGRADUATE;
-    private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = Role.ANONYMOUS;
+    private static final MemberType DEFAULT_MEMBER_TYPE = UNDERGRADUATE;
+    private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = ANONYMOUS;
 
 
     @Override

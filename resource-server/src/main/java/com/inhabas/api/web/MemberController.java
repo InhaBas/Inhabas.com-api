@@ -23,18 +23,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(description = "멤버 조회")
-    @GetMapping("/member")
-    public Member member(@RequestParam MemberId id) {
-        return memberService.findById(id);
-    }
-
-    @Operation(description = "모든 유저 조회")
-    @GetMapping("/members")
-    public List<Member> members() {
-        return memberService.findMembers();
-    }
-
     @Operation(description = "유저 정보 변경")
     @PutMapping("/member")
     public Member updateMember(@RequestBody Member member) {

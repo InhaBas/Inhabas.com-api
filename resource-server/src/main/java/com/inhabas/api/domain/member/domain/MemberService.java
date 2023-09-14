@@ -12,8 +12,6 @@ public interface MemberService {
 
     void save(Member member);
 
-    List<Member> findMembers();
-
     Member findById(MemberId memberId);
 
     Optional<Member> updateMember(Member member);

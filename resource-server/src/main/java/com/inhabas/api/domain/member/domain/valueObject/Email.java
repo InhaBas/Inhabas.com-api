@@ -12,10 +12,8 @@ public class Email {
     @Column(name = "EMAIL", length = 150, nullable = false)
     private String value;
 
-    @Transient
     private static final int MAX_LENGTH = 150;
 
-    @Transient
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
     public Email() {}
