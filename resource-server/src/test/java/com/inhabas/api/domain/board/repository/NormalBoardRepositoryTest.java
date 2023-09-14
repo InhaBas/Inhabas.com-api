@@ -48,7 +48,7 @@ public class NormalBoardRepositoryTest {
         Menu noticeBoardMenu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
-                        .priority(1)
+                        .order(1)
                         .type(MenuType.LIST)
                         .name("공지사항")
                         .description("부원이 알아야 할 내용을 게시합니다.")
@@ -56,7 +56,7 @@ public class NormalBoardRepositoryTest {
         freeBoardMenu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
-                        .priority(2)
+                        .order(2)
                         .type(MenuType.LIST)
                         .name("자유게시판")
                         .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")

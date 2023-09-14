@@ -67,7 +67,7 @@ public class MenuRepositoryTest {
 
         //when
         String newName = "공지 사항";
-        Menu param = new Menu(noticeMenu.getMenuGroup(), noticeMenu.getPriority(), noticeMenu.getType(), newName, noticeMenu.getDescription());
+        Menu param = new Menu(noticeMenu.getMenuGroup(), noticeMenu.getOrder(), noticeMenu.getType(), newName, noticeMenu.getDescription());
         Integer menuId = (Integer) ReflectionTestUtils.getField(param, "id");
         ReflectionTestUtils.setField(param, "id", menuId);
         //Menu updated = menuRepository.save(param);  // service 로 제대로 구현한 뒤에 테스트 해야함.

@@ -16,9 +16,9 @@ public class MenuId implements Serializable {
 
     private static final long serialVersionUID = -7661257651938513762L;
 
-    @JsonProperty("menu_id")
+    @JsonProperty("menuId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Integer id;
 
     public MenuId(Integer id) {

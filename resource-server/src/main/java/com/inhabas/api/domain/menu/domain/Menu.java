@@ -15,10 +15,10 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "menu",
-        uniqueConstraints = { @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "group_id", "priority" })},
-        indexes = {@Index(name = "menu_group_index", columnList = "group_id ASC"),
-                @Index(name = "priority_index", columnList = "priority ASC")})
+@Table(name = "MENU",
+        uniqueConstraints = { @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "MENU_GROUP_ID", "ORDER" })},
+        indexes = {@Index(name = "MENU_GROUP_INDEX", columnList = "MENU_GROUP_ID ASC"),
+                @Index(name = "ORDER_INDEX", columnList = "ORDER ASC")})
 public class Menu extends BaseEntity {
 
     @Id
@@ -26,14 +26,10 @@ public class Menu extends BaseEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "group_id", foreignKey = @ForeignKey(name = "menu_group_id_fk"))
+    @JoinColumn(name = "ID", foreignKey = @ForeignKey(name = "MENU_GROUP_ID"))
     private MenuGroup menuGroup;
 
-    private Integer priority;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "menu_type", length = 20, nullable = false)
-    private MenuType type;
+    private Integer order;
 
     @Embedded
     private MenuName name;
@@ -50,10 +46,9 @@ public class Menu extends BaseEntity {
     }
 
     @Builder
-    public Menu(MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
+    public Menu(MenuGroup menuGroup, Integer order, String name, String description) {
         this.menuGroup = menuGroup;
-        this.priority = priority;
-        this.type = type;
+        this.order = order;
         this.name = new MenuName(name);
         this.description = new Description(description);
     }

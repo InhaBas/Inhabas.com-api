@@ -12,7 +12,7 @@ public class MenuDto {
     @JsonUnwrapped
     private MenuId id;
 
-    private Integer priority;
+    private Integer order;
 
     private String name;
 
@@ -20,24 +20,24 @@ public class MenuDto {
 
     private String description;
 
-    public MenuDto(MenuId id, Integer priority, String name, MenuType type, String description) {
+    public MenuDto(MenuId id, Integer order, String name, MenuType type, String description) {
         this.id = id;
-        this.priority = priority;
+        this.order = order;
         this.name = name;
         this.type = type.toString();
         this.description = description;
     }
 
 
-    public MenuDto(Integer id, Integer priority, String name, MenuType type, String description) {
+    public MenuDto(Integer id, Integer order, String name, MenuType type, String description) {
         this.id = new MenuId(id);
-        this.priority = priority;
+        this.order = order;
         this.name = name;
         this.type = type.toString();
         this.description = description;
     }
 
     public static MenuDto convert(Menu menu) {
-        return new MenuDto(menu.getId(), menu.getPriority(), menu.getName(), menu.getType(), menu.getDescription());
+        return new MenuDto(menu.getId(), menu.getOrder(), menu.getName(), menu.getType(), menu.getDescription());
     }
 }

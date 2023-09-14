@@ -45,7 +45,7 @@ public class ContestBoardRepositoryTest {
         menu = em.persist(
                 Menu.builder()
                         .menuGroup(boardMenuGroup)
-                        .priority(1)
+                        .order(1)
                         .type(MenuType.LIST)
                         .name("공모전게시판")
                         .description("공모전 정보를 알려주는 게시판입니다.")
