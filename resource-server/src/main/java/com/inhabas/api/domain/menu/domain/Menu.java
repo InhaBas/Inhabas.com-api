@@ -35,7 +35,7 @@ public class Menu extends BaseEntity {
     private MenuName name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "menuType", length = 20, nullable = false)
+    @Column(name = "TYPE", length = 20, nullable = false)
     private MenuType type;
 
     @Embedded
