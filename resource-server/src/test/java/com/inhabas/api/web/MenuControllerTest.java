@@ -54,7 +54,7 @@ public class MenuControllerTest {
                 new MenuDto(new MenuId(6),1,"공지사항",MenuType.LIST,""));
 
         mvc.perform(get("/menu/6"))
-                .andExpect(content().string("{\"id\":6,\"order\":1,\"name\":\"ê³µì§\u0080ì\u0082¬í\u0095\u00AD\",\"description\":\"\"}"))
+                .andExpect(content().string("{\"menuId\":6,\"order\":1,\"name\":\"ê³µì§\u0080ì\u0082¬í\u0095\u00AD\",\"type\":\"LIST\",\"description\":\"\"}"))
                 .andExpect(status().isOk())
                 .andReturn();
 
