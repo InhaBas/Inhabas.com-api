@@ -76,9 +76,9 @@ public class MenuRepositoryTest {
         //assertThat(updated.getName()).isEqualTo(newName);
     }
 
-    @DisplayName("한 메뉴그룹에, priority 가 중복될 시 오류")
+    @DisplayName("한 메뉴그룹에, order 가 중복될 시 오류")
     @Test
-    public void CannotSamePriorityValue() {
+    public void CannotSameOrderValue() {
         /*
         이 테스트는 데이터베이스의 unique key 제약 조건을 검사함.
         하지만 현재 테스트는 h2 인메모리 방식으로 테이블을 생성해서 진행 중.

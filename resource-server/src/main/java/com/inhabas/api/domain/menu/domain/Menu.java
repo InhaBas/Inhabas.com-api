@@ -26,7 +26,7 @@ public class Menu extends BaseEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ID", foreignKey = @ForeignKey(name = "MENU_GROUP_ID"))
+    @JoinColumn(name = "MENU_GROUP_ID", foreignKey = @ForeignKey(name = "MENU_GROUP_ID_FK"))
     private MenuGroup menuGroup;
 
     private Integer order;

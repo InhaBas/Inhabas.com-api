@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.menu.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
@@ -10,14 +11,19 @@ import lombok.Getter;
 public class MenuDto {
 
     @JsonUnwrapped
+    // ValueObject폴더의 MenuID에 @JsonProperty 적용함.
     private MenuId id;
 
+    @JsonProperty("order")
     private Integer order;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("type")
     private String type;
 
+    @JsonProperty("description")
     private String description;
 
     public MenuDto(MenuId id, Integer order, String name, MenuType type, String description) {
