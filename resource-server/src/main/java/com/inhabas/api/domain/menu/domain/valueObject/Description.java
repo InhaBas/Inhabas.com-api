@@ -12,7 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Description {
 
-    @Column(name = "description", length = 50)
+    @Column(name = "DESCRIPTION", length = 50)
     private String value;
 
     @Transient
