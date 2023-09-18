@@ -40,7 +40,7 @@ public class CommentRepositoryTest {
         Menu freeBoardMenu = em.persist(
                 Menu.builder()
                 .menuGroup(boardMenuGroup)
-                .order(2)
+                .priority(2)
                 .type(MenuType.LIST)
                 .name("자유게시판")
                 .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")

@@ -14,8 +14,8 @@ public class MenuDto {
     // ValueObject폴더의 MenuID에 @JsonProperty 적용함.
     private MenuId id;
 
-    @JsonProperty("order")
-    private Integer order;
+    @JsonProperty("priority")
+    private Integer priority;
 
     @JsonProperty("name")
     private String name;
@@ -26,24 +26,24 @@ public class MenuDto {
     @JsonProperty("description")
     private String description;
 
-    public MenuDto(MenuId id, Integer order, String name, MenuType type, String description) {
+    public MenuDto(MenuId id, Integer priority, String name, MenuType type, String description) {
         this.id = id;
-        this.order = order;
+        this.priority = priority;
         this.name = name;
         this.type = type.toString();
         this.description = description;
     }
 
 
-    public MenuDto(Integer id, Integer order, String name, MenuType type, String description) {
+    public MenuDto(Integer id, Integer priority, String name, MenuType type, String description) {
         this.id = new MenuId(id);
-        this.order = order;
+        this.priority = priority;
         this.name = name;
         this.type = type.toString();
         this.description = description;
     }
 
     public static MenuDto convert(Menu menu) {
-        return new MenuDto(menu.getId(), menu.getOrder(), menu.getName(), menu.getType(), menu.getDescription());
+        return new MenuDto(menu.getId(), menu.getPriority(), menu.getName(), menu.getType(), menu.getDescription());
     }
 }

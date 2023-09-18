@@ -24,11 +24,11 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
         return jpaQueryFactory
                 .from(menu)
                 .orderBy(menu.menuGroup.id.asc())
-                .orderBy(menu.order.asc())
+                .orderBy(menu.priority.asc())
                 .transform(GroupBy.groupBy(menu.menuGroup)
                         .as(list(Projections.constructor(MenuDto.class,
                                 menu.id,
-                                menu.order,
+                                menu.priority,
                                 menu.name.value,
                                 menu.description.value)))
                 ).entrySet().stream()

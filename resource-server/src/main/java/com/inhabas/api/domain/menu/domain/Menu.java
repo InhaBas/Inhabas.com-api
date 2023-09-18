@@ -29,7 +29,8 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "MENU_GROUP_ID", foreignKey = @ForeignKey(name = "MENU_GROUP_ID_FK"))
     private MenuGroup menuGroup;
 
-    private Integer order;
+    @Column(name = "PRIORITY", nullable = false)
+    private Integer priority;
 
     @Embedded
     private MenuName name;
@@ -50,9 +51,9 @@ public class Menu extends BaseEntity {
     }
 
     @Builder
-    public Menu(MenuGroup menuGroup, Integer order, MenuType type, String name, String description) {
+    public Menu(MenuGroup menuGroup, Integer priority, MenuType type, String name, String description) {
         this.menuGroup = menuGroup;
-        this.order = order;
+        this.priority = priority;
         this.type = type;
         this.name = new MenuName(name);
         this.description = new Description(description);

@@ -33,7 +33,7 @@ public class MenuRepositoryTest {
     public void setUp() {
 
     }
-
+    // public void createNewMenuTable() { MENU 테이블이 잘 생성되었는지 확인하기 위한 테스트 코드
     @DisplayName("새로운 메뉴를 만든다.")
     @Test
     public void CreateNewMenu() {
@@ -67,7 +67,7 @@ public class MenuRepositoryTest {
 
         //when
         String newName = "공지 사항";
-        Menu param = new Menu(noticeMenu.getMenuGroup(), noticeMenu.getOrder(), noticeMenu.getType(), newName, noticeMenu.getDescription());
+        Menu param = new Menu(noticeMenu.getMenuGroup(), noticeMenu.getPriority(), noticeMenu.getType(), newName, noticeMenu.getDescription());
         Integer menuId = (Integer) ReflectionTestUtils.getField(param, "id");
         ReflectionTestUtils.setField(param, "id", menuId);
         //Menu updated = menuRepository.save(param);  // service 로 제대로 구현한 뒤에 테스트 해야함.
@@ -76,9 +76,9 @@ public class MenuRepositoryTest {
         //assertThat(updated.getName()).isEqualTo(newName);
     }
 
-    @DisplayName("한 메뉴그룹에, order 가 중복될 시 오류")
+    @DisplayName("한 메뉴그룹에, priority 가 중복될 시 오류")
     @Test
-    public void CannotSameOrderValue() {
+    public void CannotSamePriorityValue() {
         /*
         이 테스트는 데이터베이스의 unique key 제약 조건을 검사함.
         하지만 현재 테스트는 h2 인메모리 방식으로 테이블을 생성해서 진행 중.

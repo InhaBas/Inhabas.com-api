@@ -8,7 +8,7 @@ spring:
     console:
       enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;
+    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=true;DB_CLOSE_DELAY=-1;
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -16,7 +16,7 @@ spring:
     ansi:
       enabled: always
   jackson:
-    property-naming-strategy: SNAKE_CASE
+    property-naming-strategy: CAMEL_CASE
   data:
     web:
       pageable:
@@ -26,7 +26,7 @@ spring:
     show-sql: true
     defer-datasource-initialization: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
@@ -37,6 +37,6 @@ spring:
 
 logging:
   level:
-    org.springframwork.web.client: DEBUG
+    org.springframework.web.client: DEBUG
     org.hibernate.type: trace
 

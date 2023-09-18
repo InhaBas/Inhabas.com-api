@@ -31,6 +31,6 @@ public class MenuServiceImpl implements MenuService {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(MenuNotExistException::new);
 
-        return new MenuDto(menuId, menu.getOrder(), menu.getName(), menu.getType(), menu.getDescription());
+        return new MenuDto(menuId, menu.getPriority(), menu.getName(), menu.getType(), menu.getDescription());
     }
 }
