@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -33,6 +35,7 @@ public class MemberId implements Serializable {
         return Objects.hash(id);
     }
 
+    @JsonValue
     @Override
     public String toString() {
         return String.valueOf(this.id);

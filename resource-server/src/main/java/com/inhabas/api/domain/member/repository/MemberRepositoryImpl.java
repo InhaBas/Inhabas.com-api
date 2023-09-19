@@ -4,17 +4,23 @@ import static com.inhabas.api.domain.member.domain.entity.QMember.member;
 
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.member.domain.valueObject.Name;
 import com.inhabas.api.domain.member.domain.valueObject.Phone;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
+import com.inhabas.api.domain.member.dto.NewMemberManagementDto;
 import com.inhabas.api.domain.member.security.MemberAuthorityProvider;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,12 +52,22 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> searchAllByRole(Role role) {
-
-        return queryFactory.select(member)
-                .from(member)
-                .where(eqRole(role))
+    public Page<Member> searchAllByRoleAndIdLikeOrNameLike(Pageable pageable, Role role, MemberId memberId, Name name) {
+        List<Member> members = queryFactory.
+                selectFrom(member)
+                .where(eqRole(role)
+                        .and(member.name.value.like("%" + name.getValue() + "%"))
+                        .or(member.id.id.like("%" + memberId.toString() + "%")))
                 .fetch();
+
+        final long total = queryFactory.
+                selectFrom(member)
+                .where(eqRole(role)
+                        .and(member.name.value.like("%" + name.getValue() + "%"))
+                        .or(member.id.id.like("%" + memberId.toString() + "%")))
+                .fetchCount();
+
+        return new PageImpl<>(members, pageable, total);
     }
 
     @Override

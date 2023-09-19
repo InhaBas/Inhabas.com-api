@@ -3,12 +3,18 @@ package com.inhabas.api.domain.member.domain;
 import com.inhabas.api.domain.member.*;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.member.domain.valueObject.Name;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
+import com.inhabas.api.domain.member.dto.NewMemberManagementDto;
+import com.inhabas.api.domain.member.dto.PageInfoDto;
+import com.inhabas.api.domain.member.dto.PagedResponseDto;
 import com.inhabas.api.domain.member.repository.MemberRepository;
 import com.inhabas.api.domain.member.dto.ContactDto;
 import com.inhabas.api.domain.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,5 +85,28 @@ public class MemberServiceImpl implements MemberService {
     public void finishSignUp(Member member) {
         member.finishSignUp();
         this.changeRole(member, DEFAULT_ROLE_AFTER_FINISH_SIGNUP);
+    }
+
+    @Override
+    public Page<NewMemberManagementDto> getUnapprovedMembers(Pageable pageable, String search) {
+        Page<Member> members = memberRepository.searchAllByRoleAndIdLikeOrNameLike(
+                pageable, NOT_APPROVED, new MemberId(Integer.parseInt(search)), new Name(search));
+
+        return members.map(member -> new NewMemberManagementDto(
+                member.getName(),
+                member.getId(),
+                member.getPhone(),
+                member.getEmail(),
+                member.getSchoolInformation().getMajor()
+        ));
+    }
+
+    @Override
+    public PagedResponseDto getPagedResponse(Page<?> data) {
+
+        PageInfoDto pageInfoDto = new PageInfoDto(data);
+        List<?> content = data.getContent();
+        PagedResponseDto pagedResponseDto = new PagedResponseDto(pageInfoDto, content);
+        return pagedResponseDto;
     }
 }
