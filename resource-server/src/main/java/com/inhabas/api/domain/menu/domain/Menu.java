@@ -16,9 +16,9 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MENU",
-        uniqueConstraints = { @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "MENU_GROUP_ID", "ORDER" })},
+        uniqueConstraints = { @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "MENU_GROUP_ID", "PRIORITY" })},
         indexes = {@Index(name = "MENU_GROUP_INDEX", columnList = "MENU_GROUP_ID ASC"),
-                @Index(name = "ORDER_INDEX", columnList = "ORDER ASC")})
+                @Index(name = "PRIORITY_INDEX", columnList = "PRIORITY ASC")})
 public class Menu extends BaseEntity {
 
     @Id
