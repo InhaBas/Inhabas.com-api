@@ -11,10 +11,12 @@ import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -33,37 +35,51 @@ public class MenuRepositoryTest {
     public void setUp() {
 
     }
+
+    @AfterEach
+    public void after() {
+        em.clear();
+        em.flush();
+    }
     // public void createNewMenuTable() { MENU 테이블이 잘 생성되었는지 확인하기 위한 테스트 코드
     @DisplayName("새로운 메뉴를 만든다.")
-    @Test
-    public void CreateNewMenu() {
+    @ParameterizedTest
+    @MethodSource("provideMenusForCreation")
+    public void createNewMenu(MenuGroup group, int priority, MenuType type, String name, String description) {
         //given
-        MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
-        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+        group = em.persist(group);
+        Menu menu = new Menu(group, priority, type, name, description);
 
         //when
-        Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
-        em.flush();
+        Menu savedMenu = menuRepository.save(menu);
 
         //then
-        assertThat(saveActivityMenu.getId()).isNotNull();
-        assertThat(saveActivityMenu.getCreated()).isNotNull();
-        assertThat(saveActivityMenu.getUpdated()).isNotNull();
-        assertThat(saveActivityMenu)
+        assertThat(savedMenu.getId()).isNotNull();
+        assertThat(savedMenu.getCreated()).isNotNull();
+        assertThat(savedMenu.getUpdated()).isNotNull();
+        assertThat(savedMenu)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "created", "updated")
-                .isEqualTo(activityBoardMenu);
+                .isEqualTo(menu);
+    }
+
+    private static Stream<Arguments> provideMenusForCreation() {
+        MenuGroup menuGroup1 = new MenuGroup("IBAS");
+        MenuGroup menuGroup2 = new MenuGroup("게시판 목록");
+        return Stream.of(
+                Arguments.of(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다."),
+                Arguments.of(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.")
+        );
     }
 
     @Disabled
     @DisplayName("메뉴 이름을 수정한다.")
     @Test
-    public void UpdateMenuName() {
+    public void updateMenuName() {
         //given
         MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
         MenuGroup menuGroup2 = em.persist(new MenuGroup("게시판 목록"));
         Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
-        em.flush();em.clear();
 
         //when
         String newName = "공지 사항";
@@ -89,6 +105,7 @@ public class MenuRepositoryTest {
         MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
         MenuGroup menuGroup2 = em.persist(new MenuGroup("게시판 목록"));
 
+        //중복되지 않는 priority로 메뉴를 생성하고 저장
         Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
         Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
         Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
@@ -97,6 +114,7 @@ public class MenuRepositoryTest {
         menuRepository.save(freeBoardMenu);
 
         //when
+        // 같은 그룹에서 동일한 priority로 메뉴를 생성하려 할 때 예외 발생.
         assertThrows(DataIntegrityViolationException.class,
                 () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.LIST, "질문게시판", "궁금한 점을 질문하는 게시판입니다.")));
     }
@@ -127,7 +145,7 @@ public class MenuRepositoryTest {
         List<Menu> menuList = Arrays.asList(menu11, menu12, menu13, menu14, menu21, menu22, menu23, menu24, menu31, menu32, menu41, menu42, menu51);
 
         menuList = menuRepository.saveAllAndFlush(menuList);
-        em.clear();
+
 
         //when
         List<MenuGroupDto> allMenuInfo = menuRepository.findAllMenuByMenuGroup();
