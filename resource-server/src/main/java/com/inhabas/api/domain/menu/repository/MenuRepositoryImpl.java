@@ -30,6 +30,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
                                 menu.id,
                                 menu.priority,
                                 menu.name.value,
+                                menu.type, // enum type
                                 menu.description.value)))
                 ).entrySet().stream()
                 .map(entry -> new MenuGroupDto(entry.getKey().getId(), entry.getKey().getName(), entry.getValue()))

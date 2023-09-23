@@ -59,7 +59,6 @@ public class Menu extends BaseEntity {
         this.description = new Description(description);
     }
 
-
     public MenuId getId() {
         return new MenuId(this.id);
     }
