@@ -1,11 +1,11 @@
-package com.inhabas.api.domain.member.domain;
+package com.inhabas.api.domain.member.domain.service;
 
+import com.inhabas.api.domain.member.domain.entity.Answer;
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.member.domain.valueObject.Role;
-import com.inhabas.api.domain.member.dto.ContactDto;
+import com.inhabas.api.domain.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.domain.member.dto.NewMemberManagementDto;
-import com.inhabas.api.domain.member.dto.PagedResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,11 +22,12 @@ public interface MemberService {
 
     void changeRole(Member member, Role role);
 
-    ContactDto getChiefContact();
-
     void finishSignUp(Member member);
 
-    Page<NewMemberManagementDto> getUnapprovedMembers(Pageable pageable, String search);
+    List<NewMemberManagementDto> getUnapprovedMembers(String search);
 
-    PagedResponseDto getPagedResponse(Page<?> data);
+    void UpgradeUnapprovedMembers(List<Integer> memberIdList);
+
+    List<ApprovedMemberManagementDto> getApprovedMembers(String search);
+
 }

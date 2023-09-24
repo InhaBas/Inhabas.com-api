@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.member.domain.exception;
 
 public class MemberNotFoundException extends RuntimeException {
 

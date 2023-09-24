@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.domain;
+package com.inhabas.api.domain.member.domain.service;
 
 import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
