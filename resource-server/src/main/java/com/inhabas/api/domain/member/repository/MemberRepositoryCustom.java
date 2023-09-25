@@ -17,7 +17,9 @@ public interface MemberRepositoryCustom {
 
     boolean isDuplicated(MemberDuplicationQueryCondition condition);
 
-    Page<Member> searchAllByRoleAndIdLikeOrNameLike(Pageable pageable,Role role, MemberId memberId, Name name);
+    List<Member> findByRoleAndIdLike(Role role, MemberId memberId);
 
-    List<Member> searchByRoleLimit(Role role, Integer limit);
+    List<Member> findByRoleAndNameLike(Role role, Name name);
+
+    List<Member> findByIdLike(MemberId memberId);
 }

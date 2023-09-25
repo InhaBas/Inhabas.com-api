@@ -52,32 +52,35 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public Page<Member> searchAllByRoleAndIdLikeOrNameLike(Pageable pageable, Role role, MemberId memberId, Name name) {
+    public List<Member> findByRoleAndIdLike(Role role, MemberId memberId) {
+        final List<Member> members = queryFactory.
+                selectFrom(member)
+                .where(eqRole(role)
+                        .and(member.id.id.like("%" + memberId.toString() + "%")))
+                .fetch();
+
+        return members;
+    }
+
+    @Override
+    public List<Member> findByRoleAndNameLike(Role role, Name name) {
         List<Member> members = queryFactory.
                 selectFrom(member)
                 .where(eqRole(role)
-                        .and(member.name.value.like("%" + name.getValue() + "%"))
-                        .or(member.id.id.like("%" + memberId.toString() + "%")))
+                        .and(member.name.value.like("%" + name.getValue() + "%")))
                 .fetch();
-
-        final long total = queryFactory.
-                selectFrom(member)
-                .where(eqRole(role)
-                        .and(member.name.value.like("%" + name.getValue() + "%"))
-                        .or(member.id.id.like("%" + memberId.toString() + "%")))
-                .fetchCount();
 
         return new PageImpl<>(members, pageable, total);
     }
 
     @Override
-    public List<Member> searchByRoleLimit(Role role, Integer limit) {
-
-        return queryFactory.select(member)
-                .from(member)
-                .where(eqRole(role))
-                .limit(limit)
+    public List<Member> findByIdLike(MemberId memberId) {
+        List<Member> members = queryFactory.
+                selectFrom(member)
+                .where((member.id.id.like("%" + memberId.toString() + "%")))
                 .fetch();
+
+        return members;
     }
 
     private BooleanExpression eqRole(Role role) {
