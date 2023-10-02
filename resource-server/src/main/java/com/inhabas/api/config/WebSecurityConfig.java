@@ -19,6 +19,8 @@ import org.springframework.security.web.access.expression.DefaultWebSecurityExpr
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsUtils;
 
+import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
+
 /**
  * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.AuthSecurityConfig AuthSecurityConfig} 참고
  */
@@ -54,15 +56,15 @@ public class WebSecurityConfig {
                     // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
                         .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
                     // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                        .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
-                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                        .antMatchers("/budget/history/**").hasRole(SECRETARY.toString())
                     // 강의
-                        .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
-                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED.toString())
+                        .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.DEACTIVATED.toString())
+                        .anyRequest().hasRole(DEACTIVATED.toString())
 
                     .expressionHandler(expressionHandler());
         }
@@ -106,17 +108,17 @@ public class WebSecurityConfig {
                     // jwt 토큰
                         .antMatchers("/jwt/**").permitAll()
                     // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
-                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
+                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief", "/members/**").permitAll()
                     // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                        .antMatchers("/signUp/**").hasRole(Role.ANONYMOUS.toString())
+                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
                     // 회계내역
                         .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                     // 강의
-                        .antMatchers("/lecture/**/status").hasRole(Role.EXECUTIVES.toString())
-                        .antMatchers("/lecture/**").hasRole(Role.DEACTIVATED.toString())
+                        .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
+                        .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
                     // 그 외
-                        .anyRequest().hasRole(Role.BASIC.toString());
+                        .anyRequest().hasRole(BASIC.toString());
         }
 
         @Bean

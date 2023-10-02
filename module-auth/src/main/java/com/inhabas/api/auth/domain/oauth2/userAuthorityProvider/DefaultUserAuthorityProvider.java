@@ -12,6 +12,6 @@ public class DefaultUserAuthorityProvider implements UserAuthorityProvider {
     @Override
     public Collection<SimpleGrantedAuthority> determineAuthorities(OAuth2UserInfo oAuth2UserInfo) {
 
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_anonymous"));
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
     }
 }

@@ -40,4 +40,8 @@ public class MemberId implements Serializable {
     public String toString() {
         return String.valueOf(this.id);
     }
+
+    public Integer getValue() {
+        return id;
+    }
 }

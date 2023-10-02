@@ -15,7 +15,7 @@ import java.util.Collection;
  *     <li>커스터마이징한 권한을 부여하고 싶을 때</li>
  * </ol>
  *
- * 기본 구현체는 {@link DefaultUserAuthorityProvider}이고, 이 때에는 모든 사용자의 권한이 {@code ROLE_anonymous} 로 지정된다.
+ * 기본 구현체는 {@link DefaultUserAuthorityProvider}이고, 이 때에는 모든 사용자의 권한이 {@code ROLE_ANONYMOUS} 로 지정된다.
  */
 public interface UserAuthorityProvider {
 

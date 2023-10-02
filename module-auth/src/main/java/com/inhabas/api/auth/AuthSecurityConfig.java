@@ -54,26 +54,31 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatcher("/login/**")
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                .cors().and()
+                .and()
+                .cors()
+                .and()
                 .authorizeRequests()
                     .antMatchers("/login/refresh").permitAll()
-                    .and()
-                .csrf().and()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    .anyRequest().permitAll()
+                .and()
+                .csrf()
+                .and()
+
+                // Oauth 로그인 설정
                 .oauth2Login()
                     .authorizationEndpoint()
                         .baseUri("/login/oauth2/authorization")
                         .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                        .and()
-                        .userInfoEndpoint()
-                            .userService(customOAuth2UserService)
-                            .and()
-                    .failureHandler(oauth2AuthenticationFailureHandler)
-                    .successHandler(oauth2AuthenticationSuccessHandler)
-                    .and()
-                .authorizeRequests()
-                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    .anyRequest().permitAll();
+                .and()
+
+                // 사용자 정보를 가져오는 엔드포인트에 대한 설정
+                .userInfoEndpoint()
+                    .userService(customOAuth2UserService)
+                .and()
+                .failureHandler(oauth2AuthenticationFailureHandler)
+                .successHandler(oauth2AuthenticationSuccessHandler);
+
     }
 
 }
