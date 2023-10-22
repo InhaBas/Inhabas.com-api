@@ -41,30 +41,30 @@ public class WebSecurityConfig {
             http
                     .httpBasic().disable()
                     .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .and()
 
                     .csrf()
-                        .disable()
+                    .disable()
 
                     .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
 
                     .authorizeRequests()
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     // jwt 토큰
-                        .antMatchers("/jwt/**").permitAll()
+                    .antMatchers("/jwt/**").permitAll()
                     // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
-                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
+                    .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
                     // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
+                    .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
-                        .antMatchers("/budget/history/**").hasRole(SECRETARY.toString())
+                    .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
+                    .antMatchers("/budget/history/**").hasRole(SECRETARY.toString())
                     // 강의
-                        .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
-                        .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
+                    .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
+                    .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
                     // 그 외
-                        .anyRequest().hasRole(DEACTIVATED.toString())
+                    .anyRequest().hasRole(DEACTIVATED.toString())
 
                     .expressionHandler(expressionHandler());
         }
@@ -112,12 +112,13 @@ public class WebSecurityConfig {
                     // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").permitAll()
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
                         .antMatchers("/budget/history/**").hasAuthority("Team_총무")
                     // 강의
                         .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
                     // 그 외
+                        .antMatchers("/error/**").hasRole(ANONYMOUS.toString())
                         .anyRequest().hasRole(BASIC.toString());
         }
 
