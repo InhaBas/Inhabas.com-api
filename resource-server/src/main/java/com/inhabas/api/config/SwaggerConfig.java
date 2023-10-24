@@ -1,92 +1,43 @@
 package com.inhabas.api.config;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
-import org.springframework.boot.actuate.endpoint.ExposableEndpoint;
-import org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver;
-import org.springframework.boot.actuate.endpoint.web.EndpointMapping;
-import org.springframework.boot.actuate.endpoint.web.ExposableWebEndpoint;
-import org.springframework.boot.actuate.endpoint.web.WebEndpointsSupplier;
-import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpointsSupplier;
-import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpointsSupplier;
-import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.apache.http.HttpHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.boot.actuate.endpoint.web.EndpointMediaTypes;
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
-import org.springframework.boot.actuate.autoconfigure.web.server.ManagementPortType;
-import org.springframework.util.StringUtils;
-
-import org.springframework.core.env.Environment;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.*;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig {
 
     @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.OAS_30)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                .securitySchemes(Collections.singletonList(apiKey()))
-                .securityContexts(Collections.singletonList(securityContext()));
-    }
+    public OpenAPI openAPI() {
 
-    private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
-    }
+        Info info = new Info()
+                .version("v1.0.0")
+                .title("Inhabas API")
+                .description("spring-api docs");
 
-    private SecurityContext securityContext() {
-        return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .build();
-    }
+        // Security 스키마 설정
+        SecurityScheme bearerAuth = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .in(SecurityScheme.In.HEADER)
+                .name(HttpHeaders.AUTHORIZATION);
 
-    List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{authorizationScope};
-        return Collections.singletonList(
-                new SecurityReference("JWT", authorizationScopes));
-    }
+        // Security 요청 설정
+        SecurityRequirement addSecurityItem = new SecurityRequirement();
+        addSecurityItem.addList("JWT");
 
-    @Bean
-    public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping(WebEndpointsSupplier webEndpointsSupplier
-            , ServletEndpointsSupplier servletEndpointsSupplier
-            , ControllerEndpointsSupplier controllerEndpointsSupplier
-            , EndpointMediaTypes endpointMediaTypes
-            , CorsEndpointProperties corsProperties
-            , WebEndpointProperties webEndpointProperties
-            , Environment environment) {
-        List<ExposableEndpoint<?>> allEndpoints = new ArrayList();
-        Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
-        allEndpoints.addAll(webEndpoints);
-        allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
-        allEndpoints.addAll(controllerEndpointsSupplier.getEndpoints());
-        String basePath = webEndpointProperties.getBasePath();
-        EndpointMapping endpointMapping = new EndpointMapping(basePath);
-        boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties, environment, basePath);
-        return new WebMvcEndpointHandlerMapping(endpointMapping, webEndpoints, endpointMediaTypes, corsProperties.toCorsConfiguration()
-                , new EndpointLinksResolver(allEndpoints, basePath), shouldRegisterLinksMapping, null);
-    }
-
-
-    private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment, String basePath) {
-        return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath) || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
+        return new OpenAPI()
+                // Security 인증 컴포넌트 설정
+                .components(new Components().addSecuritySchemes("JWT", bearerAuth))
+                // API 마다 Security 인증 컴포넌트 설정
+                .addSecurityItem(addSecurityItem)
+                .info(info);
     }
 
 }
