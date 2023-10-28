@@ -52,32 +52,27 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = tokenResolver.resolveTokenOrNull(request);
+        try {
+            if (!tokenProvider.validate(token) || !StringUtils.hasText(token))
+                throw new InvalidTokenException();
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null && StringUtils.hasText(token)) {
+            JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
+            Object principal = userPrincipalService.loadUserPrincipal(authentication);
+            authentication.setPrincipal(principal);
 
-            try {
-                if (!tokenProvider.validate(token))
-                    throw new InvalidTokenException();
+            // handle for authentication success
+            successfulAuthentication(request, response, filterChain, authentication);
+            filterChain.doFilter(request,response);
 
-                JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
-                Object principal = userPrincipalService.loadUserPrincipal(authentication);
-                authentication.setPrincipal(principal);
-
-                // handle for authentication success
-                successfulAuthentication(request, response, filterChain, authentication);
-
-            } catch (InvalidTokenException | UserPrincipalNotFoundException e) {
-                // Authentication failed redirection
-                this.unsuccessfulAuthentication(request, response, e);
-                return;
-            }
+        } catch (InvalidTokenException | UserPrincipalNotFoundException e) {
+            // Authentication failed redirection
+            this.unsuccessfulAuthentication(request, response, e);
+            return;
         }
-
-        // If client doesn't have any token or under redirection, keep going to process client's request
-        filterChain.doFilter(request, response);
     }
 
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
@@ -86,10 +81,10 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
         authResult.setAuthenticated(true);
         ((JwtAuthenticationResult) authResult).setDetails(request.getRemoteAddr());
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        logger.trace("jwt token authentication success!");
+        logger.debug("jwt token authentication success!");
 
         if (this.successHandler != null) {
-            logger.trace("Handling authentication success");
+            logger.debug("Handling authentication success");
             this.successHandler.onAuthenticationSuccess(request, response, authResult);
         }
     }
@@ -99,9 +94,9 @@ public class TokenAuthenticationProcessingFilter extends OncePerRequestFilter {
                                               AuthenticationException failed) throws IOException, ServletException {
 
         SecurityContextHolder.clearContext();
-        logger.trace("jwt token validation fail", failed);
-        logger.trace("Cleared SecurityContextHolder");
-        logger.trace("Handling authentication failure");
+        logger.debug("jwt token validation fail", failed);
+        logger.debug("Cleared SecurityContextHolder");
+        logger.debug("Handling authentication failure");
         this.failureHandler.onAuthenticationFailure(request, response, failed); // 리다이렉트 해야함?
     }
 }
