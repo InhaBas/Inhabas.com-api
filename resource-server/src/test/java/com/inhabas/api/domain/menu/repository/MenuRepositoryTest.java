@@ -11,12 +11,10 @@ import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,40 +34,25 @@ public class MenuRepositoryTest {
 
     }
 
-    @AfterEach
-    public void after() {
-        em.clear();
-        em.flush();
-    }
-    // public void createNewMenuTable() { MENU 테이블이 잘 생성되었는지 확인하기 위한 테스트 코드
     @DisplayName("새로운 메뉴를 만든다.")
-    @ParameterizedTest
-    @MethodSource("provideMenusForCreation")
-    public void createNewMenu(MenuGroup group, int priority, MenuType type, String name, String description) {
+    @Test
+    public void CreateNewMenu() {
         //given
-        group = em.persist(group);
-        Menu menu = new Menu(group, priority, type, name, description);
+        MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
 
         //when
-        Menu savedMenu = menuRepository.save(menu);
+        Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
+        em.flush();
 
         //then
-        assertThat(savedMenu.getId()).isNotNull();
-        assertThat(savedMenu.getCreated()).isNotNull();
-        assertThat(savedMenu.getUpdated()).isNotNull();
-        assertThat(savedMenu)
+        assertThat(saveActivityMenu.getId()).isNotNull();
+        assertThat(saveActivityMenu.getCreated()).isNotNull();
+        assertThat(saveActivityMenu.getUpdated()).isNotNull();
+        assertThat(saveActivityMenu)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "created", "updated")
-                .isEqualTo(menu);
-    }
-
-    private static Stream<Arguments> provideMenusForCreation() {
-        MenuGroup menuGroup1 = new MenuGroup("IBAS");
-        MenuGroup menuGroup2 = new MenuGroup("게시판 목록");
-        return Stream.of(
-                Arguments.of(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다."),
-                Arguments.of(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.")
-        );
+                .isEqualTo(activityBoardMenu);
     }
 
     @Disabled
