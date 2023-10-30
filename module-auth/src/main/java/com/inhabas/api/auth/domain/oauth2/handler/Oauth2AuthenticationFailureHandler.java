@@ -39,7 +39,7 @@ public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     private String getAuthorizedTargetUrl(AuthenticationException exception, String redirectUri) {
 
         StringBuilder targetUrl = new StringBuilder();
-        if (exception instanceof UnauthorizedRedirectUrlException || redirectUri.isBlank() || notAuthorized(redirectUri)) {
+        if (exception instanceof UnauthorizedRedirectUrlException || StringUtils.isBlank(redirectUri) || notAuthorized(redirectUri)) {
             targetUrl.append(authProperties.getOauth2().getDefaultRedirectUri());
         }
         else {

@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.web.cors.CorsUtils;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 
 @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
 @EnableWebSecurity
@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsUtils;
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -66,6 +67,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Oauth 로그인 설정
                 .oauth2Login()
+                    .authorizedClientService(authorizedClientService)
                     .authorizationEndpoint()
                         .baseUri("/login/oauth2/authorization")
                         .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)

@@ -12,17 +12,17 @@ import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
-import com.inhabas.api.auth.domain.token.securityFilter.InvalidJwtTokenHandler;
-import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationFailureHandler;
-import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
-import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import com.inhabas.api.auth.domain.token.securityFilter.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+
+import javax.sql.DataSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -58,8 +58,9 @@ public class AuthBeansConfig {
     }
 
     @Bean
-    public OAuth2AuthorizedClientRepository oAuth2AuthorizedClientRepository() {
-        return new HttpSessionOAuth2AuthorizedClientRepository();
+    public OAuth2AuthorizedClientService authorizedClientService(
+            DataSource dataSource, ClientRegistrationRepository clientRegistrationRepository) {
+        return new JdbcOAuth2AuthorizedClientService(new JdbcTemplate(dataSource), clientRegistrationRepository);
     }
 
     @ConditionalOnMissingBean
