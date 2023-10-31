@@ -79,7 +79,7 @@ public class CommentControllerTest {
     @Test
     void createNewComment() throws Exception {
         //given
-        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"board_id\":13}";
+        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13}";
         Integer newCommentId = 1;
         given(commentService.create(any(), any())).willReturn(newCommentId);
 
@@ -100,7 +100,7 @@ public class CommentControllerTest {
     @Test
     void createNewReply() throws Exception {
         //given
-        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"board_id\":13, \"parent_comment_id\":1}";
+        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13, \"parentCommentId\":1}";
         Integer newReplyId = 2;
         given(commentService.create(any(), any())).willReturn(newReplyId);
 
@@ -139,7 +139,7 @@ public class CommentControllerTest {
     @Test
     void updateComment() throws Exception {
         //given
-        String jsonRequest = "{\"comment_id\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
+        String jsonRequest = "{\"commentId\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
         given(commentService.update(any(), any())).willReturn(1);
 
         String responseBody = mockMvc.perform(put("/comment")

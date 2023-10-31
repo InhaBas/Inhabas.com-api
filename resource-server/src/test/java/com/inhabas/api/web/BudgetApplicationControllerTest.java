@@ -41,7 +41,7 @@ public class BudgetApplicationControllerTest {
 
         mockMvc.perform(post("/budget/application")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"서버 사용비\", \"date_used\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\"}"))
+                        .content("{\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\"}"))
                 .andExpect(status().isNoContent());
 
         //then
@@ -55,7 +55,7 @@ public class BudgetApplicationControllerTest {
 
         mockMvc.perform(put("/budget/application")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":1,\"title\":\"서버 사용비\", \"date_used\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\", \"application_id\":1}"))
+                        .content("{\"id\":1,\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\", \"applicationId\":1}"))
                 .andExpect(status().isNoContent());
 
         //then
@@ -105,7 +105,7 @@ public class BudgetApplicationControllerTest {
 
         mockMvc.perform(put("/budget/application/1/status")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"status\":\"PROCESSED\", \"reject_reason\":\"\"}"))
+                        .content("{\"status\":\"PROCESSED\", \"rejectReason\":\"\"}"))
                 .andExpect(status().isNoContent());
 
         //then
