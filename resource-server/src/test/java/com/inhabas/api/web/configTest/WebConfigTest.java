@@ -19,7 +19,7 @@ public class WebConfigTest {
     @Autowired
     private ModelResolver modelResolver;
 
-    @DisplayName("swagger 명세로 변환하는 modelResolver 는 LOWER_CAMEL_CASE 를 따른다.")
+    @DisplayName("swagger 명세로 변환하는 modelResolver 는 snake_case 를 따른다.")
     @Test
     public void ModelResolverSnakeCaseTest() {
         //when
@@ -28,6 +28,6 @@ public class WebConfigTest {
 
         //then
         Assertions.assertThat(propertyNamingStrategy)
-                .isEqualTo(PropertyNamingStrategies.LOWER_CAMEL_CASE);
+                .isEqualTo(PropertyNamingStrategies.SNAKE_CASE);
     }
 }
