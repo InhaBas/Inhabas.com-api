@@ -36,7 +36,7 @@ public class BudgetHistoryControllerTest {
     @Test
     public void historyCreationFormTest() throws Exception {
         //given
-        String jsonOfCreationForm = "{\"dateUsed\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"personReceived\":12171652,\"income\":-1,\"outcome\":-1}";
+        String jsonOfCreationForm = "{\"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
 
         //when
         Exception resolvedException =
@@ -65,7 +65,7 @@ public class BudgetHistoryControllerTest {
     @Test
     public void budgetCreationFormWillPassValidationTest() throws Exception {
         //given
-        String jsonOfCreationForm = "{\"dateUsed\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"personReceived\":12171652,\"income\":0,\"outcome\":500000}";
+        String jsonOfCreationForm = "{\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
 
         //when
         mockMvc.perform(post("/budget/history")
@@ -80,7 +80,7 @@ public class BudgetHistoryControllerTest {
     @Test
     public void historyModificationFormTest() throws Exception {
         //given
-        String jsonOfCreationForm = "{\"id\":1, \"dateUsed\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"personReceived\":12171652,\"income\":-1,\"outcome\":-1}";
+        String jsonOfCreationForm = "{\"id\":1, \"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
 
         //when
         Exception resolvedException =
@@ -109,7 +109,7 @@ public class BudgetHistoryControllerTest {
     @Test
     public void budgetModificationFormWillPassValidationTest() throws Exception {
         //given
-        String jsonOfModificationForm = "{\"id\":1,\"dateUsed\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"personReceived\":12171652,\"income\":0,\"outcome\":500000}";
+        String jsonOfModificationForm = "{\"id\":1,\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
 
         //when
         mockMvc.perform(put("/budget/history")

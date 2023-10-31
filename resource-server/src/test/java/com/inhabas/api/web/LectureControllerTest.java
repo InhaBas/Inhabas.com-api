@@ -56,11 +56,11 @@ public class LectureControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "  \"title\": \"절권도 강의\",\n" +
-                                "  \"applyDeadLine\": \"9022-07-31T16:51:33\",\n" +
-                                "  \"daysOfWeeks\": \"월 수 금\",\n" +
+                                "  \"apply_dead_line\": \"9022-07-31T16:51:33\",\n" +
+                                "  \"days_of_weeks\": \"월 수 금\",\n" +
                                 "  \"place\": \"6호관 623 강의실\",\n" +
-                                "  \"curriculumDetails\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\",\n" +
-                                "  \"participantsLimits\": 30,\n" +
+                                "  \"curriculum_details\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\",\n" +
+                                "  \"participants_limits\": 30,\n" +
                                 "  \"method\": 1,\n" +
                                 "  \"introduction\": \"호신술을 배워보자\"\n" +
                                 "}"))
@@ -83,11 +83,11 @@ public class LectureControllerTest {
                         .content("{\n" +
                                 "  \"id\": \"1\",\n" +
                                 "  \"title\": \"절권도 강의\",\n" +
-                                "  \"applyDeadLine\": \"9022-07-31T16:51:33\",\n" +
-                                "  \"daysOfWeeks\": \"월 수 금\",\n" +
+                                "  \"apply_dead_line\": \"9022-07-31T16:51:33\",\n" +
+                                "  \"days_of_weeks\": \"월 수 금\",\n" +
                                 "  \"place\": \"6호관 623 강의실\",\n" +
-                                "  \"curriculumDetails\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\",\n" +
-                                "  \"participantsLimits\": 30,\n" +
+                                "  \"curriculum_details\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\",\n" +
+                                "  \"participants_limits\": 30,\n" +
                                 "  \"method\": 1,\n" +
                                 "  \"introduction\": \"호신술을 배워보자\"\n" +
                                 "}"))
@@ -154,7 +154,7 @@ public class LectureControllerTest {
                 "    \"major\": \"산업경영공학과\"," +
                 "    \"name\": \"유동현\"" +
                 "  }," +
-                "  \"coInstructors\": [" +
+                "  \"co_instructors\": [" +
                 "    {" +
                 "      \"id\": 12345678," +
                 "      \"major\": \"스마트모빌리티공학과\"," +
@@ -166,15 +166,15 @@ public class LectureControllerTest {
                 "      \"name\": \"나까무라철수\"" +
                 "    }" +
                 "  ]," +
-                "  \"applyDeadLine\": \"9022-07-31T17:11:36\"," +
-                "  \"daysOfWeeks\": \"월 금\"," +
+                "  \"apply_dead_line\": \"9022-07-31T17:11:36\"," +
+                "  \"days_of_weeks\": \"월 금\"," +
                 "  \"place\": \"구내식당\"," +
                 "  \"introduction\": \"호신술을 배워보자\"," +
-                "  \"curriculumDetails\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\"," +
-                "  \"participantsLimits\": 30," +
+                "  \"curriculum_details\": \"1주차: 빅데이터에 기반한 공격패턴분석<br> 2주차: ...\"," +
+                "  \"participants_limits\": 30," +
                 "  \"method\": 1," +
                 "  \"state\": \"WAITING\"," +
-                "  \"rejectReason\": null," +
+                "  \"reject_reason\": null," +
                 "  \"paid\": false," +
                 "  \"created\": \"9022-07-23T17:11:36\"," +
                 "  \"updated\": null" +
@@ -203,42 +203,42 @@ public class LectureControllerTest {
         //then
         then(lectureService).should(times(1)).getList(any());
         JSONAssert.assertEquals("{\n" +
-                "  \"totalPages\": 1,\n" +
-                "  \"totalElements\": 3,\n" +
+                "  \"total_pages\": 1,\n" +
+                "  \"total_elements\": 3,\n" +
                 "  \"size\": 6,\n" +
                 "  \"content\": [\n" +
                 "    {\n" +
-                "      \"lectureId\": 3,\n" +
+                "      \"lecture_id\": 3,\n" +
                 "      \"title\": \"title3\",\n" +
-                "      \"chiefId\": 1000003,\n" +
+                "      \"chief_id\": 1000003,\n" +
                 "      \"introduction\": \"intro3\",\n" +
-                "      \"applyDeadline\": \"2003-03-03T03:03:03\",\n" +
+                "      \"apply_deadline\": \"2003-03-03T03:03:03\",\n" +
                 "      \"status\": \"PROGRESSING\",\n" +
                 "      \"method\": 1,\n" +
-                "      \"participantsLimits\": 32,\n" +
-                "      \"theNumberOfCurrentParticipants\": 4\n" +
+                "      \"participants_limits\": 32,\n" +
+                "      \"the_number_of_current_participants\": 4\n" +
                 "    },\n" +
                 "    {\n" +
-                "      \"lectureId\": 2,\n" +
+                "      \"lecture_id\": 2,\n" +
                 "      \"title\": \"title2\",\n" +
-                "      \"chiefId\": 1000002,\n" +
+                "      \"chief_id\": 1000002,\n" +
                 "      \"introduction\": \"intro2\",\n" +
-                "      \"applyDeadline\": \"2002-02-02T02:02:02\",\n" +
+                "      \"apply_deadline\": \"2002-02-02T02:02:02\",\n" +
                 "      \"status\": \"PROGRESSING\",\n" +
                 "      \"method\": 1,\n" +
-                "      \"participantsLimits\": 31,\n" +
-                "      \"theNumberOfCurrentParticipants\": 3\n" +
+                "      \"participants_limits\": 31,\n" +
+                "      \"the_number_of_current_participants\": 3\n" +
                 "    },\n" +
                 "    {\n" +
-                "      \"lectureId\": 1,\n" +
+                "      \"lecture_id\": 1,\n" +
                 "      \"title\": \"title1\",\n" +
-                "      \"chiefId\": 1000001,\n" +
+                "      \"chief_id\": 1000001,\n" +
                 "      \"introduction\": \"intro1\",\n" +
-                "      \"applyDeadline\": \"2001-01-01T01:01:01\",\n" +
+                "      \"apply_deadline\": \"2001-01-01T01:01:01\",\n" +
                 "      \"status\": \"PROGRESSING\",\n" +
                 "      \"method\": 1,\n" +
-                "      \"participantsLimits\": 30,\n" +
-                "      \"theNumberOfCurrentParticipants\": 2\n" +
+                "      \"participants_limits\": 30,\n" +
+                "      \"the_number_of_current_participants\": 2\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  \"number\": 0,\n" +
@@ -249,7 +249,7 @@ public class LectureControllerTest {
                 "  },\n" +
                 "  \"first\": true,\n" +
                 "  \"last\": true,\n" +
-                "  \"numberOfElements\": 3,\n" +
+                "  \"number_of_elements\": 3,\n" +
                 "  \"pageable\": {\n" +
                 "    \"offset\": 0,\n" +
                 "    \"sort\": {\n" +
@@ -257,8 +257,8 @@ public class LectureControllerTest {
                 "      \"sorted\": true,\n" +
                 "      \"unsorted\": false\n" +
                 "    },\n" +
-                "    \"pageNumber\": 0,\n" +
-                "    \"pageSize\": 6,\n" +
+                "    \"page_number\": 0,\n" +
+                "    \"page_size\": 6,\n" +
                 "    \"paged\": true,\n" +
                 "    \"unpaged\": false\n" +
                 "  },\n" +
@@ -278,7 +278,7 @@ public class LectureControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "  \"status\": \"PROGRESSING\",\n" +
-                                "  \"rejectReason\": null\n" +
+                                "  \"reject_reason\": null\n" +
                                 "}"))
                 .andExpect(status().isNoContent());
 
@@ -380,17 +380,17 @@ public class LectureControllerTest {
         //then
         then(studentService).should(times(1)).searchStudents(any(), any());
         JSONAssert.assertEquals("{\n" +
-                "  \"totalPages\": 3,\n" +
-                "  \"totalElements\": 51,\n" +
+                "  \"total_pages\": 3,\n" +
+                "  \"total_elements\": 51,\n" +
                 "  \"size\": 25,\n" +
                 "  \"content\": [\n" +
                 "    {\n" +
                 "      \"name\": \"홍길동50\",\n" +
-                "      \"memberId\": 1000050,\n" +
+                "      \"member_id\": 1000050,\n" +
                 "      \"phone\": \"010-0000-0000\",\n" +
                 "      \"email\": \"my@gmail.com\",\n" +
-                "      \"assignmentCount\": 0,\n" +
-                "      \"attendanceCount\": 0,\n" +
+                "      \"assignment_count\": 0,\n" +
+                "      \"attendance_count\": 0,\n" +
                 "      \"status\": \"PROGRESS\",\n" +
                 "      \"sid\": 50\n" +
                 "    }\n" +
@@ -403,7 +403,7 @@ public class LectureControllerTest {
                 "  },\n" +
                 "  \"first\": false,\n" +
                 "  \"last\": true,\n" +
-                "  \"numberOfElements\": 1,\n" +
+                "  \"number_of_elements\": 1,\n" +
                 "  \"pageable\": {\n" +
                 "    \"offset\": 50,\n" +
                 "    \"sort\": {\n" +
@@ -411,8 +411,8 @@ public class LectureControllerTest {
                 "      \"sorted\": true,\n" +
                 "      \"unsorted\": false\n" +
                 "    },\n" +
-                "    \"pageNumber\": 2,\n" +
-                "    \"pageSize\": 25,\n" +
+                "    \"page_number\": 2,\n" +
+                "    \"page_size\": 25,\n" +
                 "    \"paged\": true,\n" +
                 "    \"unpaged\": false\n" +
                 "  },\n" +

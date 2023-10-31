@@ -16,7 +16,7 @@ spring:
     ansi:
       enabled: always
   jackson:
-    property-naming-strategy: LOWER_CAMEL_CASE
+    property-naming-strategy: SNAKE_CASE
   data:
     web:
       pageable:
