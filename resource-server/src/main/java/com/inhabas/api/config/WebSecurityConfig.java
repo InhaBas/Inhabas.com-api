@@ -1,7 +1,10 @@
 package com.inhabas.api.config;
 
+import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.security.Hierarchical;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,8 +20,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
 
@@ -26,6 +37,9 @@ import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
  */
 public class WebSecurityConfig {
 
+    private static final String[] AUTH_WHITELIST_SWAGGER = {"/swagger-ui/**", "/swagger/**", "/docs/**"};
+    private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
+
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
     @EnableWebSecurity
@@ -33,8 +47,9 @@ public class WebSecurityConfig {
     @Profile({"production"})
     public static class ApiSecurityForProduction extends WebSecurityConfigurerAdapter {
 
-        private final TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
+        private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
         private final Hierarchical hierarchy;
+        private final AuthBeansConfig authBeansConfig;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -47,7 +62,6 @@ public class WebSecurityConfig {
                     .csrf()
                     .disable()
 
-                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
 
                     .authorizeRequests()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -67,6 +81,8 @@ public class WebSecurityConfig {
                     .anyRequest().hasRole(DEACTIVATED.toString())
 
                     .expressionHandler(expressionHandler());
+
+            http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         }
 
         @Bean
@@ -74,6 +90,30 @@ public class WebSecurityConfig {
             DefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
             webSecurityExpressionHandler.setRoleHierarchy(hierarchy.getHierarchy());
             return webSecurityExpressionHandler;
+        }
+
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+            final List<String> skipPaths = new ArrayList<>();
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
+
+            final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
+            final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
+                    requestMatcher,
+                    authBeansConfig.tokenProvider(),
+                    authBeansConfig.tokenResolver(),
+                    authBeansConfig.userPrincipalService()
+            );
+
+            filter.setAuthenticationManager(super.authenticationManager());
+            return filter;
+        }
+
+        @Bean
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
         }
     }
 
@@ -85,8 +125,9 @@ public class WebSecurityConfig {
     @Profile({"local", "dev", "default_mvc_test"})
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
-        private final TokenAuthenticationProcessingFilter tokenAuthenticationProcessingFilter;
+        private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
         private final Hierarchical hierarchy;
+        private final AuthBeansConfig authBeansConfig;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -97,12 +138,13 @@ public class WebSecurityConfig {
                         .and()
                     .cors().and()
                     .csrf().disable()
-
-                    .addFilterAfter(tokenAuthenticationProcessingFilter, LogoutFilter.class)
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .and()
 
                     .authorizeRequests()
                         .expressionHandler(expressionHandler())
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+//                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     // swagger 명세
                         .antMatchers("/swagger", "/swagger-ui/**", "/docs/**").permitAll()
                     // jwt 토큰
@@ -120,6 +162,9 @@ public class WebSecurityConfig {
                     // 그 외
                         .antMatchers("/error/**").hasRole(ANONYMOUS.toString())
                         .anyRequest().hasRole(BASIC.toString());
+
+            http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
         }
 
         @Bean
@@ -127,6 +172,30 @@ public class WebSecurityConfig {
             DefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
             webSecurityExpressionHandler.setRoleHierarchy(hierarchy.getHierarchy());
             return webSecurityExpressionHandler;
+        }
+
+        @Bean
+        public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+            final List<String> skipPaths = new ArrayList<>();
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
+
+            final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
+            final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
+                    requestMatcher,
+                    authBeansConfig.tokenProvider(),
+                    authBeansConfig.tokenResolver(),
+                    authBeansConfig.userPrincipalService()
+            );
+
+            filter.setAuthenticationManager(super.authenticationManager());
+            return filter;
+        }
+
+        @Bean
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception {
+            return super.authenticationManagerBean();
         }
     }
 }
