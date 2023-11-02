@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.token;
+package com.inhabas.api.auth.domain.token.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

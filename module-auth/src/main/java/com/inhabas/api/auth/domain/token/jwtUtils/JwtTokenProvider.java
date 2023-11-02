@@ -2,12 +2,12 @@ package com.inhabas.api.auth.domain.token.jwtUtils;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
-import com.inhabas.api.auth.domain.token.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtTokenProvider implements TokenProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationProcessingFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final RefreshTokenRepository refreshTokenRepository;
 

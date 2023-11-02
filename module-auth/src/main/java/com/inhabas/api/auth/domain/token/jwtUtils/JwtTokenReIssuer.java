@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import com.inhabas.api.auth.domain.token.InvalidTokenException;
+import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenProvider;
 import com.inhabas.api.auth.domain.token.TokenReIssuer;

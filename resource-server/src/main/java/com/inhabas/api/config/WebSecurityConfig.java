@@ -4,7 +4,6 @@ import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
-import com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter;
 import com.inhabas.api.domain.member.security.Hierarchical;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
@@ -39,6 +37,8 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST_SWAGGER = {"/swagger-ui/**", "/swagger/**", "/docs/**"};
     private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
+    private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/signUp/schedule",
+            "/member/chief", "/members/**", "/error"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -145,22 +145,15 @@ public class WebSecurityConfig {
                     .authorizeRequests()
                         .expressionHandler(expressionHandler())
 //                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    // swagger 명세
-                        .antMatchers("/swagger", "/swagger-ui/**", "/docs/**").permitAll()
-                    // jwt 토큰
-                        .antMatchers("/jwt/**").permitAll()
-                    // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
-                        .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief", "/members/**").permitAll()
                     // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
                     // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
-                        .antMatchers("/budget/history/**").hasAuthority("Team_총무")
+                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories",
+                                "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
                     // 강의
                         .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
                     // 그 외
-                        .antMatchers("/error/**").hasRole(ANONYMOUS.toString())
                         .anyRequest().hasRole(BASIC.toString());
 
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -179,6 +172,7 @@ public class WebSecurityConfig {
             final List<String> skipPaths = new ArrayList<>();
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
