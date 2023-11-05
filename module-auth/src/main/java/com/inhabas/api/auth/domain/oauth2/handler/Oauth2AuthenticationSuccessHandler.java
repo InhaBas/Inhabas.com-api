@@ -13,7 +13,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,6 +26,9 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final TokenProvider tokenProvider;
     private final AuthProperties authProperties;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
+    @Value("${front.signupUrl}")
+    private String SIGNUP_URL;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -47,9 +52,14 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        String targetUrl = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue)
-                .orElse(authProperties.getOauth2().getDefaultRedirectUri());
+        String targetUrl = "";
+        if (authentication.getPrincipal() instanceof AuthenticationException)
+            targetUrl = SIGNUP_URL;
+        else {
+            targetUrl = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
+                    .map(Cookie::getValue)
+                    .orElse(authProperties.getOauth2().getDefaultRedirectUri());
+        }
 
         if (notAuthorized(targetUrl)) {
             /* 여기서 AuthenticationException 이 발생하면 예외는 AbstractAuthenticationProcessingFilter.doFilter 에서 처리된다.
