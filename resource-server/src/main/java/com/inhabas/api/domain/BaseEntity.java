@@ -19,9 +19,9 @@ public abstract class BaseEntity {
 
     @CreatedDate
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime created;
+    private LocalDateTime dateCreated;
 
     @LastModifiedDate
     @Column
-    private LocalDateTime updated;
+    private LocalDateTime dateUpdated;
 }

@@ -82,7 +82,7 @@ public class NormalBoardRepositoryTest {
         //then
         assertAll(
                 () -> assertThat(saveBoard.getId()).isNotNull(),
-                () -> assertThat(saveBoard.getCreated()).isNotNull(),
+                () -> assertThat(saveBoard.getDateCreated()).isNotNull(),
                 () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
                 () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
                 () -> assertThat(saveBoard.getWriterId()).isEqualTo(saveMember.getId())
