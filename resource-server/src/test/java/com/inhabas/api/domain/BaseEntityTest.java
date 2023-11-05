@@ -52,8 +52,8 @@ public class BaseEntityTest {
         em.persist(board);
 
         //then
-        assertThat(board.getCreated()).isNotNull();
-        assertThat(board.getCreated()).isInstanceOf(LocalDateTime.class);
+        assertThat(board.getDateCreated()).isNotNull();
+        assertThat(board.getDateCreated()).isInstanceOf(LocalDateTime.class);
     }
 
     @Test
@@ -72,8 +72,8 @@ public class BaseEntityTest {
 
         //then
         NormalBoard find = em.find(NormalBoard.class, board.getId());
-        assertThat(find.getUpdated()).isNotNull();
-        assertThat(find.getUpdated()).isInstanceOf(LocalDateTime.class);
+        assertThat(find.getDateUpdated()).isNotNull();
+        assertThat(find.getDateUpdated()).isInstanceOf(LocalDateTime.class);
     }
 
 }

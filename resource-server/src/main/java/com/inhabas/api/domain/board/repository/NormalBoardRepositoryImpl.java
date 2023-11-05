@@ -29,14 +29,14 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         Expressions.asString("").as("contents"),
                         member.name.value,
                         normalBoard.menuId,
-                        normalBoard.created,
-                        normalBoard.updated))
+                        normalBoard.dateCreated,
+                        normalBoard.dateUpdated))
                 .from(normalBoard)
                 .innerJoin(member).on(eqMemberId())
                 .where(eqMenuId(menuId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(normalBoard.created.desc())
+                .orderBy(normalBoard.dateCreated.desc())
                 .fetch();
 
         return new PageImpl<>(results, pageable, this.getCount(menuId));
@@ -63,8 +63,8 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                         normalBoard.contents.value,
                         member.name.value,
                         normalBoard.menuId,
-                        normalBoard.created,
-                        normalBoard.updated))
+                        normalBoard.dateCreated,
+                        normalBoard.dateUpdated))
                 .from(normalBoard)
                 .innerJoin(member).on(eqMemberId())
                 .where(normalBoard.id.eq(id))
