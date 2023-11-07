@@ -3,22 +3,20 @@ package com.inhabas.api.auth.domain.token.jwtUtils;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenDto;
-import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -26,10 +24,9 @@ import java.util.stream.Collectors;
 
 // https://github.com/jwtk/jjwt
 @Slf4j
+@Component
 @RequiredArgsConstructor
-public class JwtTokenProvider implements TokenProvider {
-
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+public class JwtTokenUtil implements TokenUtil {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -40,6 +37,7 @@ public class JwtTokenProvider implements TokenProvider {
     private static final String PROVIDER = "provider";
     private static final String AUTHORITY = "authorities";
     private static final String EMAIL = "email";
+    private static final String NAME = "name";
 
 
     @Override
@@ -72,6 +70,7 @@ public class JwtTokenProvider implements TokenProvider {
         String provider = oAuth2UserInfo.getProvider().toString();
         String uid = oAuth2UserInfo.getId();
         String email = oAuth2UserInfo.getEmail();
+        String name = oAuth2UserInfo.getName();
 
         List<String> authorities = authentication.getAuthorities()
                 .stream()
@@ -85,6 +84,7 @@ public class JwtTokenProvider implements TokenProvider {
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(uid)
                 .claim(PROVIDER, provider)
+                .claim(NAME, name)
                 .claim(EMAIL, email)
                 .claim(AUTHORITY, authorities)
                 .setIssuedAt(now)
@@ -101,17 +101,17 @@ public class JwtTokenProvider implements TokenProvider {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException ex) {
-            logger.error("Invalid JWT signature");
+            log.error("Invalid JWT signature");
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token");
+            log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token");
+            log.error("Expired JWT token");
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token");
+            log.error("Unsupported JWT token");
         } catch (SignatureException ex) {
-            logger.error("JWT signature does not match");
+            log.error("JWT signature does not match");
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty.");
+            log.error("JWT claims string is empty.");
         }
         return false;
     }
@@ -119,9 +119,10 @@ public class JwtTokenProvider implements TokenProvider {
     /* web request 에 대한 인증 정보를 반환함. */
     @Override
     @SuppressWarnings("unchecked")
-    public JwtAuthenticationResult decode(String token) throws JwtException {
+    public JwtAuthenticationResult getAuthentication(String token) throws JwtException {
 
         Claims claims = this.parseClaims(token);
+
         String uid = claims.getSubject();
         String provider = claims.get(PROVIDER, String.class);
         String email = claims.get(EMAIL, String.class);

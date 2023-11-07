@@ -7,25 +7,31 @@ import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
-import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import java.io.IOException;
+import java.util.Set;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
 @RequiredArgsConstructor
+@Slf4j
 public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final TokenProvider tokenProvider;
+    private final TokenUtil tokenUtil;
     private final AuthProperties authProperties;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private static final String ROLE_SIGNING_UP = "ROLE_SIGNING_UP";
 
     @Value("${front.signupUrl}")
     private String SIGNUP_URL;
@@ -35,7 +41,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String targetUrl = this.determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            log.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
 
@@ -53,14 +59,14 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
         String targetUrl = "";
-        if (authentication.getPrincipal() instanceof AuthenticationException)
+        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+        if (roles.contains(ROLE_SIGNING_UP)) {
             targetUrl = SIGNUP_URL;
-        else {
+        } else {
             targetUrl = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
                     .map(Cookie::getValue)
                     .orElse(authProperties.getOauth2().getDefaultRedirectUri());
         }
-
         if (notAuthorized(targetUrl)) {
             /* 여기서 AuthenticationException 이 발생하면 예외는 AbstractAuthenticationProcessingFilter.doFilter 에서 처리된다.
              *   - AbstractAuthenticationProcessingFilter.doFilter 안에서 try~ catch~ 에서 잡힘.
@@ -74,9 +80,9 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .getImageUrl();
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("access_token", tokenProvider.createAccessToken(authentication))
-                .queryParam("refresh_token", tokenProvider.createRefreshToken(authentication))
-                .queryParam("expires_in", tokenProvider.getExpiration())
+                .queryParam("access_token", tokenUtil.createAccessToken(authentication))
+                .queryParam("refresh_token", tokenUtil.createRefreshToken(authentication))
+                .queryParam("expires_in", tokenUtil.getExpiration())
                 .queryParam("image_url", imageUrl)
                 .build().toUriString();
     }

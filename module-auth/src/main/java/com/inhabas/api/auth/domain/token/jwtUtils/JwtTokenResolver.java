@@ -9,13 +9,14 @@ import org.springframework.util.StringUtils;
 public class JwtTokenResolver implements TokenResolver {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String AUTHORIZATION_TYPE = "Bearer ";
 
     @Override
     public String resolveTokenOrNull(HttpServletRequest request) throws MissingTokenException {
 
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(AUTHORIZATION_TYPE))
             return bearerToken.substring(7);
         else
             throw new MissingTokenException();

@@ -28,7 +28,7 @@ public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
         String redirectUri = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .orElse(null);
+                .orElse("");
 
         String targetUrl = getAuthorizedTargetUrl(exception, redirectUri);
 
