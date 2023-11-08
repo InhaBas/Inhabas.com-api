@@ -11,7 +11,8 @@ public enum Role {
     BASIC(5), // 활동 일반회원 (교수 포함)
     DEACTIVATED(6), // 비활동회원 (졸업생 포험)
     NOT_APPROVED(7), // 가입 후 아직 승인되지 않은 회원
-    ANONYMOUS(8); // 익명. 유일하게 회원가입을 시도할 수 있는 권한. 즉 상위의 권한으로 회원가입 시도 불가 ;
+    SIGNING_UP(8),
+    ANONYMOUS(9); // 익명. 유일하게 회원가입을 시도할 수 있는 권한. 즉 상위의 권한으로 회원가입 시도 불가 ;
 
     private final int number;
 

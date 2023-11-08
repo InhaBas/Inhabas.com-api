@@ -10,8 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, MemberId>, MemberRepositoryCustom {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     boolean existsByPhone(Phone phone);
 
     boolean existsByPhoneOrId(Phone phone, MemberId id);
@@ -20,4 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, MemberId>, Membe
 
     List<Member> findByNameValueContaining(Name name);
 
+    Optional<Member> findByUidAndProvider(UID uid, OAuth2Provider provider);
+
+    Optional<Long> findIdByUidAndProvider(UID uid, OAuth2Provider provider);
 }

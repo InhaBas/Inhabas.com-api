@@ -1,10 +1,11 @@
 package com.inhabas.api.auth.domain.oauth2;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
-import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccountService;
+import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
+import com.inhabas.api.domain.member.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -22,6 +23,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final SocialAccountService socialAccountService;
     private final UserAuthorityProvider userAuthorityProvider;
+    private final MemberService memberService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -35,7 +37,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new InvalidUserInfoException();
         }
         // db 에 소셜 계정 정보 update
-        socialAccountService.updateSocialAccountInfo(oAuth2UserInfo);
+        memberService.updateSocialAccountInfo(oAuth2UserInfo);
 
         // 현재 로그인하려는 유저에 맞는 권한을 들고옴.
         Collection<SimpleGrantedAuthority> authorities = userAuthorityProvider.determineAuthorities(oAuth2UserInfo);
