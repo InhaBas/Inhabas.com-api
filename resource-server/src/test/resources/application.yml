@@ -37,6 +37,6 @@ spring:
 
 logging:
   level:
-    org.springframwork.web.client: DEBUG
+    org.springframework.web.client: DEBUG
     org.hibernate.type: trace
 
