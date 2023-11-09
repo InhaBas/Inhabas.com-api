@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
+import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenDto;
@@ -37,7 +38,7 @@ public class JwtTokenUtil implements TokenUtil {
     private static final String PROVIDER = "provider";
     private static final String AUTHORITY = "authorities";
     private static final String EMAIL = "email";
-    private static final String NAME = "name";
+    private static final String MEMBER_ID = "memberId";
 
 
     @Override
@@ -70,7 +71,9 @@ public class JwtTokenUtil implements TokenUtil {
         String provider = oAuth2UserInfo.getProvider().toString();
         String uid = oAuth2UserInfo.getId();
         String email = oAuth2UserInfo.getEmail();
-        String name = oAuth2UserInfo.getName();
+
+        CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        Long memberId = customOAuth2User.getMemberId();
 
         List<String> authorities = authentication.getAuthorities()
                 .stream()
@@ -83,8 +86,8 @@ public class JwtTokenUtil implements TokenUtil {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setSubject(uid)
+                .claim(MEMBER_ID, memberId)
                 .claim(PROVIDER, provider)
-                .claim(NAME, name)
                 .claim(EMAIL, email)
                 .claim(AUTHORITY, authorities)
                 .setIssuedAt(now)
@@ -123,6 +126,7 @@ public class JwtTokenUtil implements TokenUtil {
 
         Claims claims = this.parseClaims(token);
 
+        Long memberId = claims.get(MEMBER_ID, Long.class);
         String uid = claims.getSubject();
         String provider = claims.get(PROVIDER, String.class);
         String email = claims.get(EMAIL, String.class);
@@ -131,7 +135,7 @@ public class JwtTokenUtil implements TokenUtil {
                         .map(authority-> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-        return new JwtAuthenticationResult(uid, provider, email, grantedAuthorities);
+        return new JwtAuthenticationResult(memberId, uid, provider, email, grantedAuthorities);
     }
 
 

@@ -7,8 +7,11 @@ import java.util.Collection;
 
 public class JwtAuthenticationResult extends OAuth2UserInfoAuthentication {
 
-    public JwtAuthenticationResult(String uid, String provider, String email, Collection<? extends GrantedAuthority> authorities) {
+    private final Long memberId;
+
+    public JwtAuthenticationResult(Long memberId, String uid, String provider, String email, Collection<? extends GrantedAuthority> authorities) {
         super(uid, provider, email, authorities);
+        this.memberId = memberId;
     }
 
 }

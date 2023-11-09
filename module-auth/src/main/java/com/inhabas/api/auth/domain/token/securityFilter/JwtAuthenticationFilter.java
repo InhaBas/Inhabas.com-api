@@ -1,12 +1,16 @@
 package com.inhabas.api.auth.domain.token.securityFilter;
 
-import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,21 +26,17 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
-    private final UserPrincipalService userPrincipalService;
-    private final TokenProvider tokenProvider;
+    private final JwtTokenUtil jwtTokenUtil;
     private final TokenResolver tokenResolver;
 
     public JwtAuthenticationFilter(
             RequestMatcher requestMatcher,
-            TokenProvider tokenProvider,
-            TokenResolver tokenResolver,
-            UserPrincipalService userPrincipalService) {
+            JwtTokenUtil jwtTokenUtil,
+            TokenResolver tokenResolver) {
 
         super(requestMatcher); // only work for requests with this pattern
-        this.tokenProvider = tokenProvider;
+        this.jwtTokenUtil = jwtTokenUtil;
         this.tokenResolver = tokenResolver;
-        this.userPrincipalService = userPrincipalService;
     }
 
     @Override
@@ -44,15 +44,14 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             throws AuthenticationException, IOException, ServletException {
 
         final String token = tokenResolver.resolveTokenOrNull(request);
-
-        if (!tokenProvider.validate(token))
+        if (!jwtTokenUtil.validate(token))
             throw new InvalidTokenException();
+        final JwtAuthenticationToken authRequest = JwtAuthenticationToken.of(token);
 
-        final JwtAuthenticationResult authentication = (JwtAuthenticationResult) tokenProvider.decode(token);
-        final Object principal = userPrincipalService.loadUserPrincipal(authentication);
-        authentication.setPrincipal(principal);
+//        final Object principal = userPrincipalService.loadUserPrincipal(authentication);
+//        authentication.setPrincipal(principal);
 
-        return authentication;
+        return this.getAuthenticationManager().authenticate(authRequest);
     }
 
     @Override
@@ -60,7 +59,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                             Authentication authResult) throws IOException, ServletException {
 //        super.successfulAuthentication(request, response, chain, authResult);
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        logger.debug("jwt token authentication success!");
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
+        log.debug("jwt token authentication success!");
 
         chain.doFilter(request, response);
     }
