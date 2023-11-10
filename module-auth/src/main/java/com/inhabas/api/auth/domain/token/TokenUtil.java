@@ -7,7 +7,7 @@ public interface TokenUtil {
 
     boolean validate(String token);
 
-    TokenAuthenticationResult getAuthentication(String token);
+    Authentication getAuthentication(String token);
 
     TokenDto reissueAccessTokenUsing(String refreshToken) throws JwtException;
 

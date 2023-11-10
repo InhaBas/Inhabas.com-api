@@ -122,20 +122,17 @@ public class JwtTokenUtil implements TokenUtil {
     /* web request 에 대한 인증 정보를 반환함. */
     @Override
     @SuppressWarnings("unchecked")
-    public JwtAuthenticationResult getAuthentication(String token) throws JwtException {
+    public JwtAuthenticationToken getAuthentication(String token) throws JwtException {
 
         Claims claims = this.parseClaims(token);
 
         Long memberId = claims.get(MEMBER_ID, Long.class);
-        String uid = claims.getSubject();
-        String provider = claims.get(PROVIDER, String.class);
-        String email = claims.get(EMAIL, String.class);
         List<? extends GrantedAuthority> grantedAuthorities =
                 (List<SimpleGrantedAuthority>) claims.get(AUTHORITY, List.class).stream()
                         .map(authority-> new SimpleGrantedAuthority((String) authority))
                         .collect(Collectors.toList());
 
-        return new JwtAuthenticationResult(memberId, uid, provider, email, grantedAuthorities);
+        return JwtAuthenticationToken.of(memberId, token, grantedAuthorities);
     }
 
 

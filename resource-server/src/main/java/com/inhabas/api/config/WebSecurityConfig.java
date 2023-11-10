@@ -2,9 +2,11 @@ package com.inhabas.api.config;
 
 import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
-import com.inhabas.api.domain.member.security.Hierarchical;
+import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -12,8 +14,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.inhabas.api.domain.member.domain.valueObject.Role.*;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 /**
  * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.AuthSecurityConfig AuthSecurityConfig} 참고
@@ -49,6 +53,7 @@ public class WebSecurityConfig {
 
         private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
         private final Hierarchical hierarchy;
+        private final JwtTokenUtil jwtTokenUtil;
         private final AuthBeansConfig authBeansConfig;
 
         @Override
@@ -69,8 +74,8 @@ public class WebSecurityConfig {
                     .antMatchers("/jwt/**").permitAll()
                     // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
                     .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
-                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                    .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
+                    // 최좋가입 신청은 SIGNING_UP 권한만 가능
+                    .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
                     // 회계내역
                     .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
                     .antMatchers("/budget/history/**").hasRole(SECRETARY.toString())
@@ -101,9 +106,8 @@ public class WebSecurityConfig {
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
                     requestMatcher,
-                    authBeansConfig.tokenProvider(),
-                    authBeansConfig.tokenResolver(),
-                    authBeansConfig.userPrincipalService()
+                    jwtTokenUtil,
+                    authBeansConfig.tokenResolver()
             );
 
             filter.setAuthenticationManager(super.authenticationManager());
@@ -127,7 +131,15 @@ public class WebSecurityConfig {
 
         private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
         private final Hierarchical hierarchy;
+        private final JwtTokenUtil jwtTokenUtil;
+        private final JwtAuthenticationProvider jwtAuthenticationProvider;
         private final AuthBeansConfig authBeansConfig;
+
+
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(jwtAuthenticationProvider);
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -143,21 +155,28 @@ public class WebSecurityConfig {
                     .and()
 
                     .authorizeRequests()
-                        .expressionHandler(expressionHandler())
+//                        .expressionHandler(expressionHandler())
 //                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
-                    // 회계내역
-                        .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories",
+                        // 회계내역
+                        .antMatchers("/budget/history/**", "/budget/histories",
                                 "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
-                    // 강의
+                        // 강의
                         .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
-                    // 그 외
+
+                        // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
+                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
+                        // 그 외
                         .anyRequest().hasRole(BASIC.toString());
 
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers(AUTH_WHITELIST_STATIC);
+            web.ignoring().antMatchers(AUTH_WHITELIST_SWAGGER);
         }
 
         @Bean
@@ -177,19 +196,13 @@ public class WebSecurityConfig {
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
                     requestMatcher,
-                    authBeansConfig.tokenProvider(),
-                    authBeansConfig.tokenResolver(),
-                    authBeansConfig.userPrincipalService()
+                    jwtTokenUtil,
+                    authBeansConfig.tokenResolver()
             );
 
             filter.setAuthenticationManager(super.authenticationManager());
             return filter;
         }
 
-        @Bean
-        @Override
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            return super.authenticationManagerBean();
-        }
     }
 }
