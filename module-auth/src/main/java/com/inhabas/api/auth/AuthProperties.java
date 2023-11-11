@@ -18,8 +18,7 @@ public class AuthProperties {
 
     public static final class OAuth2 {
 
-        @Value("${front.defaultRedirectUrl}")
-        private String defaultRedirectUri = "http://localhost:8080/api/swagger";
+        private String defaultRedirectUri;
 
         private final List<String> authorizedRedirectUris = new ArrayList<>();
 

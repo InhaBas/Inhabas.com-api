@@ -5,15 +5,16 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHan
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.DefaultUserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
-import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.auth.domain.token.TokenReIssuer;
 import com.inhabas.api.auth.domain.token.TokenResolver;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +30,7 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class AuthBeansConfig {
 
+    private final JwtTokenUtil jwtTokenUtil;
     private final AuthProperties authProperties;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -37,15 +39,11 @@ public class AuthBeansConfig {
         return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
-    @Bean
-    public TokenProvider tokenProvider() {
-        return new JwtTokenProvider(refreshTokenRepository);
-    }
 
     @Bean
     public Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler(RefreshTokenRepository refreshTokenRepository) {
         return new Oauth2AuthenticationSuccessHandler(
-                this.tokenProvider(), this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
+                jwtTokenUtil, this.authProperties, this.httpCookieOAuth2AuthorizationRequestRepository());
     }
 
     @Bean
@@ -78,9 +76,9 @@ public class AuthBeansConfig {
 
 
     @Bean
-    public TokenReIssuer tokenReIssuer(TokenProvider tokenProvider, TokenResolver tokenResolver,
-            RefreshTokenRepository refreshTokenRepository) {
-        return new JwtTokenReIssuer(tokenProvider, tokenResolver, refreshTokenRepository);
+    public TokenReIssuer tokenReIssuer(TokenUtil tokenUtil, TokenResolver tokenResolver,
+                                       RefreshTokenRepository refreshTokenRepository) {
+        return new JwtTokenReIssuer(tokenUtil, tokenResolver, refreshTokenRepository);
     }
 
 }

@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 기존 matches와 달리 request와 일치하지 않으면 True 반환
+ */
 public class CustomRequestMatcher implements RequestMatcher {
 
     private final OrRequestMatcher matcher;

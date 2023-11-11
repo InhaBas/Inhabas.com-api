@@ -57,9 +57,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-//        super.successfulAuthentication(request, response, chain, authResult);
         SecurityContextHolder.getContext().setAuthentication(authResult);
-        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         log.debug("jwt token authentication success!");
 
         chain.doFilter(request, response);
