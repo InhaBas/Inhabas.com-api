@@ -144,19 +144,32 @@ public class WebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .httpBasic().disable()
+                    // OAuth 관련 경로 제외 모든 경로
+                    .requestMatchers()
+                        .antMatchers("/**")
+                    .and()
+                    // HTTP 기본 인증 비활성화
+                    .httpBasic()
+                        .disable()
+                    // 세션 생성 금지
                     .sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
-                    .cors().and()
-                    .csrf().disable()
+                    .and()
+                    // API이므로 CORS 활성화, CSRF 비활성화
+                    .cors()
+                    .and()
+                    .csrf()
+                        .disable()
+
+                    // 인증 예외 처리시 jwtAuthenticationEntryPoint 사용
                     .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .and()
-
                     .authorizeRequests()
-//                        .expressionHandler(expressionHandler())
-//                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        // 권한 부여 표현식
+                        .expressionHandler(expressionHandler())
+                        // Preflight 방식
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // 회계내역
                         .antMatchers("/budget/history/**", "/budget/histories",
                                 "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
@@ -189,8 +202,6 @@ public class WebSecurityConfig {
         @Bean
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             final List<String> skipPaths = new ArrayList<>();
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.web.cors.CorsUtils;
 
 @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
 @EnableWebSecurity
@@ -52,6 +53,9 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .requestMatchers().antMatchers("/login/**")
+                .and()
+                // 세션 생성 금지
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -62,8 +66,7 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().permitAll()
                 .and()
-                .csrf()
-                .and()
+                .csrf().disable()
 
                 // Oauth 로그인 설정
                 .oauth2Login()
