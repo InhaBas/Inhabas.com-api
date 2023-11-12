@@ -4,7 +4,7 @@ import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,30 +41,30 @@ public class CommentController {
             description = "parent_comment_id 값이 주어지면 대댓글, 아무값도 없으면 그냥 댓글")
     @PostMapping("/comment")
     public ResponseEntity<Integer> createNewComment(
-            @Authenticated MemberId memberId,
+            @Authenticated StudentId studentId,
             @Valid @RequestBody CommentSaveDto commentSaveDto) {
 
-        Integer newCommentId = commentService.create(commentSaveDto, memberId);
+        Integer newCommentId = commentService.create(commentSaveDto, studentId);
         return new ResponseEntity<>(newCommentId, HttpStatus.CREATED);
     }
 
     @Operation(summary = "댓글을 수정하기 위한 요청을 한다.")
     @PutMapping("/comment")
     public ResponseEntity<Object> updateComment(
-            @Authenticated MemberId memberId,
+            @Authenticated StudentId studentId,
             @Valid @RequestBody CommentUpdateDto commentUpdateDto) {
 
-        commentService.update(commentUpdateDto, memberId);
+        commentService.update(commentUpdateDto, studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "댓글 삭제 요청을 한다.")
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<Object> deleteComment(
-            @Authenticated MemberId memberId,
+            @Authenticated StudentId studentId,
             @Positive @PathVariable Integer commentId) {
 
-        commentService.delete(commentId, memberId);
+        commentService.delete(commentId, studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

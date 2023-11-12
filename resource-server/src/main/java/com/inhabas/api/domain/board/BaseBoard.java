@@ -3,7 +3,7 @@ package com.inhabas.api.domain.board;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import java.util.Objects;
 import javax.persistence.AttributeOverride;
@@ -33,7 +33,7 @@ public abstract class BaseBoard extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "writer_id"))
-    protected MemberId writerId;
+    protected StudentId writerId;
 
     public Integer getId() {
         return id;
@@ -47,13 +47,13 @@ public abstract class BaseBoard extends BaseEntity {
         return menuId;
     }
 
-    public MemberId getWriterId() {
+    public StudentId getWriterId() {
         return writerId;
     }
 
 
     @SuppressWarnings("unchecked")
-    public <T extends NormalBoard> T writtenBy(MemberId writerId){
+    public <T extends NormalBoard> T writtenBy(StudentId writerId){
 
         if (Objects.isNull(this.writerId)) {
             this.writerId = writerId;
@@ -70,7 +70,7 @@ public abstract class BaseBoard extends BaseEntity {
         return (T) this;
     }
 
-    public boolean isWriter(MemberId writerId) {
+    public boolean isWriter(StudentId writerId) {
         return this.writerId.equals(writerId);
     }
 }

@@ -2,12 +2,13 @@ package com.inhabas.api.domain.budget.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class BudgetHistoryCreateForm {
     private String details;
 
     @NotNull
-    private MemberId personReceived;
+    private StudentId personReceived;
 
     @PositiveOrZero @NotNull
     private Integer income;
@@ -39,7 +40,7 @@ public class BudgetHistoryCreateForm {
         this.dateUsed = dateUsed;
         this.title = title;
         this.details = details;
-        this.personReceived = new MemberId(personReceived);
+        this.personReceived = new StudentId(personReceived);
         this.income = income;
         this.outcome = outcome;
 
@@ -47,7 +48,7 @@ public class BudgetHistoryCreateForm {
             this.details = this.title;
     }
 
-    public BudgetHistory toEntity(MemberId CFO) {
+    public BudgetHistory toEntity(StudentId CFO) {
         return BudgetHistory.builder()
                 .title(this.title)
                 .details(this.details)

@@ -1,31 +1,31 @@
 package com.inhabas.api.web.converter;
 
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 public class MemberIdConverter {
 
     @Component
-    public static class StringToMemberIdConverter implements Converter<String, MemberId> {
+    public static class StringToMemberIdConverter implements Converter<String, StudentId> {
         @Override
-        public MemberId convert(String source){
-            return new MemberId(Integer.parseInt(source));
+        public StudentId convert(String source){
+            return new StudentId(Integer.parseInt(source));
         }
     }
 
     @Component
-    public static class IntegerToMemberIdConverter implements Converter<Integer, MemberId> {
+    public static class IntegerToMemberIdConverter implements Converter<Integer, StudentId> {
         @Override
-        public MemberId convert(Integer source){
-            return new MemberId(source);
+        public StudentId convert(Integer source){
+            return new StudentId(source);
         }
     }
 
     @Component
-    public static class MemberIdToStringConverter implements Converter<MemberId, String>{
+    public static class MemberIdToStringConverter implements Converter<StudentId, String>{
         @Override
-        public String convert(MemberId source){
+        public String convert(StudentId source){
             return source.toString();
         }
     }

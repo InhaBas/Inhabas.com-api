@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.contest.usecase;
 
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
 import com.inhabas.api.domain.contest.dto.ListContestBoardDto;
@@ -10,11 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ContestBoardService {
-    Integer write(MemberId memberId, SaveContestBoardDto dto);
+    Integer write(StudentId studentId, SaveContestBoardDto dto);
 
-    Integer update(MemberId memberId, UpdateContestBoardDto dto);
+    Integer update(StudentId studentId, UpdateContestBoardDto dto);
 
-    void delete(MemberId memberId, Integer id);
+    void delete(StudentId studentId, Integer id);
 
     DetailContestBoardDto getBoard(Integer id);
 

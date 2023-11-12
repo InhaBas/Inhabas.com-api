@@ -4,7 +4,7 @@ import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.lecture.LectureCannotModifiableException;
 import com.inhabas.api.domain.lecture.domain.converter.LectureStatusConverter;
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class Lecture extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "chief", nullable = false, updatable = false))
-    private MemberId chief;
+    private StudentId chief;
 
     @Convert(converter = LectureStatusConverter.class)
     @NotNull
@@ -62,7 +62,7 @@ public class Lecture extends BaseEntity {
     private Boolean paid;
 
     @Builder
-    public Lecture(String title, MemberId chief, LocalDateTime applyDeadline, String daysOfWeek, String place, String introduction, String curriculumDetails, int participantsLimits, Integer method) {
+    public Lecture(String title, StudentId chief, LocalDateTime applyDeadline, String daysOfWeek, String place, String introduction, String curriculumDetails, int participantsLimits, Integer method) {
         this.title = title;
         this.chief = chief;
         this.status = LectureStatus.WAITING;
@@ -77,12 +77,12 @@ public class Lecture extends BaseEntity {
         this.paid = false;
     }
 
-    public void update(MemberId memberId, String title, LocalDateTime applyDeadline, String daysOfWeek, String place, String introduction, String curriculumDetails, int participantsLimits, Integer method) {
+    public void update(StudentId studentId, String title, LocalDateTime applyDeadline, String daysOfWeek, String place, String introduction, String curriculumDetails, int participantsLimits, Integer method) {
 
         if (this.id == null)
             throw new EntityNotFoundException("생성되지 않은 엔티티는 수정할 수 없습니다.");
 
-        if (notModifiableBy(memberId))
+        if (notModifiableBy(studentId))
             throw new LectureCannotModifiableException();
 
         this.title = title;
@@ -95,12 +95,12 @@ public class Lecture extends BaseEntity {
         this.method = method;
     }
 
-    public boolean notModifiableBy(MemberId memberId) {
-        return !this.chief.equals(memberId);
+    public boolean notModifiableBy(StudentId studentId) {
+        return !this.chief.equals(studentId);
     }
 
-    public boolean isHeldBy(MemberId memberId) {
-        return this.chief.equals(memberId);
+    public boolean isHeldBy(StudentId studentId) {
+        return this.chief.equals(studentId);
     }
 
     /**

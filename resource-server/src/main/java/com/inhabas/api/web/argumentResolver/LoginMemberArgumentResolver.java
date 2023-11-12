@@ -1,7 +1,7 @@
 package com.inhabas.api.web.argumentResolver;
 
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.core.MethodParameter;
@@ -46,12 +46,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             throw new IllegalArgumentException("지원하지 않는 타입입니다");
     }
 
-    private MemberId resolveMemberId(Authentication authentication) {
+    private StudentId resolveMemberId(Authentication authentication) {
 
-        MemberId memberId = null;
+        StudentId studentId = null;
 
         if (isOAuth2UserInfoAuthenticationType(authentication)) { // jwt 토큰 인증 이후
-            memberId = (MemberId) authentication.getPrincipal();
+            studentId = (StudentId) authentication.getPrincipal();
 
         } else if (authentication instanceof OAuth2AuthenticationToken) { // 소셜 로그인 인증 이후
             throw new NotImplementedException("소셜로그인 구현 완료 후에 작업해야됨!");
@@ -60,12 +60,12 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
             log.warn("{} - cannot resolve authenticated User's Id!", this.getClass());
         }
 
-        return memberId;
+        return studentId;
     }
 
     private boolean isMemberIdType(MethodParameter parameter) {
 
-        return parameter.getParameterType().equals(MemberId.class);
+        return parameter.getParameterType().equals(StudentId.class);
     }
 
     private boolean isOAuth2UserInfoAuthenticationType(MethodParameter parameter) {

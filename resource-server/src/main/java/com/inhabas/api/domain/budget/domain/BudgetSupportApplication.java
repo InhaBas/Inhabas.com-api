@@ -5,7 +5,7 @@ import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
 import com.inhabas.api.domain.budget.ApplicationNotFoundException;
 import com.inhabas.api.domain.budget.domain.converter.StatusConverter;
 import com.inhabas.api.domain.budget.domain.valueObject.*;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -34,10 +34,10 @@ public class BudgetSupportApplication extends BaseEntity {
     private ApplicantAccount applicantAccount;
 
     @AttributeOverride(name = "id", column = @Column(nullable = false, name = "applicant"))
-    private MemberId applicationWriter;
+    private StudentId applicationWriter;
 
     @AttributeOverride(name = "id", column = @Column(name = "person_in_charge"))
-    private MemberId personInCharge;
+    private StudentId personInCharge;
 
     @Convert(converter = StatusConverter.class)
     @Column(nullable = false)
@@ -50,7 +50,7 @@ public class BudgetSupportApplication extends BaseEntity {
 
     @Builder
     public BudgetSupportApplication(String title, LocalDateTime dateUsed, String details, Integer outcome,
-                                    String account, MemberId applicationWriter) {
+                                    String account, StudentId applicationWriter) {
         this.title = new Title(title);
         this.dateUsed = dateUsed;
         this.details = new Details(details);
@@ -60,7 +60,7 @@ public class BudgetSupportApplication extends BaseEntity {
         this.status = ApplicationStatus.WAITING;
     }
 
-    public void modify(String title, LocalDateTime dateUsed, String details, Integer outcome, String account, MemberId currentApplicant) {
+    public void modify(String title, LocalDateTime dateUsed, String details, Integer outcome, String account, StudentId currentApplicant) {
 
         if (this.id == null)
             throw new ApplicationNotFoundException("cannot modify this entity, because not persisted ever!");
@@ -76,32 +76,32 @@ public class BudgetSupportApplication extends BaseEntity {
         this.status = ApplicationStatus.WAITING;
     }
 
-    public boolean cannotModifiableBy(MemberId currentApplicant) {
+    public boolean cannotModifiableBy(StudentId currentApplicant) {
         return !this.applicationWriter.equals(currentApplicant);
     }
 
 
 
-    public void approve(MemberId personInCharge) {
+    public void approve(StudentId personInCharge) {
 
         this.status = ApplicationStatus.APPROVED;
         this.personInCharge = personInCharge;
     }
 
-    public void waiting(MemberId personInCharge) {
+    public void waiting(StudentId personInCharge) {
 
         this.status = ApplicationStatus.WAITING;
         this.personInCharge = personInCharge;
     }
 
-    public void deny(String reason, MemberId personInCharge) {
+    public void deny(String reason, StudentId personInCharge) {
 
         this.rejectReason = new RejectReason(reason);
         this.status = ApplicationStatus.DENIED;
         this.personInCharge = personInCharge;
     }
 
-    public void process(MemberId personInCharge) {
+    public void process(StudentId personInCharge) {
 
         if (this.isProcessed())
             throw new ApplicationCannotModifiableException("이미 처리가 완료된 예산지원 내역입니다.");

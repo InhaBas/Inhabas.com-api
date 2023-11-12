@@ -4,7 +4,7 @@ import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.repository.NormalBoardRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
@@ -25,33 +25,33 @@ public class BoardServiceImpl implements BoardService {
     private final NormalBoardRepository boardRepository;
 
     @Override
-    public Integer write(MemberId memberId, SaveBoardDto saveBoardDto) {
+    public Integer write(StudentId studentId, SaveBoardDto saveBoardDto) {
 
         NormalBoard normalBoard = new NormalBoard(saveBoardDto.getTitle(), saveBoardDto.getContents())
                 .inMenu(saveBoardDto.getMenuId())
-                .writtenBy(memberId);
+                .writtenBy(studentId);
 
         return boardRepository.save(normalBoard).getId();
     }
 
     @Override
-    public Integer update(MemberId memberId, UpdateBoardDto updateBoardDto) {
+    public Integer update(StudentId studentId, UpdateBoardDto updateBoardDto) {
 
         NormalBoard savedBoard = boardRepository.findById(updateBoardDto.getId())
                 .orElseThrow(BoardNotFoundException::new);
 
-        savedBoard.modify(updateBoardDto.getTitle(), updateBoardDto.getContents(), memberId);
+        savedBoard.modify(updateBoardDto.getTitle(), updateBoardDto.getContents(), studentId);
 
         return boardRepository.save(savedBoard).getId();
     }
 
     @Override
-    public void delete(MemberId memberId, Integer boardId) {
+    public void delete(StudentId studentId, Integer boardId) {
 
         NormalBoard board = boardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
 
-        if (board.cannotModifiableBy(memberId)) {
+        if (board.cannotModifiableBy(studentId)) {
             throw new BoardCannotModifiableException();
         }
 

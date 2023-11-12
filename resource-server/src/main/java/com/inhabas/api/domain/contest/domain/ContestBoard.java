@@ -5,7 +5,7 @@ import com.inhabas.api.domain.board.domain.valueObject.Contents;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,7 +58,7 @@ public class ContestBoard extends NormalBoard {
     }
 
     public void modify(String title, String contents, String association, String topic,
-            LocalDate start, LocalDate deadline, MemberId loginMember) {
+            LocalDate start, LocalDate deadline, StudentId loginMember) {
 
         super.modify(title, contents, loginMember);
         this.association = new Association(association);

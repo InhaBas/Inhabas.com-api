@@ -1,9 +1,9 @@
 package com.inhabas.api.domain.lecture.repository;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember;
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
 import com.inhabas.api.domain.lecture.dto.LectureListDto;
-import com.inhabas.api.domain.member.domain.entity.QMember;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.inhabas.api.domain.lecture.domain.QLecture.lecture;
-import static com.inhabas.api.domain.member.domain.entity.QMember.member;
-
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
 @RequiredArgsConstructor
 public class LectureRepositoryImpl implements LectureRepositoryCustom {
 
@@ -49,7 +48,7 @@ public class LectureRepositoryImpl implements LectureRepositoryCustom {
                         lecture.dateUpdated
                         ))
                 .from(lecture)
-                .innerJoin(member).on(member.id.eq(lecture.chief))
+                .innerJoin(member).on(member.studentId.eq(lecture.chief))
                 .where(lecture.id.eq(id))
                 .fetchOne());
     }

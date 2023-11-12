@@ -2,7 +2,7 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
 import com.inhabas.api.domain.contest.dto.ListContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
@@ -63,8 +63,8 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
-    public ResponseEntity<Integer> addBoard(@Authenticated MemberId memberId, @Valid @RequestBody SaveContestBoardDto dto) {
-        return new ResponseEntity<>(boardService.write(memberId, dto), HttpStatus.CREATED);
+    public ResponseEntity<Integer> addBoard(@Authenticated StudentId studentId, @Valid @RequestBody SaveContestBoardDto dto) {
+        return new ResponseEntity<>(boardService.write(studentId, dto), HttpStatus.CREATED);
     }
 
     @Operation(description = "공모전 게시판의 게시글 수정")
@@ -75,9 +75,9 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<Integer> updateBoard(
-            @Authenticated MemberId memberId, @Valid @RequestBody UpdateContestBoardDto dto) {
+            @Authenticated StudentId studentId, @Valid @RequestBody UpdateContestBoardDto dto) {
 
-        return new ResponseEntity<>(boardService.update(memberId, dto), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.update(studentId, dto), HttpStatus.OK);
     }
 
     @Operation(description = "공모전 게시판의 게시글 삭제")
@@ -88,9 +88,9 @@ public class ContestBoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<?> deleteBoard(
-            @Authenticated MemberId memberId, @PathVariable Integer id) {
+            @Authenticated StudentId studentId, @PathVariable Integer id) {
 
-        boardService.delete(memberId, id);
+        boardService.delete(studentId, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

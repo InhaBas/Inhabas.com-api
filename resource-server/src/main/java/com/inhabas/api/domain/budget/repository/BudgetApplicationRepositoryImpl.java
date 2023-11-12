@@ -2,10 +2,10 @@ package com.inhabas.api.domain.budget.repository;
 
 import static com.inhabas.api.domain.budget.domain.QBudgetSupportApplication.budgetSupportApplication;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
-import com.inhabas.api.domain.member.domain.entity.QMember;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -50,7 +50,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                                 budgetSupportApplication.status
                         ))
                 .from(budgetSupportApplication)
-                .innerJoin(applicant).on(budgetSupportApplication.applicationWriter.eq(applicant.id))
+                .innerJoin(applicant).on(budgetSupportApplication.applicationWriter.eq(applicant.studentId))
                 .where(sameStatus(status).and(budgetSupportApplication.status.ne(ApplicationStatus.PROCESSED)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -92,7 +92,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                                 budgetSupportApplication.rejectReason.value
                         ))
                 .from(budgetSupportApplication)
-                .innerJoin(applicant).on(budgetSupportApplication.applicationWriter.eq(applicant.id))
-                .leftJoin(pic).on(budgetSupportApplication.personInCharge.eq(pic.id)); // 총무가 아직 승인 또는 거절 안했을수 있기 때문에 null 일 수 있다.
+                .innerJoin(applicant).on(budgetSupportApplication.applicationWriter.eq(applicant.studentId))
+                .leftJoin(pic).on(budgetSupportApplication.personInCharge.eq(pic.studentId)); // 총무가 아직 승인 또는 거절 안했을수 있기 때문에 null 일 수 있다.
     }
 }

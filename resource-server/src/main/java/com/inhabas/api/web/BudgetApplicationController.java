@@ -4,7 +4,7 @@ import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.budget.dto.*;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +36,7 @@ public class BudgetApplicationController {
             @ApiResponse(responseCode = "400", description = "잘못된 입력"),
     })
     public ResponseEntity<?> createApplication(
-            @Authenticated MemberId loginMember, @Valid @RequestBody BudgetApplicationRegisterForm form) {
+            @Authenticated StudentId loginMember, @Valid @RequestBody BudgetApplicationRegisterForm form) {
 
         budgetApplicationService.registerApplication(form, loginMember);
 
@@ -51,7 +51,7 @@ public class BudgetApplicationController {
             @ApiResponse(responseCode = "401", description = "글쓴이가 아니면 수정 불가")
     })
     public ResponseEntity<?> modifyApplication(
-            @Authenticated MemberId loginMember, @Valid @RequestBody BudgetApplicationUpdateForm form) {
+            @Authenticated StudentId loginMember, @Valid @RequestBody BudgetApplicationUpdateForm form) {
 
         budgetApplicationService.updateApplication(form, loginMember);
 
@@ -66,7 +66,7 @@ public class BudgetApplicationController {
             @ApiResponse(responseCode = "401", description = "글쓴이가 아니면 삭제 불가")
     })
     public ResponseEntity<?> deleteApplication(
-            @Authenticated MemberId loginMember, @PathVariable Integer applicationId) {
+            @Authenticated StudentId loginMember, @PathVariable Integer applicationId) {
 
         budgetApplicationService.deleteApplication(applicationId, loginMember);
 
@@ -103,7 +103,7 @@ public class BudgetApplicationController {
             @ApiResponse(responseCode = "401", description = "이미 처리완료된 상태이거나, 총무가 아니면 변경 불가.")
     })
     public ResponseEntity<?> changeApplicationStatus(
-            @Authenticated MemberId loginMember, @PathVariable Integer applicationId,
+            @Authenticated StudentId loginMember, @PathVariable Integer applicationId,
             @RequestBody BudgetApplicationStatusChangeRequest request) {
 
         applicationProcessor.process(applicationId, request, loginMember);

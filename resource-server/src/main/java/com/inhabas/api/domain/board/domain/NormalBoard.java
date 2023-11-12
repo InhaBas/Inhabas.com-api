@@ -6,7 +6,7 @@ import com.inhabas.api.domain.board.domain.valueObject.Contents;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.BoardFile;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,6 +22,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -84,7 +85,7 @@ public class NormalBoard extends BaseBoard {
         comments.add(newComment);
     }
 
-    public void modify(String title, String contents, MemberId loginMember) {
+    public void modify(String title, String contents, StudentId loginMember) {
 
         if (cannotModifiableBy(loginMember)) {
             throw new BoardCannotModifiableException();
@@ -94,7 +95,7 @@ public class NormalBoard extends BaseBoard {
         this.contents = new Contents(contents);
     }
 
-    public boolean cannotModifiableBy(MemberId loginMember) {
+    public boolean cannotModifiableBy(StudentId loginMember) {
         return !this.writerId.equals(loginMember);
     }
 }

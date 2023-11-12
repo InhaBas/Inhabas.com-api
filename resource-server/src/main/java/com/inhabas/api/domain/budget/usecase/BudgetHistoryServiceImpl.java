@@ -8,7 +8,7 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
 
     @Override
     @Transactional
-    public void createNewHistory(BudgetHistoryCreateForm form, MemberId CFO) {
+    public void createNewHistory(BudgetHistoryCreateForm form, StudentId CFO) {
 
         BudgetHistory newHistory = form.toEntity(CFO);
 
@@ -36,7 +36,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
 
     @Override
     @Transactional
-    public void modifyHistory(BudgetHistoryModifyForm form, MemberId CFO) {
+    public void modifyHistory(BudgetHistoryModifyForm form, StudentId CFO) {
 
         BudgetHistory budgetHistory = repository.findById(form.getId())
                 .orElseThrow(BudgetHistoryNotFoundException::new);
@@ -51,7 +51,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
 
     @Override
     @Transactional
-    public void deleteHistory(Integer historyId, MemberId CFO) {
+    public void deleteHistory(Integer historyId, StudentId CFO) {
 
         BudgetHistory budgetHistory = repository.findById(historyId)
                 .orElseThrow(BudgetHistoryNotFoundException::new);

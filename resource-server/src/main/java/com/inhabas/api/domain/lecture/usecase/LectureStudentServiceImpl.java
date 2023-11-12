@@ -6,7 +6,7 @@ import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import com.inhabas.api.domain.lecture.dto.StudentListDto;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.lecture.repository.StudentRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,18 +28,18 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Transactional
     @Override
-    public void enroll(Integer lectureId, MemberId memberId) {
+    public void enroll(Integer lectureId, StudentId studentId) {
 
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(EntityNotFoundException::new);
-        Student student = new Student(lecture, memberId);
+        Student student = new Student(lecture, studentId);
 
         studentRepository.save(student);
     }
 
     @Transactional
     @Override
-    public void changeStatusOfOneStudentByLecturer(Integer studentId, MemberId lecturerId, StudentStatus status, Integer lectureId) {
+    public void changeStatusOfOneStudentByLecturer(Integer studentId, StudentId lecturerId, StudentStatus status, Integer lectureId) {
 
         studentRepository.findByLectureIdAndId(lectureId, studentId)
                 .orElseThrow(EntityNotFoundException::new)
@@ -49,7 +49,7 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Transactional
     @Override
-    public void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, MemberId instructorId, Integer lectureId) {
+    public void changeStatusOfStudentsByLecturer(Map<Integer, StudentStatus> list, StudentId instructorId, Integer lectureId) {
 
         Set<Integer> keySet = list.keySet();
 
@@ -64,9 +64,9 @@ public class LectureStudentServiceImpl implements LectureStudentService {
 
     @Transactional
     @Override
-    public void exitBySelf(Integer lectureId, MemberId studentId) {
+    public void exitBySelf(Integer lectureId, StudentId studentId) {
 
-        Student student = studentRepository.findByLectureIdAndMemberId(lectureId, studentId)
+        Student student = studentRepository.findByLectureIdAndStudentId(lectureId, studentId)
                 .orElseThrow(EntityNotFoundException::new);
 
         student.exitLecture();

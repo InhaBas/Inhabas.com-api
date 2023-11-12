@@ -1,14 +1,14 @@
 package com.inhabas.api.web;
 
-import com.inhabas.api.web.argumentResolver.Authenticated;
-import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.member.dto.SignUpDto;
 import com.inhabas.api.domain.member.usecase.SignUpService;
+import com.inhabas.api.web.argumentResolver.Authenticated;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
+import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -39,7 +39,7 @@ public class SignUpController {
     public ResponseEntity<?> saveStudentProfile(
             @Authenticated OAuth2UserInfoAuthentication authentication, @Valid @RequestBody SignUpDto form) {
 
-        signUpService.saveSignUpForm(form, authentication);  //
+        signUpService.saveSignUpForm(form, authentication);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -48,9 +48,9 @@ public class SignUpController {
     @Operation(summary = "임시저장한 학생의 개인정보를 불러온다.")
     @ApiResponse(responseCode = "200")
     public ResponseEntity<SignUpDto> loadProfile(
-            @Authenticated OAuth2UserInfoAuthentication authentication, @Authenticated MemberId memberId) {
+            @Authenticated OAuth2UserInfoAuthentication authentication, @Authenticated StudentId studentId) {
 
-        SignUpDto form = signUpService.loadSignUpForm(memberId, authentication);
+        SignUpDto form = signUpService.loadSignUpForm(studentId, authentication);
 
         return ResponseEntity.ok(form);
     }
@@ -93,9 +93,9 @@ public class SignUpController {
     @GetMapping("/signUp/answers")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated MemberId memberId) {
+    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated StudentId studentId) {
 
-        List<AnswerDto> answers = signUpService.getAnswers(memberId);
+        List<AnswerDto> answers = signUpService.getAnswers(studentId);
 
         return ResponseEntity.ok(answers);
     }
@@ -107,9 +107,9 @@ public class SignUpController {
             @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우")
     })
     public ResponseEntity<?> saveAnswers(
-            @Authenticated MemberId memberId, @Valid @RequestBody List<AnswerDto> answers) {
+            @Authenticated StudentId studentId, @Valid @RequestBody List<AnswerDto> answers) {
 
-        signUpService.saveAnswers(answers, memberId);
+        signUpService.saveAnswers(answers, studentId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -118,9 +118,9 @@ public class SignUpController {
     @PutMapping("/signUp")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<?> finishSignUp(@Authenticated MemberId memberId) {
+    public ResponseEntity<?> finishSignUp(@Authenticated StudentId studentId) {
 
-        signUpService.completeSignUp(memberId);
+        signUpService.completeSignUp(studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

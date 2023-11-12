@@ -5,7 +5,7 @@ import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -20,10 +20,10 @@ public class BudgetApplicationProcessorImpl implements BudgetApplicationProcesso
     private final BudgetHistoryRepository historyRepository;
 
 
-    @PreAuthorize("hasAuthority('TEAM_총무')")
+    @PreAuthorize("hasRole('SECRETARY')")
     @Transactional
     @Override
-    public void process(Integer applicationId, BudgetApplicationStatusChangeRequest request, MemberId inCharge) {
+    public void process(Integer applicationId, BudgetApplicationStatusChangeRequest request, StudentId inCharge) {
 
         BudgetSupportApplication application = applicationRepository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);

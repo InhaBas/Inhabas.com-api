@@ -4,7 +4,7 @@ import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.BoardNotFoundException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
 import com.inhabas.api.domain.contest.dto.ListContestBoardDto;
@@ -25,7 +25,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     private final ContestBoardRepository contestBoardRepository;
 
     @Override
-    public Integer write(MemberId memberId, SaveContestBoardDto dto) {
+    public Integer write(StudentId studentId, SaveContestBoardDto dto) {
 
         ContestBoard contestBoard = ContestBoard.builder()
                 .title(dto.getTitle())
@@ -35,12 +35,12 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 .start(dto.getStart())
                 .deadline(dto.getDeadline())
                 .build()
-                        .writtenBy(memberId);
+                        .writtenBy(studentId);
         return contestBoardRepository.save(contestBoard).getId();
     }
 
     @Override
-    public Integer update(MemberId memberId, UpdateContestBoardDto dto) {
+    public Integer update(StudentId studentId, UpdateContestBoardDto dto) {
 
         ContestBoard contestBoard = contestBoardRepository.findById(dto.getId())
                 .orElseThrow(BoardNotFoundException::new);
@@ -52,19 +52,19 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                 dto.getTopic(),
                 dto.getStart(),
                 dto.getDeadline(),
-                memberId);
+                studentId);
 
         return contestBoardRepository.save(contestBoard).getId();
     }
 
 
     @Override
-    public void delete(MemberId memberId, Integer boardId) {
+    public void delete(StudentId studentId, Integer boardId) {
 
         ContestBoard contestBoard = contestBoardRepository.findById(boardId)
                 .orElseThrow(BoardNotFoundException::new);
 
-        if (contestBoard.cannotModifiableBy(memberId)) {
+        if (contestBoard.cannotModifiableBy(studentId)) {
             throw new BoardCannotModifiableException("삭제 권한이 없습니다.");
         }
 

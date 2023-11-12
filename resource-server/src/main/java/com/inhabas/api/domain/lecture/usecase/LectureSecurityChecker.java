@@ -2,7 +2,7 @@ package com.inhabas.api.domain.lecture.usecase;
 
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,11 +17,11 @@ public class LectureSecurityChecker {
 
     public boolean instructorOnly(Integer lectureId) {
 
-        MemberId currentMemberId = (MemberId) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        StudentId currentStudentId = (StudentId) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Lecture lecture = lectureRepository.findById(lectureId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return lecture.isHeldBy(currentMemberId);
+        return lecture.isHeldBy(currentStudentId);
     }
 }

@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.board.usecase;
 
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
@@ -9,11 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BoardService {
-    Integer write(MemberId memberId, SaveBoardDto saveBoardDto);
+    Integer write(StudentId studentId, SaveBoardDto saveBoardDto);
 
-    Integer update(MemberId memberId, UpdateBoardDto updateBoardDto);
+    Integer update(StudentId studentId, UpdateBoardDto updateBoardDto);
 
-    void delete(MemberId memberId, Integer boardId);
+    void delete(StudentId studentId, Integer boardId);
 
     BoardDto getBoard(Integer boardId);
 
