@@ -1,16 +1,10 @@
 package com.inhabas.api.auth.domain.token.securityFilter;
 
-import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
-import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,13 +37,10 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException, IOException, ServletException {
 
-        final String token = tokenResolver.resolveTokenOrNull(request);
+        final String token = tokenResolver.resolveAccessTokenOrNull(request);
         if (!jwtTokenUtil.validate(token))
             throw new InvalidTokenException();
         final JwtAuthenticationToken authRequest = JwtAuthenticationToken.of(token);
-
-//        final Object principal = userPrincipalService.loadUserPrincipal(authentication);
-//        authentication.setPrincipal(principal);
 
         return this.getAuthenticationManager().authenticate(authRequest);
     }

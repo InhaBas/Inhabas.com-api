@@ -12,7 +12,7 @@ public class JwtTokenResolver implements TokenResolver {
     private static final String AUTHORIZATION_TYPE = "Bearer ";
 
     @Override
-    public String resolveTokenOrNull(HttpServletRequest request) throws MissingTokenException {
+    public String resolveAccessTokenOrNull(HttpServletRequest request) throws MissingTokenException {
 
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 

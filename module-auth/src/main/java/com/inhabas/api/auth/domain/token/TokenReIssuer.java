@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface TokenReIssuer {
 
-    TokenDto reissueAccessToken(HttpServletRequest request) throws InvalidTokenException;
+    TokenDto reissueAccessToken(String refreshToken) throws InvalidTokenException;
 
 }

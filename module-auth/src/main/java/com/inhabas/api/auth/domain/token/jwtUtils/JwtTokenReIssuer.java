@@ -19,9 +19,7 @@ public class JwtTokenReIssuer implements TokenReIssuer {
 
 
     @Override
-    public TokenDto reissueAccessToken(HttpServletRequest request) throws InvalidTokenException {
-
-        String refreshToken = tokenResolver.resolveTokenOrNull(request);
+    public TokenDto reissueAccessToken(String refreshToken) throws InvalidTokenException, RefreshTokenNotFoundException {
 
         if (!tokenUtil.validate(refreshToken) ) {
             throw new InvalidTokenException();

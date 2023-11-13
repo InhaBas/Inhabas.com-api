@@ -41,6 +41,7 @@ public class WebSecurityConfig {
 
     private static final String[] AUTH_WHITELIST_SWAGGER = {"/swagger-ui/**", "/swagger/**", "/docs/**"};
     private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
+    private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
     private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/signUp/schedule",
             "/member/chief", "/members/**", "/error"};
 
