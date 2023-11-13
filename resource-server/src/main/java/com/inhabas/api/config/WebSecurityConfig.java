@@ -1,12 +1,12 @@
 package com.inhabas.api.config;
 
 import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
-import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -179,18 +178,13 @@ public class WebSecurityConfig {
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
 
                         // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                        .antMatchers("/signUp/**").hasRole(ANONYMOUS.toString())
+                        .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
+
                         // 그 외
-                        .anyRequest().hasRole(BASIC.toString());
+                        .anyRequest().hasRole(ANONYMOUS.toString());
 
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        }
-
-        @Override
-        public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers(AUTH_WHITELIST_STATIC);
-            web.ignoring().antMatchers(AUTH_WHITELIST_SWAGGER);
         }
 
         @Bean
@@ -204,6 +198,9 @@ public class WebSecurityConfig {
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             final List<String> skipPaths = new ArrayList<>();
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
