@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.majorInfo.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,13 +13,13 @@ public class MajorTest {
     public void Major_is_OK() {
 
         //given
-        String  majorString = "사회과학대학";
+        String  majorString = "컴퓨터공학과";
 
         //when
         Major major = new Major(majorString);
 
         //then
-        assertThat(major.getValue()).isEqualTo("사회과학대학");
+        assertThat(major.getValue()).isEqualTo("컴퓨터공학과");
     }
 
     @DisplayName("Major 타입에 너무 긴 이름을 저장한다. 50자 이상")

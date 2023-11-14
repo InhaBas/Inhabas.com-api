@@ -1,6 +1,5 @@
-package com.inhabas.api.domain.majorInfo.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject;
 
-import com.inhabas.api.domain.majorInfo.domain.valueObject.College;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
