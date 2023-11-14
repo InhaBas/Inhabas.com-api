@@ -2,6 +2,7 @@ package com.inhabas.api.auth.domain.token.securityFilter;
 
 import com.inhabas.api.auth.domain.token.TokenResolver;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
+import com.inhabas.api.auth.domain.token.exception.MissingTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -52,5 +53,17 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         log.debug("jwt token authentication success!");
 
         chain.doFilter(request, response);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        log.info("Failed to process authentication request", failed);
+        if (failed instanceof MissingTokenException) {
+            response.sendRedirect("/login");
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
     }
 }

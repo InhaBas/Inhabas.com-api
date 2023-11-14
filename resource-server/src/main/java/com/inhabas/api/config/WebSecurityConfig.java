@@ -3,6 +3,7 @@ package com.inhabas.api.config;
 import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
+import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
@@ -52,9 +53,16 @@ public class WebSecurityConfig {
     public static class ApiSecurityForProduction extends WebSecurityConfigurerAdapter {
 
         private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
         private final Hierarchical hierarchy;
         private final JwtTokenUtil jwtTokenUtil;
+        private final JwtAuthenticationProvider jwtAuthenticationProvider;
         private final AuthBeansConfig authBeansConfig;
+
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth.authenticationProvider(jwtAuthenticationProvider);
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -68,25 +76,27 @@ public class WebSecurityConfig {
                     .disable()
 
 
+                    .exceptionHandling()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .and()
                     .authorizeRequests()
+                    // 권한 부여 표현식
+                    .expressionHandler(expressionHandler())
+                    // Preflight 방식
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    // jwt 토큰
-                    .antMatchers("/jwt/**").permitAll()
-                    // 페이지 기본 정보(메뉴, 회원가입일정, 회장 연락처)
-                    .antMatchers(HttpMethod.GET, "/menu/**", "/menus", "/signUp/schedule", "/member/chief").permitAll()
-                    // 최좋가입 신청은 SIGNING_UP 권한만 가능
-                    .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
                     // 회계내역
-                    .antMatchers(HttpMethod.GET, "/budget/history/**", "/budget/histories", "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
-                    .antMatchers("/budget/history/**").hasRole(SECRETARY.toString())
+                    .antMatchers("/budget/history/**", "/budget/histories",
+                            "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
                     // 강의
                     .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
                     .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
+
+                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
+                    .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
+
                     // 그 외
-                    .anyRequest().hasRole(DEACTIVATED.toString())
-
-                    .expressionHandler(expressionHandler());
-
+                    .anyRequest().hasRole(ANONYMOUS.toString());
             http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         }
 
@@ -100,8 +110,10 @@ public class WebSecurityConfig {
         @Bean
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             final List<String> skipPaths = new ArrayList<>();
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
@@ -114,11 +126,6 @@ public class WebSecurityConfig {
             return filter;
         }
 
-        @Bean
-        @Override
-        public AuthenticationManager authenticationManagerBean() throws Exception {
-            return super.authenticationManagerBean();
-        }
     }
 
 
@@ -130,6 +137,7 @@ public class WebSecurityConfig {
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
         private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+        private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
         private final Hierarchical hierarchy;
         private final JwtTokenUtil jwtTokenUtil;
         private final JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -163,7 +171,8 @@ public class WebSecurityConfig {
 
                     // 인증 예외 처리시 jwtAuthenticationEntryPoint 사용
                     .exceptionHandling()
-                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
                     .and()
                     .authorizeRequests()
                         // 권한 부여 표현식
