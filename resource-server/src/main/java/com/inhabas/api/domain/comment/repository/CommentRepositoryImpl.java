@@ -23,7 +23,7 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
                 .innerJoin(comment.writer).fetchJoin()
                 .leftJoin(comment.parentComment).fetchJoin()
                 .where(comment.parentBoard.id.eq(boardId))
-                .orderBy(comment.created.asc(), comment.parentComment.id.asc().nullsFirst(), comment.id.asc())
+                .orderBy(comment.dateCreated.asc(), comment.parentComment.id.asc().nullsFirst(), comment.id.asc())
                 .fetch();
 
         return convertToNestedStructure(comments);

@@ -46,7 +46,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                                 budgetSupportApplication.title.value,
                                 budgetSupportApplication.applicationWriter.id,
                                 applicant.name.value,
-                                budgetSupportApplication.created,
+                                budgetSupportApplication.dateCreated,
                                 budgetSupportApplication.status
                         ))
                 .from(budgetSupportApplication)
@@ -80,7 +80,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                                 budgetSupportApplication.id,
                                 budgetSupportApplication.title.value,
                                 budgetSupportApplication.dateUsed,
-                                budgetSupportApplication.created,
+                                budgetSupportApplication.dateCreated,
                                 budgetSupportApplication.details.value,
                                 budgetSupportApplication.outcome.value,
                                 budgetSupportApplication.applicantAccount.value,
