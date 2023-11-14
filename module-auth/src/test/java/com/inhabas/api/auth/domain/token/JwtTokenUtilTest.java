@@ -1,18 +1,11 @@
 package com.inhabas.api.auth.domain.token;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,24 +14,36 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class JwtTokenProviderTest {
+public class JwtTokenUtilTest {
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
 
     @InjectMocks
-    private JwtTokenProvider tokenProvider;
+    private JwtTokenUtil jwtTokenUtil;
 
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(jwtTokenUtil, "SECRET_KEY", "TESTTESTTESTTESTTESTTEST" +
+                "TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST");
+    }
 
     @DisplayName("access 토큰을 발급한다.")
     @Test
     public void createJwtTokenTest() {
         //given
         List<SimpleGrantedAuthority> authorities =
-                List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"), new SimpleGrantedAuthority("TEAM_IT"));
+                List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
         Map<String, Object> attributes = new HashMap<>() {{
             put("sub", "1249846925629348");
             put("name", "유동현");
@@ -47,10 +52,13 @@ public class JwtTokenProviderTest {
             put("locale", "ko");
         }};
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
-                new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
+                new CustomOAuth2User(authorities, attributes, "sub", 1L),
+                authorities, "google");
+
+
 
         //when
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
         //then
         assertThat(accessToken).isNotNull();
@@ -63,19 +71,18 @@ public class JwtTokenProviderTest {
 
     @DisplayName("토큰 생성 시 인증결과객체는 필수로 주어져야 한다.")
     @Test
-    public void nullMemberIdTokenTest() {
+    public void nullAuthenticationTokenTest() {
 
         assertThrows(AssertionError.class,
-                () -> tokenProvider.createAccessToken(null));
+                () -> jwtTokenUtil.createAccessToken(null));
     }
 
 
     @DisplayName("토큰을 정상적으로 decode")
     @Test
-    public void decodeToken() {
+    public void getAuthenticationUsingToken() {
         //given
-        List<SimpleGrantedAuthority> authorities =
-                List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"), new SimpleGrantedAuthority("TEAM_IT"));
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
         Map<String, Object> attributes = new HashMap<>() {{
             put("sub", "1249846925629348");
             put("name", "유동현");
@@ -84,16 +91,16 @@ public class JwtTokenProviderTest {
             put("locale", "ko");
         }};
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
-                new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
+                new CustomOAuth2User(authorities, attributes, "sub",1L),
+                authorities, "google");
 
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
         //when
-        JwtAuthenticationResult authenticationToken = tokenProvider.decode(accessToken);
+        JwtAuthenticationToken authenticationToken = jwtTokenUtil.getAuthentication(accessToken);
 
         //then
-        assertThat(authenticationToken.getProvider()).isEqualTo("GOOGLE");
-        assertThat(authenticationToken.getUid()).isEqualTo("1249846925629348");
+        assertThat(authenticationToken.getPrincipal()).isEqualTo(1L);
         assertThat(authenticationToken.getAuthorities()).isEqualTo(authorities);
     }
 
@@ -103,8 +110,8 @@ public class JwtTokenProviderTest {
     public void reissueAccessToken() {
 
         //given
-        Set<SimpleGrantedAuthority> authorities =
-                Set.of(new SimpleGrantedAuthority("ROLE_USER"), new SimpleGrantedAuthority("TEAM_IT"));
+        List<SimpleGrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority("ROLE_USER"));
         Map<String, Object> attributes = new HashMap<>() {{
             put("sub", "1234567889");
             put("name", "유동현");
@@ -116,13 +123,13 @@ public class JwtTokenProviderTest {
             put("locale", "ko");
         }};
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
-                new DefaultOAuth2User(authorities, attributes, "sub"),
+                new CustomOAuth2User(authorities, attributes, "sub",1L),
                 authorities,
                 "google");
-        String refreshToken = tokenProvider.createRefreshToken(authentication);
+        String refreshToken = jwtTokenUtil.createRefreshToken(authentication);
 
         //when
-        TokenDto newTokenDto = tokenProvider.reissueAccessTokenUsing(refreshToken);
+        TokenDto newTokenDto = jwtTokenUtil.reissueAccessTokenUsing(refreshToken);
 
         //then
         //check new token dto
@@ -134,13 +141,14 @@ public class JwtTokenProviderTest {
                 .isNotBlank();
 
         //validation check for newly issued access token
-        JwtAuthenticationResult decodeNewAccessToken = tokenProvider.decode(newAccessToken);
-        assertThat(decodeNewAccessToken.getEmail()).isEqualTo("my@gmail.com");
-        assertThat(decodeNewAccessToken.getProvider()).isEqualTo("GOOGLE");
-        assertThat(decodeNewAccessToken.getUid()).isEqualTo("1234567889");
-        assertThat(decodeNewAccessToken.getAuthorities())
+        JwtAuthenticationToken authenticateNewAccessToken = jwtTokenUtil.getAuthentication(newAccessToken);
+
+
+        assertThat(authenticateNewAccessToken.getPrincipal()).isEqualTo(1L);
+        assertThat(authenticateNewAccessToken.getAuthorities()).isEqualTo(authorities);
+        assertThat(authenticateNewAccessToken.getAuthorities())
                 .extracting("role")
-                .contains("ROLE_USER", "TEAM_IT");
+                .contains("ROLE_USER");
 
     }
 
@@ -148,7 +156,7 @@ public class JwtTokenProviderTest {
     @Test
     public void validateInvalidToken() {
 
-        assertFalse(tokenProvider.validate("invalid-token-string"));
+        assertFalse(jwtTokenUtil.validate("invalid-token-string"));
     }
 
     @DisplayName("유효한 토큰 string 을 검사한다.")
@@ -165,11 +173,12 @@ public class JwtTokenProviderTest {
             put("locale", "ko");
         }};
         OAuth2AuthenticationToken authentication = new OAuth2AuthenticationToken(
-                new DefaultOAuth2User(authorities, attributes, "sub"), authorities, "google");
+                new CustomOAuth2User(authorities, attributes, "sub",1L),
+                authorities, "google");
 
-        String accessToken = tokenProvider.createAccessToken(authentication);
+        String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
         //then
-        assertTrue(tokenProvider.validate(accessToken));
+        assertTrue(jwtTokenUtil.validate(accessToken));
     }
 }

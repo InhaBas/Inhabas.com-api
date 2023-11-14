@@ -8,24 +8,28 @@ import org.springframework.mock.web.MockHttpServletRequest;
 
 public class JwtTokenResolverTest {
 
+    private static final String VALID_AUTHORIZATION_HEADER = "Bearer header.body.signature";
+    private static final String VALID_AUTHORIZATION_HEADER_RESULT = "header.body.signature";
+    private static final String INVALID_AUTHORIZATION_HEADER = "No-Bearer header.body.signature";
+    private static final String AUTHORIZATION = "Authorization";
     private final JwtTokenResolver jwtTokenResolver = new JwtTokenResolver();
 
-    @DisplayName("http request 쿠키로부터 토큰을 꺼낸다.")
+    @DisplayName("http request Authorization header 로부터 토큰을 꺼낸다.")
     @Test
     public void resolveTokenFromHttpRequestTest() {
 
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "Bearer header.body.signature");
+        request.addHeader(AUTHORIZATION, VALID_AUTHORIZATION_HEADER);
 
         //when
-        String resolvedToken = jwtTokenResolver.resolveTokenOrNull(request);
+        String resolvedToken = jwtTokenResolver.resolveAccessTokenOrNull(request);
 
         //then
-        Assertions.assertThat(resolvedToken).isEqualTo("header.body.signature");
+        Assertions.assertThat(resolvedToken).isEqualTo(VALID_AUTHORIZATION_HEADER_RESULT);
     }
 
-    @DisplayName("http request 에 쿠키가 설정되어 있지 않아서 null을 반환한다.")
+    @DisplayName("http request 에 Authorization header 가 설정되어 있지 않아서 null을 반환한다.")
     @Test
     public void cannotResolveTokenFromHttpRequestTest() {
 
@@ -33,7 +37,7 @@ public class JwtTokenResolverTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         //when
-        String resolvedToken = jwtTokenResolver.resolveTokenOrNull(request);
+        String resolvedToken = jwtTokenResolver.resolveAccessTokenOrNull(request);
 
         //then
         Assertions.assertThat(resolvedToken).isNull();
@@ -45,10 +49,10 @@ public class JwtTokenResolverTest {
 
         //given
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader("Authorization", "No-Bearer header.body.signature");
+        request.addHeader(AUTHORIZATION, INVALID_AUTHORIZATION_HEADER);
 
         //when
-        String resolvedToken = jwtTokenResolver.resolveTokenOrNull(request);
+        String resolvedToken = jwtTokenResolver.resolveAccessTokenOrNull(request);
 
         //then
         Assertions.assertThat(resolvedToken).isNull();
