@@ -1,6 +1,5 @@
-package com.inhabas.api.domain.member.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
-import com.inhabas.api.domain.member.domain.valueObject.Introduce;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +25,7 @@ public class IntroduceTest {
     @Test
     public void Introduce_is_too_long() {
         //given
-        String introduceString = "지금이문장은10자임".repeat(30); // 300자
+        String introduceString = "지금이문장은10자임".repeat(50); // 500자
 
         //then
         assertThrows(

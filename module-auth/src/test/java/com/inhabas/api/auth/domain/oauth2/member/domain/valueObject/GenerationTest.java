@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

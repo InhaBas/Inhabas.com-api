@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class UsernameTest {
+public class NameTest {
 
     @DisplayName("Name 타입에 유저 이름 저장")
     @Test

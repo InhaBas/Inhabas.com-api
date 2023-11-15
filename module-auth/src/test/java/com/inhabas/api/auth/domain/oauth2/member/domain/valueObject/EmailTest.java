@@ -1,6 +1,5 @@
-package com.inhabas.api.domain.member.domain.valueObject;
+package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
-import com.inhabas.api.domain.member.domain.valueObject.Email;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,17 +21,17 @@ public class EmailTest {
     @Test
     public void Email_is_OK() {
         //when
-        Email fileName = new Email("my@email.com");
+        Email email = new Email("my@email.com");
 
         //then
-        assertThat(fileName.getValue()).isEqualTo("my@email.com");
+        assertThat(email.getValue()).isEqualTo("my@email.com");
     }
 
     @DisplayName("Email 타입에 너무 긴 이메일 저장을 시도한다.")
     @Test
     public void Email_is_too_long() {
         //given
-        String tooLongFileName = "a".repeat(100);
+        String tooLongFileName = "세글자".repeat(100);
 
         //when
         assertThrows(IllegalArgumentException.class,
@@ -51,5 +50,14 @@ public class EmailTest {
     public void Email_cannot_be_blank_string() {
         assertThrows(IllegalArgumentException.class,
                 () -> new Email("    "));
+    }
+
+    @DisplayName("Email 이 regex.")
+    @Test
+    public void Email_must_be_Email_regex() {
+
+        assertThrows(IllegalArgumentException.class,
+                () -> new Email("DEV!L@email.###"));
+
     }
 }
