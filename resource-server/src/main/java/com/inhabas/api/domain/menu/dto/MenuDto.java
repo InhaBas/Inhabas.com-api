@@ -7,9 +7,6 @@ import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
-/**
- * The rule of JSONProperty is located in application.yml
- */
 @Getter
 public class MenuDto {
 

@@ -5,9 +5,6 @@ import lombok.Getter;
 
 import java.util.List;
 
-/**
- * The rule of JSONProperty is located in application.yml
- */
 @Getter
 public class MenuGroupDto {
 

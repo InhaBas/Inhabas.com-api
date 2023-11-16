@@ -128,7 +128,7 @@ public class MenuRepositoryTest {
         List<Menu> menuList = Arrays.asList(menu11, menu12, menu13, menu14, menu21, menu22, menu23, menu24, menu31, menu32, menu41, menu42, menu51);
 
         menuList = menuRepository.saveAllAndFlush(menuList);
-
+        em.clear();
 
         //when
         List<MenuGroupDto> allMenuInfo = menuRepository.findAllMenuByMenuGroup();
