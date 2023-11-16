@@ -2,7 +2,6 @@ package com.inhabas.api.domain.menu.domain.valueObject;
 
 public enum MenuType {
     // 관리자에 의해 추가, 삭제 불가능한 메뉴,(메뉴 순서와 이름만 변경가능하다.)
-    // I think it is better to use the integrated name like 'non-changeable menu'.
     INTRODUCE,
     ALBUM,
     BUDGET_ACCOUNT,
