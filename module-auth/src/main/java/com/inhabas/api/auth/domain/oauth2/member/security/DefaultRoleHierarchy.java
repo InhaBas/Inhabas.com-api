@@ -23,6 +23,7 @@ public class DefaultRoleHierarchy implements Hierarchical {
     private static final String DEACTIVATED = "ROLE_DEACTIVATED";
     private static final String NOT_APPROVED = "ROLE_NOT_APPROVED";
     private static final String SIGNING_UP = "ROLE_SIGNING_UP";
+    private static final String ANONYMOUS = "ROLE_ANONYMOUS";
 
 
     @Override
@@ -33,25 +34,28 @@ public class DefaultRoleHierarchy implements Hierarchical {
         Map<String, List<String>> roleHierarchyMap = new HashMap<>() {{
             put(
                     ADMIN,
-                    Arrays.asList(CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     CHIEF,
-                    Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     VICE_CHIEF,
-                    Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     EXECUTIVES,
-                    Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     SECRETARY,
-                    Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     BASIC,
-                    Arrays.asList(DEACTIVATED, NOT_APPROVED));
+                    Arrays.asList(DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(
                     DEACTIVATED,
-                    List.of(NOT_APPROVED));
+                    Arrays.asList(NOT_APPROVED, ANONYMOUS));
+            put(
+                    SIGNING_UP,
+                    Arrays.asList(ANONYMOUS));
         }};
 
         String roles = RoleHierarchyUtils.roleHierarchyFromMap(roleHierarchyMap);

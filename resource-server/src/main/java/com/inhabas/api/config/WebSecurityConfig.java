@@ -12,9 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,7 +41,7 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
     private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
     private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/signUp/schedule",
-            "/member/chief", "/members/**", "/error"};
+            "/member/chief", "/error"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -85,6 +83,10 @@ public class WebSecurityConfig {
                     .expressionHandler(expressionHandler())
                     // Preflight 방식
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+
+                    // 회원 관리
+                    .antMatchers("/members/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
+
                     // 회계내역
                     .antMatchers("/budget/history/**", "/budget/histories",
                             "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
