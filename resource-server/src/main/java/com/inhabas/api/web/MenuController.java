@@ -5,6 +5,12 @@ import com.inhabas.api.domain.menu.dto.MenuDto;
 import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.api.domain.menu.usecase.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +30,12 @@ public class MenuController {
 
     @GetMapping("/menus")
     @Operation(summary = "모든 메뉴 정보를 가져온다.")
-    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "200", content = @Content(
+            array = @ArraySchema(schema = @Schema(implementation = MenuGroupDto.class)),
+            examples = @ExampleObject(
+                    value = "{\"id\": 1, \"groupName\": \"IBAS\", \"menuList\": [{\"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"LIST\", \"description\": \"동아리 소개 메뉴입니다.\"}]}"
+            )
+    ))
     public ResponseEntity<List<MenuGroupDto>> getTotalMenuInfo() {
         List<MenuGroupDto> allMenuInfo = menuService.getAllMenuInfo();
 
@@ -33,13 +44,33 @@ public class MenuController {
 
     @GetMapping("/menu/{menuId}")
     @Operation(summary = "id 에 해당하는 메뉴 정보를 가져온다.")
+    @Parameter(
+            name = "menuId",
+            description = "메뉴의 고유 식별자",
+            required = true,
+            in = ParameterIn.PATH,
+            schema = @Schema(type = "integer", format = "int64")
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400", description = "존재하지 않는 메뉴")
+            @ApiResponse(responseCode = "200", content = @Content(
+                    schema = @Schema(implementation = MenuDto.class),
+                    examples = @ExampleObject(
+                            value = "{ \"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"LIST\", \"description\": \"동아리 소개 메뉴입니다.\" }"
+                    )
+            )),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 메뉴", content = @Content(
+                    examples = @ExampleObject(
+                            value = "{\"message\": \"데이터가 존재하지 않습니다.\"}"
+                    )
+            ))
     })
     public ResponseEntity<MenuDto> getMenuInfo(@PathVariable MenuId menuId) {
         MenuDto menu = menuService.getMenuInfoById(menuId);
 
-        return ResponseEntity.ok(menu);
+        if (menu != null) {
+            return ResponseEntity.ok(menu);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

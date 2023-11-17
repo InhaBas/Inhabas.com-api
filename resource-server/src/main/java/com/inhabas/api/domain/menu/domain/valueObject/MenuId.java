@@ -18,7 +18,7 @@ public class MenuId implements Serializable {
 
     @JsonProperty("menuId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Integer id;
 
     public MenuId(Integer id) {
