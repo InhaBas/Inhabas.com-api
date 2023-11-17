@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
@@ -12,10 +13,13 @@ import java.util.Objects;
 public class StudentId {
 
 
-    @Column(name = "STUDENT_ID", nullable = false)
-    private Integer id;
+    @Column(name = "STUDENT_ID", length = 30, nullable = false)
+    private String id;
 
-    public StudentId(Integer id) {
+    @Transient
+    private static final int MAX_LENGTH = 30;
+
+    public StudentId(String id) {
         if (validate(id))
             this.id = id;
         else
@@ -24,12 +28,12 @@ public class StudentId {
 
     private boolean validate(Object value) {
         if (Objects.isNull(value)) return false;
-        if (!(value instanceof Integer)) return false;
-        Integer o = (Integer) value;
-        return  0 < o;
+        if (!(value instanceof String)) return false;
+        String o = (String) value;
+        return  o.length() < MAX_LENGTH;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return id;
     }
 }

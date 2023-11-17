@@ -6,6 +6,7 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 public enum Role {
     ADMIN(1), // 사이트 관리자
     CHIEF(2), // 회장
+    VICE_CHIEF(2), // 회장
     EXECUTIVES(3), // 회장단
     SECRETARY(4), // 총무
     BASIC(5), // 활동 일반회원 (교수 포함)
