@@ -2,16 +2,20 @@ package com.inhabas.api.auth.domain.oauth2.member.dto;
 
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
-@Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class NewMemberManagementDto {
+public class OldMemberManagementDto {
     @NotBlank
     @Length(max = 50)
     private String name;
@@ -27,11 +31,13 @@ public class NewMemberManagementDto {
     @Masked(type = MaskingType.PHONE)
     private String phoneNumber;
 
-    @Email
-    private String email;
+
+    @NotNull
+    private Integer generation;
 
     @NotBlank
     @Length(max = 50)
     private String major;
+
 
 }

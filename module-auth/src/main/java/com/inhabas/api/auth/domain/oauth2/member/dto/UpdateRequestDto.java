@@ -8,7 +8,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UpgradeRequest {
-    private List<Integer> memberId;
+public class UpdateRequestDto {
+
+    private List<Integer> memberIdList;
+
+    private String state;
 
 }

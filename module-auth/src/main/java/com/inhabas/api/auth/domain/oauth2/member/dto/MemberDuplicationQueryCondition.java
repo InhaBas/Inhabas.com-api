@@ -1,11 +1,10 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Phone;
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.NoQueryParameterException;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.Objects;
 
@@ -13,44 +12,42 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDuplicationQueryCondition {
 
-    private StudentId studentId;
+    private OAuth2Provider provider;
 
-    private Phone phoneNumber;
+    private UID uid;
 
-    public MemberDuplicationQueryCondition(StudentId studentId, String phoneNumber) {
-        this.studentId = studentId;
-        setPhoneNumber(phoneNumber);
+    public MemberDuplicationQueryCondition(OAuth2Provider provider, String uid) {
+        this.provider = provider;
+        setUid(uid);
     }
 
-    public void verifyAtLeastOneParameter() {
-        if (Objects.isNull(studentId) && Objects.isNull(phoneNumber)) {
+    public void verifyTwoParameters() {
+        if (Objects.isNull(provider) || Objects.isNull(uid)) {
             throw new NoQueryParameterException();
         }
     }
 
-    public StudentId getStudentId() {
-        return studentId;
+    public OAuth2Provider getProvider() {
+        return provider;
     }
 
     /**
      * do not delete this method. this getter's return type is used for get parameter of SignUpController
      */
-    public String getPhoneNumber() {
-        return phoneNumber.getValue();
+
+    public String getUidNumber() {
+        return uid.getValue();
     }
 
-    public void setStudentId(Integer memberId) {
-        this.studentId = new StudentId(memberId);
+    public void setProvider(OAuth2Provider provider) {
+        this.provider = provider;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        if (Strings.isBlank(phoneNumber))
-            this.phoneNumber = null;
-        else
-            this.phoneNumber = new Phone(phoneNumber);
+    public void setUid(String uid) {
+        this.uid = new UID(uid);
     }
 
-    public Phone getPhone() {
-        return phoneNumber;
+    public UID getUid() {
+        return uid;
     }
 }

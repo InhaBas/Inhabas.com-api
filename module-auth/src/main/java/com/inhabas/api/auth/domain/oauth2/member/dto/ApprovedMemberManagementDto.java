@@ -18,7 +18,7 @@ public class ApprovedMemberManagementDto {
     @Positive
     private Integer memberId;
 
-    @Pattern(regexp = "\"^(010)-\\\\d{4}-\\\\d{4}$\"")
+    @Pattern(regexp = "^(010)-\\d{4}-\\d{4}$")
     private String phoneNumber;
 
     @Email
