@@ -1,12 +1,12 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Phone;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public MemberAuthorityProvider.RoleDto fetchRoleByMemberId(StudentId studentId) {
+    public MemberAuthorityProvider.RoleDto fetchRoleByStudentId(StudentId studentId) {
         Role role = queryFactory
                 .select(member.ibasInformation.role).from(member)
                 .where(member.studentId.eq(studentId))
@@ -40,7 +41,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public boolean isDuplicated(MemberDuplicationQueryCondition condition) {
 
-        condition.verifyAtLeastOneParameter();
+        condition.verifyTwoParameters();
 
         return !queryFactory.selectFrom(member)
                 .where(eqAny(condition))
@@ -48,36 +49,49 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByRoleAndIdLike(Role role, StudentId studentId) {
-        final List<Member> members = queryFactory.
+    public List<Member> findByRoleAndStudentIdLike(Role role, String studentId) {
+
+        return queryFactory.
                 selectFrom(member)
                 .where(eqRole(role)
-                        .and(member.studentId.id.like("%" + studentId.toString() + "%")))
+                        .and(member.studentId.id.like("%" + studentId + "%")))
                 .fetch();
 
-        return members;
     }
 
     @Override
-    public List<Member> findByRoleAndNameLike(Role role, Name name) {
-        List<Member> members = queryFactory.
+    public List<Member> findByRoleAndNameLike(Role role, String name) {
+
+        return queryFactory.
                 selectFrom(member)
                 .where(eqRole(role)
-                        .and(member.name.value.like("%" + name.getValue() + "%")))
+                        .and(member.name.value.like("%" + name + "%")))
                 .fetch();
 
-        return members;
     }
 
     @Override
-    public List<Member> findByIdLike(StudentId studentId) {
-        List<Member> members = queryFactory.
+    public List<Member> findByRolesInAndStudentIdLike(Collection<Role> roles, String studentId) {
+
+        return queryFactory.
                 selectFrom(member)
-                .where((member.studentId.id.like("%" + studentId.toString() + "%")))
+                .where(member.ibasInformation.role.in(roles)
+                    .and(member.studentId.id.like("%" + studentId + "%")))
                 .fetch();
 
-        return members;
     }
+
+    @Override
+    public List<Member> findByRolesInAndNameLike(Collection<Role> roles, String name) {
+
+        return queryFactory.
+                selectFrom(member)
+                .where(member.ibasInformation.role.in(roles)
+                        .and(member.name.value.like("%" + name + "%")))
+                .fetch();
+
+    }
+
 
     private BooleanExpression eqRole(Role role) {
         return member.ibasInformation.role.eq(role);
@@ -86,15 +100,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private BooleanBuilder eqAny(MemberDuplicationQueryCondition condition) {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        return booleanBuilder.or(eqId(condition.getStudentId()))
-                .or(eqPhone(condition.getPhone()));
+        return booleanBuilder.or(eqProvider(condition.getProvider()))
+                .or(eqUid(condition.getUid()));
     }
 
-    private BooleanExpression eqId(StudentId studentId) {
-        return Objects.isNull(studentId) ? null : member.studentId.eq(studentId);
+    private BooleanExpression eqUid(UID uid) {
+        return Objects.isNull(uid) ? null : member.uid.eq(uid);
     }
 
-    private BooleanExpression eqPhone(Phone phoneNumber) {
-        return Objects.isNull(phoneNumber) ? null : member.phone.eq(phoneNumber);
+    private BooleanExpression eqProvider(OAuth2Provider provider) {
+        return Objects.isNull(provider) ? null : member.provider.eq(provider);
     }
 }

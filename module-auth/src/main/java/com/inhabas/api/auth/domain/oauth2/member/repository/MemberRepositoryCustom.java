@@ -1,23 +1,26 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
 import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    MemberAuthorityProvider.RoleDto fetchRoleByMemberId(StudentId studentId);
+    MemberAuthorityProvider.RoleDto fetchRoleByStudentId(StudentId studentId);
 
     boolean isDuplicated(MemberDuplicationQueryCondition condition);
 
-    List<Member> findByRoleAndIdLike(Role role, StudentId studentId);
+    List<Member> findByRoleAndStudentIdLike(Role role, String studentId);
 
-    List<Member> findByRoleAndNameLike(Role role, Name name);
+    List<Member> findByRoleAndNameLike(Role role, String name);
 
-    List<Member> findByIdLike(StudentId studentId);
+    List<Member> findByRolesInAndStudentIdLike(Collection<Role> roles, String studentId);
+
+    List<Member> findByRolesInAndNameLike(Collection<Role> roles, String name);
+
 }
