@@ -3,10 +3,10 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.service;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NewMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.OldMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 
 @Slf4j
@@ -28,11 +30,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = Role.NOT_APPROVED;
-
+    private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = NOT_APPROVED;
+    private static final List<Role> OLD_ROLES = Arrays.asList(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
+    private static final String PASS_STATE = "pass";
+    private static final String FAIL_STATE = "fail";
     private final MemberRepository memberRepository;
     private final MemberDuplicationChecker duplicationChecker;
-
 
 
     @Override
@@ -40,7 +43,7 @@ public class MemberServiceImpl implements MemberService {
     public void save(Member member) {
 
         if (duplicationChecker.isDuplicatedMember(member)) {
-            throw new DuplicatedMemberFieldException("학번 또는 전화번호");
+            throw new DuplicatedMemberFieldException("provider 와 uid");
         }
 
         memberRepository.save(member);
@@ -81,40 +84,95 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<NewMemberManagementDto> getUnapprovedMembers(String search) {
+    public List<NewMemberManagementDto> getNewMembersBySearchAndRole(String search) {
         final List<Member> members = StringUtils.isNumeric(search)
-                ? memberRepository.findByRoleAndIdLike(Role.NOT_APPROVED, new StudentId(Integer.parseInt(search)))
-                : memberRepository.findByRoleAndNameLike(Role.NOT_APPROVED, new Name(search));
+                ? memberRepository.findByRoleAndStudentIdLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search)
+                : memberRepository.findByRoleAndNameLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search);
 
-        final List<NewMemberManagementDto> newMemberManagementDtos = members.stream()
+        return members.stream()
                 .map(member -> new NewMemberManagementDto(
                 member.getName(),
+                member.getId(),
                 member.getStudentId().getValue(),
                 member.getPhone(),
                 member.getEmail(),
                 member.getSchoolInformation().getMajor()))
                 .collect(Collectors.toList());
 
-        return newMemberManagementDtos;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OldMemberManagementDto> getOldMembersBySearchAndRole(String search) {
+        final List<Member> members = StringUtils.isNumeric(search)
+                ? memberRepository.findByRolesInAndStudentIdLike(OLD_ROLES, search)
+                : memberRepository.findByRolesInAndNameLike(OLD_ROLES, search);
+
+        return members.stream()
+                .map(member -> new OldMemberManagementDto(
+                        member.getName(),
+                        member.getId(),
+                        member.getStudentId().getValue(),
+                        member.getPhone(),
+                        member.getSchoolInformation().getGeneration(),
+                        member.getSchoolInformation().getMajor()))
+                .collect(Collectors.toList());
+
     }
 
     @Override
     @Transactional
-    public void UpgradeUnapprovedMembers(List<Integer> memberIdList) {
-        List<Member> members = memberRepository.findByStudentIdIdIn(memberIdList);
+    public void updateUnapprovedMembers(List<Integer> memberIdList, String state) {
+
+        List<Long> memberLongList = memberIdList.stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+
+        List<Member> members = memberRepository.findAllById(memberLongList);
         boolean allNewMembers = members.stream().allMatch(
                 member -> DEFAULT_ROLE_AFTER_FINISH_SIGNUP.equals(member.getRole()));
 
-        if (!allNewMembers) {
+        if (!allNewMembers || !(state.equals(PASS_STATE) || state.equals(FAIL_STATE))) {
             throw new IllegalArgumentException();
         }
 
-        for (Member member : members) {
-            member.setRole(Role.DEACTIVATED);
+        if (state.equals("pass")) {
+
+            for (Member member : members)
+                member.setRole(DEACTIVATED);
+
+            memberRepository.saveAll(members);
+
+        } else {
+            // 이메일 전송 추가 예정
+            memberRepository.deleteAll(members);
         }
 
-        memberRepository.saveAll(members);
     }
+
+    @Override
+    public void updateApprovedMembers(List<Long> memberIdList, Role role) {
+
+        // 변경 가능한 ROLE 인지 확인
+        if (!OLD_ROLES.contains(role)) {
+            throw new IllegalArgumentException();
+        }
+
+        List<Member> members = memberRepository.findAllById(memberIdList);
+        boolean allApprovedMembers = members.stream().allMatch(
+                member -> OLD_ROLES.contains(member.getRole()));
+
+        if (!allApprovedMembers) {
+            throw new IllegalArgumentException();
+        }
+
+        for (Member member : members)
+            member.setRole(role);
+
+        memberRepository.saveAll(members);
+
+    }
+
 
     @Override
     public void updateSocialAccountInfo(OAuth2UserInfo oAuth2UserInfo) {
@@ -127,21 +185,4 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-//    @Override
-//    public List<ApprovedMemberManagementDto> getApprovedMembers(String search) {
-//        final List<Member> members = isNumeric(search)
-//                ? memberRepository.findByRoleAndIdLike(NOT_APPROVED, new StudentId(Integer.parseInt(search)))
-//                : memberRepository.findByRoleAndNameLike(NOT_APPROVED, new Name(search));
-//
-//        final List<NewMemberManagementDto> newMemberManagementDtos = members.stream()
-//                .map(member -> new NewMemberManagementDto(
-//                        member.getName(),
-//                        member.getId().getValue(),
-//                        member.getPhone(),
-//                        member.getEmail(),
-//                        member.getSchoolInformation().getMajor()))
-//                .collect(Collectors.toList());
-//
-//        return newMemberManagementDtos;
-//    }
 }

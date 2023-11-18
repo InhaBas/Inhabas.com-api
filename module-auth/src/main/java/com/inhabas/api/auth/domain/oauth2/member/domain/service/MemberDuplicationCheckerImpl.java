@@ -1,9 +1,8 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Phone;
-import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +19,6 @@ public class MemberDuplicationCheckerImpl implements MemberDuplicationChecker {
 
     @Override
     public Boolean isDuplicatedMember(Member member) {
-        return memberRepository.existsByPhoneOrId(new Phone(member.getPhone()), member.getStudentId());
+        return memberRepository.existsByProviderAndUid(member.getProvider(), member.getUid());
     }
 }

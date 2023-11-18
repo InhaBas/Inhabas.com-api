@@ -4,6 +4,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NewMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.OldMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 public interface MemberService {
 
+    // 가입 관련
     void save(Member member);
 
     Member findById(StudentId studentId);
@@ -21,12 +23,18 @@ public interface MemberService {
 
     void finishSignUp(Member member);
 
-    List<NewMemberManagementDto> getUnapprovedMembers(String search);
 
-    void UpgradeUnapprovedMembers(List<Integer> memberIdList);
+    // 회원관리 관련
+    List<NewMemberManagementDto> getNewMembersBySearchAndRole(String search);
 
-//    List<ApprovedMemberManagementDto> getApprovedMembers(String search);
+    List<OldMemberManagementDto> getOldMembersBySearchAndRole(String search);
 
+    void updateUnapprovedMembers(List<Integer> memberIdList, String state);
+
+    void updateApprovedMembers(List<Long> memberIdList, Role role);
+
+
+    // OAuth 관련
     void updateSocialAccountInfo(OAuth2UserInfo oAuth2UserInfo);
 
 }
