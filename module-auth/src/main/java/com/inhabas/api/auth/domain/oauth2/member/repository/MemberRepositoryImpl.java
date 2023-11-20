@@ -49,7 +49,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByRoleAndStudentIdLike(Role role, String studentId) {
+    public List<Member> findAllByRoleAndStudentIdLike(Role role, String studentId) {
 
         return queryFactory.
                 selectFrom(member)
@@ -60,7 +60,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByRoleAndNameLike(Role role, String name) {
+    public List<Member> findAllByRoleAndNameLike(Role role, String name) {
 
         return queryFactory.
                 selectFrom(member)
@@ -71,7 +71,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByRolesInAndStudentIdLike(Collection<Role> roles, String studentId) {
+    public List<Member> findAllByRolesInAndStudentIdLike(Collection<Role> roles, String studentId) {
 
         return queryFactory.
                 selectFrom(member)
@@ -82,7 +82,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public List<Member> findByRolesInAndNameLike(Collection<Role> roles, String name) {
+    public List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name) {
 
         return queryFactory.
                 selectFrom(member)

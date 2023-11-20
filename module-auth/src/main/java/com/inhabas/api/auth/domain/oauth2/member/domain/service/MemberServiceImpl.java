@@ -5,19 +5,22 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemb
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.auth.domain.oauth2.member.dto.NewMemberManagementDto;
-import com.inhabas.api.auth.domain.oauth2.member.dto.OldMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,13 +87,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<NewMemberManagementDto> getNewMembersBySearchAndRole(String search) {
+    public List<NotApprovedMemberManagementDto> getNotApprovedMembersBySearchAndRole(String search) {
         final List<Member> members = StringUtils.isNumeric(search)
-                ? memberRepository.findByRoleAndStudentIdLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search)
-                : memberRepository.findByRoleAndNameLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search);
+                ? memberRepository.findAllByRoleAndStudentIdLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search)
+                : memberRepository.findAllByRoleAndNameLike(DEFAULT_ROLE_AFTER_FINISH_SIGNUP, search);
 
         return members.stream()
-                .map(member -> new NewMemberManagementDto(
+                .map(member -> new NotApprovedMemberManagementDto(
                 member.getName(),
                 member.getId(),
                 member.getStudentId().getValue(),
@@ -103,17 +106,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OldMemberManagementDto> getOldMembersBySearchAndRole(String search) {
+    public List<ApprovedMemberManagementDto> getApprovedMembersBySearchAndRole(String search) {
         final List<Member> members = StringUtils.isNumeric(search)
-                ? memberRepository.findByRolesInAndStudentIdLike(OLD_ROLES, search)
-                : memberRepository.findByRolesInAndNameLike(OLD_ROLES, search);
+                ? memberRepository.findAllByRolesInAndStudentIdLike(OLD_ROLES, search)
+                : memberRepository.findAllByRolesInAndNameLike(OLD_ROLES, search);
 
         return members.stream()
-                .map(member -> new OldMemberManagementDto(
+                .map(member -> new ApprovedMemberManagementDto(
                         member.getName(),
                         member.getId(),
                         member.getStudentId().getValue(),
                         member.getPhone(),
+                        member.getRole(),
                         member.getSchoolInformation().getGeneration(),
                         member.getSchoolInformation().getMajor()))
                 .collect(Collectors.toList());
@@ -151,6 +155,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void updateApprovedMembers(List<Long> memberIdList, Role role) {
 
         // 변경 가능한 ROLE 인지 확인
@@ -173,12 +178,38 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ContactDto getChiefContact() {
+
+        Member chief = memberRepository.findByIbasInformation_Role(CHIEF);
+
+        return new ContactDto(chief.getName(), chief.getPhone(), chief.getEmail());
+
+    }
 
     @Override
+    public List<?> getPagedDtoList(Pageable pageable, List<?> dtoList) {
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), dtoList.size());
+
+        // 시작 인덱스가 리스트 크기보다 크거나 같은 경우, 빈 리스트 반환
+        if (start >= dtoList.size()) {
+            return Collections.emptyList();
+        }
+
+        return dtoList.subList(start, end);
+
+    }
+
+
+    @Override
+    @Transactional
     public void updateSocialAccountInfo(OAuth2UserInfo oAuth2UserInfo) {
 
         Member member = memberRepository.
-                findByUidAndProvider(new UID(oAuth2UserInfo.getId()), oAuth2UserInfo.getProvider())
+                findByProviderAndUid(oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
                 .orElse(new Member(oAuth2UserInfo))
                 .setLastLoginTime(LocalDateTime.now());
 

@@ -13,7 +13,7 @@ import java.util.Objects;
 public class StudentId {
 
 
-    @Column(name = "STUDENT_ID", length = 30, nullable = false)
+    @Column(name = "STUDENT_ID", length = 30)
     private String id;
 
     @Transient

@@ -36,8 +36,8 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
         StudentId studentId = (StudentId) userPrincipalService.loadUserPrincipal(authentication);
 
         if (Objects.isNull(studentId)) {  // 기존회원이 아니면, member 테이블에 임시데이터 저장
-            Member member = memberRepository.findByUidAndProvider(
-                    new UID(oAuth2UserInfo.getId()), oAuth2UserInfo.getProvider())
+            Member member = memberRepository.findByProviderAndUid(
+                            oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
                     .orElseThrow(InvalidUserInfoException::new);
 
             member.setRole(SIGNING_UP);
@@ -46,7 +46,7 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
         }
         else {
             // 기존회원이면,
-            RoleDto roleDto = memberRepository.fetchRoleByMemberId(studentId);
+            RoleDto roleDto = memberRepository.fetchRoleByStudentId(studentId);
 
             if (roleDto.isEmpty())
                 throw new InvalidUserInfoException();  // 가입된 소셜 계정으로 회원 프로필을 찾을 수 없는 경우.

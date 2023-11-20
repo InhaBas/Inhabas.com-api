@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 @Entity
-@Table(name = "USER", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_PHONE", columnNames = "PHONE")})
+@Table(name = "user", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_PROVIDER_UID", columnNames = {"provider", "uid"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -40,7 +40,7 @@ public class Member {
     @Embedded
     private Email email;
 
-    @Column(name = "PICTURE", length = 1000)
+    @Column(name = "picture", length = 1000)
     private String picture;
 
     @Embedded
@@ -55,14 +55,14 @@ public class Member {
     @Embedded
     private UID uid;
 
-    @Column(name = "LAST_LOGIN", nullable = false)
+    @Column(name = "last_login", nullable = false)
     private LocalDateTime lastLogin;
 
     @Lob
     @Column(name = "extra_data", nullable = false)
     private String extraData;
 
-    @Column(name = "IS_DELETED")
+    @Column(name = "is_deltee")
     private boolean isDeleted = false;
 
     @Builder

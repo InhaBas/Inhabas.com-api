@@ -15,12 +15,12 @@ public interface MemberRepositoryCustom {
 
     boolean isDuplicated(MemberDuplicationQueryCondition condition);
 
-    List<Member> findByRoleAndStudentIdLike(Role role, String studentId);
+    List<Member> findAllByRoleAndStudentIdLike(Role role, String studentId);
 
-    List<Member> findByRoleAndNameLike(Role role, String name);
+    List<Member> findAllByRoleAndNameLike(Role role, String name);
 
-    List<Member> findByRolesInAndStudentIdLike(Collection<Role> roles, String studentId);
+    List<Member> findAllByRolesInAndStudentIdLike(Collection<Role> roles, String studentId);
 
-    List<Member> findByRolesInAndNameLike(Collection<Role> roles, String name);
+    List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name);
 
 }
