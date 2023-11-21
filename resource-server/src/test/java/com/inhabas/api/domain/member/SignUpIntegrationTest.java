@@ -1,33 +1,23 @@
 package com.inhabas.api.domain.member;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.ApiApplication;
-import com.inhabas.api.auth.domain.token.TokenProvider;
-import com.inhabas.api.domain.majorInfo.domain.MajorInfo;
-import com.inhabas.api.domain.majorInfo.repository.MajorInfoRepository;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.domain.valueObject.MemberType;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.domain.member.dto.AnswerDto;
 import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.member.repository.MemberRepository;
 import com.inhabas.api.domain.questionaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.testAnnotataion.CustomSpringBootTest;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,6 +26,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @Disabled
 @CustomSpringBootTest(classes = ApiApplication.class)
 public class SignUpIntegrationTest {
@@ -43,7 +42,7 @@ public class SignUpIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired private TokenProvider tokenProvider;
+    @Autowired private TokenUtil tokenUtil;
     @Autowired private ObjectMapper objectMapper;
     @Autowired private QuestionnaireRepository questionnaireRepository;
     @Autowired private MajorInfoRepository majorInfoRepository;
@@ -84,7 +83,7 @@ public class SignUpIntegrationTest {
     public void 회원가입_기간이_아닙니다() throws Exception {
         /* 유동현은 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenProvider.createAccessToken(null);
+        String token = tokenUtil.createAccessToken(null);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
@@ -107,7 +106,7 @@ public class SignUpIntegrationTest {
 
         /* 유동현은 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenProvider.createAccessToken(null);
+        String token = tokenUtil.createAccessToken(null);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
@@ -198,7 +197,7 @@ public class SignUpIntegrationTest {
 
         /* 유동현 교수는 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenProvider.createAccessToken(null);
+        String token = tokenUtil.createAccessToken(null);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다. */
 
@@ -254,7 +253,7 @@ public class SignUpIntegrationTest {
     }
 
     private void forbiddenWhenAccessEverySignUpApi(Role role) throws Exception {
-        String token = tokenProvider.createAccessToken(null);
+        String token = tokenUtil.createAccessToken(null);
 
         mockMvc.perform(get("/signUp/student").with(accessToken(token)))
                 .andExpect(status().isForbidden());

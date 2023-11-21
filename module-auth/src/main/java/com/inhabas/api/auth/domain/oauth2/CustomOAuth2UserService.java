@@ -43,8 +43,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
         // db 에 소셜 계정 정보 update
         memberService.updateSocialAccountInfo(oAuth2UserInfo);
-        Member member = memberRepository.findByUidAndProvider(
-                        new UID(oAuth2UserInfo.getId()), oAuth2UserInfo.getProvider())
+        Member member = memberRepository.findByProviderAndUid(
+                        oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
                 .orElseThrow(() -> new OAuth2AuthenticationException(new OAuth2Error("user_not_found")));
 
 

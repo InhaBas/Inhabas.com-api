@@ -85,7 +85,7 @@ public class WebSecurityConfig {
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                     // 회원 관리
-                    .antMatchers("/members/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
+                    .antMatchers("/members/**", "/member/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
 
                     // 회계내역
                     .antMatchers("/budget/history/**", "/budget/histories",

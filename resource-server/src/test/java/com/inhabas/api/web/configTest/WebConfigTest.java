@@ -28,6 +28,6 @@ public class WebConfigTest {
 
         //then
         Assertions.assertThat(propertyNamingStrategy)
-                .isEqualTo(PropertyNamingStrategies.SNAKE_CASE);
+                .isEqualTo(PropertyNamingStrategies.LOWER_CAMEL_CASE);
     }
 }

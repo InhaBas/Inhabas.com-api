@@ -24,7 +24,7 @@ public class SignUpDto {
     @Length(max = 50)
     private String major;
 
-    @Pattern(regexp = "\"^(010)-\\\\d{4}-\\\\d{4}$\"")
+    @Pattern(regexp = "^(010)-\\d{4}-\\d{4}$")
     private String phoneNumber;
 
     @Email

@@ -3,8 +3,8 @@ package com.inhabas.api.securityConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
 import com.inhabas.api.domain.board.usecase.BoardService;
-import com.inhabas.api.domain.member.domain.MemberService;
 import com.inhabas.api.web.BoardController;
 import com.inhabas.testAnnotataion.DefaultWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
