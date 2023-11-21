@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.lecture.usecase;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.web.LectureController;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
@@ -40,11 +40,11 @@ public class LectureSecurityCheckerTest {
 
     @DisplayName("강의자만 접근할 수 있다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652)
+    @WithMockJwtAuthenticationToken(memberId = 1L)
     public void instructorOnlyTest() {
 
         //given
-        MemberId lecturerId = new MemberId(12171652);
+        StudentId lecturerId = new StudentId("12171652");
         Lecture lecture = Lecture.builder()
                 .title("절권도 배우기")
                 .chief(lecturerId)
@@ -68,11 +68,11 @@ public class LectureSecurityCheckerTest {
 
     @DisplayName("강의자가 아니어서 접근할 수 없다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 11111111)
+    @WithMockJwtAuthenticationToken(memberId = 11111111L)
     public void instructorOnlyDenyTest() {
 
         //given
-        MemberId lecturerId = new MemberId(12171652);
+        StudentId lecturerId = new StudentId("12171652");
         Lecture lecture = Lecture.builder()
                 .title("절권도 배우기")
                 .chief(lecturerId)

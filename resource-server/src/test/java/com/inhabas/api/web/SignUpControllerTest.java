@@ -1,6 +1,6 @@
 package com.inhabas.api.web;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -13,16 +13,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.NoQueryParameterException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
-import com.inhabas.api.domain.member.NoQueryParameterException;
 import com.inhabas.api.domain.member.domain.entity.Answer;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.domain.valueObject.MemberType;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.domain.member.dto.SignUpDto;
 import com.inhabas.api.domain.member.usecase.SignUpService;
 import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
@@ -64,7 +64,7 @@ public class SignUpControllerTest {
                 .email("my@email.com")
                 .major("컴퓨터공학과")
                 .phoneNumber("010-0000-1111")
-                .memberId(new MemberId(11112222))
+                .studentId(new StudentId("11112222"))
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
@@ -90,7 +90,7 @@ public class SignUpControllerTest {
                 .email("")
                 .major("")
                 .phoneNumber("")
-                .memberId(null)
+                .studentId(null)
                 .memberType(null)
                 .build();
 
@@ -120,7 +120,7 @@ public class SignUpControllerTest {
                 .email("") // 상관없음.
                 .major("금융데이터처리, 블록체인학과.") // 15자가지만 가능
                 .phoneNumber("8210-1111-1111")
-                .memberId(new MemberId(-1))
+                .studentId(new StudentId("-1"))
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
@@ -141,14 +141,14 @@ public class SignUpControllerTest {
 
     @DisplayName("임시 저장했던 개인정보를 불러온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
         OAuth2UserInfoAuthentication authentication =
                 (OAuth2UserInfoAuthentication) SecurityContextHolder.getContext().getAuthentication();
-        MemberId loginMemberId = (MemberId) authentication.getPrincipal();
+        StudentId loginStudentId = (StudentId) authentication.getPrincipal();
         SignUpDto expectedSavedForm = SignUpDto.builder()
-                .memberId(loginMemberId)
+                .studentId(loginStudentId)
                 .name("홍길동")
                 .major("의예과")
                 .phoneNumber("010-1234-5678")
@@ -156,7 +156,7 @@ public class SignUpControllerTest {
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
-        given(signUpService.loadSignUpForm(loginMemberId, authentication)).willReturn(expectedSavedForm);
+        given(signUpService.loadSignUpForm(loginStudentId, authentication)).willReturn(expectedSavedForm);
 
         //when
         String response = mvc.perform(get("/signUp"))
@@ -248,7 +248,7 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입에 필요한 질문들을 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 회원가입에_필요한_질문들을_가져온다() throws Exception {
         //given
         ArrayList<QuestionnaireDto> questionnaireInDatabase = new ArrayList<>(){{
@@ -273,7 +273,7 @@ public class SignUpControllerTest {
 
     @DisplayName("임시저장했던 답변을 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 임시저장했던_답변을_가져온다() throws Exception {
         //given
         ArrayList<AnswerDto> savedDTOs = new ArrayList<>() {{
@@ -297,7 +297,7 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입을 위한 답변을 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 회원가입을_위한_답변을_저장한다() throws Exception {
         //given
         Member member = basicMember1();
@@ -319,7 +319,7 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입을 완료처리한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12171652, memberRole = Role.ANONYMOUS)
+    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 회원가입을_완료처리한다() throws Exception {
         //when
         mvc.perform(put("/signUp").with(csrf()))

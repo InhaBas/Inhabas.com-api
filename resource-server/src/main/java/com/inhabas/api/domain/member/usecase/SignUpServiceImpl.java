@@ -100,8 +100,8 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public List<AnswerDto> getAnswers(StudentId studentId) {
-        return answerService.getAnswers(studentId);
+    public List<AnswerDto> getAnswers(Long memberId) {
+        return answerService.getAnswers(memberId);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public boolean validateFieldsDuplication(MemberDuplicationQueryCondition condition) {
 
-        condition.verifyAtLeastOneParameter();
+        condition.verifyTwoParameters();
 
         return memberDuplicationChecker.isDuplicatedMember(condition);
     }

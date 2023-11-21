@@ -93,9 +93,9 @@ public class SignUpController {
     @GetMapping("/signUp/answers")
     @Operation(summary = "회원가입 도중 임시 저장한 질문지 답변을 불러온다.")
     @ApiResponse(responseCode = "200")
-    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated StudentId studentId) {
+    public ResponseEntity<List<AnswerDto>> loadAnswers(@Authenticated Long memberId) {
 
-        List<AnswerDto> answers = signUpService.getAnswers(studentId);
+        List<AnswerDto> answers = signUpService.getAnswers(memberId);
 
         return ResponseEntity.ok(answers);
     }

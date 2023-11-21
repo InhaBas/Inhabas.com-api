@@ -1,12 +1,12 @@
 package com.inhabas.api.domain.contestBoard.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contestBoard.ContestBoardTest;
-import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -38,26 +38,26 @@ public class ContestBoardRepositoryTest {
     ContestBoard board3;
     Member writer;
 
-    @BeforeEach
-    public void settingContestBoard(){
-        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        writer = em.persist(basicMember1());
-        menu = em.persist(
-                Menu.builder()
-                        .menuGroup(boardMenuGroup)
-                        .priority(1)
-                        .type(MenuType.LIST)
-                        .name("공모전게시판")
-                        .description("공모전 정보를 알려주는 게시판입니다.")
-                        .build());
-
-        board1 = ContestBoardTest.getContestBoard1()
-                    .writtenBy(writer.getId()).inMenu(menu.getId());
-        board2 = ContestBoardTest.getContestBoard2()
-                    .writtenBy(writer.getId()).inMenu(menu.getId());
-        board3 = ContestBoardTest.getContestBoard3()
-                    .writtenBy(writer.getId()).inMenu(menu.getId());
-    }
+//    @BeforeEach
+//    public void settingContestBoard(){
+//        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
+//        writer = em.persist(basicMember1());
+//        menu = em.persist(
+//                Menu.builder()
+//                        .menuGroup(boardMenuGroup)
+//                        .priority(1)
+//                        .type(MenuType.LIST)
+//                        .name("공모전게시판")
+//                        .description("공모전 정보를 알려주는 게시판입니다.")
+//                        .build());
+//
+//        board1 = ContestBoardTest.getContestBoard1()
+//                    .writtenBy(writer.getId()).inMenu(menu.getId());
+//        board2 = ContestBoardTest.getContestBoard2()
+//                    .writtenBy(writer.getId()).inMenu(menu.getId());
+//        board3 = ContestBoardTest.getContestBoard3()
+//                    .writtenBy(writer.getId()).inMenu(menu.getId());
+//    }
 
     @DisplayName("저장한 게시글의 Id를 참조하여 Dto를 반환한다.")
     @Test

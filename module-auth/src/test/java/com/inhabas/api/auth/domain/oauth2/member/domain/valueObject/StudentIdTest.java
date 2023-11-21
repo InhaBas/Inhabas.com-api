@@ -12,31 +12,31 @@ public class StudentIdTest {
     @Test
     public void StudentId_is_OK() {
         //given
-        Integer id = 12171707;
+        String id = "12171707";
 
         //when
         StudentId studentId = new StudentId(id);
 
         //then
-        assertThat(studentId.getValue()).isEqualTo(12171707);
+        assertThat(studentId.getValue()).isEqualTo("12171707");
     }
 
-    @DisplayName("StudentId 타입에 잘못된 StudentId 저장 시도. 음수")
+    @DisplayName("StudentId 타입에 잘못된 StudentId 저장 시도. 30자 이상")
     @Test
-    public void UserName_is_too_long() {
+    public void StudentId_is_too_long() {
         //given
-        Integer id = -1;
+        String id = "2023".repeat(10); // 40자
 
         //when
         assertThrows(
                 IllegalArgumentException.class,
-                ()->  new StudentId(id)
+                ()-> new StudentId(id)
         );
     }
 
     @DisplayName("학번은 null 일 수 없다.")
     @Test
-    public void Username_cannot_be_null() {
+    public void StudentId_cannot_be_null() {
         assertThrows(IllegalArgumentException.class,
                 ()-> new StudentId(null));
     }

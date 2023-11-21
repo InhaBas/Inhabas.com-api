@@ -1,13 +1,13 @@
 package com.inhabas.api.domain.comment.repository;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
-import static com.inhabas.api.domain.member.domain.MemberTest.basicMember2;
+import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember2;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.NormalBoardTest;
 import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -31,27 +31,27 @@ public class CommentRepositoryTest {
     Member writer, commentWriter;
     NormalBoard normalBoard;
 
-    @BeforeEach
-    public void setUp() {
-        writer = em.persist(basicMember1());
-        commentWriter = em.persist(basicMember2());
-
-        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
-        Menu freeBoardMenu = em.persist(
-                Menu.builder()
-                .menuGroup(boardMenuGroup)
-                .priority(2)
-                .type(MenuType.LIST)
-                .name("자유게시판")
-                .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
-                .build());
-
-        normalBoard = em.persist(
-                NormalBoardTest.getBoard1()
-                        .writtenBy(writer.getId())
-                        .inMenu(freeBoardMenu.getId())
-        );
-    }
+//    @BeforeEach
+//    public void setUp() {
+//        writer = em.persist(basicMember1());
+//        commentWriter = em.persist(basicMember2());
+//
+//        MenuGroup boardMenuGroup = em.persist(new MenuGroup("게시판"));
+//        Menu freeBoardMenu = em.persist(
+//                Menu.builder()
+//                .menuGroup(boardMenuGroup)
+//                .priority(2)
+//                .type(MenuType.LIST)
+//                .name("자유게시판")
+//                .description("부원이 자유롭게 사용할 수 있는 게시판입니다.")
+//                .build());
+//
+//        normalBoard = em.persist(
+//                NormalBoardTest.getBoard1()
+//                        .writtenBy(writer.getId())
+//                        .inMenu(freeBoardMenu.getId())
+//        );
+//    }
 
     @DisplayName("작성한 댓글과 저장된 댓글이 같다.")
     @Test

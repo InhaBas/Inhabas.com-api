@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.budget.usecase;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
 import com.inhabas.api.domain.budget.ApplicationNotFoundException;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
@@ -8,8 +9,7 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
-import com.inhabas.api.domain.member.domain.MemberTest;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,11 +41,11 @@ public class BudgetApplicationServiceTest {
     @Mock
     private BudgetApplicationRepository repository;
 
-    private MemberId applicantId;
+    private StudentId applicantId;
 
     @BeforeEach
     public void setUp() {
-        applicantId = MemberTest.basicMember1().getId();
+//        applicantId = MemberTest.basicMember1().getId();
     }
 
     @DisplayName("예산 지원 신청서를 제출한다.")
@@ -113,7 +113,7 @@ public class BudgetApplicationServiceTest {
 
         //when
         Assertions.assertThrows(ApplicationCannotModifiableException.class,
-                () -> budgetApplicationService.updateApplication(form, new MemberId(12)));
+                () -> budgetApplicationService.updateApplication(form, new StudentId("12")));
 
         //then
         then(repository).should(times(1)).findById(anyInt());
@@ -179,7 +179,7 @@ public class BudgetApplicationServiceTest {
 
         //when
         Assertions.assertThrows(ApplicationCannotModifiableException.class,
-                () -> budgetApplicationService.deleteApplication(1, new MemberId(12)));
+                () -> budgetApplicationService.deleteApplication(1, new StudentId("12")));
 
         //then
         then(repository).should(times(1)).findById(anyInt());

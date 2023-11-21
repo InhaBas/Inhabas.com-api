@@ -1,11 +1,11 @@
 package com.inhabas.api.domain.lecture.usecase;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.domain.Student;
 import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.lecture.repository.StudentRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public class LectureStudentServiceMockTest {
     public void enrollTest() {
 
         //given
-        MemberId lecturerId = new MemberId(12171652);
+        StudentId lecturerId = new StudentId("12171652");
         Lecture lecture = Lecture.builder()
                 .title("절권도 배우기")
                 .chief(lecturerId)
@@ -60,7 +60,7 @@ public class LectureStudentServiceMockTest {
         given(studentRepository.save(any())).willReturn(null);
 
         //when
-        studentService.enroll(1, new MemberId(12212242));
+        studentService.enroll(1, new StudentId("12212242"));
 
         //then
         then(studentRepository).should(times(1)).save(any());
@@ -73,7 +73,7 @@ public class LectureStudentServiceMockTest {
     public void cannotEnrollLecturerTest() {
 
         //given
-        MemberId lecturerId = new MemberId(12171652);
+        StudentId lecturerId = new StudentId("12171652");
         Lecture lecture = Lecture.builder()
                 .title("절권도 배우기")
                 .chief(lecturerId)
@@ -98,7 +98,7 @@ public class LectureStudentServiceMockTest {
     public void exitLecture() {
 
         //given
-        MemberId lecturerId = new MemberId(12171652);
+        StudentId lecturerId = new StudentId("12171652");
         Lecture lecture = Lecture.builder()
                 .title("절권도 배우기")
                 .chief(lecturerId)
@@ -112,9 +112,9 @@ public class LectureStudentServiceMockTest {
                 .build();
         ReflectionTestUtils.setField(lecture, "id", 1);
 
-        MemberId studentId = new MemberId(11112222);
+        StudentId studentId = new StudentId("11112222");
         Student student = new Student(lecture, studentId);
-        given(studentRepository.findByLectureIdAndMemberId(any(), any())).willReturn(Optional.of(student));
+        given(studentRepository.findByLectureIdAndStudentId(any(), any())).willReturn(Optional.of(student));
 
         //when
         studentService.exitBySelf(1, studentId);
@@ -122,7 +122,7 @@ public class LectureStudentServiceMockTest {
         //then
         StudentStatus status = (StudentStatus) ReflectionTestUtils.getField(student, "status");
         assertThat(status).isEqualTo(StudentStatus.EXIT);
-        then(studentRepository).should(times(1)).findByLectureIdAndMemberId(any(), any());
+        then(studentRepository).should(times(1)).findByLectureIdAndStudentId(any(), any());
     }
 
     @DisplayName("수강생 정보 조회")

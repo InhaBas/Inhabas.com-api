@@ -13,10 +13,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,9 +58,9 @@ public class CommentControllerTest {
     void getCommentList() throws Exception {
         //given
         List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
-                new CommentDetailDto(1, "contents1", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now()),
-                new CommentDetailDto(2, "contents2", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now()),
-                new CommentDetailDto(3, "contents3", new MemberId(12171652), "유동현", "간호학과", LocalDateTime.now())
+                new CommentDetailDto(1, "contents1", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(2, "contents2", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now()),
+                new CommentDetailDto(3, "contents3", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now())
         });
         given(commentService.getComments(anyInt())).willReturn(commentList);
 

@@ -9,7 +9,7 @@ public interface AnswerService {
 
     void saveAnswers(List<AnswerDto> submittedAnswers, StudentId studentId);
 
-    List<AnswerDto> getAnswers(StudentId studentId);
+    List<AnswerDto> getAnswers(Long memberId);
 
     boolean existAnswersWrittenBy(StudentId studentId);
 }

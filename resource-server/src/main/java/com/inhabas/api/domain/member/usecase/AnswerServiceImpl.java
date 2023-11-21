@@ -30,9 +30,9 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.saveAll(answers);
     }
 
-    public List<AnswerDto> getAnswers(StudentId studentId) {
+    public List<AnswerDto> getAnswers(Long memberId) {
 
-        return answerRepository.findByMember_id(studentId).stream()
+        return answerRepository.findByMember_Id(memberId).stream()
                 .map(a-> new AnswerDto(a.getQuestionNo(), a.getContent()))
                 .collect(Collectors.toList());
     }

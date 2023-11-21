@@ -139,7 +139,7 @@ public class SignUpIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
                                 .email("my@gmail.com")
-                                .memberId(new MemberId(12171652))
+                                .studentId(new StudentId("12171652"))
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
@@ -181,7 +181,7 @@ public class SignUpIntegrationTest {
 
 
         //then
-        Member 유동현 = memberRepository.findById(new MemberId(12171652)).orElseThrow(MemberNotFoundException::new);
+        Member 유동현 = memberRepository.getByStudentId(new StudentId("12171652"));
         assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(12171652);
@@ -231,7 +231,7 @@ public class SignUpIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
                                 .email("my@gmail.com")
-                                .memberId(new MemberId(228761))
+                                .studentId(new StudentId("228761"))
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
@@ -246,8 +246,7 @@ public class SignUpIntegrationTest {
 
 
         //then
-        Member 유동현_교수 = memberRepository.findById(new MemberId(228761))
-                .orElseThrow(MemberNotFoundException::new);
+        Member 유동현_교수 = memberRepository.getByStudentId(new StudentId("228761"));
         assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
 //        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
 //        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);

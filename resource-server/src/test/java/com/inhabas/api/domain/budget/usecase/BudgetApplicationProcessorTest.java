@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
@@ -14,7 +15,6 @@ import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +46,7 @@ public class BudgetApplicationProcessorTest {
                 .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
                 .details("details")
                 .outcome(10000)
-                .applicationWriter(new MemberId(12171652))
+                .applicationWriter(new StudentId("12171652"))
                 .account("기업 1234 홍길동")
                 .build();
         given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
@@ -54,7 +54,7 @@ public class BudgetApplicationProcessorTest {
         //when
         BudgetApplicationStatusChangeRequest request =
                 new BudgetApplicationStatusChangeRequest("APPROVED", null);
-        processor.process(1, request, new MemberId(18165249));
+        processor.process(1, request, new StudentId("18165249"));
 
         //then
         then(applicationRepository).should(times(1)).findById(anyInt());
@@ -71,7 +71,7 @@ public class BudgetApplicationProcessorTest {
                 .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
                 .details("details")
                 .outcome(10000)
-                .applicationWriter(new MemberId(12171652))
+                .applicationWriter(new StudentId("12171652"))
                 .account("기업 1234 홍길동")
                 .build();
         given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
@@ -79,7 +79,7 @@ public class BudgetApplicationProcessorTest {
         //when
         BudgetApplicationStatusChangeRequest request =
                 new BudgetApplicationStatusChangeRequest("DENIED", "중복 요청");
-        processor.process(1, request, new MemberId(18165249));
+        processor.process(1, request, new StudentId("18165249"));
 
         //then
         then(applicationRepository).should(times(1)).findById(anyInt());
@@ -96,7 +96,7 @@ public class BudgetApplicationProcessorTest {
                 .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
                 .details("details")
                 .outcome(10000)
-                .applicationWriter(new MemberId(12171652))
+                .applicationWriter(new StudentId("12171652"))
                 .account("기업 1234 홍길동")
                 .build();
         given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
@@ -107,7 +107,7 @@ public class BudgetApplicationProcessorTest {
 
         //then
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> processor.process(1, request, new MemberId(18165249)));
+                () -> processor.process(1, request, new StudentId("18165249")));
         then(applicationRepository).should(times(1)).findById(anyInt());
     }
 
@@ -121,7 +121,7 @@ public class BudgetApplicationProcessorTest {
                 .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
                 .details("details")
                 .outcome(10000)
-                .applicationWriter(new MemberId(12171652))
+                .applicationWriter(new StudentId("12171652"))
                 .account("기업 1234 홍길동")
                 .build();
         given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
@@ -130,7 +130,7 @@ public class BudgetApplicationProcessorTest {
         //when
         BudgetApplicationStatusChangeRequest request =
                 new BudgetApplicationStatusChangeRequest("PROCESSED", null);
-        processor.process(1, request, new MemberId(18165249));
+        processor.process(1, request, new StudentId("18165249"));
 
         //then
         then(applicationRepository).should(times(1)).findById(anyInt());
@@ -148,7 +148,7 @@ public class BudgetApplicationProcessorTest {
                 .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
                 .details("details")
                 .outcome(10000)
-                .applicationWriter(new MemberId(12171652))
+                .applicationWriter(new StudentId("12171652"))
                 .account("기업 1234 홍길동")
                 .build();
         ReflectionTestUtils.setField(application, "status", ApplicationStatus.DENIED);
@@ -158,7 +158,7 @@ public class BudgetApplicationProcessorTest {
         //when
         BudgetApplicationStatusChangeRequest request =
                 new BudgetApplicationStatusChangeRequest("APPROVED", null);
-        processor.process(1, request, new MemberId(18165249));
+        processor.process(1, request, new StudentId("18165249"));
 
         //then
         then(applicationRepository).should(times(1)).findById(anyInt());

@@ -24,7 +24,7 @@ public interface SignUpService {
 
     void saveAnswers(List<AnswerDto> answerDtoList, StudentId studentId);
 
-    List<AnswerDto> getAnswers(StudentId studentId);
+    List<AnswerDto> getAnswers(Long memberId);
 
     List<MajorInfoDto> getMajorInfo();
 

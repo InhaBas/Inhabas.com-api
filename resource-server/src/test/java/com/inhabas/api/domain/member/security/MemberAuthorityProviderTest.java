@@ -3,11 +3,13 @@ package com.inhabas.api.domain.member.security;
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import com.inhabas.api.auth.domain.exception.UserNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
+import com.inhabas.api.auth.domain.oauth2.member.security.MemberPrincipalService;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -65,10 +67,10 @@ public class MemberAuthorityProviderTest {
     @DisplayName("기존회원의 권한을 들고온다.")
     public void memberLoginTest() {
 
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
+        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new StudentId("12171652"));
         MemberAuthorityProvider.RoleDto roleDto =
                 new MemberAuthorityProvider.RoleDto(Role.BASIC);
-        given(memberRepository.fetchRoleByMemberId(any())).willReturn(roleDto);
+        given(memberRepository.fetchRoleByStudentId(any())).willReturn(roleDto);
 
         //when
         Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
@@ -84,8 +86,8 @@ public class MemberAuthorityProviderTest {
     @Test
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")
     public void cannotFindProfileMappedFromSocialAccount() {
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new MemberId(12171652));
-        given(memberRepository.fetchRoleByMemberId(any()))
+        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new StudentId("12171652"));
+        given(memberRepository.fetchRoleByStudentId(any()))
                 .willReturn(new MemberAuthorityProvider.RoleDto(null));
 
         //then

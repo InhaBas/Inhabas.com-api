@@ -36,7 +36,7 @@ public class BudgetHistoryCreateForm {
     private Integer outcome;
 
     public BudgetHistoryCreateForm(LocalDateTime dateUsed, String title, String details,
-            @NotNull Integer personReceived, Integer income, Integer outcome) {
+            @NotNull String personReceived, Integer income, Integer outcome) {
         this.dateUsed = dateUsed;
         this.title = title;
         this.details = details;
