@@ -62,7 +62,7 @@ public class Member {
     @Column(name = "extra_data", nullable = false)
     private String extraData;
 
-    @Column(name = "is_deltee")
+    @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
     @Builder

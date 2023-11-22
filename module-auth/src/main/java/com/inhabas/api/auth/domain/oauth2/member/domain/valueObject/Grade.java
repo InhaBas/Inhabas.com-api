@@ -10,8 +10,8 @@ import java.util.Objects;
 @Embeddable
 public class Grade {
 
-    @Column(name = "GRADE")
-    private Integer value;
+    @Column(name = "grade")
+    private Integer value = 0;
 
     public  Grade() {}
 

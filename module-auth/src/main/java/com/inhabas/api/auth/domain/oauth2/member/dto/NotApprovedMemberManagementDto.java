@@ -30,6 +30,10 @@ public class NotApprovedMemberManagementDto {
     @Email
     private String email;
 
+    @NotNull
+    @Positive
+    private Integer grade;
+
     @NotBlank
     @Length(max = 50)
     private String major;

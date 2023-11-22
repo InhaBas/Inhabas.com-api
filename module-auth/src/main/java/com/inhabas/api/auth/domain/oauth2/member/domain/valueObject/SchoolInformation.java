@@ -15,13 +15,23 @@ public class SchoolInformation {
     private Major major;
 
     @Embedded
+    private Grade grade;
+
+    @Embedded
     private Generation generation;
 
-    @Column(name = "TYPE")
+    @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
     private static final int DEFAULT_GRADE = 0; // 학생이 아닌 경우 0학년
+
+    public SchoolInformation(String major, Integer grade, Integer generation, MemberType memberType) {
+        this.major = new Major(major);
+        this.grade = new Grade(grade);
+        this.generation = new Generation(generation);
+        this.memberType = memberType;
+    }
 
     public SchoolInformation(String major, Integer generation, MemberType memberType) {
         this.major = new Major(major);
@@ -31,7 +41,6 @@ public class SchoolInformation {
 
 
     /* factory methods */
-
     public static SchoolInformation ofUnderGraduate(String major, Integer generation) {
         return new SchoolInformation(major, generation, MemberType.UNDERGRADUATE);
     }
@@ -54,6 +63,10 @@ public class SchoolInformation {
 
     public String getMajor() {
         return this.major.getValue();
+    }
+
+    public Integer getGrade() {
+        return this.grade.getValue();
     }
 
     public Integer getGeneration() {

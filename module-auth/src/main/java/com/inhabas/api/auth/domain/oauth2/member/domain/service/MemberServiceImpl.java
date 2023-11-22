@@ -99,6 +99,7 @@ public class MemberServiceImpl implements MemberService {
                 member.getStudentId().getValue(),
                 member.getPhone(),
                 member.getEmail(),
+                member.getSchoolInformation().getGrade(),
                 member.getSchoolInformation().getMajor()))
                 .collect(Collectors.toList());
 
@@ -140,7 +141,7 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException();
         }
 
-        if (state.equals("pass")) {
+        if (state.equals(PASS_STATE)) {
 
             for (Member member : members)
                 member.setRole(DEACTIVATED);

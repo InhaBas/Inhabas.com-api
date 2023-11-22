@@ -47,7 +47,7 @@ public class MemberControllerTest {
         List<NotApprovedMemberManagementDto> dtoList = new ArrayList<>();
         NotApprovedMemberManagementDto dto1 = new NotApprovedMemberManagementDto(
                 "홍길동", 1L, "12171707",
-                "010-1234-2345", "abc1234@gmail.com", "컴퓨터공학과");
+                "010-1234-2345", "abc1234@gmail.com", 1, "컴퓨터공학과");
         dtoList.add(dto1);
 
         given(memberService.getNotApprovedMembersBySearchAndRole(any())).willReturn(dtoList);

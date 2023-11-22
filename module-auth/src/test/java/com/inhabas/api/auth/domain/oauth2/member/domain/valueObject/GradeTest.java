@@ -17,7 +17,7 @@ public class GradeTest {
 
         //then
         assertThat(normalGrade.getValue()).isEqualTo(1);
-        assertThat(nullGrade.getValue()).isEqualTo(null);
+        assertThat(nullGrade.getValue()).isEqualTo(0);
     }
 
     @DisplayName("존재할 수 없는 Grade 지정")
