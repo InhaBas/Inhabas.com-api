@@ -1,7 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.exception.NoQueryParameterException;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.GoogleOAuth2UserInfo;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -172,7 +172,7 @@ public class MemberRepositoryTest {
 
 
     // Custom
-    @DisplayName("중복 검사 쿼리 아무것도 없는 경우")
+    @DisplayName("중복 검사 쿼리 provider 없는 경우")
     @Test
     public void validateNoneFields() {
 
@@ -180,8 +180,8 @@ public class MemberRepositoryTest {
         memberRepository.save(signingUpMember1());
 
         //then
-        assertThrows(NoQueryParameterException.class,
-                () -> memberRepository.isDuplicated(new MemberDuplicationQueryCondition(null, null)));
+        assertThrows(InvalidDataAccessApiUsageException.class,
+                () -> memberRepository.isDuplicated(new MemberDuplicationQueryCondition(null, "1249846925629348")));
 
     }
 

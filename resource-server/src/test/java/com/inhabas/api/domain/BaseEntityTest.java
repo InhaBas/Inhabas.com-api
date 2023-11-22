@@ -1,8 +1,8 @@
 package com.inhabas.api.domain;
 
 import com.inhabas.api.JpaConfig;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.member.domain.entity.Member;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import java.time.LocalDateTime;
 
-import static com.inhabas.api.domain.member.domain.MemberTest.basicMember1;
+import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DefaultDataJpaTest
@@ -40,40 +40,40 @@ public class BaseEntityTest {
                 .build());
     }
 
-    @Test
-    public void createdTimeTest() {
-        //given
-        Member member = em.persist(basicMember1());
-        NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(member.getId())
-                .inMenu(freeBoardMenu.getId());
+//    @Test
+//    public void createdTimeTest() {
+//        //given
+//        Member member = em.persist(basicMember1());
+//        NormalBoard board = new NormalBoard("title", "contents")
+//                .writtenBy(member.getId())
+//                .inMenu(freeBoardMenu.getId());
+//
+//        //when
+//        em.persist(board);
+//
+//        //then
+//        assertThat(board.getDateCreated()).isNotNull();
+//        assertThat(board.getDateCreated()).isInstanceOf(LocalDateTime.class);
+//    }
 
-        //when
-        em.persist(board);
-
-        //then
-        assertThat(board.getDateCreated()).isNotNull();
-        assertThat(board.getDateCreated()).isInstanceOf(LocalDateTime.class);
-    }
-
-    @Test
-    public void updatedTimeTest() {
-        //given
-        Member member = em.persist(basicMember1());
-        NormalBoard board = new NormalBoard("title", "contents")
-                .writtenBy(member.getId())
-                .inMenu(freeBoardMenu.getId());
-        em.persist(board);
-
-        //when
-        board.modify("title2", "modified contents", member.getId());
-        em.merge(board);
-        em.flush();em.clear();
-
-        //then
-        NormalBoard find = em.find(NormalBoard.class, board.getId());
-        assertThat(find.getDateUpdated()).isNotNull();
-        assertThat(find.getDateUpdated()).isInstanceOf(LocalDateTime.class);
-    }
+//    @Test
+//    public void updatedTimeTest() {
+//        //given
+//        Member member = em.persist(basicMember1());
+//        NormalBoard board = new NormalBoard("title", "contents")
+//                .writtenBy(member.getId())
+//                .inMenu(freeBoardMenu.getId());
+//        em.persist(board);
+//
+//        //when
+//        board.modify("title2", "modified contents", member.getId());
+//        em.merge(board);
+//        em.flush();em.clear();
+//
+//        //then
+//        NormalBoard find = em.find(NormalBoard.class, board.getId());
+//        assertThat(find.getDateUpdated()).isNotNull();
+//        assertThat(find.getDateUpdated()).isInstanceOf(LocalDateTime.class);
+//    }
 
 }

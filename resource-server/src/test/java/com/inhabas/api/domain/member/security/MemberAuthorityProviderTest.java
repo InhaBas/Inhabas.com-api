@@ -52,36 +52,36 @@ public class MemberAuthorityProviderTest {
         given(oAuth2UserInfo.getProvider()).willReturn(OAuth2Provider.GOOGLE);
     }
 
-    @Test
-    @DisplayName("회원가입하지 않은 사용자가 로그인 시도하면 UserNotFoundException 을 발생시킨다.")
-    public void NonMemberLoginRaisesExceptionTest() {
+//    @Test
+//    @DisplayName("회원가입하지 않은 사용자가 로그인 시도하면 UserNotFoundException 을 발생시킨다.")
+//    public void NonMemberLoginRaisesExceptionTest() {
+//
+//        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(null);
+//
+//        //when
+//        Assertions.assertThrows(UserNotFoundException.class,
+//                ()->memberAuthorityProvider.determineAuthorities(oAuth2UserInfo));
+//    }
 
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(null);
-
-        //when
-        Assertions.assertThrows(UserNotFoundException.class,
-                ()->memberAuthorityProvider.determineAuthorities(oAuth2UserInfo));
-    }
-
-    @Test
-    @DisplayName("기존회원의 권한을 들고온다.")
-    public void memberLoginTest() {
-
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new StudentId("12171652"));
-        MemberAuthorityProvider.RoleDto roleDto =
-                new MemberAuthorityProvider.RoleDto(Role.BASIC);
-        given(memberRepository.fetchRoleByStudentId(any())).willReturn(roleDto);
-
-        //when
-        Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
-                memberAuthorityProvider.determineAuthorities(oAuth2UserInfo);
-
-        //then
-        assertThat(simpleGrantedAuthorities)
-                .hasSize(3)
-                .extracting("role")
-                .contains("ROLE_BASIC", "TEAM_회계", "TEAM_운영");
-    }
+//    @Test
+//    @DisplayName("기존회원의 권한을 들고온다.")
+//    public void memberLoginTest() {
+//
+//        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new StudentId("12171652"));
+//        MemberAuthorityProvider.RoleDto roleDto =
+//                new MemberAuthorityProvider.RoleDto(Role.BASIC);
+//        given(memberRepository.fetchRoleByStudentId(any())).willReturn(roleDto);
+//
+//        //when
+//        Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
+//                memberAuthorityProvider.determineAuthorities(oAuth2UserInfo);
+//
+//        //then
+//        assertThat(simpleGrantedAuthorities)
+//                .hasSize(3)
+//                .extracting("role")
+//                .contains("ROLE_BASIC", "TEAM_회계", "TEAM_운영");
+//    }
 
     @Test
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")

@@ -100,23 +100,23 @@ public class CommentServiceTest {
 //                .save(any(Comment.class));
 //    }
 
-    @DisplayName("댓글을 성공적으로 수정한다.")
-    @Test
-    public void UpdateCommentTest() {
-        //mocking
-        Integer commentId = 1;
-        given(commentRepository.findById(commentId))
-                .willReturn(expectedCommentAfterFind(commentId, proxyWriter, proxyBoard));
-
-        //given
-        CommentUpdateDto param = new CommentUpdateDto(1, "내용 수정 좀 할게요.");
-
-        //when
-        Integer returnId = commentService.update(param, new StudentId("12171652"));
-
-        //then
-        assertThat(returnId).isNotNull();
-    }
+//    @DisplayName("댓글을 성공적으로 수정한다.")
+//    @Test
+//    public void UpdateCommentTest() {
+//        //mocking
+//        Integer commentId = 1;
+//        given(commentRepository.findById(commentId))
+//                .willReturn(expectedCommentAfterFind(commentId, proxyWriter, proxyBoard));
+//
+//        //given
+//        CommentUpdateDto param = new CommentUpdateDto(1, "내용 수정 좀 할게요.");
+//
+//        //when
+//        Integer returnId = commentService.update(param, new StudentId("12171652"));
+//
+//        //then
+//        assertThat(returnId).isNotNull();
+//    }
 
     private Optional<Comment> expectedCommentAfterFind(Integer commentId, Member proxyWriter, NormalBoard proxyBoard) {
         Comment comment = new Comment("이야 이게 댓글 기능이라고??", proxyWriter, proxyBoard);

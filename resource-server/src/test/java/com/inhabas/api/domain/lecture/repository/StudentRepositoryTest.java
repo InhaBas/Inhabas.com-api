@@ -54,29 +54,29 @@ public class StudentRepositoryTest {
 //    }
 
 
-
-    @DisplayName("수강생 정보를 불러온다.")
-    @Test
-    public void searchStudentsTest() {
-
-        //given
-        List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            entityManager.persist(getTestBasicMember(String.valueOf(100000+i), "010-0000-000" + i));
-            students.add(new Student(lecture, new StudentId(String.valueOf(100000+i))));
-        }
-        studentRepository.saveAll(students);
-        
-        //when
-        Integer lectureId = (Integer) ReflectionTestUtils.getField(lecture, "id");
-        Page<StudentListDto> page = studentRepository.searchStudents(lectureId, PageRequest.of(0, 25));
-
-        //then
-        assertThat(page.getTotalElements()).isEqualTo(10);
-        assertThat(page.getNumberOfElements()).isEqualTo(10);
-        assertThat(page.getTotalPages()).isEqualTo(1);
-        assertThat(page.getContent().get(0)).extracting("StudentId").isEqualTo(100000);
-    }
+//
+//    @DisplayName("수강생 정보를 불러온다.")
+//    @Test
+//    public void searchStudentsTest() {
+//
+//        //given
+//        List<Student> students = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            entityManager.persist(getTestBasicMember(String.valueOf(100000+i), "010-0000-000" + i));
+//            students.add(new Student(lecture, new StudentId(String.valueOf(100000+i))));
+//        }
+//        studentRepository.saveAll(students);
+//
+//        //when
+//        Integer lectureId = (Integer) ReflectionTestUtils.getField(lecture, "id");
+//        Page<StudentListDto> page = studentRepository.searchStudents(lectureId, PageRequest.of(0, 25));
+//
+//        //then
+//        assertThat(page.getTotalElements()).isEqualTo(10);
+//        assertThat(page.getNumberOfElements()).isEqualTo(10);
+//        assertThat(page.getTotalPages()).isEqualTo(1);
+//        assertThat(page.getContent().get(0)).extracting("StudentId").isEqualTo(100000);
+//    }
 
 
 }

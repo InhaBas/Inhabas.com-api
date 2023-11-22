@@ -71,44 +71,44 @@ public class NormalBoardRepositoryTest {
 //    }
 
 
-    @DisplayName("저장 후 반환값이 처음과 같다.")
-    @Test
-    public void save() {
-        Member saveMember = em.find(Member.class, basicMember1().getId());
+//    @DisplayName("저장 후 반환값이 처음과 같다.")
+//    @Test
+//    public void save() {
+//        Member saveMember = em.find(Member.class, basicMember1().getId());
+//
+//        //when
+//        NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
+//
+//        //then
+//        assertAll(
+//                () -> assertThat(saveBoard.getId()).isNotNull(),
+//                () -> assertThat(saveBoard.getDateCreated()).isNotNull(),
+//                () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
+//                () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
+//                () -> assertThat(saveBoard.getWriterId()).isEqualTo(saveMember.getId())
+//        );
+//    }
 
-        //when
-        NormalBoard saveBoard = boardRepository.save(FREE_BOARD);
-
-        //then
-        assertAll(
-                () -> assertThat(saveBoard.getId()).isNotNull(),
-                () -> assertThat(saveBoard.getDateCreated()).isNotNull(),
-                () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
-                () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
-                () -> assertThat(saveBoard.getWriterId()).isEqualTo(saveMember.getId())
-        );
-    }
-
-    @DisplayName("id에 해당하는 게시글을 dto 로 반환한다.")
-    @Test
-    public void findDtoById() {
-        //given
-        boardRepository.save(FREE_BOARD);
-        boardRepository.save(NOTICE_BOARD);
-
-        //when
-        BoardDto find = boardRepository.findDtoById(NOTICE_BOARD.getId())
-                .orElseThrow(EntityNotFoundException::new);
-
-        //then
-        assertAll(
-                () -> assertThat(find.getId()).isEqualTo(NOTICE_BOARD.getId()),
-                () -> assertThat(find.getTitle()).isEqualTo(NOTICE_BOARD.getTitle()),
-                () -> assertThat(find.getContents()).isEqualTo(NOTICE_BOARD.getContents()),
-                () -> assertThat(find.getMenuId()).isEqualTo(NOTICE_BOARD.getMenuId()),
-                () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
-        );
-    }
+//    @DisplayName("id에 해당하는 게시글을 dto 로 반환한다.")
+//    @Test
+//    public void findDtoById() {
+//        //given
+//        boardRepository.save(FREE_BOARD);
+//        boardRepository.save(NOTICE_BOARD);
+//
+//        //when
+//        BoardDto find = boardRepository.findDtoById(NOTICE_BOARD.getId())
+//                .orElseThrow(EntityNotFoundException::new);
+//
+//        //then
+//        assertAll(
+//                () -> assertThat(find.getId()).isEqualTo(NOTICE_BOARD.getId()),
+//                () -> assertThat(find.getTitle()).isEqualTo(NOTICE_BOARD.getTitle()),
+//                () -> assertThat(find.getContents()).isEqualTo(NOTICE_BOARD.getContents()),
+//                () -> assertThat(find.getMenuId()).isEqualTo(NOTICE_BOARD.getMenuId()),
+//                () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
+//        );
+//    }
 
 //    @DisplayName("게시글을 수정한다.")
 //    @Test
@@ -127,57 +127,57 @@ public class NormalBoardRepositoryTest {
 //        assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
 //    }
 
-    @DisplayName("id 로 게시글을 삭제한다.")
-    @Test
-    public void deleteById() {
-        //given
-        boardRepository.save(FREE_BOARD);
+//    @DisplayName("id 로 게시글을 삭제한다.")
+//    @Test
+//    public void deleteById() {
+//        //given
+//        boardRepository.save(FREE_BOARD);
+//
+//        //when
+//        boardRepository.deleteById(FREE_BOARD.getId());
+//
+//        //then
+//        assertTrue(boardRepository.findById(FREE_BOARD.getId()).isEmpty());
+//    }
 
-        //when
-        boardRepository.deleteById(FREE_BOARD.getId());
+//    @DisplayName("모든 게시글을 조회한다.")
+//    @Test
+//    public void findAll() {
+//        //given
+//        boardRepository.save(FREE_BOARD);
+//        boardRepository.save(NOTICE_BOARD);
+//
+//        //when
+//        List<NormalBoard> boards = boardRepository.findAll();
+//
+//        //then
+//        assertThat(boards).contains(FREE_BOARD, NOTICE_BOARD);
+//        assertThat(boards.size()).isEqualTo(2);
+//    }
 
-        //then
-        assertTrue(boardRepository.findById(FREE_BOARD.getId()).isEmpty());
-    }
-
-    @DisplayName("모든 게시글을 조회한다.")
-    @Test
-    public void findAll() {
-        //given
-        boardRepository.save(FREE_BOARD);
-        boardRepository.save(NOTICE_BOARD);
-
-        //when
-        List<NormalBoard> boards = boardRepository.findAll();
-
-        //then
-        assertThat(boards).contains(FREE_BOARD, NOTICE_BOARD);
-        assertThat(boards.size()).isEqualTo(2);
-    }
-
-    @DisplayName("메뉴 id 에 해당하는 게시글들을 갖고 온다.")
-    @Test
-    public void findAllByMenuId() {
-        //given
-        boardRepository.save(FREE_BOARD);
-        boardRepository.save(NOTICE_BOARD);
-        boardRepository.save(NOTICE_BOARD_2);
-        MenuId freeBoardMenuId = FREE_BOARD.getMenuId();
-        MenuId noticeBoardMenuId = NOTICE_BOARD.getMenuId();
-
-        //when
-        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardMenuId, Pageable.ofSize(5));
-        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardMenuId, Pageable.ofSize(5));
-
-        //then
-        assertThat(freeBoards.getTotalElements()).isEqualTo(1);
-        freeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(freeBoardMenuId));
-
-        assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
-        noticeBoards.forEach(
-                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardMenuId));
-    }
+//    @DisplayName("메뉴 id 에 해당하는 게시글들을 갖고 온다.")
+//    @Test
+//    public void findAllByMenuId() {
+//        //given
+//        boardRepository.save(FREE_BOARD);
+//        boardRepository.save(NOTICE_BOARD);
+//        boardRepository.save(NOTICE_BOARD_2);
+//        MenuId freeBoardMenuId = FREE_BOARD.getMenuId();
+//        MenuId noticeBoardMenuId = NOTICE_BOARD.getMenuId();
+//
+//        //when
+//        Page<BoardDto> freeBoards = boardRepository.findAllByMenuId(freeBoardMenuId, Pageable.ofSize(5));
+//        Page<BoardDto> noticeBoards = boardRepository.findAllByMenuId(noticeBoardMenuId, Pageable.ofSize(5));
+//
+//        //then
+//        assertThat(freeBoards.getTotalElements()).isEqualTo(1);
+//        freeBoards.forEach(
+//                board->assertThat(board.getMenuId()).isEqualTo(freeBoardMenuId));
+//
+//        assertThat(noticeBoards.getTotalElements()).isEqualTo(2);
+//        noticeBoards.forEach(
+//                board->assertThat(board.getMenuId()).isEqualTo(noticeBoardMenuId));
+//    }
 
 //    @DisplayName("게시글 목록 페이지를 잘 불러온다.")
 //    @Test

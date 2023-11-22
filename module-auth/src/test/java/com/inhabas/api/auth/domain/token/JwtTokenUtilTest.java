@@ -4,6 +4,8 @@ import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +37,8 @@ public class JwtTokenUtilTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(jwtTokenUtil, "SECRET_KEY", "TESTTESTTESTTESTTESTTEST" +
-                "TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST");
+        ReflectionTestUtils.setField(jwtTokenUtil, "SECRET_KEY", "TESTTESTTESTTESTTESTTESTTESTTEST" +
+                "TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST");
     }
 
     @DisplayName("access 토큰을 발급한다.")

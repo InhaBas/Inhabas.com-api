@@ -9,6 +9,8 @@ import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,6 +85,7 @@ public class JwtTokenUtil implements TokenUtil {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
+        final Key key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
@@ -92,7 +96,7 @@ public class JwtTokenUtil implements TokenUtil {
                 .claim(AUTHORITY, authorities)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -157,13 +161,14 @@ public class JwtTokenUtil implements TokenUtil {
 
     private TokenDto createAccessTokenOnly(Claims claims) {
         Date now = new Date();
+        final Key key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
 
         String accessToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_VALID_MILLISECOND))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()

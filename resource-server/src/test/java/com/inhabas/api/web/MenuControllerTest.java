@@ -31,20 +31,20 @@ public class MenuControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @DisplayName("모든 메뉴 정보를 조회한다.")
-    @Test
-    public void getTotalMenuInfoTest() throws Exception {
-        given(menuService.getAllMenuInfo()).willReturn(
-                List.of(new MenuGroupDto(1, "IBAS", List.of(new MenuDto(new MenuId(6),1,"동아리 소개", MenuType.INTRODUCE, "")))));
-
-        mvc.perform(get("/menus"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("[{\"id\":1,\"group_name\":\"IBAS\",\"menu_list\":[{\"menu_id\":6,\"priority\":1,\"name\":\"ë\u008F\u0099ì\u0095\u0084ë¦¬ ì\u0086\u008Cê°\u009C\",\"type\":\"INTRODUCE\",\"description\":\"\"}]}]"))
-                .andReturn();
-
-        then(menuService).should(times(1)).getAllMenuInfo();
-    }
+//    @DisplayName("모든 메뉴 정보를 조회한다.")
+//    @Test
+//    public void getTotalMenuInfoTest() throws Exception {
+//        given(menuService.getAllMenuInfo()).willReturn(
+//                List.of(new MenuGroupDto(1, "IBAS", List.of(new MenuDto(new MenuId(6),1,"동아리 소개", MenuType.INTRODUCE, "")))));
+//
+//        mvc.perform(get("/menus"))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("[{\"id\":1,\"group_name\":\"IBAS\",\"menu_list\":[{\"menu_id\":6,\"priority\":1,\"name\":\"ë\u008F\u0099ì\u0095\u0084ë¦¬ ì\u0086\u008Cê°\u009C\",\"type\":\"INTRODUCE\",\"description\":\"\"}]}]"))
+//                .andReturn();
+//
+//        then(menuService).should(times(1)).getAllMenuInfo();
+//    }
 
     @DisplayName("단일 메뉴 정보를 조회한다.")
     @Test

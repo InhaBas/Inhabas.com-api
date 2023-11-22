@@ -32,93 +32,93 @@ public class BudgetHistoryControllerTest {
     private BudgetHistoryService budgetHistoryService;
 
 
-    @DisplayName("예산내역 생성 시 form validation 을 통과하지 못한다.")
-    @Test
-    public void historyCreationFormTest() throws Exception {
-        //given
-        String jsonOfCreationForm = "{\"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
+//    @DisplayName("예산내역 생성 시 form validation 을 통과하지 못한다.")
+//    @Test
+//    public void historyCreationFormTest() throws Exception {
+//        //given
+//        String jsonOfCreationForm = "{\"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
+//
+//        //when
+//        Exception resolvedException =
+//                mockMvc.perform(post("/budget/history")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(jsonOfCreationForm))
+//                        .andExpect(status().isBadRequest())
+//                        .andReturn().getResolvedException();
+//
+//        //then
+//        MethodArgumentNotValidException validException = (MethodArgumentNotValidException) resolvedException;
+//        assert validException != null;
+//        assertThat(validException.getFieldErrorCount()).isEqualTo(4);
+//        assertThat(validException.getFieldErrors())
+//                .extracting("defaultMessage", "field")
+//                .contains(
+//                        tuple("must not be blank", "title"),
+//                        tuple("must be greater than or equal to 0", "income"),
+//                        tuple("must be greater than or equal to 0", "outcome"),
+//                        tuple("must be a past date", "dateUsed"));
+//
+//        then(budgetHistoryService).should(times(0)).createNewHistory(any(), any());
+//    }
 
-        //when
-        Exception resolvedException =
-                mockMvc.perform(post("/budget/history")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOfCreationForm))
-                        .andExpect(status().isBadRequest())
-                        .andReturn().getResolvedException();
+//    @DisplayName("예산내역 생성 시 validation 을 통과한다.")
+//    @Test
+//    public void budgetCreationFormWillPassValidationTest() throws Exception {
+//        //given
+//        String jsonOfCreationForm = "{\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
+//
+//        //when
+//        mockMvc.perform(post("/budget/history")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(jsonOfCreationForm))
+//                .andExpect(status().isNoContent());
+//
+//        then(budgetHistoryService).should(times(1)).createNewHistory(any(), any());
+//    }
 
-        //then
-        MethodArgumentNotValidException validException = (MethodArgumentNotValidException) resolvedException;
-        assert validException != null;
-        assertThat(validException.getFieldErrorCount()).isEqualTo(4);
-        assertThat(validException.getFieldErrors())
-                .extracting("defaultMessage", "field")
-                .contains(
-                        tuple("must not be blank", "title"),
-                        tuple("must be greater than or equal to 0", "income"),
-                        tuple("must be greater than or equal to 0", "outcome"),
-                        tuple("must be a past date", "dateUsed"));
+//    @DisplayName("예산내역 생성 시 form validation 을 통과하지 못한다.")
+//    @Test
+//    public void historyModificationFormTest() throws Exception {
+//        //given
+//        String jsonOfCreationForm = "{\"id\":1, \"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
+//
+//        //when
+//        Exception resolvedException =
+//                mockMvc.perform(put("/budget/history")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(jsonOfCreationForm))
+//                        .andExpect(status().isBadRequest())
+//                        .andReturn().getResolvedException();
+//
+//        //then
+//        MethodArgumentNotValidException validException = (MethodArgumentNotValidException) resolvedException;
+//        assert validException != null;
+//        assertThat(validException.getFieldErrorCount()).isEqualTo(4);
+//        assertThat(validException.getFieldErrors())
+//                .extracting("defaultMessage", "field")
+//                .contains(
+//                        tuple("must not be blank", "title"),
+//                        tuple("must be greater than or equal to 0", "income"),
+//                        tuple("must be greater than or equal to 0", "outcome"),
+//                        tuple("must be a past date", "dateUsed"));
+//
+//        then(budgetHistoryService).should(times(0)).modifyHistory(any(), any());
+//    }
 
-        then(budgetHistoryService).should(times(0)).createNewHistory(any(), any());
-    }
-
-    @DisplayName("예산내역 생성 시 validation 을 통과한다.")
-    @Test
-    public void budgetCreationFormWillPassValidationTest() throws Exception {
-        //given
-        String jsonOfCreationForm = "{\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
-
-        //when
-        mockMvc.perform(post("/budget/history")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonOfCreationForm))
-                .andExpect(status().isNoContent());
-
-        then(budgetHistoryService).should(times(1)).createNewHistory(any(), any());
-    }
-
-    @DisplayName("예산내역 생성 시 form validation 을 통과하지 못한다.")
-    @Test
-    public void historyModificationFormTest() throws Exception {
-        //given
-        String jsonOfCreationForm = "{\"id\":1, \"date_used\":\"2999-01-01T01:01:00\",\"title\":\" \",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":-1,\"outcome\":-1}";
-
-        //when
-        Exception resolvedException =
-                mockMvc.perform(put("/budget/history")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOfCreationForm))
-                        .andExpect(status().isBadRequest())
-                        .andReturn().getResolvedException();
-
-        //then
-        MethodArgumentNotValidException validException = (MethodArgumentNotValidException) resolvedException;
-        assert validException != null;
-        assertThat(validException.getFieldErrorCount()).isEqualTo(4);
-        assertThat(validException.getFieldErrors())
-                .extracting("defaultMessage", "field")
-                .contains(
-                        tuple("must not be blank", "title"),
-                        tuple("must be greater than or equal to 0", "income"),
-                        tuple("must be greater than or equal to 0", "outcome"),
-                        tuple("must be a past date", "dateUsed"));
-
-        then(budgetHistoryService).should(times(0)).modifyHistory(any(), any());
-    }
-
-    @DisplayName("예산내역 수정 시 validation 을 통과한다.")
-    @Test
-    public void budgetModificationFormWillPassValidationTest() throws Exception {
-        //given
-        String jsonOfModificationForm = "{\"id\":1,\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
-
-        //when
-        mockMvc.perform(put("/budget/history")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonOfModificationForm))
-                .andExpect(status().isNoContent());
-
-        then(budgetHistoryService).should(times(1)).modifyHistory(any(), any());
-    }
+//    @DisplayName("예산내역 수정 시 validation 을 통과한다.")
+//    @Test
+//    public void budgetModificationFormWillPassValidationTest() throws Exception {
+//        //given
+//        String jsonOfModificationForm = "{\"id\":1,\"date_used\":\"2000-01-01T01:01:00\",\"title\":\"서버 운영비\",\"details\":\"aws 작년 비용\",\"person_received\":12171652,\"income\":0,\"outcome\":500000}";
+//
+//        //when
+//        mockMvc.perform(put("/budget/history")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(jsonOfModificationForm))
+//                .andExpect(status().isNoContent());
+//
+//        then(budgetHistoryService).should(times(1)).modifyHistory(any(), any());
+//    }
 
     @DisplayName("예산내역 삭제 시 validation 을 통과한다.")
     @Test

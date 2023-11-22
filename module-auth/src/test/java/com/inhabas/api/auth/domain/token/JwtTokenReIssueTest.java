@@ -33,13 +33,10 @@ public class JwtTokenReIssueTest {
     private HttpServletRequest request;
 
     @Mock
-    private String refreshToken;
-
-    @Mock
     private TokenResolver tokenResolver;
 
     @Mock
-    private JwtTokenUtil JwtTokenUtil; //= new JwtTokenProvider(refreshTokenRepository);
+    private JwtTokenUtil JwtTokenUtil;
 
 
     @DisplayName("accessToken 을 재발급한다.")
@@ -51,7 +48,7 @@ public class JwtTokenReIssueTest {
         given(JwtTokenUtil.validate(any())).willReturn(true);
 
         //when
-        tokenReIssuer.reissueAccessToken(refreshToken);
+        tokenReIssuer.reissueAccessToken("refreshToken");
 
         //then
         then(JwtTokenUtil).should(times(1)).reissueAccessTokenUsing(any());
@@ -67,7 +64,7 @@ public class JwtTokenReIssueTest {
 
         //when
         assertThrows(RefreshTokenNotFoundException.class,
-                () -> tokenReIssuer.reissueAccessToken(refreshToken));
+                () -> tokenReIssuer.reissueAccessToken("refreshToken"));
     }
 
     @DisplayName("유효하지 않은 refreshToken 은 InvalidJwtTokenException")
@@ -78,6 +75,6 @@ public class JwtTokenReIssueTest {
 
         //when
         assertThrows(InvalidTokenException.class,
-                () -> tokenReIssuer.reissueAccessToken(refreshToken));
+                () -> tokenReIssuer.reissueAccessToken("refreshToken"));
     }
 }
