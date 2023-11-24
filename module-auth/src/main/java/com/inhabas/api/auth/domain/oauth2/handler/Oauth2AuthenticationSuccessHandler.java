@@ -1,27 +1,27 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
-import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
-
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenUtil;
-import java.io.IOException;
-import java.util.Set;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Set;
+
+import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 
 @RequiredArgsConstructor
@@ -58,7 +58,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        String targetUrl = "";
+        String targetUrl;
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
         if (roles.contains(ROLE_SIGNING_UP)) {
             targetUrl = SIGNUP_URL;
@@ -80,10 +80,10 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .getImageUrl();
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("access_token", tokenUtil.createAccessToken(authentication))
-                .queryParam("refresh_token", tokenUtil.createRefreshToken(authentication))
-                .queryParam("expires_in", tokenUtil.getExpiration())
-                .queryParam("image_url", imageUrl)
+                .queryParam("accessToken", tokenUtil.createAccessToken(authentication))
+                .queryParam("refreshToken", tokenUtil.createRefreshToken(authentication))
+                .queryParam("expiresIn", tokenUtil.getExpiration())
+                .queryParam("imageUrl", imageUrl)
                 .build().toUriString();
     }
 

@@ -90,8 +90,8 @@ public class Oauth2AuthenticationSuccessHandlerTest {
 
         //then
         assertThat(response.getRedirectedUrl())
-                .contains("https://www.inhabas.com", "access_token", "refresh_token", "expires_in",
-                        "image_url");
+                .contains("https://www.inhabas.com", "accessToken", "refreshToken", "expiresIn",
+                        "imageUrl");
     }
 
     @DisplayName("SuccessHandler 호출 시, ROLE_SIGNING_UP 이라면 SIGNUP_URL 로 리다이렉트 된다.")
@@ -115,8 +115,8 @@ public class Oauth2AuthenticationSuccessHandlerTest {
 
         //then
         assertThat(response.getRedirectedUrl())
-                .contains("http://localhost:8080/signup", "access_token", "refresh_token", "expires_in",
-                        "image_url");
+                .contains("http://localhost:8080/signup", "accessToken", "refreshToken", "expiresIn",
+                        "imageUrl");
     }
 
 

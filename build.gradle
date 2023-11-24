@@ -46,6 +46,7 @@ subprojects {
                 'org.springframework.boot:spring-boot-starter-web',
                 'org.springframework.boot:spring-boot-starter-validation',
                 'org.springdoc:springdoc-openapi-ui:1.6.0',
+                'com.google.code.findbugs:jsr305:3.0.2',
 
                 // cloud config
                 'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
