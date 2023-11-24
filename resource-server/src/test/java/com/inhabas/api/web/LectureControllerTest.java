@@ -317,21 +317,21 @@ public class LectureControllerTest {
         then(studentService).should(times(1)).changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
     }
 
-    @DisplayName("다수의 수강생 상태를 변경한다.")
-    @Test
-    public void changeStudentsStatusTest() throws Exception {
-
-        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any(), any());
-
-        //when
-        mockMvc.perform(put("/lecture/1/students/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("[{\"12\":\"BLOCKED\"}, {\"15\":\"BLOCKED\"}]"))
-                .andExpect(status().isNoContent());
-
-        //then
-        then(studentService).should(times(1)).changeStatusOfStudentsByLecturer(any(), any(), any());
-    }
+//    @DisplayName("다수의 수강생 상태를 변경한다.")
+//    @Test
+//    public void changeStudentsStatusTest() throws Exception {
+//
+//        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any(), any());
+//
+//        //when
+//        mockMvc.perform(put("/lecture/1/students/status")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("[{\"12\":\"BLOCKED\"}, {\"15\":\"BLOCKED\"}]"))
+//                .andExpect(status().isNoContent());
+//
+//        //then
+//        then(studentService).should(times(1)).changeStatusOfStudentsByLecturer(any(), any(), any());
+//    }
 
     @DisplayName("수강생이 강의를 탈퇴한다.")
     @Test

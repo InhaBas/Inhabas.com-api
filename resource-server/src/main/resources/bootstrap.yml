@@ -1,9 +1,17 @@
 spring:
   application:
     name: api
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
   cloud:
     config:
       uri: http://localhost:8888
+
 management:
   endpoints:
     web:
@@ -14,11 +22,13 @@ management:
 spring:
   config:
     activate:
-      on-profile: local, default_mvc_test, no_security_mvc_test, test
+      on-profile: local
   cloud:
-    discovery:
-      enabled: false
     config:
-      enabled: false
-      discovery:
-        enabled: false
+      uri: http://localhost:8888
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
