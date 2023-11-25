@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.budget.repository;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
-import com.inhabas.api.domain.member.domain.entity.QMember;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -98,7 +98,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
                                 memberInCharge.name.value
                         ))
                 .from(budgetHistory)
-                .innerJoin(memberInCharge).on(memberInCharge.id.id.eq(budgetHistory.personInCharge.id))
-                .innerJoin(memberReceived).on(memberReceived.id.id.eq(budgetHistory.personReceived.id));
+                .innerJoin(memberInCharge).on(memberInCharge.studentId.id.eq(budgetHistory.personInCharge.id))
+                .innerJoin(memberReceived).on(memberReceived.studentId.id.eq(budgetHistory.personReceived.id));
     }
 }

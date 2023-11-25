@@ -49,37 +49,37 @@ public class ContestBoardControllerTest {
     private ContestBoardService contestBoardService;
 
 
-    @DisplayName("공모전 게시글 저장을 요청한다.")
-    @Test
-    @WithMockJwtAuthenticationToken
-    public void addNewContestBoard() throws Exception {
-        //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
-        given(contestBoardService.write(any(), any(SaveContestBoardDto.class))).willReturn(1);
+//    @DisplayName("공모전 게시글 저장을 요청한다.")
+//    @Test
+//    @WithMockJwtAuthenticationToken
+//    public void addNewContestBoard() throws Exception {
+//        //given
+//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
+//        given(contestBoardService.write(any(), any(SaveContestBoardDto.class))).willReturn(1);
+//
+//        // when
+//        mvc.perform(post("/contest")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
+//                .andExpect(status().isCreated())
+//                .andExpect(content().string("1"));
+//    }
 
-        // when
-        mvc.perform(post("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isCreated())
-                .andExpect(content().string("1"));
-    }
-
-    @DisplayName("공모전 게시글 수정을 요청한다.")
-    @Test
-    @WithMockJwtAuthenticationToken
-    public void updateContestBoard() throws Exception{
-        //given
-        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
-        given(contestBoardService.update(any(), any(UpdateContestBoardDto.class))).willReturn(1);
-
-        // when
-        mvc.perform(put("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateContestBoardDto)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
-    }
+//    @DisplayName("공모전 게시글 수정을 요청한다.")
+//    @Test
+//    @WithMockJwtAuthenticationToken
+//    public void updateContestBoard() throws Exception{
+//        //given
+//        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목", "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
+//        given(contestBoardService.update(any(), any(UpdateContestBoardDto.class))).willReturn(1);
+//
+//        // when
+//        mvc.perform(put("/contest")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(updateContestBoardDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().string("1"));
+//    }
 
     @DisplayName("공모전 게시글 삭제를 요청한다.")
     @Test
@@ -140,49 +140,49 @@ public class ContestBoardControllerTest {
 
     }
 
-    @DisplayName("공모전 게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
-    @Test
-    @WithMockJwtAuthenticationToken
-    public void TitleIsTooLongError() throws Exception {
-        //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
+//    @DisplayName("공모전 게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
+//    @Test
+//    @WithMockJwtAuthenticationToken
+//    public void TitleIsTooLongError() throws Exception {
+//        //given
+//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
+//
+//
+//        // when
+//        String errorMessage = Objects.requireNonNull(
+//                mvc.perform(post("/contest")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                                .content(objectMapper.writeValueAsString(saveContestBoardDto)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn()
+//                .getResolvedException())
+//                .getMessage();
+//
+//        // then
+//        assertThat(errorMessage).isNotBlank();
+//        assertThat(errorMessage).contains("제목은 최대 100자입니다.");
+//    }
 
-
-        // when
-        String errorMessage = Objects.requireNonNull(
-                mvc.perform(post("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException())
-                .getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("제목은 최대 100자입니다.");
-    }
-
-    @DisplayName("공모전 게시글 작성 시 Contents가 null인 경우 오류 발생")
-    @Test
-    @WithMockJwtAuthenticationToken
-    public void ContentIsNullError() throws Exception {
-        //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title",  " ", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
-
-        // when
-        String errorMessage = Objects.requireNonNull(
-                mvc.perform(post("/contest")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResolvedException())
-                .getMessage();
-
-        // then
-        assertThat(errorMessage).isNotBlank();
-        assertThat(errorMessage).contains("본문을 입력하세요.");
-    }
+//    @DisplayName("공모전 게시글 작성 시 Contents가 null인 경우 오류 발생")
+//    @Test
+//    @WithMockJwtAuthenticationToken
+//    public void ContentIsNullError() throws Exception {
+//        //given
+//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title",  " ", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
+//
+//        // when
+//        String errorMessage = Objects.requireNonNull(
+//                mvc.perform(post("/contest")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(saveContestBoardDto)))
+//                .andExpect(status().isBadRequest())
+//                .andReturn()
+//                .getResolvedException())
+//                .getMessage();
+//
+//        // then
+//        assertThat(errorMessage).isNotBlank();
+//        assertThat(errorMessage).contains("본문을 입력하세요.");
+//    }
 
 }

@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.budget.usecase;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
 import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
@@ -7,7 +8,6 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,8 +44,8 @@ public class BudgetHistoryServiceTest {
         //given
         BudgetHistoryCreateForm form = new BudgetHistoryCreateForm(
                 LocalDateTime.of(2000, 1, 1, 1, 1, 1),
-                "서버운영비", "aws 작년 서버비용", 12345678, 0, 500000);
-        MemberId cfo = new MemberId(12171652);
+                "서버운영비", "aws 작년 서버비용", "12345678", 0, 500000);
+        StudentId cfo = new StudentId("12171652");
         given(repository.save(any(BudgetHistory.class))).willReturn(null);
 
         //when
@@ -59,14 +59,14 @@ public class BudgetHistoryServiceTest {
     @Test
     public void modifyBudgetHistoryTest() {
         //when
-        MemberId CFO = new MemberId(12171652);
+        StudentId CFO = new StudentId("12171652");
         BudgetHistory history = BudgetHistory.builder()
                 .title("서버 운영비")
                 .details("작년 aws 운영 비용")
                 .income(0)
                 .outcome(500000)
                 .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
-                .personReceived(new MemberId(10982942))
+                .personReceived(new StudentId("10982942"))
                 .personInCharge(CFO)
                 .build();
         ReflectionTestUtils.setField(history, "id", 1);
@@ -75,7 +75,7 @@ public class BudgetHistoryServiceTest {
         //when
         BudgetHistoryModifyForm form = new BudgetHistoryModifyForm(
                 LocalDateTime.of(2000, 1, 1, 1, 1, 1),
-                "서버운영비", "aws 작년 서버비용", 12345678, 0, 500000, 1);
+                "서버운영비", "aws 작년 서버비용", "12345678", 0, 500000, 1);
         budgetHistoryService.modifyHistory(form, CFO);
 
         //then
@@ -87,15 +87,15 @@ public class BudgetHistoryServiceTest {
     @Test
     public void cannotModifyBudgetHistoryOfOtherCFO() {
         //given
-        MemberId previousCFO = new MemberId(12171652);
-        MemberId currentCFO = new MemberId(99999999);
+        StudentId previousCFO = new StudentId("12171652");
+        StudentId currentCFO = new StudentId("99999999");
         BudgetHistory history = BudgetHistory.builder()
                 .title("서버 운영비")
                 .details("작년 aws 운영 비용")
                 .income(0)
                 .outcome(500000)
                 .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
-                .personReceived(new MemberId(10982942))
+                .personReceived(new StudentId("10982942"))
                 .personInCharge(previousCFO)
                 .build();
         ReflectionTestUtils.setField(history, "id", 1);
@@ -104,7 +104,7 @@ public class BudgetHistoryServiceTest {
         //when
         BudgetHistoryModifyForm form = new BudgetHistoryModifyForm(
                 LocalDateTime.of(2000, 1, 1, 1, 1, 1),
-                "서버운영비", "aws 작년 서버비용", 12345678, 0, 500000, 1);
+                "서버운영비", "aws 작년 서버비용", "12345678", 0, 500000, 1);
         Assertions.assertThrows(AccessDeniedException.class,
                 () -> budgetHistoryService.modifyHistory(form, currentCFO));
     }
@@ -118,16 +118,16 @@ public class BudgetHistoryServiceTest {
         //when
         BudgetHistoryModifyForm form = new BudgetHistoryModifyForm(
                 LocalDateTime.of(2000, 1, 1, 1, 1, 1),
-                "서버운영비", "aws 작년 서버비용", 12345678, 0, 500000, 1);
+                "서버운영비", "aws 작년 서버비용", "12345678", 0, 500000, 1);
         Assertions.assertThrows(BudgetHistoryNotFoundException.class,
-                () -> budgetHistoryService.modifyHistory(form, new MemberId(12171652)));
+                () -> budgetHistoryService.modifyHistory(form, new StudentId("12171652")));
     }
 
     @DisplayName("총무가 회계 내역을 삭제한다.")
     @Test
     public void deleteBudgetHistoryTest() {
         //given
-        MemberId CFO = new MemberId(12171652);
+        StudentId CFO = new StudentId("12171652");
         Integer historyId = 1;
         BudgetHistory history = BudgetHistory.builder()
                 .title("서버 운영비")
@@ -135,7 +135,7 @@ public class BudgetHistoryServiceTest {
                 .income(0)
                 .outcome(500000)
                 .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
-                .personReceived(new MemberId(10982942))
+                .personReceived(new StudentId("10982942"))
                 .personInCharge(CFO)
                 .build();
         ReflectionTestUtils.setField(history, "id", historyId);
@@ -153,8 +153,8 @@ public class BudgetHistoryServiceTest {
     @Test
     public void cannotDeleteBudgetHistoryTest() {
         //given
-        MemberId previousCFO = new MemberId(12171652);
-        MemberId currentCFO = new MemberId(99999999);
+        StudentId previousCFO = new StudentId("12171652");
+        StudentId currentCFO = new StudentId("99999999");
         Integer historyId = 1;
         BudgetHistory history = BudgetHistory.builder()
                 .title("서버 운영비")
@@ -162,7 +162,7 @@ public class BudgetHistoryServiceTest {
                 .income(0)
                 .outcome(500000)
                 .dateUsed(LocalDateTime.of(2000, 1, 1, 1, 1, 1))
-                .personReceived(new MemberId(10982942))
+                .personReceived(new StudentId("10982942"))
                 .personInCharge(previousCFO)
                 .build();
         ReflectionTestUtils.setField(history, "id", historyId);
@@ -184,7 +184,7 @@ public class BudgetHistoryServiceTest {
 
         //when
         Assertions.assertThrows(BudgetHistoryNotFoundException.class,
-                () -> budgetHistoryService.deleteHistory(1, new MemberId(12171652)));
+                () -> budgetHistoryService.deleteHistory(1, new StudentId("12171652")));
 
         //then
         then(repository).should(times(1)).findById(anyInt());

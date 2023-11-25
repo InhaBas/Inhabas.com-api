@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Profile;
 import javax.sql.DataSource;
 
 @Slf4j
-@Profile("local")
+@Profile("local_ssh")
 @Configuration
 @RequiredArgsConstructor
 public class SshDataSourceConfig {

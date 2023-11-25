@@ -6,8 +6,8 @@ import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.repository.CommentRepository;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -29,7 +29,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Transactional
-    public Integer create(CommentSaveDto commentSaveDto, MemberId writerId) {
+    public Integer create(CommentSaveDto commentSaveDto, StudentId writerId) {
 
         NormalBoard parentBoard = em.getReference(NormalBoard.class, commentSaveDto.getBoardId());
         Member writer = em.getReference(Member.class, writerId);
@@ -45,22 +45,22 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Transactional
-    public Integer update(CommentUpdateDto commentUpdateDto, MemberId memberId) {
+    public Integer update(CommentUpdateDto commentUpdateDto, StudentId studentId) {
 
         Integer id = commentUpdateDto.getCommentId();
         Comment OldComment = commentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        return OldComment.update(commentUpdateDto.getContents(), memberId);
+        return OldComment.update(commentUpdateDto.getContents(), studentId);
     }
 
     @Transactional
-    public void delete(Integer id, MemberId memberId) {
+    public void delete(Integer id, StudentId studentId) {
 
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (comment.isWrittenBy(memberId))
+        if (comment.isWrittenBy(studentId))
             commentRepository.deleteById(id);
         else
             throw new RuntimeException("다른 사람이 쓴 댓글은 수정할 수 없습니다.");

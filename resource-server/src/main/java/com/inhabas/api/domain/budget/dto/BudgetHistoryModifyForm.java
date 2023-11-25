@@ -15,7 +15,7 @@ public class BudgetHistoryModifyForm extends BudgetHistoryCreateForm {
     private Integer id;
 
     public BudgetHistoryModifyForm(LocalDateTime dateUsed, String title,
-            String details, Integer personReceived, Integer income, Integer outcome,
+            String details, String personReceived, Integer income, Integer outcome,
             Integer historyId) {
         super(dateUsed, title, details, personReceived, income, outcome);
         this.id = historyId;

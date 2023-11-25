@@ -2,8 +2,7 @@ package com.inhabas.api.domain.contest.repository;
 
 
 import static com.inhabas.api.domain.contest.domain.QContestBoard.contestBoard;
-import static com.inhabas.api.domain.member.domain.entity.QMember.member;
-
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
 import com.inhabas.api.domain.contest.dto.ListContestBoardDto;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
@@ -44,7 +43,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             contestBoard.dateUpdated
                         ))
                 .from(contestBoard)
-                .innerJoin(member).on(contestBoard.writerId.eq(member.id))
+                .innerJoin(member).on(contestBoard.writerId.eq(member.studentId))
                 .limit(1)
                 .fetchOne());
     }

@@ -1,15 +1,15 @@
 package com.inhabas.api.domain.member.usecase;
 
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.member.dto.AnswerDto;
 
 import java.util.List;
 
 public interface AnswerService {
 
-    void saveAnswers(List<AnswerDto> submittedAnswers, MemberId memberId);
+    void saveAnswers(List<AnswerDto> submittedAnswers, StudentId studentId);
 
-    List<AnswerDto> getAnswers(MemberId memberId);
+    List<AnswerDto> getAnswers(Long memberId);
 
-    boolean existAnswersWrittenBy(MemberId memberId);
+    boolean existAnswersWrittenBy(StudentId studentId);
 }

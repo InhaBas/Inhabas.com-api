@@ -1,8 +1,8 @@
 package com.inhabas.api.web.argumentResolver;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
@@ -60,7 +60,7 @@ public class ArgumentResolverTest {
 
         // jwt 토큰 인증 결과
         JwtAuthenticationResult authentication =
-                new JwtAuthenticationResult(uid, "google", "my@gmail.com", Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+                new JwtAuthenticationResult(1L, uid, "google", "my@gmail.com", Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
 
         //oauth2Info 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -129,25 +129,25 @@ public class ArgumentResolverTest {
     @Test
     public void successToInjectJwtTokenIntegerIdIntoArguments() {
         //given
-        MemberId memberId = new MemberId(12171652);
+        StudentId StudentId = new StudentId("12171652");
 
         // jwt 토큰 인증 결과
         JwtAuthenticationResult authentication =
-                new JwtAuthenticationResult("123135135", "google", "my@gmail.com",  Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
-        authentication.setPrincipal(memberId);
+                new JwtAuthenticationResult(1L, "12943275193", "google", "my@gmail.com",  Collections.singleton(new SimpleGrantedAuthority("ROLE_MEMBER")));
+        authentication.setPrincipal(StudentId);
 
         //authentication 객체를 컨텍스트에 설정. 최종 인증 끝
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Mockito.doReturn(MemberId.class).when(parameter).getParameterType();
+        Mockito.doReturn(StudentId.class).when(parameter).getParameterType();
 
         //when
         Object profileId = loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
 
         // then
         Assertions.assertThat(profileId).isNotNull();
-        Assertions.assertThat(profileId).isEqualTo(memberId);
-        Assertions.assertThat(profileId).isInstanceOf(MemberId.class);
+        Assertions.assertThat(profileId).isEqualTo(StudentId);
+        Assertions.assertThat(profileId).isInstanceOf(StudentId.class);
     }
 
     @Disabled

@@ -3,7 +3,7 @@ package com.inhabas.api.domain.lecture.domain;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.lecture.domain.converter.StudentStatusConverter;
 import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,23 +24,23 @@ public class Student extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "user_id", updatable = false, nullable = false))
-    private MemberId memberId;
+    private StudentId studentId;
 
     @Convert(converter = StudentStatusConverter.class)
     @Column(columnDefinition = "TINYINT(4)")
     private StudentStatus status;
 
-    public Student(Lecture lecture, MemberId memberId) {
+    public Student(Lecture lecture, StudentId studentId) {
 
-        if (lecture.isHeldBy(memberId))
+        if (lecture.isHeldBy(studentId))
             throw new IllegalArgumentException("강의자는 자신의 강의에 수강생으로 등록될 수 없습니다.");
 
         this.lecture = lecture;
-        this.memberId = memberId;
+        this.studentId = studentId;
         this.status = StudentStatus.PROGRESS;
     }
 
-    public Student changeStatusByLecturer(StudentStatus status, MemberId lecturerId) {
+    public Student changeStatusByLecturer(StudentStatus status, StudentId lecturerId) {
 
         if (!lecture.isHeldBy(lecturerId))
             throw new AccessDeniedException("강의자만 수강생 정보를 변경할 수 있습니다");

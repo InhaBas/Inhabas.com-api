@@ -1,25 +1,13 @@
 package com.inhabas.api.domain.board.usecase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.anyInt;
-import static org.mockito.BDDMockito.doNothing;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.times;
-
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
 import com.inhabas.api.domain.board.dto.UpdateBoardDto;
 import com.inhabas.api.domain.board.repository.NormalBoardRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +22,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -61,7 +58,7 @@ public class BoardServiceTest {
         given(boardRepository.save(any())).willReturn(normalBoard);
 
         // when
-        Integer returnedId = boardService.write(new MemberId(12201863), saveBoardDto);
+        Integer returnedId = boardService.write(new StudentId("12201863"), saveBoardDto);
 
         // then
         then(boardRepository).should(times(1)).save(any());
@@ -115,7 +112,7 @@ public class BoardServiceTest {
     @Test
     public void deleteBoard() {
         //given
-        MemberId writer = new MemberId(12201863);
+        StudentId writer = new StudentId("12201863");
         NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(writer);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
         doNothing().when(boardRepository).deleteById(any());
@@ -131,7 +128,7 @@ public class BoardServiceTest {
     @Test
     public void updateBoard() {
         //given
-        MemberId memberId = new MemberId(12201863);
+        StudentId memberId = new StudentId("12201863");
         NormalBoard savedNormalBoard = new NormalBoard("Origin Title",
                 "Origin Contents").writtenBy(memberId);
         NormalBoard updatedNormalBoard = new NormalBoard("Title", "Contents").writtenBy(
@@ -153,8 +150,8 @@ public class BoardServiceTest {
     @Test
     public void failToUpdateBoard() {
         //given
-        MemberId badUser = new MemberId(44444444);
-        MemberId originWriter = new MemberId(12201863);
+        StudentId badUser = new StudentId("44444444");
+        StudentId originWriter = new StudentId("12201863");
         NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(originWriter);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
 
@@ -167,8 +164,8 @@ public class BoardServiceTest {
     @Test
     public void failToDeleteBoard() {
         //given
-        MemberId badUser = new MemberId(44444444);
-        MemberId originWriter = new MemberId(12201863);
+        StudentId badUser = new StudentId("44444444");
+        StudentId originWriter = new StudentId("12201863");
         NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(originWriter);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
 

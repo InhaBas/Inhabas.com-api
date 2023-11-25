@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.board.repository;
 
 import static com.inhabas.api.domain.board.domain.QNormalBoard.normalBoard;
-import static com.inhabas.api.domain.member.domain.entity.QMember.member;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
 
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
@@ -74,6 +74,6 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
     }
 
     private BooleanExpression eqMemberId() {
-        return normalBoard.writerId.eq(member.id);
+        return normalBoard.writerId.eq(member.studentId);
     }
 }

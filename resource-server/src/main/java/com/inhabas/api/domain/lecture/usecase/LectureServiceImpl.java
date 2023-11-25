@@ -4,7 +4,7 @@ import com.inhabas.api.domain.lecture.LectureCannotModifiableException;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.dto.*;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,31 +21,31 @@ public class LectureServiceImpl implements LectureService {
 
     @Transactional
     @Override
-    public void create(LectureRegisterForm form, MemberId memberId) {
+    public void create(LectureRegisterForm form, StudentId studentId) {
 
-        Lecture lecture = form.toEntity(memberId);
+        Lecture lecture = form.toEntity(studentId);
         repository.save(lecture);
     }
 
     @Transactional
     @Override
-    public void update(LectureUpdateForm form, MemberId memberId) {
+    public void update(LectureUpdateForm form, StudentId studentId) {
 
         Lecture lecture = repository.findById(form.getId())
                 .orElseThrow(EntityNotFoundException::new);
 
-        lecture.update(memberId, form.getTitle(), form.getApplyDeadLine(), form.getDaysOfWeeks(), form.getPlace(),
+        lecture.update(studentId, form.getTitle(), form.getApplyDeadLine(), form.getDaysOfWeeks(), form.getPlace(),
                 form.getIntroduction(), form.getCurriculumDetails(), form.getParticipantsLimits(), form.getMethod());
     }
 
     @Transactional
     @Override
-    public void delete(Integer lectureId, MemberId memberId) {
+    public void delete(Integer lectureId, StudentId studentId) {
 
         Lecture lecture = repository.findById(lectureId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if (lecture.notModifiableBy(memberId))
+        if (lecture.notModifiableBy(studentId))
             throw new LectureCannotModifiableException();
 
         if (!lecture.canBeDeleted())

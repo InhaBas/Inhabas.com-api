@@ -5,7 +5,7 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +44,9 @@ public class BudgetHistoryController {
             @ApiResponse(responseCode = "401", description = "총무가 아니면 접근 불가")
     })
     public ResponseEntity<?> createNewHistory(
-            @Authenticated MemberId memberId, @Valid @RequestBody BudgetHistoryCreateForm form) {
+            @Authenticated StudentId studentId, @Valid @RequestBody BudgetHistoryCreateForm form) {
 
-        budgetHistoryService.createNewHistory(form, memberId);
+        budgetHistoryService.createNewHistory(form, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -58,9 +59,9 @@ public class BudgetHistoryController {
             @ApiResponse(responseCode = "401", description = "총무가 아니면 접근 불가, 다른 총무가 작성한 것 수정 불가")
     })
     public ResponseEntity<?> modifyHistory(
-            @Authenticated MemberId memberId, @Valid @RequestBody BudgetHistoryModifyForm form) {
+            @Authenticated StudentId studentId, @Valid @RequestBody BudgetHistoryModifyForm form) {
 
-        budgetHistoryService.modifyHistory(form, memberId);
+        budgetHistoryService.modifyHistory(form, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -73,10 +74,10 @@ public class BudgetHistoryController {
             @ApiResponse(responseCode = "401", description = "총무가 아니면 접근 불가, 다른 총무가 작성한 것 삭제 불가")
     })
     public ResponseEntity<?> deleteHistory(
-            @Authenticated MemberId memberId,
+            @Authenticated StudentId studentId,
             @PathVariable Integer historyId) {
 
-        budgetHistoryService.deleteHistory(historyId, memberId);
+        budgetHistoryService.deleteHistory(historyId, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -100,7 +101,6 @@ public class BudgetHistoryController {
     public ResponseEntity<BudgetHistoryListResponse> searchBudgetHistory(
             @Nullable @RequestParam Integer year,
             @PageableDefault(size = 15, sort = "dateUsed", direction = Direction.DESC) Pageable pageable) {
-
         BudgetHistoryListResponse response = budgetHistoryService.searchHistoryList(
                 year, pageable);
 

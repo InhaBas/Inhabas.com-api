@@ -4,7 +4,7 @@ import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
 import com.inhabas.api.domain.board.dto.UpdateBoardDto;
 import com.inhabas.api.domain.board.usecase.BoardService;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,9 +66,9 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<Integer> addBoard(
-            @Authenticated MemberId memberId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
+            @Authenticated StudentId studentId, @Valid @RequestBody SaveBoardDto saveBoardDto) {
 
-        return new ResponseEntity<>(boardService.write(memberId, saveBoardDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(boardService.write(studentId, saveBoardDto), HttpStatus.CREATED);
     }
 
     @Operation(summary = "게시글 수정")
@@ -79,9 +79,9 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<Integer> updateBoard(
-            @Authenticated MemberId memberId , @Valid @RequestBody UpdateBoardDto updateBoardDto) {
+            @Authenticated StudentId studentId, @Valid @RequestBody UpdateBoardDto updateBoardDto) {
 
-        return new ResponseEntity<>(boardService.update(memberId, updateBoardDto), HttpStatus.OK);
+        return new ResponseEntity<>(boardService.update(studentId, updateBoardDto), HttpStatus.OK);
     }
 
     @Operation(description = "게시글 삭제")
@@ -92,9 +92,9 @@ public class BoardController {
             @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
     })
     public ResponseEntity<?> deleteBoard(
-            @Authenticated MemberId memberId, @PathVariable Integer id) {
+            @Authenticated StudentId studentId, @PathVariable Integer id) {
 
-        boardService.delete(memberId, id);
+        boardService.delete(studentId, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

@@ -2,8 +2,8 @@ package com.inhabas.api.domain.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.domain.valueObject.MemberType;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,14 +17,14 @@ import javax.validation.constraints.*;
 public class SignUpDto {
 
     @NotBlank
-    @Length(max = 25)
+    @Length(max = 50)
     private String name;
 
     @NotBlank
-    @Length(max = 15)
+    @Length(max = 50)
     private String major;
 
-    @Pattern(regexp = "\\d{3}-\\d{4}-\\d{4}")
+    @Pattern(regexp = "^(010)-\\d{4}-\\d{4}$")
     private String phoneNumber;
 
     @Email
@@ -32,18 +32,18 @@ public class SignUpDto {
 
     @JsonUnwrapped
     @NotNull @Positive
-    private MemberId memberId;
+    private StudentId studentId;
 
     @NotNull
     private MemberType memberType;
 
     @Builder
-    public SignUpDto(String name, String major, String phoneNumber, String email, MemberId memberId, MemberType memberType) {
+    public SignUpDto(String name, String major, String phoneNumber, String email, StudentId studentId, MemberType memberType) {
         this.name = name;
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.email = email;
-        this.memberId = memberId;
+        this.studentId = studentId;
         this.memberType = memberType;
     }
 }

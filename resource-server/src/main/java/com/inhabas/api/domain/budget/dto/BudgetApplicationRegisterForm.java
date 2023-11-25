@@ -2,7 +2,7 @@ package com.inhabas.api.domain.budget.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +41,7 @@ public class BudgetApplicationRegisterForm {
         this.accounts = accounts;
     }
 
-    public BudgetSupportApplication toEntity(MemberId applicationWriter) {
+    public BudgetSupportApplication toEntity(StudentId applicationWriter) {
         return BudgetSupportApplication.builder()
                 .title(this.title)
                 .dateUsed(this.dateUsed)

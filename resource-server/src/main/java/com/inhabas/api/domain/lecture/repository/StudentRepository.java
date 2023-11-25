@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.lecture.repository;
 
 import com.inhabas.api.domain.lecture.domain.Student;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Integer>, StudentRepositoryCustom {
 
-    Optional<Student> findByLectureIdAndMemberId(Integer lectureId, MemberId studentId);
+    Optional<Student> findByLectureIdAndStudentId(Integer lectureId, StudentId studentId);
 
     Optional<Student> findByLectureIdAndId(Integer lectureId, Integer sid);
 

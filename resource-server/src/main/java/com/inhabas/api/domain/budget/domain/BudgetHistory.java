@@ -7,7 +7,7 @@ import com.inhabas.api.domain.budget.domain.valueObject.Account;
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
 import com.inhabas.api.domain.budget.domain.valueObject.Title;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -45,27 +45,27 @@ public class BudgetHistory extends BaseEntity {
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "person_in_charge", nullable = false))
-    private MemberId personInCharge;
+    private StudentId personInCharge;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "person_received", nullable = false))
-    private MemberId personReceived;
+    private StudentId personReceived;
 
-    public MemberId getPersonReceived() {
+    public StudentId getPersonReceived() {
         return personReceived;
     }
 
-    public MemberId getPersonInCharge() {
+    public StudentId getPersonInCharge() {
         return personInCharge;
     }
 
-    public boolean cannotModifiableBy(MemberId CFO) {
+    public boolean cannotModifiableBy(StudentId CFO) {
         return !this.personInCharge.equals(CFO);
     }
 
     @Builder
     public BudgetHistory(Integer income, Integer outcome, LocalDateTime dateUsed,
-            String title, String details, MemberId personInCharge, MemberId personReceived) {
+                         String title, String details, StudentId personInCharge, StudentId personReceived) {
         this.income = new Price(income);
         this.outcome = new Price(outcome);
         this.dateUsed = dateUsed;
@@ -75,8 +75,8 @@ public class BudgetHistory extends BaseEntity {
         this.personReceived = personReceived;
     }
 
-    public void modify(MemberId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
-            String title, String details, MemberId personReceived) {
+    public void modify(StudentId currentCFO, Integer income, Integer outcome, LocalDateTime dateUsed,
+                       String title, String details, StudentId personReceived) {
 
         if (this.id == null) {
             throw new BudgetHistoryNotFoundException("cannot modify this entity, because not persisted ever!");

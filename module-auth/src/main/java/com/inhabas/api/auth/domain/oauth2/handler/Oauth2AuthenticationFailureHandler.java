@@ -11,6 +11,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -27,7 +28,7 @@ public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
         String redirectUri = CookieUtils.resolveCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue)
-                .orElse(null);
+                .orElse("");
 
         String targetUrl = getAuthorizedTargetUrl(exception, redirectUri);
 
@@ -39,7 +40,7 @@ public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     private String getAuthorizedTargetUrl(AuthenticationException exception, String redirectUri) {
 
         StringBuilder targetUrl = new StringBuilder();
-        if (exception instanceof UnauthorizedRedirectUrlException || redirectUri.isBlank() || notAuthorized(redirectUri)) {
+        if (exception instanceof UnauthorizedRedirectUrlException || StringUtils.isBlank(redirectUri) || notAuthorized(redirectUri)) {
             targetUrl.append(authProperties.getOauth2().getDefaultRedirectUri());
         }
         else {

@@ -1,6 +1,6 @@
 package com.inhabas.testAnnotataion;
 
-import com.inhabas.api.domain.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 import java.lang.annotation.Retention;
@@ -22,9 +22,7 @@ public @interface WithMockJwtAuthenticationToken {
 
     String provider() default "google";
 
-    boolean joined() default false;
+    long memberId() default 1L; // 다른값으로 설정되지 않으면, authUser 의 member profile 을 null 로 간주.
 
-    int memberId() default 0; // 다른값으로 설정되지 않으면, authUser 의 member profile 을 null 로 간주.
-
-    Role memberRole() default Role.BASIC_MEMBER;
+    Role memberRole() default Role.BASIC;
 }

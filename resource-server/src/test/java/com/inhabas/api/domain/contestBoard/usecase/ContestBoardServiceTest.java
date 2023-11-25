@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.board.BoardCannotModifiableException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.dto.DetailContestBoardDto;
@@ -16,7 +17,6 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.dto.UpdateContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contest.usecase.ContestBoardServiceImpl;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,7 +50,7 @@ public class ContestBoardServiceTest {
     @Test
     public void createContestBoard() {
         //given
-        MemberId memberId = new MemberId(12201863);
+        StudentId StudentId = new StudentId("12201863");
         SaveContestBoardDto saveContestBoardDto =
                 new SaveContestBoardDto("title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26));
@@ -61,7 +61,7 @@ public class ContestBoardServiceTest {
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
 
         // when
-        Integer returnedId = contestBoardService.write(memberId, saveContestBoardDto);
+        Integer returnedId = contestBoardService.write(StudentId, saveContestBoardDto);
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());
@@ -125,16 +125,16 @@ public class ContestBoardServiceTest {
     @Test
     public void deleteContestBoard() {
         //given
-        MemberId memberId = new MemberId(12201863);
+        StudentId StudentId = new StudentId("12201863");
         ContestBoard contestBoard =
                 new ContestBoard("title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
-                        .writtenBy(memberId);
+                        .writtenBy(StudentId);
         given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));
         doNothing().when(contestBoardRepository).deleteById(any());
 
         // when
-        contestBoardService.delete(memberId, 1);
+        contestBoardService.delete(StudentId, 1);
 
         // then
         then(contestBoardRepository).should(times(1)).deleteById(any());
@@ -144,11 +144,11 @@ public class ContestBoardServiceTest {
     @Test
     public void updateContestBoard() {
         //given
-        MemberId memberId = new MemberId(12201863);
+        StudentId StudentId = new StudentId("12201863");
         ContestBoard expectedContestBoard =
                 new ContestBoard("title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
-                        .writtenBy(memberId);
+                        .writtenBy(StudentId);
 
         given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
         given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
@@ -158,7 +158,7 @@ public class ContestBoardServiceTest {
                 LocalDate.of(2022, 1, 26));
 
         // when
-        contestBoardService.update(memberId, updateContestBoardDto);
+        contestBoardService.update(StudentId, updateContestBoardDto);
 
         // then
         then(contestBoardRepository).should(times(1)).save(any());
@@ -168,8 +168,8 @@ public class ContestBoardServiceTest {
     @Test
     public void failToModifyTest() {
         //given
-        MemberId badUser = new MemberId(44444444);
-        MemberId originalWriter = new MemberId(12201863);
+        StudentId badUser = new StudentId("44444444");
+        StudentId originalWriter = new StudentId("12201863");
         ContestBoard expectedContestBoard =
                 new ContestBoard("title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
@@ -192,12 +192,12 @@ public class ContestBoardServiceTest {
     @Test
     public void failToDeleteTest() {
         //given
-        MemberId badUser = new MemberId(44444444);
-        MemberId memberId = new MemberId(12201863);
+        StudentId badUser = new StudentId("44444444");
+        StudentId StudentId = new StudentId("12201863");
         ContestBoard contestBoard =
                 new ContestBoard("title", "contents", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
-                        .writtenBy(memberId);
+                        .writtenBy(StudentId);
         given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));
 
         // when

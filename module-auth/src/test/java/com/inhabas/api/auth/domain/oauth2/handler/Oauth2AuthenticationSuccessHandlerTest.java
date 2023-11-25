@@ -3,7 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.handler;
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.inhabas.api.auth.domain.token.TokenProvider;
+import com.inhabas.api.auth.domain.token.TokenUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +17,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.servlet.http.Cookie;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
     private Oauth2AuthenticationSuccessHandler successHandler;
 
     @Mock
-    private TokenProvider tokenProvider;
+    private TokenUtil tokenUtil;
 
     @Mock
     private HttpCookieOAuth2AuthorizationRequestRepository requestRepository;
@@ -50,17 +51,21 @@ public class Oauth2AuthenticationSuccessHandlerTest {
     private AuthProperties.OAuth2 oAuth2Utils;
 
     private DefaultOAuth2User defaultOAuth2User;
-    private final Set<SimpleGrantedAuthority> authorities =
-            Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC_MEMBER"));
+    private final Set<SimpleGrantedAuthority> basicAuthorities =
+            Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC"));
+
+    private final Set<SimpleGrantedAuthority> signingUpAuthorities =
+            Collections.singleton(new SimpleGrantedAuthority("ROLE_SIGNING_UP"));
 
     @BeforeEach
     public void setUp() {
         given(authProperties.getOauth2()).willReturn(oAuth2Utils);
         defaultOAuth2User = new DefaultOAuth2User(
-                authorities,
+                basicAuthorities,
                 Map.of("id", 1234, "properties", "blahblah"),
                 "id"
         );
+        ReflectionTestUtils.setField(successHandler, "SIGNUP_URL", "http://localhost:8080/signup");
     }
 
 
@@ -72,7 +77,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         OAuth2AuthenticationToken authenticationToken =
-                new OAuth2AuthenticationToken(defaultOAuth2User, authorities, "google");
+                new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
 
         Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME,
                 "https://www.inhabas.com");
@@ -85,8 +90,33 @@ public class Oauth2AuthenticationSuccessHandlerTest {
 
         //then
         assertThat(response.getRedirectedUrl())
-                .contains("https://www.inhabas.com", "access_token", "refresh_token", "expires_in",
-                        "image_url");
+                .contains("https://www.inhabas.com", "accessToken", "refreshToken", "expiresIn",
+                        "imageUrl");
+    }
+
+    @DisplayName("SuccessHandler 호출 시, ROLE_SIGNING_UP 이라면 SIGNUP_URL 로 리다이렉트 된다.")
+    @Test
+    public void redirectToSignUpUrlTest() throws IOException {
+
+        //given
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        OAuth2AuthenticationToken authenticationToken =
+                new OAuth2AuthenticationToken(defaultOAuth2User, signingUpAuthorities, "google");
+
+        Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME,
+                "https://www.inhabas.com");
+        request.setCookies(redirectCookie);
+
+        given(oAuth2Utils.isAuthorizedRedirectUri(any())).willReturn(true);
+
+        //when
+        successHandler.onAuthenticationSuccess(request, response, authenticationToken);
+
+        //then
+        assertThat(response.getRedirectedUrl())
+                .contains("http://localhost:8080/signup", "accessToken", "refreshToken", "expiresIn",
+                        "imageUrl");
     }
 
 
@@ -98,7 +128,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         OAuth2AuthenticationToken authenticationToken =
-                new OAuth2AuthenticationToken(defaultOAuth2User, authorities, "google");
+                new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
 
         Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME,
                 "https://www.inhabas.com");
@@ -119,7 +149,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         OAuth2AuthenticationToken authenticationToken =
-                new OAuth2AuthenticationToken(defaultOAuth2User, authorities, "google");
+                new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
 
         Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME,
                 "https://www.inhabas.com");

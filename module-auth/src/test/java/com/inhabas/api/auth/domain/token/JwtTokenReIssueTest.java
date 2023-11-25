@@ -1,23 +1,24 @@
 package com.inhabas.api.auth.domain.token;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenProvider;
+import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenNotFoundException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtTokenReIssueTest {
@@ -31,11 +32,11 @@ public class JwtTokenReIssueTest {
     @Mock
     private HttpServletRequest request;
 
-    @Spy
+    @Mock
     private TokenResolver tokenResolver;
 
     @Mock
-    private JwtTokenProvider tokenProvider; //= new JwtTokenProvider(refreshTokenRepository);
+    private JwtTokenUtil JwtTokenUtil;
 
 
     @DisplayName("accessToken 을 재발급한다.")
@@ -44,13 +45,13 @@ public class JwtTokenReIssueTest {
 
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
-        given(tokenProvider.validate(any())).willReturn(true);
+        given(JwtTokenUtil.validate(any())).willReturn(true);
 
         //when
-        tokenReIssuer.reissueAccessToken(request);
+        tokenReIssuer.reissueAccessToken("refreshToken");
 
         //then
-        then(tokenProvider).should(times(1)).reissueAccessTokenUsing(any());
+        then(JwtTokenUtil).should(times(1)).reissueAccessTokenUsing(any());
     }
 
 
@@ -59,21 +60,21 @@ public class JwtTokenReIssueTest {
     public void refreshTokenNotFoundExceptionTest() {
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(false);
-        given(tokenProvider.validate(any())).willReturn(true);
+        given(JwtTokenUtil.validate(any())).willReturn(true);
 
         //when
         assertThrows(RefreshTokenNotFoundException.class,
-                () -> tokenReIssuer.reissueAccessToken(request));
+                () -> tokenReIssuer.reissueAccessToken("refreshToken"));
     }
 
     @DisplayName("유효하지 않은 refreshToken 은 InvalidJwtTokenException")
     @Test
     public void invalidRefreshTokenTest() {
         //given
-        given(tokenProvider.validate(any())).willReturn(false);
+        given(JwtTokenUtil.validate(any())).willReturn(false);
 
         //when
         assertThrows(InvalidTokenException.class,
-                () -> tokenReIssuer.reissueAccessToken(request));
+                () -> tokenReIssuer.reissueAccessToken("refreshToken"));
     }
 }

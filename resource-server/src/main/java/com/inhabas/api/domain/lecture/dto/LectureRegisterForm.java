@@ -2,7 +2,7 @@ package com.inhabas.api.domain.lecture.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.lecture.domain.Lecture;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,10 +55,10 @@ public class LectureRegisterForm {
         this.method = method;
     }
 
-    public Lecture toEntity(MemberId memberId) {
+    public Lecture toEntity(StudentId studentId) {
         return Lecture.builder()
                 .applyDeadline(applyDeadLine)
-                .chief(memberId)
+                .chief(studentId)
                 .daysOfWeek(daysOfWeeks)
                 .curriculumDetails(curriculumDetails)
                 .introduction(introduction)

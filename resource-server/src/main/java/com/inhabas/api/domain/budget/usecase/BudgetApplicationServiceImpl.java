@@ -9,7 +9,7 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
 
     @Transactional
     @Override
-    public void registerApplication(BudgetApplicationRegisterForm form, MemberId applicant) {
+    public void registerApplication(BudgetApplicationRegisterForm form, StudentId applicant) {
 
         BudgetSupportApplication application = form.toEntity(applicant);
         repository.save(application);
@@ -34,7 +34,7 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
 
     @Transactional
     @Override
-    public void updateApplication(BudgetApplicationUpdateForm form, MemberId applicant) {
+    public void updateApplication(BudgetApplicationUpdateForm form, StudentId applicant) {
 
         BudgetSupportApplication application = repository.findById(form.getApplicationId())
                 .orElseThrow(ApplicationNotFoundException::new);
@@ -47,7 +47,7 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
 
     @Transactional
     @Override
-    public void deleteApplication(Integer applicationId, MemberId applicant) {
+    public void deleteApplication(Integer applicationId, StudentId applicant) {
 
         BudgetSupportApplication application = repository.findById(applicationId)
                 .orElseThrow(ApplicationNotFoundException::new);

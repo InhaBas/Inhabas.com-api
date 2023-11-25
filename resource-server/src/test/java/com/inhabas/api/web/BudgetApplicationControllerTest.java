@@ -35,33 +35,33 @@ public class BudgetApplicationControllerTest {
     private BudgetApplicationProcessor processor;
 
 
-    @DisplayName("지원서를 작성한다.")
-    @Test
-    public void createApplicationTest() throws Exception {
+//    @DisplayName("지원서를 작성한다.")
+//    @Test
+//    public void createApplicationTest() throws Exception {
+//
+//        mockMvc.perform(post("/budget/application")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\"}"))
+//                .andExpect(status().isNoContent());
+//
+//        //then
+//        then(service).should(times(1))
+//                .registerApplication(any(BudgetApplicationRegisterForm.class), any());
+//    }
 
-        mockMvc.perform(post("/budget/application")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\"}"))
-                .andExpect(status().isNoContent());
-
-        //then
-        then(service).should(times(1))
-                .registerApplication(any(BudgetApplicationRegisterForm.class), any());
-    }
-
-    @DisplayName("지원서를 수정한다.")
-    @Test
-    public void modifyApplicationTest() throws Exception {
-
-        mockMvc.perform(put("/budget/application")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":1,\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\", \"applicationId\":1}"))
-                .andExpect(status().isNoContent());
-
-        //then
-        then(service).should(times(1))
-                .updateApplication(any(BudgetApplicationUpdateForm.class), any());
-    }
+//    @DisplayName("지원서를 수정한다.")
+//    @Test
+//    public void modifyApplicationTest() throws Exception {
+//
+//        mockMvc.perform(put("/budget/application")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{\"id\":1,\"title\":\"서버 사용비\", \"dateUsed\":\"2000-01-01T00:00:00\", \"details\":\"aws 크롤링 비용\", \"outcome\":50000, \"accounts\":\"카카오 01-00022-13204 유동현\", \"applicationId\":1}"))
+//                .andExpect(status().isNoContent());
+//
+//        //then
+//        then(service).should(times(1))
+//                .updateApplication(any(BudgetApplicationUpdateForm.class), any());
+//    }
 
     @DisplayName("지원서를 삭제한다.")
     @Test

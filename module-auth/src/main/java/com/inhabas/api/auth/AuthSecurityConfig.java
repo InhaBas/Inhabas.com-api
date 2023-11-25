@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.cors.CorsUtils;
 
 @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
@@ -20,6 +21,7 @@ import org.springframework.web.cors.CorsUtils;
 public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
@@ -51,29 +53,35 @@ public class AuthSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .antMatcher("/login/**")
+                .requestMatchers().antMatchers("/login/**")
+                .and()
+                // 세션 생성 금지
                 .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-                .cors().and()
+                .and()
+                .cors()
+                .and()
                 .authorizeRequests()
-                    .antMatchers("/login/refresh").permitAll()
-                    .and()
-                .csrf().and()
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                    .anyRequest().permitAll()
+                .and()
+                .csrf().disable()
+
+                // Oauth 로그인 설정
                 .oauth2Login()
+                    .authorizedClientService(authorizedClientService)
                     .authorizationEndpoint()
                         .baseUri("/login/oauth2/authorization")
                         .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                        .and()
-                        .userInfoEndpoint()
-                            .userService(customOAuth2UserService)
-                            .and()
-                    .failureHandler(oauth2AuthenticationFailureHandler)
-                    .successHandler(oauth2AuthenticationSuccessHandler)
-                    .and()
-                .authorizeRequests()
-                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    .anyRequest().permitAll();
+                .and()
+
+                // 사용자 정보를 가져오는 엔드포인트에 대한 설정
+                .userInfoEndpoint()
+                    .userService(customOAuth2UserService)
+                .and()
+                .failureHandler(oauth2AuthenticationFailureHandler)
+                .successHandler(oauth2AuthenticationSuccessHandler);
+
     }
 
 }

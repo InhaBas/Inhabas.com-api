@@ -9,6 +9,6 @@ public interface TokenResolver {
      * @param request HttpServletRequest
      * @return a resolved token from request header, otherwise null
      */
-    String resolveTokenOrNull(HttpServletRequest request);
+    String resolveAccessTokenOrNull(HttpServletRequest request);
 
 }

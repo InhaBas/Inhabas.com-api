@@ -1,8 +1,8 @@
 package com.inhabas.testAnnotataion;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,13 +22,13 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
     public SecurityContext createSecurityContext(WithMockJwtAuthenticationToken principalInfo) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        String role = principalInfo.memberRole().toString(); // 기본은 BASIC_MEMBER.
+        String role = principalInfo.memberRole().toString(); // 기본은 BASIC.
         TokenAuthenticationResult token
-                = new JwtAuthenticationResult(principalInfo.uid(), principalInfo.provider(), principalInfo.email(), Collections.singleton(new SimpleGrantedAuthority(role)));
+                = new JwtAuthenticationResult(1L, principalInfo.uid(), principalInfo.provider(), principalInfo.email(), Collections.singleton(new SimpleGrantedAuthority(role)));
         token.setAuthenticated(true);
 
         if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
-            MemberId memberId = new MemberId(principalInfo.memberId());
+            Long memberId = principalInfo.memberId();
             token.setPrincipal(memberId);
         }
 

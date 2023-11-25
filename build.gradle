@@ -46,6 +46,7 @@ subprojects {
                 'org.springframework.boot:spring-boot-starter-web',
                 'org.springframework.boot:spring-boot-starter-validation',
                 'org.springdoc:springdoc-openapi-ui:1.6.0',
+                'com.google.code.findbugs:jsr305:3.0.2',
 
                 // cloud config
                 'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
@@ -54,6 +55,7 @@ subprojects {
         )
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+        developmentOnly "org.springframework.boot:spring-boot-devtools"
         compileOnly 'org.projectlombok:lombok'
 
 
@@ -78,7 +80,8 @@ project(':module-jpa') {
                 'org.springframework.boot:spring-boot-starter-data-jpa',
                 'com.querydsl:querydsl-jpa', // query dsl
                 'com.jcraft:jsch:0.1.55',  // 로컬 개발용 db ssh tunneling, https://mavenlibs.com/maven/dependency/com.jcraft/jsch
-                'org.mariadb.jdbc:mariadb-java-client',
+//                'org.mariadb.jdbc:mariadb-java-client',
+                'mysql:mysql-connector-java',
                 'com.h2database:h2'
         )
     }
@@ -90,7 +93,6 @@ project(':module-auth') {
 
     dependencies {
         api project(':module-jpa')
-
         // jwt
         api 'io.jsonwebtoken:jjwt-api:0.11.2'
         runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
@@ -101,6 +103,7 @@ project(':module-auth') {
         // security
         api 'org.springframework.boot:spring-boot-starter-security'
         api 'org.springframework.boot:spring-boot-starter-oauth2-client'
+        api 'org.springframework.security:spring-security-core:5.1.6.RELEASE'
         api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:2.13.0'

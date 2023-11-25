@@ -1,24 +1,22 @@
 package com.inhabas.api.domain.member.usecase;
 
+import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberDuplicationChecker;
+import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.*;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.domain.member.domain.MemberService;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.MemberDuplicationChecker;
-import com.inhabas.api.domain.member.domain.valueObject.IbasInformation;
-import com.inhabas.api.domain.member.domain.valueObject.MemberType;
-import com.inhabas.api.domain.member.domain.valueObject.SchoolInformation;
-import com.inhabas.api.domain.member.domain.valueObject.Role;
-import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
+
+
+import com.inhabas.api.domain.member.domain.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.member.domain.exception.NotWriteProfileException;
 import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.majorInfo.usecase.MajorInfoService;
-import com.inhabas.api.domain.member.MemberNotFoundException;
+import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
-import com.inhabas.api.domain.member.NotWriteAnswersException;
-import com.inhabas.api.domain.member.NotWriteProfileException;
 import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
@@ -28,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +41,8 @@ public class SignUpServiceImpl implements SignUpService {
     private final SignUpScheduler signUpScheduler;
     private final MemberDuplicationChecker memberDuplicationChecker;
 
-    private static final MemberType DEFAULT_MEMBER_TYPE = MemberType.UNDERGRADUATE;
-    private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = Role.ANONYMOUS;
+    private static final MemberType DEFAULT_MEMBER_TYPE = UNDERGRADUATE;
+    private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = ANONYMOUS;
 
 
     @Override
@@ -52,7 +53,7 @@ public class SignUpServiceImpl implements SignUpService {
         SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), generation, signUpForm.getMemberType());
 
         Member member = Member.builder()
-                .id(signUpForm.getMemberId())
+                .studentId(signUpForm.getStudentId())
                 .name(signUpForm.getName())
                 .phone(signUpForm.getPhoneNumber())
                 .email(authentication.getEmail())
@@ -65,9 +66,9 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public void completeSignUp(MemberId memberId) {
+    public void completeSignUp(StudentId studentId) {
 
-        Member member = memberService.findById(memberId);
+        Member member = memberService.findById(studentId);
 
         if (notYetWroteProfile(member)) {
             throw new NotWriteProfileException();
@@ -85,7 +86,7 @@ public class SignUpServiceImpl implements SignUpService {
 
     private boolean notYetWroteAnswers(Member member) {
         return member.isUnderGraduate()
-                && !answerService.existAnswersWrittenBy(member.getId());
+                && !answerService.existAnswersWrittenBy(member.getStudentId());
     }
 
     @Override
@@ -94,12 +95,12 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public void saveAnswers(List<AnswerDto> answerDtoList, MemberId memberId) {
-        answerService.saveAnswers(answerDtoList, memberId);
+    public void saveAnswers(List<AnswerDto> answerDtoList, StudentId studentId) {
+        answerService.saveAnswers(answerDtoList, studentId);
     }
 
     @Override
-    public List<AnswerDto> getAnswers(MemberId memberId) {
+    public List<AnswerDto> getAnswers(Long memberId) {
         return answerService.getAnswers(memberId);
     }
 
@@ -110,13 +111,13 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional(readOnly = true)
-    public SignUpDto loadSignUpForm(MemberId memberId, OAuth2UserInfoAuthentication authentication) {
+    public SignUpDto loadSignUpForm(StudentId studentId, OAuth2UserInfoAuthentication authentication) {
 
         try {
-            Member member = memberService.findById(memberId);
+            Member member = memberService.findById(studentId);
 
             return SignUpDto.builder()
-                    .memberId(memberId)
+                    .studentId(studentId)
                     .phoneNumber(member.getPhone())
                     .email(member.getEmail())
                     .name(member.getName())
@@ -126,7 +127,7 @@ public class SignUpServiceImpl implements SignUpService {
         }
         catch (MemberNotFoundException | InvalidDataAccessApiUsageException | IllegalArgumentException e) {
             return SignUpDto.builder()
-                    .memberId(null)
+                    .studentId(null)
                     .phoneNumber(null)
                     .email(authentication.getEmail())
                     .name(null)
@@ -139,7 +140,7 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public boolean validateFieldsDuplication(MemberDuplicationQueryCondition condition) {
 
-        condition.verityAtLeastOneParameter();
+        condition.verifyTwoParameters();
 
         return memberDuplicationChecker.isDuplicatedMember(condition);
     }

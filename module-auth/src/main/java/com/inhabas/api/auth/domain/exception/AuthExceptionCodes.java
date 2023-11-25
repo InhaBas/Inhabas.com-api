@@ -65,7 +65,7 @@ public interface AuthExceptionCodes {
     /**
      * {@code user_not_found} - request 에 담긴 토큰정보를 사용해 기존 사용자 정보를 조회하였으나, 존재하지 않는 경우 발생.
      * 또는 최초 소셜로그인 시도하였으나 가입한 회원이 아니라면 해당 오류 발생
-     * @see com.inhabas.api.auth.domain.token.securityFilter.TokenAuthenticationProcessingFilter
+     * @see com.inhabas.api.auth.domain.token.securityFilter;
      */
     String USER_NOT_FOUND = "user_not_found";
 }

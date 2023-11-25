@@ -6,16 +6,17 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import com.inhabas.api.domain.majorInfo.usecase.MajorInfoService;
-import com.inhabas.api.domain.member.NoQueryParameterException;
-import com.inhabas.api.domain.member.domain.MemberDuplicationCheckerImpl;
-import com.inhabas.api.domain.member.domain.MemberServiceImpl;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import java.util.List;
+
+import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.NoQueryParameterException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberDuplicationCheckerImpl;
+import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberServiceImpl;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUpSchedule.domain.SignUpSchedulerStrict;
-import com.inhabas.api.domain.majorInfo.dto.MajorInfoDto;
-import com.inhabas.api.domain.member.dto.MemberDuplicationQueryCondition;
-import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -99,10 +100,10 @@ public class SignUpServiceTest {
 //        Member storedMember = Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
 //                .build();
 //        given(memberService.findById(anyInt())).willReturn(storedMember);
@@ -200,24 +201,24 @@ public class SignUpServiceTest {
 
         //then
         assertThrows(NoQueryParameterException.class,
-                condition::verityAtLeastOneParameter);
+                condition::verifyTwoParameters);
     }
 
-    @Disabled
-    @DisplayName("중복 검사 호출")
-    @Test
-    public void validateForMemberId() {
-        //given
-        MemberDuplicationQueryCondition condition =
-                new MemberDuplicationQueryCondition(new MemberId(12171652), "010-1111-1111");
-        given(memberDuplicationChecker.isDuplicatedMember(any(MemberDuplicationQueryCondition.class))).willReturn(true);
-
-        //when
-        signUpService.validateFieldsDuplication(condition);
-
-        //then
-        then(memberDuplicationChecker).should(times(1)).isDuplicatedMember(any(MemberDuplicationQueryCondition.class));
-    }
+//    @Disabled
+//    @DisplayName("중복 검사 호출")
+//    @Test
+//    public void validateForStudentId() {
+//        //given
+//        MemberDuplicationQueryCondition condition =
+//                new MemberDuplicationQueryCondition(new StudentId("12171652"), "010-1111-1111");
+//        given(memberDuplicationChecker.isDuplicatedMember(any(MemberDuplicationQueryCondition.class))).willReturn(true);
+//
+//        //when
+//        signUpService.validateFieldsDuplication(condition);
+//
+//        //then
+//        then(memberDuplicationChecker).should(times(1)).isDuplicatedMember(any(MemberDuplicationQueryCondition.class));
+//    }
 
     @Disabled
     @DisplayName("회원가입 완료 처리")
@@ -237,10 +238,10 @@ public class SignUpServiceTest {
 //        given(memberService.findById(anyInt())).willReturn(Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@email.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofProfessor("전자공학과", 1))
 //                .build());
 //
@@ -268,10 +269,10 @@ public class SignUpServiceTest {
 //        given(memberService.findById(anyInt())).willReturn(Member.builder()
 //                .id(12345678)
 //                .name("유동현")
-//                .phone("010-0000-0000")
+//                .phoneNumber("010-0000-0000")
 //                .email("my@gmail.com")
 //                .picture("")
-//                .ibasInformation(new IbasInformation(Role.BASIC_MEMBER))
+//                .ibasInformation(new IbasInformation(Role.BASIC))
 //                .schoolInformation(SchoolInformation.ofUnderGraduate("전자공학과", 1))
 //                .build());
 //        given(answerService.existAnswersWrittenBy(anyInt())).willReturn(false);

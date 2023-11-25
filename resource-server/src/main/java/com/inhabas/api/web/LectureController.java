@@ -4,7 +4,7 @@ import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import com.inhabas.api.domain.lecture.dto.*;
 import com.inhabas.api.domain.lecture.usecase.LectureService;
 import com.inhabas.api.domain.lecture.usecase.LectureStudentService;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,9 +60,9 @@ public class LectureController {
     })
     @PostMapping("/lecture")
     public ResponseEntity<?> createLecture(
-            @Authenticated MemberId memberId, @Valid @RequestBody LectureRegisterForm form) {
+            @Authenticated StudentId studentId, @Valid @RequestBody LectureRegisterForm form) {
 
-        lectureService.create(form, memberId);
+        lectureService.create(form, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -75,9 +75,9 @@ public class LectureController {
     })
     @PutMapping("/lecture")
     public ResponseEntity<?> updateLecture(
-            @Authenticated MemberId memberId, @Valid @RequestBody LectureUpdateForm form) {
+            @Authenticated StudentId studentId, @Valid @RequestBody LectureUpdateForm form) {
 
-        lectureService.update(form, memberId);
+        lectureService.update(form, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -91,9 +91,9 @@ public class LectureController {
     @DeleteMapping("/lecture/{id}")
     @PreAuthorize("@lectureSecurityChecker.instructorOnly(#id)")
     public ResponseEntity<?> deleteLecture(
-            @Authenticated MemberId memberId, @PathVariable Integer id) {
+            @Authenticated StudentId studentId, @PathVariable Integer id) {
 
-        lectureService.delete(id, memberId);
+        lectureService.delete(id, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -120,9 +120,9 @@ public class LectureController {
     })
     @PostMapping("/lecture/{id}/student")
     public ResponseEntity<?> enroll(
-            @Authenticated MemberId memberId, @PathVariable Integer id) {
+            @Authenticated StudentId studentId, @PathVariable Integer id) {
 
-        studentService.enroll(id, memberId);
+        studentService.enroll(id, studentId);
 
         return ResponseEntity.noContent().build();
     }
@@ -137,7 +137,7 @@ public class LectureController {
     @PutMapping("/lecture/{lectureId}/student/{sid}/status")
     @PreAuthorize("@lectureSecurityChecker.instructorOnly(#lectureId)")
     public ResponseEntity<?> changeStudentStatus(
-            @Authenticated MemberId currentUser, @PathVariable Integer sid, @PathVariable Integer lectureId,
+            @Authenticated StudentId currentUser, @PathVariable Integer sid, @PathVariable Integer lectureId,
             @NotNull @RequestBody StudentStatus status) {
 
         studentService.changeStatusOfOneStudentByLecturer(sid, currentUser, status, lectureId);
@@ -155,11 +155,11 @@ public class LectureController {
     @PutMapping("/lecture/{lectureId}/students/status")
     @PreAuthorize("@lectureSecurityChecker.instructorOnly(#lectureId)")
     public ResponseEntity<?> changeStudentsStatus(
-            @Authenticated MemberId memberId, @PathVariable Integer lectureId,
+            @Authenticated StudentId studentId, @PathVariable Integer lectureId,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "additionalProp 대신 studentId 값에 해당하는 정수값을 넣어야함. 단 학번이 아니라 강의등록명단 상의 번호임을 명심할 것")
             @NotNull @RequestBody Map<Integer, StudentStatus> list) {
 
-        studentService.changeStatusOfStudentsByLecturer(list, memberId, lectureId);
+        studentService.changeStatusOfStudentsByLecturer(list, studentId, lectureId);
 
         return ResponseEntity.noContent().build();
     }
@@ -171,9 +171,9 @@ public class LectureController {
     })
     @DeleteMapping("/lecture/{id}/student")
     public ResponseEntity<?> exit(
-            @Authenticated MemberId memberId, @PathVariable Integer id) {
+            @Authenticated StudentId studentId, @PathVariable Integer id) {
 
-        studentService.exitBySelf(id, memberId);
+        studentService.exitBySelf(id, studentId);
 
         return ResponseEntity.noContent().build();
     }

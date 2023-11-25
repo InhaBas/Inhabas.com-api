@@ -4,6 +4,7 @@ import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccount;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccountRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-@DataJpaTest
+@DefaultDataJpaTest
 public class SocialAccountRepositoryTest {
 
     @Autowired

@@ -1,42 +1,21 @@
-server:
-  servlet:
-    context-path: /api
-  port: 8080
-
 spring:
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb;MODE=MYSQL;DATABASE_TO_UPPER=true;DB_CLOSE_DELAY=-1;
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-  output:
-    ansi:
-      enabled: always
-  jackson:
-    property-naming-strategy: LOWER_CAMEL_CASE
-  data:
-    web:
-      pageable:
-        one-indexed-parameters: true # 페이지네이션 index 1부터 시작.
-        default-page-size: 15
-  jpa:
-    show-sql: true
-    defer-datasource-initialization: false
-    hibernate:
-      ddl-auto: create
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-    database: mysql
+  application:
+    name: api
+  profiles:
+    group:
+      test: default_mvc_test, no_security_mvc_test, test
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    config:
+      uri: http://localhost:8888
 
-logging:
-  level:
-    org.springframework.web.client: DEBUG
-    org.hibernate.type: trace
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
 

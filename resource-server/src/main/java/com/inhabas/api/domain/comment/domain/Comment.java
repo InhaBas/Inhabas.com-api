@@ -3,8 +3,8 @@ package com.inhabas.api.domain.comment.domain;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.comment.domain.valueObject.Contents;
-import com.inhabas.api.domain.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.valueObject.MemberId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -74,7 +74,7 @@ public class Comment extends BaseEntity {
         return this.contents.getValue();
     }
 
-    public Integer update(String contents, MemberId writerId) {
+    public Integer update(String contents, StudentId writerId) {
 
         if (isWrittenBy(writerId)) {
             this.contents = new Contents(contents);
@@ -139,7 +139,7 @@ public class Comment extends BaseEntity {
         return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
     }
 
-    public boolean isWrittenBy(MemberId writerId) {
+    public boolean isWrittenBy(StudentId writerId) {
         return writer.isSameMember(writerId);
     }
 

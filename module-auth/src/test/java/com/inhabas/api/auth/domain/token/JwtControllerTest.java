@@ -1,10 +1,12 @@
 package com.inhabas.api.auth.domain.token;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.token.controller.JwtTokenController;
@@ -15,6 +17,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ComponentScan(basePackages = "com.inhabas.api.auth.domain.token.controller")
@@ -38,13 +41,16 @@ public class JwtControllerTest {
         TokenDto expectedNewTokenDto =
                 new TokenDto("Bearer", "accessToken", "", 1L);
         given(tokenReIssuer.reissueAccessToken(any())).willReturn(expectedNewTokenDto);
+        String requestJson = "{\"refreshToken\":\"helloworld\"}";
 
         //when
         mockMvc.perform(post("/token/refresh")
                         .with(csrf())
-                        .header("Authorization", "Bearer header.refreshToken.signature"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.grantType").value(equalTo("Bearer")))
+                .andExpect(jsonPath("$.accessToken").value(equalTo("accessToken")));
     }
 
 }
