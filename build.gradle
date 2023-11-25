@@ -60,8 +60,7 @@ subprojects {
 
 
         runtimeOnly(
-//                'org.mariadb.jdbc:mariadb-java-client',
-                'mysql:mysql-connector-java',
+                'org.mariadb.jdbc:mariadb-java-client',
                 'com.h2database:h2'
         )
     }
