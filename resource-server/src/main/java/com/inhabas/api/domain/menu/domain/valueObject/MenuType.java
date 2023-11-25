@@ -12,7 +12,7 @@ public enum MenuType {
     STUDY,
     HOBBY,
 
-    // 추가 삭제 가능한 메뉴. (NormalBoard 연관)
+    // 관리자가 추가, 삭제 가능한 메뉴.(NormalBoard 연관)
     LIST,       // 리스트형 게시판 메뉴
     CARD,       // 카드형 게시판 메뉴
 }

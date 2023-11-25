@@ -11,10 +11,10 @@ import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import java.util.Arrays;
 import java.util.List;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -51,19 +51,18 @@ public class MenuRepositoryTest {
 //        assertThat(saveActivityMenu.getDateUpdated()).isNotNull();
 //        assertThat(saveActivityMenu)
 //                .usingRecursiveComparison()
-//                .ignoringFields("id", "created", "updated")
+//                .ignoringFields("id", "dateCreated", "dateUpdated")
 //                .isEqualTo(activityBoardMenu);
 //    }
 
     @Disabled
     @DisplayName("메뉴 이름을 수정한다.")
     @Test
-    public void UpdateMenuName() {
+    public void updateMenuName() {
         //given
         MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
         MenuGroup menuGroup2 = em.persist(new MenuGroup("게시판 목록"));
         Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
-        em.flush();em.clear();
 
         //when
         String newName = "공지 사항";
@@ -89,6 +88,7 @@ public class MenuRepositoryTest {
         MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
         MenuGroup menuGroup2 = em.persist(new MenuGroup("게시판 목록"));
 
+        //중복되지 않는 priority로 메뉴를 생성하고 저장
         Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
         Menu noticeBoardMenu = new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다.");
         Menu freeBoardMenu = new Menu(menuGroup2, 2, MenuType.LIST, "자유게시판", "부원이 자유롭게 글을 작성할 수 있는 게시판입니다.");
@@ -97,6 +97,7 @@ public class MenuRepositoryTest {
         menuRepository.save(freeBoardMenu);
 
         //when
+        // 같은 그룹에서 동일한 priority로 메뉴를 생성하려 할 때 예외 발생.
         assertThrows(DataIntegrityViolationException.class,
                 () -> menuRepository.save(new Menu(menuGroup2, 2, MenuType.LIST, "질문게시판", "궁금한 점을 질문하는 게시판입니다.")));
     }

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Embeddable
 public class MenuGroupName {
-    @Column(name = "name", length = 10, nullable = false)
+    @Column(name = "NAME", length = 10, nullable = false)
     private String value;
 
     @Transient

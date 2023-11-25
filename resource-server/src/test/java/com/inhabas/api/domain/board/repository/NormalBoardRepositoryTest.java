@@ -139,17 +139,15 @@ public class NormalBoardRepositoryTest {
 //        //then
 //        assertTrue(boardRepository.findById(FREE_BOARD.getId()).isEmpty());
 //    }
-
+//
 //    @DisplayName("모든 게시글을 조회한다.")
 //    @Test
 //    public void findAll() {
 //        //given
 //        boardRepository.save(FREE_BOARD);
 //        boardRepository.save(NOTICE_BOARD);
-//
-//        //when
-//        List<NormalBoard> boards = boardRepository.findAll();
-//
+
+
 //        //then
 //        assertThat(boards).contains(FREE_BOARD, NOTICE_BOARD);
 //        assertThat(boards.size()).isEqualTo(2);
