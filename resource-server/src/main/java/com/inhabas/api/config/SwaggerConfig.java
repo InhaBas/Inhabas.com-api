@@ -5,39 +5,64 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.apache.http.HttpHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public OpenAPI openAPI() {
+    private final static String DOMAIN = "https://dev.inhabas.com/api";
 
-        Info info = new Info()
+    private Info apiInfo() {
+        return new Info()
                 .version("v1.0.0")
                 .title("Inhabas API")
                 .description("spring-api docs");
+    }
 
-        // Security 스키마 설정
-        SecurityScheme bearerAuth = new SecurityScheme()
+    private SecurityScheme securityScheme() {
+        return new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER)
                 .name(HttpHeaders.AUTHORIZATION);
-
-        // Security 요청 설정
-        SecurityRequirement addSecurityItem = new SecurityRequirement();
-        addSecurityItem.addList("JWT");
-
-        return new OpenAPI()
-                // Security 인증 컴포넌트 설정
-                .components(new Components().addSecuritySchemes("JWT", bearerAuth))
-                // API 마다 Security 인증 컴포넌트 설정
-                .addSecurityItem(addSecurityItem)
-                .info(info);
     }
 
+    private SecurityRequirement securityRequirement() {
+        SecurityRequirement requirement = new SecurityRequirement();
+        requirement.addList("JWT");
+        return requirement;
+    }
+
+    private OpenAPI createOpenAPI(Info info, SecurityScheme securityScheme, SecurityRequirement securityRequirement, Server... servers) {
+        OpenAPI openAPI = new OpenAPI()
+                .components(new Components().addSecuritySchemes("JWT", securityScheme))
+                .addSecurityItem(securityRequirement)
+                .info(info);
+
+        for (Server server : servers) {
+            openAPI.addServersItem(server);
+        }
+
+        return openAPI;
+    }
+
+    @Bean
+    @Profile("dev")
+    public OpenAPI devOpenAPI() {
+        // HTTPS 서버 URL 설정
+        Server server = new Server().url(DOMAIN);
+
+        return createOpenAPI(apiInfo(), securityScheme(), securityRequirement(), server);
+    }
+
+    @Bean
+    @Profile("local")
+    public OpenAPI localOpenAPI() {
+        return createOpenAPI(apiInfo(), securityScheme(), securityRequirement());
+    }
 }
