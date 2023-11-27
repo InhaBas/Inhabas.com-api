@@ -19,7 +19,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     public List<QuestionnaireDto> getQuestionnaire() {
 
         return questionnaireRepository.findAll().stream()
-                .map(q->new QuestionnaireDto(q.getNo(), q.getItem()))
+                .map(q->new QuestionnaireDto(q.getId(), q.getQuestion()))
                 .collect(Collectors.toList());
     }
 }

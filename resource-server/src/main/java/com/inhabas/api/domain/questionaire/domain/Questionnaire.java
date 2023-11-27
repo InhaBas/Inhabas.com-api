@@ -7,19 +7,18 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity @Getter
-@Table(name = "question_form")
+@Table(name = "QUESTIONNAIRE")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Questionnaire {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "question_no")
-    private Integer no;
+    private Long id;
 
-    @Column(name = "question_name", nullable = false, length = 255)
-    private String item;
+    @Column(name = "QUESTION", nullable = false)
+    private String question;
 
-    public Questionnaire(Integer no, String item) {
-        this.no = no;
-        this.item = item;
+    public Questionnaire(Long id, String question) {
+        this.id = id;
+        this.question = question;
     }
 }

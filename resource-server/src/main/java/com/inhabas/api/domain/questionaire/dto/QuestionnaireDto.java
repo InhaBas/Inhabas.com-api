@@ -1,18 +1,16 @@
 package com.inhabas.api.domain.questionaire.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class QuestionnaireDto {
 
-    private Integer id;
+    private Long id;
 
     private String question;
 
-    public QuestionnaireDto(Integer id, String question) {
-        this.id = id;
-        this.question = question;
-    }
 }
