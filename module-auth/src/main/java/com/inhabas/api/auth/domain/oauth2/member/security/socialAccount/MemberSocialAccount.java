@@ -16,7 +16,7 @@ import javax.persistence.*;
 public class MemberSocialAccount {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USER_ID")
@@ -48,7 +48,7 @@ public class MemberSocialAccount {
         this.provider = provider;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
 

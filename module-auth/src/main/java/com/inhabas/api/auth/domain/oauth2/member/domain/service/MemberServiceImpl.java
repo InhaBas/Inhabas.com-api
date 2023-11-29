@@ -2,12 +2,10 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
-import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
-import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
@@ -50,14 +48,6 @@ public class MemberServiceImpl implements MemberService {
         }
 
         memberRepository.save(member);
-    }
-
-
-    @Override
-    @Transactional(readOnly = true)
-    public Member findById(StudentId studentId) {
-        return memberRepository.findByStudentId(studentId)
-                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override

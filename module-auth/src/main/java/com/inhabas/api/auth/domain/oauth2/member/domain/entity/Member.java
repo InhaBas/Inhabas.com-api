@@ -95,12 +95,16 @@ public class Member {
         this.email = new Email(email);
         this.ibasInformation = new IbasInformation(role);
     }
+
     public String getName() {
-        return this.name.getValue();
+        return this.name != null ? this.name.getValue() : null;
+    }
+    public String getPhone() {
+        return this.phone != null ? this.phone.getValue() : null;
     }
 
-    public String getPhone() {
-        return this.phone.getValue();
+    public SchoolInformation getSchoolInformation() {
+        return this.schoolInformation != null ? this.schoolInformation : null;
     }
 
     public String getEmail() {
@@ -119,9 +123,16 @@ public class Member {
     public void setName(String name) {
         this.name = new Name(name);
     }
+    public void setPhone(String phone) {
+        this.phone = new Phone(phone);
+    }
 
     public void setEmail(String email) {
         this.email = new Email(email);
+    }
+
+    public void setSchoolInformation(SchoolInformation schoolInformation) {
+        this.schoolInformation = schoolInformation;
     }
 
     public void setRole(Role role) {
