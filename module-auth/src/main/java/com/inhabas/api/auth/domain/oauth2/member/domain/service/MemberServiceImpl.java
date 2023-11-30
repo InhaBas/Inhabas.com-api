@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> new NotApprovedMemberManagementDto(
                 member.getName(),
                 member.getId(),
-                member.getStudentId().getValue(),
+                member.getStudentId(),
                 member.getPhone(),
                 member.getEmail(),
                 member.getSchoolInformation().getGrade(),
@@ -106,7 +106,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> new ApprovedMemberManagementDto(
                         member.getName(),
                         member.getId(),
-                        member.getStudentId().getValue(),
+                        member.getStudentId(),
                         member.getPhone(),
                         member.getRole(),
                         member.getSchoolInformation().getGeneration(),

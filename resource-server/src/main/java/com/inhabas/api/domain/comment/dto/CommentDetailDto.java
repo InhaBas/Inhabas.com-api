@@ -28,7 +28,7 @@ public class CommentDetailDto {
         return new CommentDetailDto(
                 comment.getId(),
                 comment.getContents(),
-                comment.getWriter().getStudentId(),
+                new StudentId("11121212"), // 임시방편, 수정 필요
                 comment.getWriter().getName(),
                 comment.getWriter().getSchoolInformation().getMajor(),
                 comment.getDateCreated()

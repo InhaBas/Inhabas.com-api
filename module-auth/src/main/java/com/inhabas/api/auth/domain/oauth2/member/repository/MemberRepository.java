@@ -13,13 +13,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     List<Member> findAllById(Iterable<Long> memberIdList);
-
     Member getByStudentId(StudentId studentId);
-
-    Optional<Member> findByStudentId(StudentId studentId);
-
     Member findByIbasInformation_Role(Role role);
-
 
     // OAuth
     boolean existsByProviderAndUid(OAuth2Provider provider, UID uid);

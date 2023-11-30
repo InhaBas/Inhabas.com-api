@@ -1,7 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.security.socialAccount;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,9 +16,9 @@ public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRep
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<StudentId> findMemberIdByUidAndProvider(UID uid, OAuth2Provider provider) {
+    public Optional<Long> findMemberIdByUidAndProvider(UID uid, OAuth2Provider provider) {
         return Optional.ofNullable(jpaQueryFactory
-                .select(memberSocialAccount.member.studentId)
+                .select(memberSocialAccount.member.id)
                 .where(eqSocialAccount(uid, provider))
                 .from(memberSocialAccount)
                 .fetchOne());

@@ -2,7 +2,6 @@ package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
 
@@ -11,7 +10,7 @@ import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    MemberAuthorityProvider.RoleDto fetchRoleByStudentId(StudentId studentId);
+    MemberAuthorityProvider.RoleDto fetchRoleByStudentId(Long id);
 
     boolean isDuplicated(MemberDuplicationQueryCondition condition);
 
