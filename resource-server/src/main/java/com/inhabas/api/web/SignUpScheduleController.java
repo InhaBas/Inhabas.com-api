@@ -23,7 +23,7 @@ public class SignUpScheduleController {
     private final SignUpScheduler signUpScheduler;
 
 
-    @Operation(summary = "회원가입 관련 일정을 조회한다.",
+    @Operation(summary = "회원가입 관련 일정을 조회한다. (권한 필요X)",
             description = "일정은 하나만 반환한다.")
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = SignUpScheduleDto.class))

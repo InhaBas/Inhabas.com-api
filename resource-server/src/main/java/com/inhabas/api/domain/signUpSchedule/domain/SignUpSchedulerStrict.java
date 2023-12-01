@@ -1,12 +1,13 @@
 package com.inhabas.api.domain.signUpSchedule.domain;
 
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
-import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
-import java.time.LocalDateTime;
+import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 /**
  * This Scheduler has a strict duty to leave only one signup-schedule.
@@ -33,12 +34,10 @@ public class SignUpSchedulerStrict implements SignUpScheduler {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public SignUpScheduleDto getSchedule() {
         SignUpSchedule signUpSchedule = this.getScheduleEntity();
 
         return new SignUpScheduleDto(
-                signUpSchedule.getId(),
                 signUpSchedule.getGeneration(),
                 signUpSchedule.getSignupStartDate(),
                 signUpSchedule.getSignupEndDate(),

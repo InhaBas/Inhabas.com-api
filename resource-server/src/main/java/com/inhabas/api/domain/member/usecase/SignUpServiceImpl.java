@@ -6,11 +6,12 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberDuplicationChecker;
 import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.*;
-import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
-import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-
-
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.SchoolInformation;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccount;
+import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.api.domain.member.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.member.domain.exception.NotWriteProfileException;
 import com.inhabas.api.domain.member.dto.AnswerDto;
@@ -19,13 +20,10 @@ import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
@@ -34,12 +32,14 @@ import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.
 @RequiredArgsConstructor
 public class SignUpServiceImpl implements SignUpService {
 
+    private final MemberRepository memberRepository;
     private final AnswerService answerService;
     private final MemberService memberService;
     private final MajorInfoService majorInfoService;
     private final QuestionnaireService questionnaireService;
     private final SignUpScheduler signUpScheduler;
     private final MemberDuplicationChecker memberDuplicationChecker;
+    private final MemberSocialAccountRepository memberSocialAccountRepository;
 
     private static final MemberType DEFAULT_MEMBER_TYPE = UNDERGRADUATE;
     private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = ANONYMOUS;
@@ -47,46 +47,64 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional
-    public void saveSignUpForm(SignUpDto signUpForm, OAuth2UserInfoAuthentication authentication) {
+    public void saveSignUpForm(SignUpDto signUpForm, Long memberId) {
+
         Integer generation = signUpScheduler.getSchedule().getGeneration();
-        IbasInformation ibasInformation = new IbasInformation(DEFAULT_ROLE_BEFORE_FINISH_SIGNUP);
-        SchoolInformation schoolInformation = new SchoolInformation(signUpForm.getMajor(), generation, signUpForm.getMemberType());
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        Member member = Member.builder()
-                .studentId(signUpForm.getStudentId())
-                .name(signUpForm.getName())
-                .phone(signUpForm.getPhoneNumber())
-                .email(authentication.getEmail())
-                .ibasInformation(ibasInformation)
-                .schoolInformation(schoolInformation)
-                .build();
+        member.setName(signUpForm.getName());
+        member.setPhone(signUpForm.getPhoneNumber());
+        member.setStudentId(signUpForm.getStudentId());
 
-        memberService.save(member);
-        throw new NotImplementedException("소셜 계정과 회원을 연결하는 로직 추가해야함");
+        if (signUpForm.getGrade() != null) {
+            member.setSchoolInformation(new SchoolInformation(signUpForm.getMajor(), signUpForm.getGrade(),
+                    generation, signUpForm.getMemberType()));
+        } else {
+            // 교수
+            member.setSchoolInformation(new SchoolInformation(signUpForm.getMajor(),
+                    generation, signUpForm.getMemberType()));
+        }
+
     }
 
     @Override
-    public void completeSignUp(StudentId studentId) {
+    public void completeSignUp(List<AnswerDto> answerDtoList, Long memberId) {
 
-        Member member = memberService.findById(studentId);
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
         if (notYetWroteProfile(member)) {
             throw new NotWriteProfileException();
         }
-        else if (notYetWroteAnswers(member)) {
+
+        if (isContentNullInAnyDto(answerDtoList)) {
             throw new NotWriteAnswersException();
         }
 
+        saveAnswers(answerDtoList, memberId);
+
+        memberSocialAccountRepository.save(new MemberSocialAccount(member, member.getEmail(),
+                member.getUid().getValue(), member.getProvider()));
         memberService.finishSignUp(member);
     }
 
-    private boolean notYetWroteProfile(Member member) {
-        return Objects.isNull(member);
+    public boolean isContentNullInAnyDto(List<AnswerDto> answerDtoList) {
+        for (AnswerDto dto : answerDtoList) {
+            if (dto.getContent() == null) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private boolean notYetWroteAnswers(Member member) {
-        return member.isUnderGraduate()
-                && !answerService.existAnswersWrittenBy(member.getStudentId());
+    private boolean notYetWroteProfile(Member member) {
+
+        if (member.getSchoolInformation().getGrade() == null || member.getSchoolInformation().getMemberType() == null
+                || member.getSchoolInformation().getMajor() == null || member.getStudentId() == null
+                || member.getPhone() == null) {
+            return true;
+        } else
+            return false;
+
     }
 
     @Override
@@ -95,8 +113,8 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
-    public void saveAnswers(List<AnswerDto> answerDtoList, StudentId studentId) {
-        answerService.saveAnswers(answerDtoList, studentId);
+    public void saveAnswers(List<AnswerDto> answerDtoList, Long memberId) {
+        answerService.saveAnswers(answerDtoList, memberId);
     }
 
     @Override
@@ -111,39 +129,19 @@ public class SignUpServiceImpl implements SignUpService {
 
     @Override
     @Transactional(readOnly = true)
-    public SignUpDto loadSignUpForm(StudentId studentId, OAuth2UserInfoAuthentication authentication) {
+    public SignUpDto loadSignUpForm(Long memberId) {
 
-        try {
-            Member member = memberService.findById(studentId);
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-            return SignUpDto.builder()
-                    .studentId(studentId)
-                    .phoneNumber(member.getPhone())
-                    .email(member.getEmail())
-                    .name(member.getName())
-                    .major(member.getSchoolInformation().getMajor())
-                    .memberType(member.getSchoolInformation().getMemberType())
-                    .build();
-        }
-        catch (MemberNotFoundException | InvalidDataAccessApiUsageException | IllegalArgumentException e) {
-            return SignUpDto.builder()
-                    .studentId(null)
-                    .phoneNumber(null)
-                    .email(authentication.getEmail())
-                    .name(null)
-                    .major(null)
-                    .memberType(DEFAULT_MEMBER_TYPE)
-                    .build();
-        }
+        return SignUpDto.builder()
+                .studentId(member.getStudentId())
+                .phoneNumber(member.getPhone())
+                .name(member.getName())
+                .major(member.getSchoolInformation() == null ? null : member.getSchoolInformation().getMajor())
+                .memberType(member.getSchoolInformation() == null ? null : member.getSchoolInformation().getMemberType())
+                .grade(member.getSchoolInformation() == null ? null : member.getSchoolInformation().getGrade())
+                .build();
+
     }
-
-    @Override
-    public boolean validateFieldsDuplication(MemberDuplicationQueryCondition condition) {
-
-        condition.verifyTwoParameters();
-
-        return memberDuplicationChecker.isDuplicatedMember(condition);
-    }
-
 
 }
