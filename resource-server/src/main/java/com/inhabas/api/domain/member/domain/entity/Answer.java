@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ANSWER")
+ @Table(name = "ANSWER",
+        uniqueConstraints = { @UniqueConstraint(name = "UNIQUE_USER_ID_QUESTIONNAIRE_ID",
+                columnNames = {"USER_ID", "QUESTIONNAIRE_ID"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer extends BaseEntity {
@@ -26,8 +28,13 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "QUESTIONNAIRE_ID", foreignKey = @ForeignKey(name = "FK_ANSWER_OF_QUESTION_ID"))
     private Questionnaire questionnaire;
 
-    @Column(name = "CONTENT", nullable = false, length = 1000)
+    @Column(name = "CONTENT", length = 1000)
     private String content;
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 
     public Answer(Member member, Questionnaire questionnaire, String content) {
         this.member = member;

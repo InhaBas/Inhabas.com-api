@@ -12,10 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,102 +42,15 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_SWAGGER = {"/swagger-ui/**", "/swagger/**", "/docs/**"};
     private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
     private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
-    private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/signUp/schedule",
-            "/member/chief", "/error"};
-
-    @Order(1)
-    @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
-    @EnableWebSecurity
-    @RequiredArgsConstructor
-    @Profile({"production"})
-    public static class ApiSecurityForProduction extends WebSecurityConfigurerAdapter {
-
-        private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-        private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-        private final Hierarchical hierarchy;
-        private final JwtTokenUtil jwtTokenUtil;
-        private final JwtAuthenticationProvider jwtAuthenticationProvider;
-        private final AuthBeansConfig authBeansConfig;
-
-        @Override
-        public void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.authenticationProvider(jwtAuthenticationProvider);
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .httpBasic().disable()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
-
-                    .csrf()
-                    .disable()
-
-
-                    .exceptionHandling()
-                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
-                    .and()
-                    .authorizeRequests()
-                    // 권한 부여 표현식
-                    .expressionHandler(expressionHandler())
-                    // Preflight 방식
-                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-
-                    // 회원 관리
-                    .antMatchers("/members/**", "/member/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
-
-                    // 회계내역
-                    .antMatchers("/budget/history/**", "/budget/histories",
-                            "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
-                    // 강의
-                    .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
-                    .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
-
-                    // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-                    .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
-
-                    // 그 외
-                    .anyRequest().hasRole(ANONYMOUS.toString());
-            http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        }
-
-        @Bean
-        public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
-            DefaultWebSecurityExpressionHandler webSecurityExpressionHandler = new DefaultWebSecurityExpressionHandler();
-            webSecurityExpressionHandler.setRoleHierarchy(hierarchy.getHierarchy());
-            return webSecurityExpressionHandler;
-        }
-
-        @Bean
-        public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-            final List<String> skipPaths = new ArrayList<>();
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
-
-            final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
-            final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
-                    requestMatcher,
-                    jwtTokenUtil,
-                    authBeansConfig.tokenResolver()
-            );
-
-            filter.setAuthenticationManager(super.authenticationManager());
-            return filter;
-        }
-
-    }
+    private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/member/chief", "/error"};
+    private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires", "/signUp/majorInfo"};
 
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
     @EnableWebSecurity
     @RequiredArgsConstructor
-    @Profile({"local", "dev", "default_mvc_test"})
+    @Profile({"local", "dev", "default_mvc_test", "production"})
     public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
 
         private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -149,6 +64,15 @@ public class WebSecurityConfig {
         @Override
         public void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.authenticationProvider(jwtAuthenticationProvider);
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring()
+                    .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
+                    .antMatchers(AUTH_WHITELIST_SWAGGER)
+                    .antMatchers(AUTH_WHITELIST_STATIC)
+                    .antMatchers(AUTH_WHITELIST_PATH);
         }
 
         @Override
@@ -181,12 +105,17 @@ public class WebSecurityConfig {
                         .expressionHandler(expressionHandler())
                         // Preflight 방식
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                        // 회원 관리
+                        .antMatchers("/members/**", "/member/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
                         // 회계내역
                         .antMatchers("/budget/history/**", "/budget/histories",
                                 "/budget/application/**", "/budget/applications").hasRole(SECRETARY.toString())
                         // 강의
                         .antMatchers("/lecture/**/status").hasRole(EXECUTIVES.toString())
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
+
+                        // 회원가입 일정 수정
+                        .antMatchers(HttpMethod.PUT,"/signUp/schedule").hasRole(CHIEF.toString())
 
                         // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
@@ -205,12 +134,8 @@ public class WebSecurityConfig {
             return webSecurityExpressionHandler;
         }
 
-        @Bean
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             final List<String> skipPaths = new ArrayList<>();
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_PATH).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_STATIC).collect(Collectors.toList()));
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_SWAGGER).collect(Collectors.toList()));
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
