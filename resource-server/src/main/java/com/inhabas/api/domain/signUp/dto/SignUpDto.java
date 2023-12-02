@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.dto;
+package com.inhabas.api.domain.signUp.dto;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import io.swagger.v3.oas.annotations.media.Schema;

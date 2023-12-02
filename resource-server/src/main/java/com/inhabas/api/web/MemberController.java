@@ -2,8 +2,8 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
-import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.usecase.AnswerService;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.usecase.AnswerService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedMemberResponseDto;
 import io.swagger.v3.oas.annotations.Operation;

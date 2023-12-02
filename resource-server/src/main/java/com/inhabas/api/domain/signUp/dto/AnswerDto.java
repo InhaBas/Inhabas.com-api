@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.dto;
+package com.inhabas.api.domain.signUp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.questionaire.domain;
+package com.inhabas.api.domain.questionnaire.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

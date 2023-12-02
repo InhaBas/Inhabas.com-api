@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.questionaire.dto;
+package com.inhabas.api.domain.questionnaire.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

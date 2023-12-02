@@ -1,9 +1,9 @@
-package com.inhabas.api.domain.member.usecase;
+package com.inhabas.api.domain.signUp.usecase;
 
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
-import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.SignUpDto;
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 
 import java.util.List;
 

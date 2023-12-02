@@ -1,6 +1,6 @@
-package com.inhabas.api.domain.questionaire.repository;
+package com.inhabas.api.domain.questionnaire.repository;
 
-import com.inhabas.api.domain.questionaire.domain.Questionnaire;
+import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package com.inhabas.api.domain.member.usecase;
+package com.inhabas.api.domain.signUp.usecase;
 
-import com.inhabas.api.domain.member.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
 
 import java.util.List;
 

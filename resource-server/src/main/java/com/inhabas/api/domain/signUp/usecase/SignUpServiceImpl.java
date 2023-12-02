@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.usecase;
+package com.inhabas.api.domain.signUp.usecase;
 
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
@@ -12,13 +12,13 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.SchoolInform
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccount;
 import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
-import com.inhabas.api.domain.member.domain.exception.NotWriteAnswersException;
-import com.inhabas.api.domain.member.domain.exception.NotWriteProfileException;
-import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
-import com.inhabas.api.domain.questionaire.usecase.QuestionnaireService;
-import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.SignUpDto;
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
+import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
+import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

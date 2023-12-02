@@ -1,7 +1,7 @@
-package com.inhabas.api.domain.questionaire.usecase;
+package com.inhabas.api.domain.questionnaire.usecase;
 
-import com.inhabas.api.domain.questionaire.repository.QuestionnaireRepository;
-import com.inhabas.api.domain.questionaire.dto.QuestionnaireDto;
+import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

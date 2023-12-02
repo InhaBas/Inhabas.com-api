@@ -1,13 +1,13 @@
-package com.inhabas.api.domain.member.usecase;
+package com.inhabas.api.domain.signUp.usecase;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.entity.Answer;
-import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.repository.AnswerRepository;
-import com.inhabas.api.domain.questionaire.domain.Questionnaire;
-import com.inhabas.api.domain.questionaire.repository.QuestionnaireRepository;
+import com.inhabas.api.domain.signUp.domain.entity.Answer;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.repository.AnswerRepository;
+import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
+import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

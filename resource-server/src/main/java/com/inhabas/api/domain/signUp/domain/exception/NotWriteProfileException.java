@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member.domain.exception;
+package com.inhabas.api.domain.signUp.domain.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 

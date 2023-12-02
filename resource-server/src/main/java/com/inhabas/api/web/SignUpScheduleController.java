@@ -1,7 +1,7 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
-import com.inhabas.api.domain.signUpSchedule.domain.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
