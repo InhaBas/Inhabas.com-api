@@ -1,13 +1,13 @@
-package com.inhabas.api.domain.signUp.domain;
+package com.inhabas.api.domain.signUpSchedule.domain.entity;
+
+import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
-import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
-import java.time.LocalDateTime;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 
 public class SignUpScheduleTest {

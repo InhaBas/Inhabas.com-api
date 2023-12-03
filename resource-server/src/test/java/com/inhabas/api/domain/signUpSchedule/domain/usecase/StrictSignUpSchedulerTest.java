@@ -1,16 +1,9 @@
-package com.inhabas.api.domain.signUp.domain;
+package com.inhabas.api.domain.signUpSchedule.domain.usecase;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
-import com.inhabas.api.domain.signUpSchedule.domain.SignUpSchedulerStrict;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
-import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +11,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
 @DefaultDataJpaTest
 @Import(SignUpSchedulerStrict.class)
@@ -96,7 +96,7 @@ public class StrictSignUpSchedulerTest {
     public void updateBeforeInitializeScheduleTest() {
         //given
         SignUpScheduleDto signUpScheduleDto = new SignUpScheduleDto(
-                1, 1, LocalDateTime.of(2022, 1, 1, 0, 0, 0),
+                1, LocalDateTime.of(2022, 1, 1, 0, 0, 0),
                 LocalDateTime.of(2022, 1, 2, 0, 0, 0),
                 LocalDateTime.of(2022, 1, 3, 0, 0, 0),
                 LocalDateTime.of(2022, 1, 4, 0, 0, 0),
