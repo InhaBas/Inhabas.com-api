@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.member;
+package com.inhabas.api.domain.signUp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,10 +11,10 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.token.TokenUtil;
-import com.inhabas.api.domain.member.dto.AnswerDto;
-import com.inhabas.api.domain.member.dto.SignUpDto;
-import com.inhabas.api.domain.questionaire.domain.Questionnaire;
-import com.inhabas.api.domain.questionaire.repository.QuestionnaireRepository;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.SignUpDto;
+import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
+import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.testAnnotataion.CustomSpringBootTest;
@@ -137,12 +137,12 @@ public class SignUpIntegrationTest {
         mockMvc.perform(post("/signUp").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
-                                .email("my@gmail.com")
-                                .studentId(new StudentId("12171652"))
                                 .name("유동현")
-                                .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
+                                .phoneNumber("010-0000-0000")
+                                .studentId("12171652")
                                 .memberType(MemberType.UNDERGRADUATE)
+                                .grade(1)
                                 .build())))
                 .andExpect(status().isNoContent());
 
@@ -167,11 +167,11 @@ public class SignUpIntegrationTest {
         mockMvc.perform(post("/signUp/answer").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(Arrays.asList(
-                                new AnswerDto(1, "몰랑"),
-                                new AnswerDto(2, "아몰랑"),
-                                new AnswerDto(3, "아아몰랑"),
-                                new AnswerDto(4, "아모른다구"),
-                                new AnswerDto(5, "ㅎ")))))
+                                new AnswerDto(1L, "몰랑"),
+                                new AnswerDto(2L, "아몰랑"),
+                                new AnswerDto(3L, "아아몰랑"),
+                                new AnswerDto(4L, "아모른다구"),
+                                new AnswerDto(5L, "ㅎ")))))
                 .andExpect(status().isNoContent());
 
         /* 회원가입 신청을 완료한다. */
@@ -229,8 +229,8 @@ public class SignUpIntegrationTest {
         mockMvc.perform(post("/signUp").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(SignUpDto.builder()
-                                .email("my@gmail.com")
-                                .studentId(new StudentId("228761"))
+                                .grade(1)
+                                .studentId("228761")
                                 .name("유동현")
                                 .phoneNumber("010-0000-0000")
                                 .major("컴퓨터공학과")
@@ -284,11 +284,11 @@ public class SignUpIntegrationTest {
     private void 면접질문_설정() {
         questionnaireRepository.saveAll(
                 Arrays.asList(
-                        new Questionnaire(1, "지원동기 및 목표를 기술해주세요."),
-                        new Questionnaire(2, "프로그래밍 관련 언어를 다루어 본 적이 있다면 적어주세요."),
-                        new Questionnaire(3, "빅데이터 관련 활동 혹은 공모전 관련 경험이 있다면 적어주세요."),
-                        new Questionnaire(4, "추후 희망하는 진로가 무엇이며, 동아리 활동이 진로에 어떠한 영향을 줄 것이라고 생각하나요?"),
-                        new Questionnaire(5, "어떤 경로로 IBAS를 알게 되셨나요?")));
+                        new Questionnaire(1L, "지원동기 및 목표를 기술해주세요."),
+                        new Questionnaire(2L, "프로그래밍 관련 언어를 다루어 본 적이 있다면 적어주세요."),
+                        new Questionnaire(3L, "빅데이터 관련 활동 혹은 공모전 관련 경험이 있다면 적어주세요."),
+                        new Questionnaire(4L, "추후 희망하는 진로가 무엇이며, 동아리 활동이 진로에 어떠한 영향을 줄 것이라고 생각하나요?"),
+                        new Questionnaire(5L, "어떤 경로로 IBAS를 알게 되셨나요?")));
     }
     private void 전공정보_설정() {
         majorInfoRepository.saveAll(
