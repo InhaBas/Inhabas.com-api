@@ -86,7 +86,7 @@ public class MemberAuthorityProviderTest {
     @Test
     @DisplayName("회원의 소셜계정 정보는 있지만, 회원프로필이 존재하지 않으면 오류발생")
     public void cannotFindProfileMappedFromSocialAccount() {
-        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(new StudentId("12171652"));
+        given(memberPrincipalService.loadUserPrincipal(any())).willReturn(1L);
         given(memberRepository.fetchRoleByStudentId(any()))
                 .willReturn(new MemberAuthorityProvider.RoleDto(null));
 

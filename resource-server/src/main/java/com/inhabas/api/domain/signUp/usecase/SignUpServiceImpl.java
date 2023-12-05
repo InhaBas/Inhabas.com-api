@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.PROFESSOR;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
@@ -32,14 +33,13 @@ import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.
 @RequiredArgsConstructor
 public class SignUpServiceImpl implements SignUpService {
 
-    private final MemberRepository memberRepository;
-    private final AnswerService answerService;
-    private final MemberService memberService;
     private final MajorInfoService majorInfoService;
-    private final QuestionnaireService questionnaireService;
-    private final SignUpScheduler signUpScheduler;
-    private final MemberDuplicationChecker memberDuplicationChecker;
+    private final MemberRepository memberRepository;
     private final MemberSocialAccountRepository memberSocialAccountRepository;
+    private final MemberService memberService;
+    private final SignUpScheduler signUpScheduler;
+    private final QuestionnaireService questionnaireService;
+    private final AnswerService answerService;
 
     private static final MemberType DEFAULT_MEMBER_TYPE = UNDERGRADUATE;
     private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = ANONYMOUS;
@@ -63,6 +63,7 @@ public class SignUpServiceImpl implements SignUpService {
             // 교수
             member.setSchoolInformation(new SchoolInformation(signUpForm.getMajor(),
                     generation, signUpForm.getMemberType()));
+            completeSignUp(null, memberId);
         }
 
     }
@@ -76,15 +77,19 @@ public class SignUpServiceImpl implements SignUpService {
             throw new NotWriteProfileException();
         }
 
-        if (isContentNullInAnyDto(answerDtoList)) {
+        // 교수일 경우 이 과정 스킵
+        if (member.getSchoolInformation().getMemberType() != PROFESSOR
+                && isContentNullInAnyDto(answerDtoList)) {
             throw new NotWriteAnswersException();
+        } else if (member.getSchoolInformation().getMemberType() != PROFESSOR
+                && !isContentNullInAnyDto(answerDtoList)) {
+            saveAnswers(answerDtoList, memberId);
         }
-
-        saveAnswers(answerDtoList, memberId);
 
         memberSocialAccountRepository.save(new MemberSocialAccount(member, member.getEmail(),
                 member.getUid().getValue(), member.getProvider()));
         memberService.finishSignUp(member);
+
     }
 
     public boolean isContentNullInAnyDto(List<AnswerDto> answerDtoList) {
@@ -98,9 +103,8 @@ public class SignUpServiceImpl implements SignUpService {
 
     private boolean notYetWroteProfile(Member member) {
 
-        if (member.getSchoolInformation().getGrade() == null || member.getSchoolInformation().getMemberType() == null
-                || member.getSchoolInformation().getMajor() == null || member.getStudentId() == null
-                || member.getPhone() == null) {
+        if (member.getSchoolInformation().getMemberType() == null || member.getSchoolInformation().getMajor() == null
+                || member.getStudentId() == null || member.getPhone() == null) {
             return true;
         } else
             return false;
