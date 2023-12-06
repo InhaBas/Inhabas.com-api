@@ -32,21 +32,7 @@ public class AnswerServiceImpl implements AnswerService {
 
         Member currentMember = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        // 제출 답안의 질문번호 리스트 questionIds
-        List<Long> questionIds = submittedAnswers.stream()
-                .map(AnswerDto::getQuestionId)
-                .collect(Collectors.toList());
-
-        // 모든 질문 questionnaireList
-        List<Questionnaire> questionnaireList = questionnaireRepository.findAll();
-        // 모든 질문 번호 questionnaireIdList
-        List<Long> questionnaireIdList = questionnaireList.stream()
-                .map(Questionnaire::getId)
-                .collect(Collectors.toList());
-
-        if (questionnaireRepository.countByIdIn(questionIds) != questionnaireIdList.size()) {
-            throw new IllegalArgumentException("Some question IDs are invalid");
-        }
+        this.questionnaireIdsCheck(submittedAnswers);
 
         // 기존 답변 가져오기
         Map<Long, Answer> existingAnswers = answerRepository.findByMember_Id(memberId).stream()
@@ -70,6 +56,22 @@ public class AnswerServiceImpl implements AnswerService {
 
         answerRepository.saveAll(answersToUpdate);
 
+    }
+
+    private void questionnaireIdsCheck(List<AnswerDto> submittedAnswers) throws IllegalArgumentException{
+
+        List<Long> questionIds = submittedAnswers.stream()
+                .map(AnswerDto::getQuestionId)
+                .collect(Collectors.toList());
+
+        List<Questionnaire> questionnaireList = questionnaireRepository.findAll();
+        List<Long> questionnaireIdList = questionnaireList.stream()
+                .map(Questionnaire::getId)
+                .collect(Collectors.toList());
+
+        if (questionnaireRepository.countByIdIn(questionIds) != questionnaireIdList.size()) {
+            throw new IllegalArgumentException("Some question IDs are invalid");
+        }
     }
 
     @Override

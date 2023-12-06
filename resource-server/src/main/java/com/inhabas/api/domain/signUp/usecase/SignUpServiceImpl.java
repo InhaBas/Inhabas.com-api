@@ -4,20 +4,17 @@ import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberDuplicationChecker;
 import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.SchoolInformation;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccount;
 import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
+import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
-import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
-import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.PROFESSOR;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
 @Service
 @RequiredArgsConstructor
@@ -40,9 +35,6 @@ public class SignUpServiceImpl implements SignUpService {
     private final SignUpScheduler signUpScheduler;
     private final QuestionnaireService questionnaireService;
     private final AnswerService answerService;
-
-    private static final MemberType DEFAULT_MEMBER_TYPE = UNDERGRADUATE;
-    private static final Role DEFAULT_ROLE_BEFORE_FINISH_SIGNUP = ANONYMOUS;
 
 
     @Override
@@ -93,6 +85,9 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     public boolean isContentNullInAnyDto(List<AnswerDto> answerDtoList) {
+        if (answerDtoList == null || answerDtoList.isEmpty()) {
+            return true;
+        }
         for (AnswerDto dto : answerDtoList) {
             if (dto.getContent() == null) {
                 return true;
@@ -103,11 +98,10 @@ public class SignUpServiceImpl implements SignUpService {
 
     private boolean notYetWroteProfile(Member member) {
 
-        if (member.getSchoolInformation().getMemberType() == null || member.getSchoolInformation().getMajor() == null
-                || member.getStudentId() == null || member.getPhone() == null) {
-            return true;
-        } else
-            return false;
+        return member.getSchoolInformation() == null
+                || member.getSchoolInformation().getMemberType() == null
+                || member.getSchoolInformation().getMajor() == null
+                || member.getStudentId() == null || member.getPhone() == null;
 
     }
 
