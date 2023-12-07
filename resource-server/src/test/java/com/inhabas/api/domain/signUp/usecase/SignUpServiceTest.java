@@ -6,6 +6,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
@@ -44,6 +45,8 @@ public class SignUpServiceTest {
     private MajorInfoService majorInfoService;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private MemberSocialAccountRepository memberSocialAccountRepository;
     @Mock
     private MemberService memberService;
     @Mock
