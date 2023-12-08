@@ -3,23 +3,23 @@ package com.inhabas.api.domain.signUp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.ApiApplication;
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.token.TokenUtil;
-import com.inhabas.api.domain.signUp.dto.AnswerDto;
-import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.testAnnotataion.CustomSpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Disabled
 @CustomSpringBootTest(classes = ApiApplication.class)
 public class SignUpIntegrationTest {
 
@@ -49,12 +48,9 @@ public class SignUpIntegrationTest {
     @Autowired private MemberRepository memberRepository;
     @Autowired private SignUpScheduleRepository scheduleRepository;
 
-    private Integer memberId;
-    private Integer muId;
-
     @BeforeEach
     public void setUp() {
-        /*authUserId = authUserRepository.save(new AuthUser("google", "my@gmail.com")).getId();*/
+
     }
 
     @Test
@@ -78,7 +74,6 @@ public class SignUpIntegrationTest {
         forbiddenWhenAccessEverySignUpApi(Role.ADMIN);
     }
 
-    @Disabled
     @Test
     public void 회원가입_기간이_아닙니다() throws Exception {
         /* 유동현은 IBAS 에 회원 가입하기 위해
@@ -94,7 +89,6 @@ public class SignUpIntegrationTest {
         assertThat(response).isEqualTo("회원가입 기간이 아닙니다.");
     }
 
-    @Disabled
     @Test
     public void OAuth2_인증_후_비회원_신규_학생_회원가입() throws Exception {
 
@@ -118,20 +112,6 @@ public class SignUpIntegrationTest {
         /* 개인정보 입력을 위해, 전공 정보들이 로딩된다. */
         mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
                 .andExpect(status().isOk());
-
-        /* 프로필 입력 중에 학번이 중복되는 지 검사한다.
-        중복되는 학번이 없다고 응답한다. */
-        mockMvc.perform(get("/signUp/isDuplicated")
-                        .param("memberId", "12171652"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("false"));
-
-        /* 프로필 입력 중에 전화번호가 중복되는 지 검사한다.
-        중복되는 전화번호가 없다고 응답한다. */
-        mockMvc.perform(get("/signUp/isDuplicated")
-                        .param("phoneNumber", "010-0000-0000"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("false"));
 
         /* 프로필 입력을 완료하여 다음 버튼을 누르면, 개인정보가 임시저장된다. */
         mockMvc.perform(post("/signUp").with(accessToken(token))
@@ -159,12 +139,12 @@ public class SignUpIntegrationTest {
                 "]");
 
         /* 기존에 작성했던 답변을 가져오지만, 기존 답변이 없다. */
-        mockMvc.perform(get("/signUp/answer").with(accessToken(token)))
+        mockMvc.perform(get("/signUp/answers").with(accessToken(token)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
 
         /* 면접 질문에 대답하고 임시저장 버튼을 클릭한다. */
-        mockMvc.perform(post("/signUp/answer").with(accessToken(token))
+        mockMvc.perform(post("/signUp/answers").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(Arrays.asList(
                                 new AnswerDto(1L, "몰랑"),
@@ -175,19 +155,16 @@ public class SignUpIntegrationTest {
                 .andExpect(status().isNoContent());
 
         /* 회원가입 신청을 완료한다. */
-        mockMvc.perform(put("/signUp/finish").with(accessToken(token)))
+        mockMvc.perform(put("/signUp").with(accessToken(token)))
                 .andExpect(status().isNoContent());
 
 
         //then
-        Member 유동현 = memberRepository.getByStudentId(new StudentId("12171652"));
+        Member 유동현 = memberRepository.findByProviderAndUid(OAuth2Provider.GOOGLE, new UID("1234")).orElseThrow();
         assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
-//        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
-//        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(12171652);
-//        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
+
     }
 
-    @Disabled
     @Test
     public void OAuth2_인증_후_비회원_신규_교수_회원가입() throws Exception {
 
@@ -211,20 +188,6 @@ public class SignUpIntegrationTest {
                 "{\"id\":3,\"college\":\"경영대학\",\"major\":\"경영학과\"}" +
                 "]");
 
-        /* 프로필 입력 중에 학번이 중복되는 지 검사한다.
-        중복되는 학번이 없다고 응답한다. */
-        mockMvc.perform(get("/signUp/isDuplicated")
-                        .param("memberId", "228761"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("false"));
-
-        /* 프로필 입력 중에 전화번호가 중복되는 지 검사한다.
-        중복되는 전화번호가 없다고 응답한다. */
-        mockMvc.perform(get("/signUp/isDuplicated")
-                        .param("phoneNumber", "010-0000-0000"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("false"));
-
         /* 프로필 입력을 완료하여 다음 버튼을 누르면, 개인정보가 임시저장된다. */
         mockMvc.perform(post("/signUp").with(accessToken(token))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -240,38 +203,28 @@ public class SignUpIntegrationTest {
 
 
         /* 회원가입 신청을 완료한다. */
-        mockMvc.perform(put("/signUp/finish").with(accessToken(token)))
+        mockMvc.perform(put("/signUp").with(accessToken(token)))
                 .andExpect(status().isNoContent());
 
-
         //then
-        Member 유동현_교수 = memberRepository.getByStudentId(new StudentId("228761"));
+        Member 유동현_교수 = memberRepository.findByProviderAndUid(OAuth2Provider.GOOGLE, new UID("1234")).orElseThrow();
         assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
-//        AuthUser 유동현_소셜_계정 = authUserRepository.findById(authUserId).orElseThrow(AuthUserNotFoundException::new);
-//        assertThat(유동현_소셜_계정.getProfileId()).isEqualTo(228761);
-//        assertThat(유동현_소셜_계정.hasJoined()).isEqualTo(true);
     }
 
     private void forbiddenWhenAccessEverySignUpApi(Role role) throws Exception {
         String token = tokenUtil.createAccessToken(null);
 
-        mockMvc.perform(get("/signUp/student").with(accessToken(token)))
+        mockMvc.perform(get("/signUp").with(accessToken(token)))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(post("/signUp/student").with(accessToken(token)))
+        mockMvc.perform(post("/signUp").with(accessToken(token)))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(post("/signUp/professor").with(accessToken(token)))
+        mockMvc.perform(get("/signUp/answers").with(accessToken(token)))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/signUp/answer").with(accessToken(token)))
-                .andExpect(status().isForbidden());
-        mockMvc.perform(post("/signUp/answer").with(accessToken(token)))
+        mockMvc.perform(post("/signUp/answers").with(accessToken(token)))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/signUp/questionnaire").with(accessToken(token)))
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
-                .andExpect(status().isForbidden());
-        mockMvc.perform(get("/signUp/isDuplicated").with(accessToken(token)))
-                .andExpect(status().isForbidden());
-        mockMvc.perform(put("/signUp/finish").with(accessToken(token)))
                 .andExpect(status().isForbidden());
     }
     public static RequestPostProcessor accessToken(String accessToken) {
