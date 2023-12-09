@@ -1,6 +1,8 @@
 package com.inhabas.testAnnotataion;
 
+import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.DefaultRoleHierarchy;
+import com.inhabas.api.config.WebSecurityConfig;
 import com.inhabas.testConfig.TestConfigurationForSecurity;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,7 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles("default_mvc_test") // for disable cloud config & security filter chain
+@ActiveProfiles("test") // for disable cloud config & security filter chain
 @WebMvcTest(excludeAutoConfiguration = {OAuth2ClientAutoConfiguration.class}) // disable autoload OAuth2-Client-Components from test properties
 @Import({DefaultRoleHierarchy.class, TestConfigurationForSecurity.class})
 public @interface DefaultWebMvcTest {

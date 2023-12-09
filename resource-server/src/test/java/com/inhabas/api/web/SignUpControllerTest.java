@@ -124,10 +124,10 @@ public class SignUpControllerTest {
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
         assertThat(response.split("\n")).containsExactlyInAnyOrder(
-                "[memberId](은)는 must not be null 입력된 값: [null]",
+                "[studentId](은)는 must not be null 입력된 값: [null]",
                 "[major](은)는 must not be blank 입력된 값: []",
                 "[name](은)는 must not be blank 입력된 값: []",
-                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\" 입력된 값: []",
+                "[phoneNumber](은)는 must match \"^(010)-\\d{4}-\\d{4}$\" 입력된 값: []",
                 "[memberType](은)는 must not be null 입력된 값: [null]");
     }
 
@@ -140,7 +140,7 @@ public class SignUpControllerTest {
                 .name("홍길동만세".repeat(10) + ".") // 50자까지만 가능
                 .major("금융데이터처리, 블록체인학과.") // 50자가지만 가능
                 .phoneNumber("8210-1111-1111") // ^(010)-\d{4}-\d{4}$
-                .studentId("-1")
+                .studentId("123123123")
                 .memberType(MemberType.UNDERGRADUATE)
                 .build();
 
@@ -153,10 +153,8 @@ public class SignUpControllerTest {
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
         assertThat(response.split("\n")).containsExactlyInAnyOrder(
-                "[memberId](은)는 must be greater than 0 입력된 값: [-1]",
-                "[phoneNumber](은)는 must match \"\\d{3}-\\d{4}-\\d{4}\" 입력된 값: [8210-1111-1111]",
-                "[name](은)는 length must be between 0 and 25 입력된 값: [홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세.]",
-                "[major](은)는 length must be between 0 and 15 입력된 값: [금융데이터처리, 블록체인학과.]");
+                "[phoneNumber](은)는 must match \"^(010)-\\d{4}-\\d{4}$\" 입력된 값: [8210-1111-1111]",
+                "[name](은)는 length must be between 0 and 50 입력된 값: [홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세.]");
 
     }
 
@@ -303,7 +301,10 @@ public class SignUpControllerTest {
         }};
 
         //when
-        mvc.perform(put("/signUp").with(csrf()))
+        mvc.perform(put("/signUp")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(submittedAnswers)))
                 .andExpect(status().isNoContent())
                 .andReturn();
     }

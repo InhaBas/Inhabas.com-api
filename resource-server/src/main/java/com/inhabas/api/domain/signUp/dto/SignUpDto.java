@@ -31,6 +31,7 @@ public class SignUpDto {
     private String phoneNumber;
 
     @NotNull
+    @Pattern(regexp = "\\d+")
     @Schema(example = "12171707")
     private String studentId;
 
