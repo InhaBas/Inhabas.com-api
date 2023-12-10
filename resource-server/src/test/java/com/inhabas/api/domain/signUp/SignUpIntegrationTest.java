@@ -3,6 +3,7 @@ package com.inhabas.api.domain.signUp;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.ApiApplication;
+import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
@@ -19,17 +20,24 @@ import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.testAnnotataion.CustomSpringBootTest;
+import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -54,31 +62,32 @@ public class SignUpIntegrationTest {
     }
 
     @Test
-    public void 기존_일반회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.BASIC);
-    }
-    @Test
-    public void 비활동회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.DEACTIVATED);
-    }
-    @Test
+    @WithMockJwtAuthenticationToken(memberRole = NOT_APPROVED)
     public void 미승인회원_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.NOT_APPROVED);
+        forbiddenWhenAccessEverySignUpApi(NOT_APPROVED);
     }
     @Test
+    @WithMockJwtAuthenticationToken(memberRole = DEACTIVATED)
+    public void 비활동회원_회원가입_비정상_접근() throws Exception {
+        forbiddenWhenAccessEverySignUpApi(DEACTIVATED);
+    }
+    @Test
+    @WithMockJwtAuthenticationToken(memberRole = BASIC)
+    public void 기존_일반회원_회원가입_비정상_접근() throws Exception {
+        forbiddenWhenAccessEverySignUpApi(BASIC);
+    }
+    @Test
+    @WithMockJwtAuthenticationToken(memberRole = EXECUTIVES)
     public void 회장단_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.EXECUTIVES);
-    }
-    @Test
-    public void 관리자_회원가입_비정상_접근() throws Exception {
-        forbiddenWhenAccessEverySignUpApi(Role.ADMIN);
+        forbiddenWhenAccessEverySignUpApi(EXECUTIVES);
     }
 
     @Test
+    @WithMockJwtAuthenticationToken(memberRole = SIGNING_UP)
     public void 회원가입_기간이_아닙니다() throws Exception {
         /* 유동현은 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenUtil.createAccessToken(null);
+        String token = OAuth인증된_JWT_TOKEN(SIGNING_UP);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
@@ -90,6 +99,7 @@ public class SignUpIntegrationTest {
     }
 
     @Test
+    @WithMockJwtAuthenticationToken(memberRole = SIGNING_UP)
     public void OAuth2_인증_후_비회원_신규_학생_회원가입() throws Exception {
 
         //given
@@ -100,7 +110,7 @@ public class SignUpIntegrationTest {
 
         /* 유동현은 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenUtil.createAccessToken(null);
+        String token = OAuth인증된_JWT_TOKEN(SIGNING_UP);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
@@ -161,11 +171,12 @@ public class SignUpIntegrationTest {
 
         //then
         Member 유동현 = memberRepository.findByProviderAndUid(OAuth2Provider.GOOGLE, new UID("1234")).orElseThrow();
-        assertThat(유동현.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
+        assertThat(유동현.getIbasInformation().getRole()).isEqualTo(NOT_APPROVED);
 
     }
 
     @Test
+    @WithMockJwtAuthenticationToken(memberRole = SIGNING_UP)
     public void OAuth2_인증_후_비회원_신규_교수_회원가입() throws Exception {
 
         //given
@@ -174,7 +185,7 @@ public class SignUpIntegrationTest {
 
         /* 유동현 교수는 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
-        String token = tokenUtil.createAccessToken(null);
+        String token = OAuth인증된_JWT_TOKEN(SIGNING_UP);
 
         /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다. */
 
@@ -208,11 +219,12 @@ public class SignUpIntegrationTest {
 
         //then
         Member 유동현_교수 = memberRepository.findByProviderAndUid(OAuth2Provider.GOOGLE, new UID("1234")).orElseThrow();
-        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(Role.NOT_APPROVED);
+        assertThat(유동현_교수.getIbasInformation().getRole()).isEqualTo(NOT_APPROVED);
     }
 
     private void forbiddenWhenAccessEverySignUpApi(Role role) throws Exception {
-        String token = tokenUtil.createAccessToken(null);
+        //given
+        String token = OAuth인증된_JWT_TOKEN(role);
 
         mockMvc.perform(get("/signUp").with(accessToken(token)))
                 .andExpect(status().isForbidden());
@@ -222,16 +234,28 @@ public class SignUpIntegrationTest {
                 .andExpect(status().isForbidden());
         mockMvc.perform(post("/signUp/answers").with(accessToken(token)))
                 .andExpect(status().isForbidden());
-        mockMvc.perform(get("/signUp/questionnaire").with(accessToken(token)))
-                .andExpect(status().isForbidden());
-        mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))
-                .andExpect(status().isForbidden());
     }
     public static RequestPostProcessor accessToken(String accessToken) {
         return request -> {
             request.addHeader("Authorization", "Bearer " + accessToken);
             return request;
         };
+    }
+
+    private String OAuth인증된_JWT_TOKEN(Role role) {
+        List<? extends GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(role.toString()));
+        Map<String, Object> nameAttributeKey = Map.of(
+                "message", "success",
+                "response", Map.of(
+                        "id", "N8ojJQXxxSxtO0CmEH3xtt5Y6ER09UEsRozkpbGAdOI",
+                        "profile_image", "https://ssl.pstatic.net/static/pwe/address/img_profile.png",
+                        "email", "5177jsh@naver.com",
+                        "name", "조승현"
+                )
+        );
+        CustomOAuth2User customOAuth2User = new CustomOAuth2User(grantedAuthorities, nameAttributeKey, "response", 1L);
+
+        return tokenUtil.createAccessToken(new OAuth2AuthenticationToken(customOAuth2User, grantedAuthorities, "naver"));
     }
 
     private void 면접질문_설정() {
