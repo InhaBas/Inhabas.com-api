@@ -12,6 +12,8 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
@@ -36,6 +38,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -253,9 +256,13 @@ public class SignUpIntegrationTest {
                         "name", "조승현"
                 )
         );
+        OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo("NAVER", nameAttributeKey);
+        memberRepository.saveAndFlush(new Member(oAuth2UserInfo));
+        Optional<Member> test = memberRepository.findByProviderAndUid(OAuth2Provider.NAVER, new UID("N8ojJQXxxSxtO0CmEH3xtt5Y6ER09UEsRozkpbGAdOI"));
         CustomOAuth2User customOAuth2User = new CustomOAuth2User(grantedAuthorities, nameAttributeKey, "response", 1L);
 
-        return tokenUtil.createAccessToken(new OAuth2AuthenticationToken(customOAuth2User, grantedAuthorities, "naver"));
+        return tokenUtil.createAccessToken(new OAuth2AuthenticationToken(customOAuth2User, grantedAuthorities, "NAVER"));
+
     }
 
     private void 면접질문_설정() {
