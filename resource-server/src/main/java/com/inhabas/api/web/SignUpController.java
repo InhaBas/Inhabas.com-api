@@ -18,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "회원가입", description = "회원가입 기간이 아니면 403 Forbidden")
 @RestController
@@ -123,10 +125,11 @@ public class SignUpController {
     @PutMapping("/signUp")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponse(responseCode = "204")
-    public ResponseEntity<?> finishSignUp(@Authenticated Long memberId, @Valid @RequestBody List<AnswerDto> answers) {
+    public ResponseEntity<?> finishSignUp(@Authenticated Long memberId, @Valid @RequestBody Optional<List<AnswerDto>> answers) {
 
-        signUpService.completeSignUp(answers, memberId);
+        signUpService.completeSignUp(answers.orElse(new ArrayList<>()), memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
 }
