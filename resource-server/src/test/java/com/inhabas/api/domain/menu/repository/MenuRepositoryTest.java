@@ -34,35 +34,34 @@ public class MenuRepositoryTest {
 
     }
 
-//    @DisplayName("새로운 메뉴를 만든다.")
-//    @Test
-//    public void CreateNewMenu() {
-//        //given
-//        MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
-//        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
-//
-//        //when
-//        Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
-//        em.flush();
-//
-//        //then
-//        assertThat(saveActivityMenu.getId()).isNotNull();
-//        assertThat(saveActivityMenu.getDateCreated()).isNotNull();
-//        assertThat(saveActivityMenu.getDateUpdated()).isNotNull();
-//        assertThat(saveActivityMenu)
-//                .usingRecursiveComparison()
-//                .ignoringFields("id", "dateCreated", "dateUpdated")
-//                .isEqualTo(activityBoardMenu);
-//    }
+    @DisplayName("새로운 메뉴를 만든다.")
+    @Test
+    public void CreateNewMenu() {
+        //given
+        MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
+        Menu activityBoardMenu = new Menu(menuGroup1, 1, MenuType.LIST, "동아리 활동", "동아리원의 활동을 기록하는 게시판입니다.");
+
+        //when
+        Menu saveActivityMenu = menuRepository.save(activityBoardMenu);
+        em.flush();
+
+        //then
+        assertThat(saveActivityMenu.getId()).isNotNull();
+        assertThat(saveActivityMenu.getDateCreated()).isNotNull();
+        assertThat(saveActivityMenu.getDateUpdated()).isNotNull();
+        assertThat(saveActivityMenu)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "dateCreated", "dateUpdated")
+                .isEqualTo(activityBoardMenu);
+    }
 
     @Disabled
     @DisplayName("메뉴 이름을 수정한다.")
     @Test
     public void updateMenuName() {
         //given
-        MenuGroup menuGroup1 = em.persist(new MenuGroup("IBAS"));
-        MenuGroup menuGroup2 = em.persist(new MenuGroup("게시판 목록"));
-        Menu noticeMenu = menuRepository.save(new Menu(menuGroup2, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
+        MenuGroup menuGroup = em.persist(new MenuGroup("게시판 목록"));
+        Menu noticeMenu = menuRepository.save(new Menu(menuGroup, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
 
         //when
         String newName = "공지 사항";
