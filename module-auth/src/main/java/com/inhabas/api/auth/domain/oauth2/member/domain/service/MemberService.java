@@ -28,7 +28,7 @@ public interface MemberService {
 
     List<ApprovedMemberManagementDto> getApprovedMembersBySearchAndRole(String search);
 
-    void updateUnapprovedMembers(List<Integer> memberIdList, String state);
+    void updateUnapprovedMembers(List<Long> memberIdList, String state);
 
     void updateApprovedMembers(List<Long> memberIdList, Role role);
 

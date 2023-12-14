@@ -117,13 +117,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateUnapprovedMembers(List<Integer> memberIdList, String state) {
+    public void updateUnapprovedMembers(List<Long> memberIdList, String state) {
 
-        List<Long> memberLongList = memberIdList.stream()
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
-
-        List<Member> members = memberRepository.findAllById(memberLongList);
+        List<Member> members = memberRepository.findAllById(memberIdList);
         boolean allNewMembers = members.stream().allMatch(
                 member -> DEFAULT_ROLE_AFTER_FINISH_SIGNUP.equals(member.getRole()));
 
@@ -132,7 +128,6 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if (state.equals(PASS_STATE)) {
-
             for (Member member : members)
                 member.setRole(DEACTIVATED);
 
