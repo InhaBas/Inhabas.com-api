@@ -46,7 +46,7 @@ class AnswerRepositoryTest {
 
         //when
         Member resultMember  = memberRepository.findByProviderAndUid(GOOGLE, new UID("1249846925629348")).orElseThrow();
-        answerRepository.saveAndFlush(answer);
+        answerRepository.save(answer);
         List<Answer> answers = answerRepository.findByMember_Id(resultMember.getId());
 
         //then

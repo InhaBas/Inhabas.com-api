@@ -265,7 +265,7 @@ public class SignUpControllerTest {
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonOf(submittedAnswers)))
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andReturn();
     }
 

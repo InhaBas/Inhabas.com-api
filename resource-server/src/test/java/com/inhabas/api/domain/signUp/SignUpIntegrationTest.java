@@ -186,7 +186,7 @@ public class SignUpIntegrationTest {
                                 new AnswerDto(3L, "아아몰랑"),
                                 new AnswerDto(4L, "아모른다구"),
                                 new AnswerDto(5L, "ㅎ")))))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         /* 회원가입 신청을 완료한다. */
         mockMvc.perform(put("/signUp").with(accessToken(token))
