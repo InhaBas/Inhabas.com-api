@@ -2,6 +2,8 @@ package com.inhabas.api.domain.signUpSchedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,49 +13,40 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignUpScheduleDto {
 
-    @NotNull
-    private Integer id;
-
     @NotNull @Positive
+    @Schema(defaultValue = "1")
     private Integer generation;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2023-11-01T00:00:00")
     private LocalDateTime signupStartDate;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
     private LocalDateTime signupEndDate;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
     private LocalDateTime interviewStartDate;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
     private LocalDateTime interviewEndDate;
 
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
     private LocalDateTime resultAnnounceDate;
-
-
-    public SignUpScheduleDto(Integer id, Integer generation, LocalDateTime signupStartDate, LocalDateTime signupEndDate,
-                             LocalDateTime interviewStartDate, LocalDateTime interviewEndDate, LocalDateTime resultAnnounceDate) {
-        this.id = id;
-        this.generation = generation;
-        this.signupStartDate = signupStartDate;
-        this.signupEndDate = signupEndDate;
-        this.interviewStartDate = interviewStartDate;
-        this.interviewEndDate = interviewEndDate;
-        this.resultAnnounceDate = resultAnnounceDate;
-    }
 
     public static SignUpScheduleDto from(SignUpSchedule signUpSchedule) {
         return new SignUpScheduleDto(
-                signUpSchedule.getId(),
                 signUpSchedule.getGeneration(),
                 signUpSchedule.getSignupStartDate(),
                 signUpSchedule.getSignupEndDate(),

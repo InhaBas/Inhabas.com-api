@@ -2,13 +2,12 @@ package com.inhabas.api.auth.domain.oauth2.member.security;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccount;
+import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalNotFoundException;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -43,8 +42,8 @@ public class MemberPrincipalService implements UserPrincipalService {
         Email email = new Email(oauth2UserInfoToken.getEmail());
 
         try {
-            StudentId studentId = this.getMemberId(provider, uid, email).orElseThrow(UserPrincipalNotFoundException::new);
-            return studentId;
+            Long memberId = this.getMemberId(provider, uid, email).orElseThrow(UserPrincipalNotFoundException::new);
+            return memberId;
         } catch (UserPrincipalNotFoundException e) {
             log.info(e.getMessage());
             return null;
@@ -52,14 +51,14 @@ public class MemberPrincipalService implements UserPrincipalService {
     }
 
 
-    private Optional<StudentId> getMemberId(OAuth2Provider provider, UID uid, Email email) {
+    private Optional<Long> getMemberId(OAuth2Provider provider, UID uid, Email email) {
 
         return memberSocialAccountRepository.findMemberIdByUidAndProvider(uid, provider)
                 .or(() -> this.findByEmailAndProviderForLegacy(email, provider, uid));
     }
 
 
-    private Optional<StudentId> findByEmailAndProviderForLegacy(Email email, OAuth2Provider provider, UID uid) {
+    private Optional<Long> findByEmailAndProviderForLegacy(Email email, OAuth2Provider provider, UID uid) {
 
         Optional<MemberSocialAccount> memberSocialAccount =
                 memberSocialAccountRepository.findMemberSocialAccountByEmailAndProvider(email, provider);
@@ -69,7 +68,7 @@ public class MemberPrincipalService implements UserPrincipalService {
             MemberSocialAccount socialAccount = memberSocialAccount.get();
             socialAccount.SetUID(uid);
             memberSocialAccountRepository.save(socialAccount);
-            return Optional.of(socialAccount.getMember().getStudentId());
+            return Optional.of(socialAccount.getMember().getId());
 
         } else {
 

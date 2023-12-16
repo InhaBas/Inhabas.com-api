@@ -6,14 +6,12 @@ import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.GoogleOAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +20,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.inhabas.api.auth.domain.oauth2.OAuth2Provider.GOOGLE;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.*;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.signingUpMember1;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.signingUpMember2;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,13 +36,9 @@ public class MemberRepositoryTest {
     TestEntityManager em;
 
 
-    @BeforeEach
-    public void setUp() {
-        memberRepository.deleteAll();
-    }
-
     @DisplayName("저장 후 반환 값은 처음과 같다.")
     @Test
+    @Transactional
     public void save() {
 
         //when
@@ -59,6 +54,7 @@ public class MemberRepositoryTest {
 
     @DisplayName("idList 로 사용자를 찾을 수 있다.")
     @Test
+    @Transactional
     public void find_all_by_id() {
 
         //given
@@ -78,6 +74,7 @@ public class MemberRepositoryTest {
 
     @DisplayName("Role로 하나의 사용자를 조회한다.")
     @Test
+    @Transactional
     public void findAll() {
 
         //given
@@ -93,30 +90,19 @@ public class MemberRepositoryTest {
 
     @DisplayName("같은 provider_uid 저장 시 DataIntegrityViolationException 예외")
     @Test
+    @Transactional
     public void 같은_provider_uid_저장_예외() {
         //given
         memberRepository.save(signingUpMember1());
 
-        //when
-        Map<String, Object> attributes = new HashMap<>() {{
-            put("provider", "GOOGLE");
-            put("uid", "123321123321123");
-            put("sub", "1249846925629348");
-            put("picture", "/static/image.jpg");
-            put("email", "my@gmail.com");
-            put("name", "유동현");
-            put("locale", "ko");
-        }};
-        OAuth2UserInfo user = new GoogleOAuth2UserInfo(attributes);
-        Member sameProviderAndUid = new Member(user);
-
         //then
         assertThrows(DataIntegrityViolationException.class,
-                () -> memberRepository.saveAndFlush(sameProviderAndUid));
+                () -> memberRepository.saveAndFlush(signingUpMember1()));
     }
 
     @DisplayName("provider_uid 중복검사 시 true 를 반환")
     @Test
+    @Transactional
     public void provider_uid_존재한다() {
 
         //given
@@ -142,6 +128,7 @@ public class MemberRepositoryTest {
 
     @DisplayName("provider_uid 중복검사 시 false 를 반환")
     @Test
+    @Transactional
     public void provider_uid_존재하지_않는다() {
 
         //when
@@ -154,6 +141,7 @@ public class MemberRepositoryTest {
 
     @DisplayName("provider_uid 로 사용자를 찾는다")
     @Test
+    @Transactional
     public void find_by_provider_uid() {
 
         //given
@@ -174,6 +162,7 @@ public class MemberRepositoryTest {
     // Custom
     @DisplayName("중복 검사 쿼리 provider 없는 경우")
     @Test
+    @Transactional
     public void validateNoneFields() {
 
         //given
@@ -188,6 +177,7 @@ public class MemberRepositoryTest {
 
     @DisplayName("모든 필드 중복되는 경우")
     @Test
+    @Transactional
     public void validateAllFields() {
 
         //given
@@ -204,15 +194,13 @@ public class MemberRepositoryTest {
     // 회원가입 이후 구현
     @DisplayName("Role, StudentId 로 회원 검색")
     @Test
-    @Disabled
+    @Transactional
     public void search_by_role_studentId() {
-
         //given
-        memberRepository.save(signingUpMember1());
-        memberRepository.save(signingUpMember2());
+        memberRepository.save(notapprovedMember());
 
         //when
-        List<Member> members = memberRepository.findAllByRoleAndStudentIdLike(SIGNING_UP, "12171707");
+        List<Member> members = memberRepository.findAllByRoleAndStudentIdLike(NOT_APPROVED, "12171707");
 
         //then
         assertThat(members.size()).isEqualTo(1);

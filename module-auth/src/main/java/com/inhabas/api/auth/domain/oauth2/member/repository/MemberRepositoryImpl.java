@@ -3,7 +3,6 @@ package com.inhabas.api.auth.domain.oauth2.member.repository;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
@@ -29,10 +28,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public MemberAuthorityProvider.RoleDto fetchRoleByStudentId(StudentId studentId) {
+    public MemberAuthorityProvider.RoleDto fetchRoleByStudentId(Long id) {
         Role role = queryFactory
                 .select(member.ibasInformation.role).from(member)
-                .where(member.studentId.eq(studentId))
+                .where(member.id.eq(id))
                 .fetchOne();
 
         return new MemberAuthorityProvider.RoleDto(role);
