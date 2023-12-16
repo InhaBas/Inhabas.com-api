@@ -115,7 +115,7 @@ public class WebSecurityConfig {
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
 
                         // 회원가입 일정 수정
-                        .antMatchers(HttpMethod.PUT,"/signUp/schedule").hasRole(CHIEF.toString())
+                        .antMatchers(HttpMethod.PUT,"/signUp/schedule").hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
                         // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())

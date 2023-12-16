@@ -147,7 +147,7 @@ public class MemberControllerTest {
 
     }
 
-    @DisplayName("비활동 이상 멤버 권한을 변경할 때 가능한 권한이면 200, 아니면 400을 반환한다.")
+    @DisplayName("비활동 이상 멤버 권한을 변경할 때 가능한 권한이면 204, 아니면 400을 반환한다.")
     @ParameterizedTest
     @ValueSource(strings = {"ADMIN", "SIGNING_UP"})
     public void updateApprovedMembers(String roleString) throws Exception {

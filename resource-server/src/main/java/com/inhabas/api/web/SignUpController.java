@@ -1,10 +1,10 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUp.usecase.SignUpService;
-import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -108,7 +107,7 @@ public class SignUpController {
     @PostMapping("/signUp/answers")
     @Operation(summary = "회원가입 시 자신이 작성한 답변을 임시 저장한다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "답변이 길이제한을 초과했을 경우"),
             @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
     })
@@ -117,7 +116,7 @@ public class SignUpController {
 
         signUpService.saveAnswers(answers, memberId);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
 
     }
 
@@ -128,7 +127,7 @@ public class SignUpController {
     public ResponseEntity<?> finishSignUp(@Authenticated Long memberId, @Valid @RequestBody Optional<List<AnswerDto>> answers) {
 
         signUpService.completeSignUp(answers.orElse(new ArrayList<>()), memberId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
 
     }
 
