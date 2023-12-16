@@ -5,6 +5,7 @@ import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ class QuestionnaireRepositoryTest {
 
     @Test
     @DisplayName("idList와 일치하는것이 몇개 포함되어 있는지 확인한다.")
+    @Transactional
     public void countByIdIn() {
         //given
         ArrayList<Questionnaire> questionnaireInDatabase = new ArrayList<>() {{

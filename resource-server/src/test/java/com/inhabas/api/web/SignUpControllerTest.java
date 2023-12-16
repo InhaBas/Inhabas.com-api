@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
@@ -13,14 +12,12 @@ import com.inhabas.api.domain.signUp.domain.entity.Answer;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUp.usecase.SignUpService;
-import com.inhabas.testAnnotataion.DefaultWebMvcTest;
-import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
+import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +32,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DefaultWebMvcTest(SignUpController.class)
+@NoSecureWebMvcTest(SignUpController.class)
 public class SignUpControllerTest {
 
     @Autowired
@@ -54,10 +51,8 @@ public class SignUpControllerTest {
 
     @DisplayName("임시 저장했던 개인정보를 불러온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.SIGNING_UP)
     public void 임시저장했던_개인정보를_불러온다() throws Exception {
         //given
-        Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SignUpDto expectedSavedForm = SignUpDto.builder()
                 .name("홍길동")
                 .major("의예과")
@@ -67,7 +62,7 @@ public class SignUpControllerTest {
                 .grade(1)
                 .build();
 
-        given(signUpService.loadSignUpForm(memberId)).willReturn(expectedSavedForm);
+        given(signUpService.loadSignUpForm(any())).willReturn(expectedSavedForm);
 
         //when
         String response = mvc.perform(get("/signUp"))
@@ -83,7 +78,6 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 회원가입 도중 개인정보를 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.SIGNING_UP)
     public void 학생_회원가입_도중_개인정보를_저장한다() throws Exception {
         //given
         SignUpDto signUpForm = SignUpDto.builder()
@@ -104,7 +98,6 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 개인정보를 빈칸으로 제출하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.SIGNING_UP)
     public void 학생_개인정보를_빈칸으로_제출하면_안된다() throws Exception {
         //given
         SignUpDto signUpForm = SignUpDto.builder()
@@ -133,7 +126,6 @@ public class SignUpControllerTest {
 
     @DisplayName("학생 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.SIGNING_UP)
     public void 학생_개인정보_입력값이_정해진_범위를_초과하면_안된다() throws Exception {
         //given
         SignUpDto signUpForm = SignUpDto.builder()
@@ -160,7 +152,6 @@ public class SignUpControllerTest {
 
     @DisplayName("교수 회원가입 도중 개인정보를 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.SIGNING_UP)
     public void 교수_회원가입_도중_개인정보를_저장한다() throws Exception {
         //given
         SignUpDto signUpForm = SignUpDto.builder()
@@ -182,7 +173,6 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입에 필요한 전공정보를 모두 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberRole = Role.ANONYMOUS)
     public void 회원가입에_필요한_전공정보를_모두_가져온다() throws Exception {
         //given
         MajorInfoDto majorInfo1 = new MajorInfoDto(1, "공과대학", "기계공학과");
@@ -208,7 +198,6 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입에 필요한 질문들을 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.ANONYMOUS)
     public void 회원가입에_필요한_질문들을_가져온다() throws Exception {
         //given
         ArrayList<QuestionnaireDto> questionnaireInDatabase = new ArrayList<>(){{
@@ -233,7 +222,6 @@ public class SignUpControllerTest {
 
     @DisplayName("임시저장했던 답변을 가져온다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.SIGNING_UP)
     public void 임시저장했던_답변을_가져온다() throws Exception {
         //given
         ArrayList<AnswerDto> savedDTOs = new ArrayList<>() {{
@@ -257,7 +245,6 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입을 위한 답변을 저장한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.SIGNING_UP)
     public void 회원가입을_위한_답변을_저장한다() throws Exception {
         //given
         Member member = MemberTest.signingUpMemberAfterProfile();
@@ -284,7 +271,6 @@ public class SignUpControllerTest {
 
     @DisplayName("회원가입을 완료처리한다.")
     @Test
-    @WithMockJwtAuthenticationToken(memberId = 12L, memberRole = Role.SIGNING_UP)
     public void 회원가입을_완료처리한다() throws Exception {
         //given
         Member member = MemberTest.signingUpMemberAfterProfile();
