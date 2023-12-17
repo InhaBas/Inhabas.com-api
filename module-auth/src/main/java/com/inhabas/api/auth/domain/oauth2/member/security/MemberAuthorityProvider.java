@@ -2,21 +2,20 @@ package com.inhabas.api.auth.domain.oauth2.member.security;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
+import java.util.*;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
 
@@ -34,9 +33,9 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
 
         OAuth2UserInfoAuthentication authentication =
                 new OAuth2UserInfoAuthentication(oAuth2UserInfo.getId(), oAuth2UserInfo.getProvider().toString(), oAuth2UserInfo.getEmail());
-        Long memberId = (Long) userPrincipalService.loadUserPrincipal(authentication);
+        StudentId studentId = (StudentId) userPrincipalService.loadUserPrincipal(authentication);
 
-        if (Objects.isNull(memberId)) {  // 기존회원이 아니면, member 테이블에 임시데이터 저장
+        if (Objects.isNull(studentId)) {  // 기존회원이 아니면, member 테이블에 임시데이터 저장
             Member member = memberRepository.findByProviderAndUid(
                             oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
                     .orElseThrow(InvalidUserInfoException::new);
@@ -47,7 +46,7 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
         }
         else {
             // 기존회원이면,
-            RoleDto roleDto = memberRepository.fetchRoleByStudentId(memberId);
+            RoleDto roleDto = memberRepository.fetchRoleByStudentId(studentId);
 
             if (roleDto.isEmpty())
                 throw new InvalidUserInfoException();  // 가입된 소셜 계정으로 회원 프로필을 찾을 수 없는 경우.

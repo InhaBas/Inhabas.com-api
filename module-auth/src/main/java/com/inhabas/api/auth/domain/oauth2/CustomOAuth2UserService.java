@@ -2,6 +2,7 @@ package com.inhabas.api.auth.domain.oauth2;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.SocialAccountService;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
@@ -24,6 +25,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private final SocialAccountService socialAccountService;
     private final UserAuthorityProvider userAuthorityProvider;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
