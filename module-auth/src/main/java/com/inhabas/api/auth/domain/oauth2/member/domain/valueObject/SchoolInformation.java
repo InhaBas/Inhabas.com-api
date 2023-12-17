@@ -37,7 +37,6 @@ public class SchoolInformation {
         this.major = new Major(major);
         this.generation = new Generation(generation);
         this.memberType = memberType;
-        this.grade = new Grade(DEFAULT_GRADE);
     }
 
 

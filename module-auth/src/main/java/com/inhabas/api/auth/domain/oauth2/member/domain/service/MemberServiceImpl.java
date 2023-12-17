@@ -2,10 +2,12 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
@@ -50,6 +52,14 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public Member findById(StudentId studentId) {
+        return memberRepository.findByStudentId(studentId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
     @Override
     @Transactional
     public Optional<Member> updateMember(Member member) {
@@ -86,7 +96,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> new NotApprovedMemberManagementDto(
                 member.getName(),
                 member.getId(),
-                member.getStudentId(),
+                member.getStudentId().getValue(),
                 member.getPhone(),
                 member.getEmail(),
                 member.getSchoolInformation().getGrade(),
@@ -106,7 +116,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> new ApprovedMemberManagementDto(
                         member.getName(),
                         member.getId(),
-                        member.getStudentId(),
+                        member.getStudentId().getValue(),
                         member.getPhone(),
                         member.getRole(),
                         member.getSchoolInformation().getGeneration(),
@@ -117,9 +127,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateUnapprovedMembers(List<Long> memberIdList, String state) {
+    public void updateUnapprovedMembers(List<Integer> memberIdList, String state) {
 
-        List<Member> members = memberRepository.findAllById(memberIdList);
+        List<Long> memberLongList = memberIdList.stream()
+                .map(Long::valueOf)
+                .collect(Collectors.toList());
+
+        List<Member> members = memberRepository.findAllById(memberLongList);
         boolean allNewMembers = members.stream().allMatch(
                 member -> DEFAULT_ROLE_AFTER_FINISH_SIGNUP.equals(member.getRole()));
 
@@ -128,6 +142,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if (state.equals(PASS_STATE)) {
+
             for (Member member : members)
                 member.setRole(DEACTIVATED);
 

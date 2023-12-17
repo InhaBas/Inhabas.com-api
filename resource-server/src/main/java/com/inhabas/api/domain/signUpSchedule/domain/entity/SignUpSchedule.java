@@ -15,29 +15,29 @@ import java.time.LocalDateTime;
  * Be cautious not to make multi schedule or remove all the schedules. Do offer really necessary api.
  */
 @Entity @Getter
-@Table(name = "SIGNUP_SCHEDULE")
+@Table(name = "signup_schedule")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpSchedule {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(name = "GENERATION", nullable = false)
+    @Column(name = "generation", nullable = false)
     private Integer generation;
 
-    @Column(name = "SIGNUP_START", nullable = false)
+    @Column(name = "signup_start", nullable = false)
     private LocalDateTime signupStartDate;
 
-    @Column(name = "SIGNUP_END", nullable = false)
+    @Column(name = "signup_end", nullable = false)
     private LocalDateTime signupEndDate;
 
-    @Column(name = "INTERVIEW_START", nullable = false)
+    @Column(name = "interview_start", nullable = false)
     private LocalDateTime interviewStartDate;
 
-    @Column(name = "INTERVIEW_END", nullable = false)
+    @Column(name = "interview_end", nullable = false)
     private LocalDateTime interviewEndDate;
 
-    @Column(name = "RESULT_ANNOUNCE_DATE", nullable = false)
+    @Column(name = "result_announce_date", nullable = false)
     private LocalDateTime resultAnnounceDate;
 
     public SignUpSchedule(Integer generation, LocalDateTime signupStartDate, LocalDateTime signupEndDate,

@@ -28,5 +28,9 @@ public class GradeTest {
                 IllegalArgumentException.class,
                 () -> new Grade(-1)
         );
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new Grade(0)
+        );
     }
 }

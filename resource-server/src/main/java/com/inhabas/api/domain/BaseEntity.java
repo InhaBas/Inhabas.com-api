@@ -1,9 +1,11 @@
 package com.inhabas.api.domain;
 
 import lombok.Getter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -16,10 +18,10 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @CreatedDate
-    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dateCreated;
 
     @LastModifiedDate
-    @Column(columnDefinition = "DATETIME(0)")
+    @Column
     private LocalDateTime dateUpdated;
 }

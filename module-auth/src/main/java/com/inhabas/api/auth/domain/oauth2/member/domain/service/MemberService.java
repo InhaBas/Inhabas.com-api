@@ -2,9 +2,10 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import org.springframework.data.domain.Pageable;
 
@@ -15,6 +16,8 @@ public interface MemberService {
 
     // 가입 관련
     void save(Member member);
+
+    Member findById(StudentId studentId);
 
     Optional<Member> updateMember(Member member);
 
@@ -28,7 +31,7 @@ public interface MemberService {
 
     List<ApprovedMemberManagementDto> getApprovedMembersBySearchAndRole(String search);
 
-    void updateUnapprovedMembers(List<Long> memberIdList, String state);
+    void updateUnapprovedMembers(List<Integer> memberIdList, String state);
 
     void updateApprovedMembers(List<Long> memberIdList, Role role);
 

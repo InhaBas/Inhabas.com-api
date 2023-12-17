@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface MemberSocialAccountRepository
-        extends JpaRepository<MemberSocialAccount, Long>, MemberSocialAccountRepositoryCustom {
+        extends JpaRepository<MemberSocialAccount, Integer>, MemberSocialAccountRepositoryCustom {
 
     /**
      * 레거시 호환성을 위해 존재. "회원가입 되어있지만 uid가 존재하지 않는 경우"에만 사용할 것.
