@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateRequestDto {
 
-    private List<Integer> memberIdList;
+    private List<Long> memberIdList;
 
     @Schema(example = "pass, fail")
     private String state;

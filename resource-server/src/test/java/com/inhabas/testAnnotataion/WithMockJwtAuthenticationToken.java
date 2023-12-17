@@ -16,13 +16,7 @@ import java.lang.annotation.RetentionPolicy;
 @WithSecurityContext(factory = WithMockJwtAuthenticationTokenSecurityContextFactory.class)
 public @interface WithMockJwtAuthenticationToken {
 
-    String uid() default "1234";
-
-    String email() default "my@email.com";
-
-    String provider() default "google";
-
-    long memberId() default 1L; // 다른값으로 설정되지 않으면, authUser 의 member profile 을 null 로 간주.
-
+    long memberId() default 1L;
     Role memberRole() default Role.BASIC;
+
 }

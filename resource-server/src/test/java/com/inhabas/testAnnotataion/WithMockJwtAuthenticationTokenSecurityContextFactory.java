@@ -1,14 +1,13 @@
 package com.inhabas.testAnnotataion;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationResult;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
-import java.util.Collections;
+import java.util.List;
 
 /**
  * WithMockJwtAuthenticationToken 어노테이션 정보를 기반으로 SecurityContext 를 설정한다. <br>
@@ -20,19 +19,17 @@ public class WithMockJwtAuthenticationTokenSecurityContextFactory
 
     @Override
     public SecurityContext createSecurityContext(WithMockJwtAuthenticationToken principalInfo) {
+
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
+        Long memberId = principalInfo.memberId();
         String role = principalInfo.memberRole().toString(); // 기본은 BASIC.
-        TokenAuthenticationResult token
-                = new JwtAuthenticationResult(1L, principalInfo.uid(), principalInfo.provider(), principalInfo.email(), Collections.singleton(new SimpleGrantedAuthority(role)));
-        token.setAuthenticated(true);
+        List<? extends GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(role));
 
-        if (principalInfo.memberId() != 0) { // default 값이 아니면, 회원 프로필이 저장되어 있다고 간주.
-            Long memberId = principalInfo.memberId();
-            token.setPrincipal(memberId);
-        }
+        JwtAuthenticationToken authentication = JwtAuthenticationToken.of(memberId, "TEST", grantedAuthorities);
 
-        context.setAuthentication(token);
+        context.setAuthentication(authentication);
         return context;
+
     }
 }

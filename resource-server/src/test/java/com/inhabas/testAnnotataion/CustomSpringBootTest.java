@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@ActiveProfiles({"production"})
+@ActiveProfiles({"test"})
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
