@@ -59,6 +59,20 @@ public class SignUpServiceTest {
 
     @DisplayName("(학생) 개인정보 값이 모두 채워진 상태로 제출되면 저장한다.")
     @Test
+    public void isSignedUpTest() {
+        //given
+        given(memberSocialAccountRepository.existsByMember_Id(any())).willReturn(true);
+
+        //when
+        boolean check = signUpService.isSignedUp(any());
+
+        //then
+        assertThat(check).isTrue();
+
+    }
+
+    @DisplayName("(학생) 개인정보 값이 모두 채워진 상태로 제출되면 저장한다.")
+    @Test
     public void saveSignUpFormTest() {
         //given
         Member member = signingUpMember1();

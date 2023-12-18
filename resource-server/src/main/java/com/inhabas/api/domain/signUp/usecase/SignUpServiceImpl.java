@@ -126,6 +126,11 @@ public class SignUpServiceImpl implements SignUpService {
     }
 
     @Override
+    public boolean isSignedUp(Long memberId) {
+        return memberSocialAccountRepository.existsByMember_Id(memberId);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public SignUpDto loadSignUpForm(Long memberId) {
 

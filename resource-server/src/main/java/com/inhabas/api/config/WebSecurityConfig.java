@@ -43,7 +43,8 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_STATIC = {"/static/css/**", "/static/js/**", "*.ico"};
     private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
     private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/member/chief", "/error"};
-    private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires", "/signUp/majorInfo"};
+    private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires",
+            "/signUp/majorInfo", "/signUp/check"};
 
 
     @Order(1)
