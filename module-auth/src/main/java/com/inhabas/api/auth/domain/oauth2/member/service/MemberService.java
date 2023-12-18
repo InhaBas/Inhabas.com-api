@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.oauth2.member.domain.service;
+package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;

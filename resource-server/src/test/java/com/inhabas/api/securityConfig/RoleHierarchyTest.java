@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.inhabas.api.auth.AuthBeansConfig;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
 import com.inhabas.api.auth.domain.token.TokenResolver;

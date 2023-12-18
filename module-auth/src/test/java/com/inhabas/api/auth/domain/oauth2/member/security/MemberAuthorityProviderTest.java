@@ -1,12 +1,10 @@
-package com.inhabas.api.domain.member.security;
+package com.inhabas.api.auth.domain.oauth2.member.security;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
-import com.inhabas.api.auth.domain.oauth2.member.security.MemberPrincipalService;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,6 @@
-package com.inhabas.api.domain.member.security;
+package com.inhabas.api.auth.domain.oauth2.member.security;
 
-import com.inhabas.api.auth.domain.oauth2.member.security.MemberPrincipalService;
-import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

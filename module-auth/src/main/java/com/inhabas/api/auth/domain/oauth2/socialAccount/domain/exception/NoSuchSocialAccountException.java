@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.oauth2.socialAccount;
+package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.exception;
 
 public class NoSuchSocialAccountException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.oauth2.member.domain.service;
+package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
