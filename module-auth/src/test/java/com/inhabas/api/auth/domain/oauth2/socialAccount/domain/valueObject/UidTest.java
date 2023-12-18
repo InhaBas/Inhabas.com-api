@@ -1,6 +1,5 @@
-package com.inhabas.api.auth.domain.oauth2.socialaccount.wrapper;
+package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,10 +27,11 @@ public class UidTest {
     public void UID_is_too_long() {
         //given
         String okString = "지금이문장은10자임".repeat(19) + ".";
-        String notOkString = "지금이문장은10자임".repeat(19) + "..";
+        String notOkString = "지금이문장은10자임".repeat(100) + "..";
 
         //then
         assertDoesNotThrow(() -> new UID(okString));
+        assertThrows(IllegalArgumentException.class, () -> new UID(notOkString));
     }
 
     @DisplayName("UID 은 null 일 수 없습니다.")

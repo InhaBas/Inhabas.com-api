@@ -21,7 +21,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(signUpControllerInterceptor())
-                .addPathPatterns("/signUp/**").excludePathPatterns("/signUp/schedule");
+                .addPathPatterns("/signUp/**").excludePathPatterns("/signUp/schedule", "/signUp/check");
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }

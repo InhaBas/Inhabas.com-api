@@ -23,4 +23,6 @@ public interface SignUpService {
 
     List<MajorInfoDto> getMajorInfo();
 
+    boolean isSignedUp(Long memberId);
+
 }

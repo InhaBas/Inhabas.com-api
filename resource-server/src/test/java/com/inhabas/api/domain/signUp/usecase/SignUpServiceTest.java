@@ -3,10 +3,10 @@ package com.inhabas.api.domain.signUp.usecase;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
 import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
@@ -56,6 +56,20 @@ public class SignUpServiceTest {
     @Mock
     private AnswerService answerService;
 
+
+    @DisplayName("(학생) 개인정보 값이 모두 채워진 상태로 제출되면 저장한다.")
+    @Test
+    public void isSignedUpTest() {
+        //given
+        given(memberSocialAccountRepository.existsByMember_Id(any())).willReturn(true);
+
+        //when
+        boolean check = signUpService.isSignedUp(any());
+
+        //then
+        assertThat(check).isTrue();
+
+    }
 
     @DisplayName("(학생) 개인정보 값이 모두 채워진 상태로 제출되면 저장한다.")
     @Test

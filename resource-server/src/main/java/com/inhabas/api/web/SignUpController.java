@@ -17,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Tag(name = "회원가입", description = "회원가입 기간이 아니면 403 Forbidden")
 @RestController
@@ -27,6 +25,21 @@ import java.util.Optional;
 public class SignUpController {
 
     private final SignUpService signUpService;
+
+
+    @GetMapping("/signUp/check")
+    @Operation(summary = "요청을 보낸 사용자가 회원가입을 했는지 확인한다.",
+            description = "회원가입을 이미 했다면 true, 아니면 false")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = @Content(
+                    schema = @Schema(implementation = SignUpDto.class))),
+            @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
+    })
+    public ResponseEntity<Map<String, Boolean>> signUpCheck(
+            @Authenticated Long memberId) {
+        boolean check = signUpService.isSignedUp(memberId);
+        return ResponseEntity.ok(Collections.singletonMap("check", check));
+    }
 
 
     /* profile */

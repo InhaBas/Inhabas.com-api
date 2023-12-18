@@ -4,7 +4,7 @@ import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

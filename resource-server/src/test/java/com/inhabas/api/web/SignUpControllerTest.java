@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.PROFESSOR;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,6 +49,25 @@ public class SignUpControllerTest {
 
     private String jsonOf(Object response) throws JsonProcessingException {
         return objectMapper.writeValueAsString(response);
+    }
+
+    @DisplayName("요청을 보낸 사용자가 회원가입을 했는지 확인한다.")
+    @Test
+    public void 사용자가_회원가입을_했는지_확인한다() throws Exception {
+        //given
+        Map<String, Boolean> check = Collections.singletonMap("check", true);
+        given(signUpService.isSignedUp(any())).willReturn(true);
+
+        //when
+        String response = mvc.perform(get("/signUp/check"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        //then
+        assertThat(response).isEqualTo(jsonOf(check));
+
     }
 
     @DisplayName("임시 저장했던 개인정보를 불러온다.")

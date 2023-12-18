@@ -1,7 +1,7 @@
-package com.inhabas.api.auth.domain.oauth2.member.security.socialAccount;
+package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
 import lombok.AccessLevel;

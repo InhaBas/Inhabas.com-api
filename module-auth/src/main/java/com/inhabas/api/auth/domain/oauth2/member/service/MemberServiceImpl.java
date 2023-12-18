@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.oauth2.member.domain.service;
+package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
@@ -7,7 +7,7 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

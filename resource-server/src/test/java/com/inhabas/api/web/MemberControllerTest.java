@@ -3,7 +3,7 @@ package com.inhabas.api.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;

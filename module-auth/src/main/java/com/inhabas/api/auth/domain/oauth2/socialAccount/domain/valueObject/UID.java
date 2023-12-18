@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.oauth2.socialAccount.type;
+package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

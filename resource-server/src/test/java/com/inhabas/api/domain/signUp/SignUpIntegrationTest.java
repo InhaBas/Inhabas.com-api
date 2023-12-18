@@ -8,11 +8,11 @@ import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenUtil;
@@ -135,8 +135,11 @@ public class SignUpIntegrationTest {
     public void OAuth2_인증_후_비회원_신규_학생_회원가입() throws Exception {
         /* 유동현은 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
+        mockMvc.perform(get("/signUp/check").with(accessToken(token)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"check\":false}"));
 
-        /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다.
+        /* OAuth2 인증이 완료되고 회원가입을 하지 않았다면 회원가입 페이지로 리다이렉트 된다.
         이 때, 회원가입을 완료하지 않고 임시저장했던 프로필 정보가 있는지 불러오길 시도하지만
         신규회원 가입이기 때문에, 소셜 이메일을 제외하고는 아무것도 받지 못한다. */
         mockMvc.perform(get("/signUp").with(accessToken(token)))
@@ -212,8 +215,11 @@ public class SignUpIntegrationTest {
     public void OAuth2_인증_후_비회원_신규_교수_회원가입() throws Exception {
         /* 유동현 교수는 IBAS 에 회원 가입하기 위해
         소셜 로그인 후 회원 가입용 임시 토큰을 발급 받았다.*/
+        mockMvc.perform(get("/signUp/check").with(accessToken(token)))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"check\":false}"));
 
-        /* OAuth2 인증이 완료되면 자동으로 회원가입 페이지로 리다이렉트 된다. */
+        /* OAuth2 인증이 완료되고 회원가입을 하지 않았다면 회원가입 페이지로 리다이렉트 된다. */
 
         /* 개인정보 입력을 위해, 전공 정보들이 로딩된다. */
         String majorList = mockMvc.perform(get("/signUp/majorInfo").with(accessToken(token)))

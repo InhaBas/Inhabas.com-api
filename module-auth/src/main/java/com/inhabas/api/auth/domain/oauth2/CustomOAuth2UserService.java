@@ -2,11 +2,11 @@ package com.inhabas.api.auth.domain.oauth2;
 
 import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.type.UID;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

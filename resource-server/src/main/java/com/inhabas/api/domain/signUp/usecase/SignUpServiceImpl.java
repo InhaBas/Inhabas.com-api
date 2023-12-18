@@ -4,11 +4,11 @@ import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
-import com.inhabas.api.auth.domain.oauth2.member.domain.service.MemberService;
+import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.SchoolInformation;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccount;
-import com.inhabas.api.auth.domain.oauth2.member.security.socialAccount.MemberSocialAccountRepository;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
 import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
@@ -123,6 +123,11 @@ public class SignUpServiceImpl implements SignUpService {
     @Override
     public List<MajorInfoDto> getMajorInfo() {
         return majorInfoService.getAllMajorInfo();
+    }
+
+    @Override
+    public boolean isSignedUp(Long memberId) {
+        return memberSocialAccountRepository.existsByMember_Id(memberId);
     }
 
     @Override
