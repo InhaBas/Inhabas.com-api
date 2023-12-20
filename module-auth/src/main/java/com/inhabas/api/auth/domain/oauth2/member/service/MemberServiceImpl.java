@@ -2,7 +2,6 @@ package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
-import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
@@ -40,28 +38,6 @@ public class MemberServiceImpl implements MemberService {
     private final UpdateNameRequestRepository updateNameRequestRepository;
     private final MemberDuplicationChecker duplicationChecker;
 
-
-    @Override
-    @Transactional
-    public void save(Member member) {
-
-        if (duplicationChecker.isDuplicatedMember(member)) {
-            throw new DuplicatedMemberFieldException("provider 와 uid");
-        }
-
-        memberRepository.save(member);
-    }
-
-    @Override
-    @Transactional
-    public Optional<Member> updateMember(Member member) {
-        return DoesExistMember(member) ?
-                Optional.of(memberRepository.save(member)) : Optional.empty();
-    }
-
-    private boolean DoesExistMember(Member member) {
-        return memberRepository.findById(member.getId()).isPresent();
-    }
 
     @Transactional
     public void changeRole(Member member, Role role) {
@@ -231,9 +207,12 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-        member.getSchoolInformation().setGrade(profileDetailDto.getGrade());
-        member.getSchoolInformation().setMajor(profileDetailDto.getMajor());
-        member.setPhone(profileDetailDto.getPhoneNumber());
+        if(profileDetailDto.getMajor() != null)
+            member.getSchoolInformation().setMajor(profileDetailDto.getMajor());
+        if(profileDetailDto.getPhoneNumber() != null)
+            member.setPhone(profileDetailDto.getPhoneNumber());
+        if(profileDetailDto.getGrade() != null)
+            member.getSchoolInformation().setGrade(profileDetailDto.getGrade());
 
     }
 

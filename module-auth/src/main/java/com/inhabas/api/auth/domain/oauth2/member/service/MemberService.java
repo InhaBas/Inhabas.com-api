@@ -7,13 +7,10 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberService {
 
     // 가입 관련
-    void save(Member member);
-    Optional<Member> updateMember(Member member);
     void changeRole(Member member, Role role);
     void finishSignUp(Member member);
 
@@ -36,4 +33,5 @@ public interface MemberService {
     void updateMyProfileDetail(Long memberId, ProfileDetailDto profileDetailDto);
     void updateMyProfileIntro(Long memberId, ProfileIntroDto profileIntroDto);
     void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto);
+
 }
