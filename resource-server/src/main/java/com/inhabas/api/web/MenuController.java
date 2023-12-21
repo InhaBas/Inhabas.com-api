@@ -7,12 +7,10 @@ import com.inhabas.api.domain.menu.usecase.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +27,7 @@ public class MenuController {
     private final MenuService menuService;
 
     @GetMapping("/menus")
+    @SecurityRequirements(value = {})
     @Operation(summary = "모든 메뉴 정보를 가져온다.")
     @ApiResponse(responseCode = "200", content = @Content(
             array = @ArraySchema(schema = @Schema(implementation = MenuGroupDto.class)),
@@ -44,6 +43,7 @@ public class MenuController {
 
     @GetMapping("/menu/{menuId}")
     @Operation(summary = "id 에 해당하는 메뉴 정보를 가져온다.")
+    @SecurityRequirements(value = {})
     @Parameter(
             name = "menuId",
             description = "메뉴의 고유 식별자",

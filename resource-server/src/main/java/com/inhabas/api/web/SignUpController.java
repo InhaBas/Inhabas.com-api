@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -78,9 +79,10 @@ public class SignUpController {
     }
 
 
-    @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다. (권한 필요 X)")
+    @Operation(summary = "회원가입에 필요한 전공 정보를 모두 불러온다.")
     @ApiResponse(responseCode = "200", content = @Content(
             schema = @Schema(implementation = SignUpDto.class)))
+    @SecurityRequirements(value = {})
     @GetMapping("/signUp/majorInfo")
     public ResponseEntity<List<MajorInfoDto>> loadAllMajorInfo() {
 
@@ -91,9 +93,10 @@ public class SignUpController {
 
     /* questionnaire */
 
-    @Operation(summary = "회원가입에 필요한 질문들을 불러온다. (권한 필요 X)")
+    @Operation(summary = "회원가입에 필요한 질문들을 불러온다.")
     @ApiResponse(responseCode = "200", content = @Content(
             schema = @Schema(implementation = QuestionnaireDto.class)))
+    @SecurityRequirements(value = {})
     @GetMapping("/signUp/questionnaires")
     public ResponseEntity<List<QuestionnaireDto>> loadQuestionnaire() {
 

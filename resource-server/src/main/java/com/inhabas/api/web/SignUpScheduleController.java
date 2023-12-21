@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,9 @@ public class SignUpScheduleController {
     private final SignUpScheduler signUpScheduler;
 
 
-    @Operation(summary = "회원가입 관련 일정을 조회한다. (권한 필요X)",
+    @Operation(summary = "회원가입 관련 일정을 조회한다.",
             description = "일정은 하나만 반환한다.")
+    @SecurityRequirements(value = {})
     @ApiResponse(responseCode = "200", content = {
             @Content(schema = @Schema(implementation = SignUpScheduleDto.class))
     })
