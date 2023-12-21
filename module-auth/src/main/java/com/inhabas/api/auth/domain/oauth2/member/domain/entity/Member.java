@@ -40,7 +40,7 @@ public class Member {
     @Embedded
     private Email email;
 
-    @Column(name = "picture", length = 1000)
+    @Column(name = "PICTURE", length = 1000)
     private String picture;
 
     @Embedded
@@ -55,14 +55,14 @@ public class Member {
     @Embedded
     private UID uid;
 
-    @Column(name = "last_login", nullable = false)
+    @Column(name = "LAST_LOGIN", nullable = false)
     private LocalDateTime lastLogin;
 
     @Lob
-    @Column(name = "extra_data", nullable = false)
+    @Column(name = "EXTRA_DATA", nullable = false)
     private String extraData;
 
-    @Column(name = "is_deleted")
+    @Column(name = "IS_DELETED")
     private boolean isDeleted = false;
 
     @Builder

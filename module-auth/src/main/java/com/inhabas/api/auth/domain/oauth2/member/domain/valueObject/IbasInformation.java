@@ -23,12 +23,12 @@ public class IbasInformation {
     private Introduce introduce;
 
     @Column(name = "IS_HOF")
-    private int isHOF = 0;
+    private Boolean isHOF = false;
 
     public IbasInformation(Role role) {
         this.role = role;
         this.introduce = new Introduce();
-        this.isHOF = 0;
+        this.isHOF = false;
     }
 
     public String getIntroduce() {
@@ -37,6 +37,14 @@ public class IbasInformation {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setIsHOF(Boolean isHOF) {
+        this.isHOF = isHOF;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = new Introduce(introduce);
     }
 
     @Override

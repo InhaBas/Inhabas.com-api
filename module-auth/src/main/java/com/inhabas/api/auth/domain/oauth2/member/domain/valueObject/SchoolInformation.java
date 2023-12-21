@@ -20,7 +20,7 @@ public class SchoolInformation {
     @Embedded
     private Generation generation;
 
-    @Column(name = "type")
+    @Column(name = "TYPE")
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
@@ -46,22 +46,6 @@ public class SchoolInformation {
         return new SchoolInformation(major, generation, MemberType.UNDERGRADUATE);
     }
 
-    public static SchoolInformation ofProfessor(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.PROFESSOR);
-    }
-
-    public static SchoolInformation ofGraduated(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.GRADUATED);
-    }
-
-    public static SchoolInformation ofBachelor(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.BACHELOR);
-    }
-
-    public static SchoolInformation ofOther(String major, Integer generation) {
-        return new SchoolInformation(major, generation, MemberType.OTHER);
-    }
-
     public String getMajor() {
         return this.major.getValue();
     }
@@ -77,6 +61,15 @@ public class SchoolInformation {
     public MemberType getMemberType() {
         return this.memberType;
     }
+
+    public void setMajor(String major) {
+        this.major = new Major(major);
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = new Grade(grade);
+    }
+
 
     @Override
     public boolean equals(Object o) {

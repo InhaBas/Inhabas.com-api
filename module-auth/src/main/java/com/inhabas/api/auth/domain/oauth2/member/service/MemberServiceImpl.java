@@ -1,12 +1,12 @@
 package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.exception.DuplicatedMemberFieldException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
-import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
-import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
@@ -36,30 +35,9 @@ public class MemberServiceImpl implements MemberService {
     private static final String PASS_STATE = "pass";
     private static final String FAIL_STATE = "fail";
     private final MemberRepository memberRepository;
+    private final UpdateNameRequestRepository updateNameRequestRepository;
     private final MemberDuplicationChecker duplicationChecker;
 
-
-    @Override
-    @Transactional
-    public void save(Member member) {
-
-        if (duplicationChecker.isDuplicatedMember(member)) {
-            throw new DuplicatedMemberFieldException("provider 와 uid");
-        }
-
-        memberRepository.save(member);
-    }
-
-    @Override
-    @Transactional
-    public Optional<Member> updateMember(Member member) {
-        return DoesExistMember(member) ?
-                Optional.of(memberRepository.save(member)) : Optional.empty();
-    }
-
-    private boolean DoesExistMember(Member member) {
-        return memberRepository.findById(member.getId()).isPresent();
-    }
 
     @Transactional
     public void changeRole(Member member, Role role) {
@@ -175,6 +153,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<?> getPagedDtoList(Pageable pageable, List<?> dtoList) {
 
         int start = (int) pageable.getOffset();
@@ -200,6 +179,68 @@ public class MemberServiceImpl implements MemberService {
                 .setLastLoginTime(LocalDateTime.now());
 
         memberRepository.save(member);
+
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public MyProfileDto getMyProfile(Long memberId) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        return MyProfileDto.builder()
+                .name(member.getName())
+                .studentId(member.getStudentId())
+                .major(member.getSchoolInformation().getMajor())
+                .grade(member.getSchoolInformation().getGrade())
+                .email(member.getEmail())
+                .phoneNumber(member.getPhone())
+                .role(member.getRole())
+                .type(member.getSchoolInformation().getMemberType())
+                .introduce(member.getIbasInformation().getIntroduce()).build();
+
+    }
+
+    @Override
+    @Transactional
+    public void updateMyProfileDetail(Long memberId, ProfileDetailDto profileDetailDto) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        if(profileDetailDto.getMajor() != null)
+            member.getSchoolInformation().setMajor(profileDetailDto.getMajor());
+        if(profileDetailDto.getPhoneNumber() != null)
+            member.setPhone(profileDetailDto.getPhoneNumber());
+        if(profileDetailDto.getGrade() != null)
+            member.getSchoolInformation().setGrade(profileDetailDto.getGrade());
+
+    }
+
+    @Override
+    @Transactional
+    public void updateMyProfileIntro(Long memberId, ProfileIntroDto profileIntroDto) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        if (profileIntroDto.getIsHOF() != null)
+            member.getIbasInformation().setIsHOF(profileIntroDto.getIsHOF());
+
+        member.getIbasInformation().setIntroduce(profileIntroDto.getIntroduce());
+
+    }
+
+    @Override
+    @Transactional
+    public void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto) {
+
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+
+        UpdateNameRequest updateNameRequest = UpdateNameRequest.builder()
+                .member(member)
+                .name(profileNameDto.getName()).
+                build();
+
+        updateNameRequestRepository.save(updateNameRequest);
+
+    }
 }
