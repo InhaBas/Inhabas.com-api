@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,8 +135,9 @@ public class MemberController {
     }
 
 
-    @Operation(summary = "회장 연락처 조회 (권한 필요 X)",
+    @Operation(summary = "회장 연락처 조회",
             description = "CHIEF 의 이름, 전화번호, 이메일")
+    @SecurityRequirements(value = {})
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
     })

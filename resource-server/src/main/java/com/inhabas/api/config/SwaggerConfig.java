@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.apache.http.HttpHeaders;
+import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -58,6 +59,39 @@ public class SwaggerConfig {
         Server server = new Server().url(DOMAIN);
 
         return createOpenAPI(apiInfo(), securityScheme(), securityRequirement(), server);
+    }
+    @Bean
+    public GroupedOpenApi getAllApi() {
+
+        return GroupedOpenApi
+                .builder()
+                .group("All")
+                .pathsToMatch("/**")
+                .build();
+
+    }
+
+    @Bean
+    public GroupedOpenApi getBasicApi() {
+
+        return GroupedOpenApi
+                .builder()
+                .group("기본")
+                .pathsToMatch("/policy/**", "/menu/**", "/menus/**", "/member/chief")
+                .build();
+
+    }
+
+    @Bean
+    public GroupedOpenApi getMemberApi() {
+
+        return GroupedOpenApi
+                .builder()
+                .group("회원 관련")
+                .pathsToMatch("/signUp/**", "/members/**", "/member/**", "/myInfo/**")
+                .pathsToExclude("/member/chief")
+                .build();
+
     }
 
     @Bean
