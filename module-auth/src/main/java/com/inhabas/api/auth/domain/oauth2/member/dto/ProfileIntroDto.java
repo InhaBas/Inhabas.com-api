@@ -2,10 +2,12 @@ package com.inhabas.api.auth.domain.oauth2.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProfileIntroDto {
 
     private String introduce;
