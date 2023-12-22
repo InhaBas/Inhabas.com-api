@@ -36,7 +36,7 @@ public class UpdateNameRequest {
     @Column(name = "DATE_REQUESTED", nullable = false, updatable = false, columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime dateRequested;
 
-    @Column(name = "REQUEST_STATUS", nullable = false, columnDefinition = "DEFAULT PENDING")
+    @Column(name = "REQUEST_STATUS", nullable = false, columnDefinition = "VARCHAR(20) DEFAULT 'PENDING'")
     private RequestStatus requestStatus;
 
     @Column(name = "REJECT_REASON", length = 255)
