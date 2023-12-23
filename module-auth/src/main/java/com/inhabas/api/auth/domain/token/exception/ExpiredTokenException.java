@@ -4,10 +4,10 @@ import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
 
 
-public class InvalidTokenException extends CustomAuthException {
+public class ExpiredTokenException extends CustomAuthException {
 
-    public InvalidTokenException() {
-        super(ErrorCode.JWT_INVALID);
+    public ExpiredTokenException() {
+        super(ErrorCode.JWT_EXPIRED);
     }
 
 }

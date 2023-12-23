@@ -1,4 +1,4 @@
-package com.inhabas.api.auth.domain.exception;
+package com.inhabas.api.auth.domain.error.authException;
 
 public interface AuthExceptionCodes {
 
@@ -44,28 +44,4 @@ public interface AuthExceptionCodes {
      */
     String UNSUPPORTED_TOKEN_TYPE = "unsupported_token_type";
 
-    /**
-     * {@code unauthorized_redirect_uri} - The value of one or more redirection URIs is
-     * unauthorized.
-     */
-    String UNAUTHORIZED_REDIRECT_URI = "unauthorized_redirect_uri";
-
-    /**
-     * {@code unsupported_oauth2_provider} - 지원하지 않는 소셜로그인
-     */
-    String UNSUPPORTED_OAUTH2_PROVIDER = "unsupported_oauth2_provider";
-
-
-    /**
-     * {@code invalid_user_info} - 인증에 필수적인 정보가 Oauth provider 로부터 전달되지 않았음.
-     * 사용자가 개인정보 제공에 비동의했거나, 제대로 계정 정보를 설정하지 않은 경우 발생
-     */
-    String INVALID_USER_INFO = "invalid_user_info";
-
-    /**
-     * {@code user_not_found} - request 에 담긴 토큰정보를 사용해 기존 사용자 정보를 조회하였으나, 존재하지 않는 경우 발생.
-     * 또는 최초 소셜로그인 시도하였으나 가입한 회원이 아니라면 해당 오류 발생
-     * @see com.inhabas.api.auth.domain.token.securityFilter;
-     */
-    String USER_NOT_FOUND = "user_not_found";
 }
