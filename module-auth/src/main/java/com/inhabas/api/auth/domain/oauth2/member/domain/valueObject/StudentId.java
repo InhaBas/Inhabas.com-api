@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ public class StudentId {
         if (validate(id))
             this.id = id;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {

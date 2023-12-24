@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ public class Grade {
         if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     boolean validate(Object value) {
