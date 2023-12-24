@@ -1,7 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
 import com.inhabas.api.auth.AuthProperties;
-import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
+import com.inhabas.api.auth.domain.error.authException.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.token.TokenUtil;
 import org.junit.jupiter.api.Assertions;

@@ -1,5 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -20,7 +22,7 @@ public class UID {
         if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {

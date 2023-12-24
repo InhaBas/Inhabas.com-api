@@ -6,7 +6,7 @@ import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSoci
 import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
-import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalNotFoundException;
+import com.inhabas.api.auth.domain.token.securityFilter.SocialNotFoundException;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class MemberPrincipalService implements UserPrincipalService {
      * 이 경우에는 (1)으로 검색되지 않는다. <br>
      * 따라서 추가로 (2) provider 와 email 로 검색한 후, 회원이 존재하면 uid 를 채워준다.
      * @return StudentId
-     * @exception UserPrincipalNotFoundException 최종적으로 가입되지 않은 회원이라고 판단되면 오류를 발생시킨다.
+     * @exception SocialNotFoundException 최종적으로 가입되지 않은 회원이라고 판단되면 오류를 발생시킨다.
      * @see <a href="https://github.com/InhaBas/Inhabas.com/issues/102">Inhabas.com/issues/102</a>
      * */
     @Transactional
@@ -42,9 +42,9 @@ public class MemberPrincipalService implements UserPrincipalService {
         Email email = new Email(oauth2UserInfoToken.getEmail());
 
         try {
-            Long memberId = this.getMemberId(provider, uid, email).orElseThrow(UserPrincipalNotFoundException::new);
+            Long memberId = this.getMemberId(provider, uid, email).orElseThrow(SocialNotFoundException::new);
             return memberId;
-        } catch (UserPrincipalNotFoundException e) {
+        } catch (SocialNotFoundException e) {
             log.info(e.getMessage());
             return null;
         }

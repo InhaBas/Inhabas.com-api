@@ -5,6 +5,7 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenUtil;
+import com.inhabas.api.auth.domain.token.exception.ExpiredTokenException;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
@@ -102,39 +103,44 @@ public class JwtTokenUtil implements TokenUtil {
 
 
     @Override
-    public boolean validate(String token) {
+    public void validate(String token) {
 
         try {
             Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token);
-            return true;
         } catch (SecurityException ex) {
             log.error("Invalid JWT signature");
+            throw new InvalidTokenException();
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
+            throw new InvalidTokenException();
         } catch (ExpiredJwtException ex) {
             log.error("Expired JWT token");
+            throw new ExpiredTokenException();
         } catch (UnsupportedJwtException ex) {
             log.error("Unsupported JWT token");
+            throw new InvalidTokenException();
         } catch (SignatureException ex) {
             log.error("JWT signature does not match");
+            throw new InvalidTokenException();
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
+            throw new InvalidTokenException();
         }
-        return false;
     }
 
     /* web request 에 대한 인증 정보를 반환함. */
     @Override
-    @SuppressWarnings("unchecked")
     public JwtAuthenticationToken getAuthentication(String token) throws JwtException {
 
         Claims claims = this.parseClaims(token);
 
         Long memberId = claims.get(MEMBER_ID, Long.class);
-        List<? extends GrantedAuthority> grantedAuthorities =
-                (List<SimpleGrantedAuthority>) claims.get(AUTHORITY, List.class).stream()
-                        .map(authority-> new SimpleGrantedAuthority((String) authority))
-                        .collect(Collectors.toList());
+        List<?> rawAuthorities = claims.get(AUTHORITY, List.class);
+
+        List<SimpleGrantedAuthority> grantedAuthorities = rawAuthorities.stream()
+                .filter(authority -> authority instanceof String)
+                .map(authority -> new SimpleGrantedAuthority((String) authority))
+                .collect(Collectors.toList());
 
         return JwtAuthenticationToken.of(memberId, token, grantedAuthorities);
     }

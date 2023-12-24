@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.security;
 
-import com.inhabas.api.auth.domain.exception.InvalidUserInfoException;
+import com.inhabas.api.auth.domain.error.authException.InvalidOAuth2InfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -39,7 +39,7 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
         if (Objects.isNull(memberId)) {  // 기존회원이 아니면, member 테이블에 임시데이터 저장
             Member member = memberRepository.findByProviderAndUid(
                             oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
-                    .orElseThrow(InvalidUserInfoException::new);
+                    .orElseThrow(InvalidOAuth2InfoException::new);
 
             member.setRole(SIGNING_UP);
 
@@ -50,7 +50,7 @@ public class MemberAuthorityProvider implements UserAuthorityProvider {
             RoleDto roleDto = memberRepository.fetchRoleByStudentId(memberId);
 
             if (roleDto.isEmpty())
-                throw new InvalidUserInfoException();  // 가입된 소셜 계정으로 회원 프로필을 찾을 수 없는 경우.
+                throw new InvalidOAuth2InfoException();  // 가입된 소셜 계정으로 회원 프로필을 찾을 수 없는 경우.
 
             return Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + roleDto.getRole()));
 

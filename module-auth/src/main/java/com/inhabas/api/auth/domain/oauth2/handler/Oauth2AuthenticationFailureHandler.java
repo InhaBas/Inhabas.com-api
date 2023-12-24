@@ -1,20 +1,22 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
-import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
-
 import com.inhabas.api.auth.AuthProperties;
-import com.inhabas.api.auth.domain.exception.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
-import java.io.IOException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
+import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 @RequiredArgsConstructor
 public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
@@ -37,15 +39,12 @@ public class Oauth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
     }
 
 
-    private String getAuthorizedTargetUrl(AuthenticationException exception, String redirectUri) {
+    private String getAuthorizedTargetUrl(AuthenticationException exception, String redirectUri) throws UnsupportedEncodingException {
 
         StringBuilder targetUrl = new StringBuilder();
-        if (exception instanceof UnauthorizedRedirectUrlException || StringUtils.isBlank(redirectUri) || notAuthorized(redirectUri)) {
-            targetUrl.append(authProperties.getOauth2().getDefaultRedirectUri());
-        }
-        else {
-            targetUrl.append(redirectUri);
-        }
+        targetUrl.append(authProperties.getOauth2().getDefaultRedirectUri());
+
+        String encodedErrorMessage = URLEncoder.encode(getExceptionMessage(exception), StandardCharsets.UTF_8.toString());
         targetUrl.append(ERROR_PARAM).append(getExceptionMessage(exception));
 
         return targetUrl.toString();
