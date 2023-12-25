@@ -1,8 +1,12 @@
 package com.inhabas.api.domain.signUpSchedule;
 
-public class SignUpNotAvailableException extends RuntimeException {
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
+
+public class SignUpNotAvailableException extends BusinessException {
 
     public SignUpNotAvailableException() {
-        super("회원가입 기간이 아닙니다.");
+        super(ErrorCode.SIGNUP_NOT_AVAILABLE);
     }
+
 }

@@ -1,8 +1,12 @@
 package com.inhabas.api.domain.signUpSchedule;
 
-public class InvalidDateException extends IllegalStateException {
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
-    public InvalidDateException(String s) {
-        super(s);
+public class InvalidDateException extends BusinessException {
+
+    public InvalidDateException(ErrorCode errorCode) {
+        super(errorCode);
     }
+
 }

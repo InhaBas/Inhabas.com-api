@@ -47,8 +47,12 @@ public enum ErrorCode {
     JWT_MISSING(401, "A007", "토큰이 존재하지 않습니다."),
     EXPIRED_REFRESH_TOKEN(401, "A008", "만료된 REFRESH 토큰입니다. 재로그인 해주십시오."),
 
-    // SignUp
 
+    // SignUp,
+    SIGNUP_NOT_AVAILABLE(403, "S001", "회원가입 기간이 아닙니다."),
+    INVALID_SIGNUP_DATE(400, "S002", "등록 마감일이 시작일보다 앞설 수 없습니다."),
+    INVALID_INTERVIEW_DATE(400, "S002", "면접 마감일이 시작일보다 앞설 수 없습니다."),
+    INVALID_ANNOUNCE_DATE(400, "S002", "결과 발표일이 면접 마감일보다 앞설 수 없습니다.")
 
 
     ;
