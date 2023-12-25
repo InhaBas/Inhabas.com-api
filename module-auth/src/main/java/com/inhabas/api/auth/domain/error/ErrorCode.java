@@ -12,6 +12,11 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(405, "G002", "허용되지 않은 HTTP method입니다."),
     INVALID_INPUT_VALUE(400, "G003", "입력값이 없거나, 타입이 유효하지 않습니다."),
 
+
+    // Menu
+    INVALID_MENU(400, "M001", "존재 하지 않는 메뉴입니다."),
+
+
     // Member
     MEMBER_NOT_FOUND(400, "M001", "존재 하지 않는 유저입니다."),
     AUTHORITY_INVALID(403, "M002", "권한이 없습니다."),

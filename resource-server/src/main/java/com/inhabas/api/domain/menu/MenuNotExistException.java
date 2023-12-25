@@ -1,14 +1,12 @@
 package com.inhabas.api.domain.menu;
 
-public class MenuNotExistException extends RuntimeException {
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
-    private static final String defaultMessage = "해당하는 메뉴가 존재하지 않습니다.";
+public class MenuNotExistException extends BusinessException {
 
     public MenuNotExistException() {
-        super(defaultMessage);
+        super(ErrorCode.INVALID_MENU);
     }
 
-    public MenuNotExistException(String message) {
-        super(message);
-    }
 }
