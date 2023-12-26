@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtTokenReIssueTest {
@@ -36,7 +36,7 @@ public class JwtTokenReIssueTest {
     private TokenResolver tokenResolver;
 
     @Mock
-    private JwtTokenUtil JwtTokenUtil;
+    private JwtTokenUtil jwtTokenUtil;
 
 
     @DisplayName("accessToken 을 재발급한다.")
@@ -45,13 +45,12 @@ public class JwtTokenReIssueTest {
 
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(true);
-        given(JwtTokenUtil.validate(any())).willReturn(true);
 
         //when
         tokenReIssuer.reissueAccessToken("refreshToken");
 
         //then
-        then(JwtTokenUtil).should(times(1)).reissueAccessTokenUsing(any());
+        then(jwtTokenUtil).should(times(1)).reissueAccessTokenUsing(any());
     }
 
 
@@ -60,7 +59,6 @@ public class JwtTokenReIssueTest {
     public void refreshTokenNotFoundExceptionTest() {
         //given
         given(refreshTokenRepository.existsByRefreshToken(any())).willReturn(false);
-        given(JwtTokenUtil.validate(any())).willReturn(true);
 
         //when
         assertThrows(RefreshTokenNotFoundException.class,
@@ -71,9 +69,9 @@ public class JwtTokenReIssueTest {
     @Test
     public void invalidRefreshTokenTest() {
         //given
-        given(JwtTokenUtil.validate(any())).willReturn(false);
+        doThrow(InvalidTokenException.class).when(jwtTokenUtil).validate(any());
 
-        //when
+        //then
         assertThrows(InvalidTokenException.class,
                 () -> tokenReIssuer.reissueAccessToken("refreshToken"));
     }

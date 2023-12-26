@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class IntroduceTest {
 
         //then
         assertThrows(
-                IllegalArgumentException.class,
+                InvalidInputException.class,
                 ()-> new Introduce(introduceString)
         );
     }

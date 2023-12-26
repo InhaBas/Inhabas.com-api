@@ -3,6 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class NameTest {
 
         //when
         assertThrows(
-                IllegalArgumentException.class,
+                InvalidInputException.class,
                 ()-> new Name(username)
         );
     }
@@ -37,14 +38,14 @@ public class NameTest {
     @DisplayName("이름은 null 일 수 없다.")
     @Test
     public void Username_cannot_be_null() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 ()-> new Name(null));
     }
 
     @DisplayName("이름은 빈 문자열일 수 없다.")
     @Test
     public void Username_cannot_be_blank() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 ()-> new Name(""));
     }
 }

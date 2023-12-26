@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,20 +32,20 @@ public class UidTest {
 
         //then
         assertDoesNotThrow(() -> new UID(okString));
-        assertThrows(IllegalArgumentException.class, () -> new UID(notOkString));
+        assertThrows(InvalidInputException.class, () -> new UID(notOkString));
     }
 
     @DisplayName("UID 은 null 일 수 없습니다.")
     @Test
     public void UID_cannot_be_Null() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new UID(null));
     }
 
     @DisplayName("UID 은 빈 문자열일 수 없습니다.")
     @Test
     public void UID_cannot_be_Blank() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new UID("\t"));
     }
 

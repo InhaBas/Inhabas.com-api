@@ -1,11 +1,10 @@
 package com.inhabas.api.auth.domain.token;
 
 import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
+import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,13 +17,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 public class JwtTokenUtilTest {
@@ -159,7 +158,8 @@ public class JwtTokenUtilTest {
     @Test
     public void validateInvalidToken() {
 
-        assertFalse(jwtTokenUtil.validate("invalid-token-string"));
+        assertThrows(InvalidTokenException.class,
+                () -> jwtTokenUtil.validate("invalid-token-string"));
     }
 
     @DisplayName("유효한 토큰 string 을 검사한다.")
@@ -182,6 +182,6 @@ public class JwtTokenUtilTest {
         String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
         //then
-        assertTrue(jwtTokenUtil.validate(accessToken));
+        assertDoesNotThrow(() -> jwtTokenUtil.validate(accessToken));
     }
 }
