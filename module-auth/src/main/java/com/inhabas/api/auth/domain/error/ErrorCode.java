@@ -11,6 +11,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(500, "G001", "내부 서버 오류입니다."),
     METHOD_NOT_ALLOWED(405, "G002", "허용되지 않은 HTTP method입니다."),
     INVALID_INPUT_VALUE(400, "G003", "입력값이 없거나, 타입이 유효하지 않습니다."),
+    NOT_FOUND(404, "G004", "데이터가 존재하지 않습니다."),
 
 
     // Menu

@@ -2,6 +2,8 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.SignUpNotAvailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,16 +13,41 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolationException;
 
-import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
+import static com.inhabas.api.auth.domain.error.ErrorCode.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
+
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("Invalid method argument type");
+        final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException e){
+        log.error("Not found");
+        final ErrorResponse response = ErrorResponse.of(NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NotFoundException e){
+        log.error("Not found");
+        final ErrorResponse response = ErrorResponse.of(NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
