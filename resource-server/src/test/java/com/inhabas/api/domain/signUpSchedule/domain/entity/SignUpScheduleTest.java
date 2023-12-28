@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.signUpSchedule.domain.entity;
 
-import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -89,7 +89,7 @@ public class SignUpScheduleTest {
                 () -> new SignUpSchedule(generation, signUpStart, signUpEnd, interviewStart, interviewEnd, resultAnnounce));
 
         //then
-        assertThat(invalidDateException.getMessage()).isEqualTo("결과 발표일을 다시 확인해주세요!");
+        assertThat(invalidDateException.getMessage()).isEqualTo("결과 발표일이 면접 마감일보다 앞설 수 없습니다.");
     }
 
 

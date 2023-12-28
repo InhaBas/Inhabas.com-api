@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.signUp.usecase;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
@@ -12,7 +13,7 @@ import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
-import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -118,7 +119,7 @@ public class SignUpServiceTest {
         given(signUpScheduler.getSchedule()).willReturn(signUpScheduleDto);
 
         //when
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> signUpService.saveSignUpForm(signUpForm, member.getId()));
 
     }

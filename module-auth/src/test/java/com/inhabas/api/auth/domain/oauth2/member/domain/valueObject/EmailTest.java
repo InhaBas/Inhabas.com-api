@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,21 +35,21 @@ public class EmailTest {
         String tooLongFileName = "세글자".repeat(100);
 
         //when
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Email(tooLongFileName));
     }
 
     @DisplayName("Email 에 null 은 허용 안된다.")
     @Test
     public void Email_cannot_be_null() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Email(null));
     }
 
     @DisplayName("Email 이 빈 문자열이면 안된다.")
     @Test
     public void Email_cannot_be_blank_string() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Email("    "));
     }
 
@@ -56,7 +57,7 @@ public class EmailTest {
     @Test
     public void Email_must_be_Email_regex() {
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Email("DEV!L@email.###"));
 
     }

@@ -1,15 +1,12 @@
 package com.inhabas.api.domain.signUp.domain.exception;
 
-import org.springframework.security.access.AccessDeniedException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
-public class NotWriteAnswersException extends AccessDeniedException {
-    private static final String DEFAULT_MESSAGE = "아직 면접 질문을 작성하지 않아서 회원가입을 마무리 할 수 없습니다.";
+public class NotWriteAnswersException extends BusinessException {
 
     public NotWriteAnswersException() {
-        super(DEFAULT_MESSAGE);
+        super(ErrorCode.NOT_WRITE_ANSWERS);
     }
 
-    public NotWriteAnswersException(String msg) {
-        super(msg);
-    }
 }

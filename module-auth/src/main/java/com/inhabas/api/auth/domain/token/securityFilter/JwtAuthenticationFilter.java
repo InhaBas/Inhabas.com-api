@@ -1,11 +1,13 @@
 package com.inhabas.api.auth.domain.token.securityFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
 import com.inhabas.api.auth.domain.token.TokenResolver;
-import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
-import com.inhabas.api.auth.domain.token.exception.MissingTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 
 @Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
@@ -39,8 +42,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             throws AuthenticationException, IOException, ServletException {
 
         final String token = tokenResolver.resolveAccessTokenOrNull(request);
-        if (!jwtTokenUtil.validate(token))
-            throw new InvalidTokenException();
+        jwtTokenUtil.validate(token);
         final JwtAuthenticationToken authRequest = JwtAuthenticationToken.of(token);
 
         return this.getAuthenticationManager().authenticate(authRequest);
@@ -60,10 +62,14 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                                               AuthenticationException failed) throws IOException, ServletException {
         SecurityContextHolder.clearContext();
         log.info("Failed to process authentication request", failed);
-        if (failed instanceof MissingTokenException) {
-            response.sendRedirect("/login");
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(((CustomAuthException)failed).getErrorCode().getStatus());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        try (OutputStream os = response.getOutputStream()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(os, ErrorResponse.of(((CustomAuthException)failed).getErrorCode()));
+            os.flush();
         }
+
     }
+
 }

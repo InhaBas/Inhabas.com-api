@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +31,7 @@ public class CollegeTest {
         String collegeString = "지금이문장은10자임".repeat(20);
 
         //then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new College(collegeString));
     }
 
@@ -38,7 +39,7 @@ public class CollegeTest {
     @Test
     public void College_cannot_be_Null() {
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new College(null));
     }
 
@@ -46,7 +47,7 @@ public class CollegeTest {
     @Test
     public void College_cannot_be_Blank() {
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new College("\t"));
     }
 }

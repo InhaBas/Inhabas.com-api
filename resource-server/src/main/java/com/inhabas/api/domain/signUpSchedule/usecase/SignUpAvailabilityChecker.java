@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.signUpSchedule.domain.usecase;
+package com.inhabas.api.domain.signUpSchedule.usecase;
 
 public interface SignUpAvailabilityChecker {
 

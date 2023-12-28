@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.signUpSchedule.domain.entity;
 
-import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,7 +61,7 @@ public class SignUpSchedule {
             this.signupEndDate = signupEndDate;
         }
         else {
-            throw new InvalidDateException("등록 마감일이 시작일보다 앞설 수 없습니다.");
+            throw new InvalidDateException(ErrorCode.INVALID_SIGNUP_DATE);
         }
     }
 
@@ -70,7 +71,7 @@ public class SignUpSchedule {
             this.interviewEndDate = interviewEndDate;
         }
         else {
-            throw new InvalidDateException("면접 마감일이 시작일보다 앞설 수 없습니다.");
+            throw new InvalidDateException(ErrorCode.INVALID_INTERVIEW_DATE);
         }
     }
 
@@ -81,7 +82,7 @@ public class SignUpSchedule {
             this.resultAnnounceDate = resultAnnounceDate;
         }
         else {
-            throw new InvalidDateException("결과 발표일을 다시 확인해주세요!");
+            throw new InvalidDateException(ErrorCode.INVALID_ANNOUNCE_DATE);
         }
     }
 }

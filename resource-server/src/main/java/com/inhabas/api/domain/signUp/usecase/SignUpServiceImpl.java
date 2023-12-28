@@ -15,7 +15,7 @@ import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
-import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

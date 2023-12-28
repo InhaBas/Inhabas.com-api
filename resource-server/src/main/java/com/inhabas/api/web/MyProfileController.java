@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileDetailDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
@@ -8,6 +9,7 @@ import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,7 +37,6 @@ public class MyProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {@Content(
                     schema = @Schema(implementation = MyProfileDto.class))}),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다.")
     })
     @GetMapping("/myInfo")
     public ResponseEntity<MyProfileDto> getMyProfile(@Authenticated Long memberId) {
@@ -46,7 +47,12 @@ public class MyProfileController {
             description = "학과, 학년, 전화번호 수정. ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
     @PutMapping("/myInfo/detail")
     public ResponseEntity<Void> updateMyProfileDetail(@Authenticated Long memberId,
@@ -58,7 +64,12 @@ public class MyProfileController {
     @Operation(summary = "내 프로필 자기소개 수정", description = "자기소개, 공개여부 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
     @PutMapping("/myInfo/intro")
     public ResponseEntity<Void> updateMyProfileIntro(@Authenticated Long memberId,
@@ -70,7 +81,12 @@ public class MyProfileController {
     @Operation(summary = "내 프로필 사진 수정", description = "프로필 사진 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
     @PutMapping("/myInfo/image")
     public ResponseEntity<Void> updateMyProfileImage(@Authenticated Long memberId) {
@@ -82,7 +98,12 @@ public class MyProfileController {
     @Operation(summary = "내 정보 이름 수정", description = "이름 수정, 회장의 승인 필요")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
     @PutMapping("/myInfo/name")
     public ResponseEntity<Void> requestMyProfileName(@Authenticated Long memberId,

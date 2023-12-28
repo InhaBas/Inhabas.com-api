@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,21 +38,21 @@ public class PhoneTest {
 
         //then
         Arrays.stream(wrongNumbers).forEach(
-                number -> assertThrows(IllegalArgumentException.class, ()-> new Phone(number))
+                number -> assertThrows(InvalidInputException.class, ()-> new Phone(number))
         );
     }
 
     @DisplayName("핸드폰 번호에 null 이 저장될 수 없다.")
     @Test
     public void Phone_cannot_be_Null() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Phone(null));
     }
 
     @DisplayName("핸드폰 번호에 빈 문자열이 저장될 수 없다.")
     @Test
     public void Phone_cannot_be_Blank() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 () -> new Phone("  "));
     }
 

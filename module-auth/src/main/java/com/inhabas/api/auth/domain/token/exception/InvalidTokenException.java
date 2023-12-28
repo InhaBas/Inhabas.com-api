@@ -1,16 +1,13 @@
 package com.inhabas.api.auth.domain.token.exception;
 
-import org.springframework.security.core.AuthenticationException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
 
-public class InvalidTokenException extends AuthenticationException {
 
-    private static final String defaultMessage = "Invalid token! corrupted signature or expired token";
+public class InvalidTokenException extends CustomAuthException {
 
     public InvalidTokenException() {
-        super(defaultMessage);
+        super(ErrorCode.JWT_INVALID);
     }
 
-    public InvalidTokenException(String message) {
-        super(message);
-    }
 }

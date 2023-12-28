@@ -1,9 +1,10 @@
 package com.inhabas.api.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
-import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpScheduler;
+import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -92,7 +93,7 @@ public class SignUpScheduleControllerTest {
     @DisplayName("날짜가 잘못된 경우, 400")
     @Test
     public void invalidDateInfoTest() throws Exception {
-        doThrow(InvalidDateException.class).when(signUpScheduler).updateSchedule(any());
+        doThrow(new InvalidDateException(ErrorCode.INVALID_SIGNUP_DATE)).when(signUpScheduler).updateSchedule(any());
         String jsonRequest = objectMapper.writeValueAsString(new SignUpScheduleDto(999,
                 LocalDateTime.of(2022, 1, 5, 0, 0, 0),
                 LocalDateTime.of(2022, 1, 4, 0, 0, 0),

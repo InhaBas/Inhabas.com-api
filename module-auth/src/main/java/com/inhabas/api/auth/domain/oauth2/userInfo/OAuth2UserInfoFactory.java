@@ -1,7 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.exception.UnsupportedOAuth2ProviderException;
+import com.inhabas.api.auth.domain.error.authException.UnsupportedOAuth2ProviderException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 
 import java.util.Map;

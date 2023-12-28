@@ -1,46 +1,108 @@
 package com.inhabas.api.web;
 
-import com.inhabas.api.domain.signUpSchedule.SignUpNotAvailableException;
+import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.SignUpNotAvailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+
+import javax.validation.ConstraintViolationException;
+
+import static com.inhabas.api.auth.domain.error.ErrorCode.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Slf4j
 @RestControllerAdvice
 public class ExceptionController {
 
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("Invalid method argument type");
+        final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NoHandlerFoundException e){
+        log.error("Not found");
+        final ErrorResponse response = ErrorResponse.of(NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException(NotFoundException e){
+        log.error("Not found");
+        final ErrorResponse response = ErrorResponse.of(NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+        log.error("Database ConstraintViolation occurred");
+        final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidInputException(InvalidInputException e) {
+        log.error("Invalid input value");
+        final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidDateException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidDateException e) {
+        log.error("Invalid SignUp date");
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
     @ExceptionHandler(SignUpNotAvailableException.class)
-    public ResponseEntity<String> notAllowedSignUpException(final SignUpNotAvailableException e) {
-        log.warn("no token in header: ", e);
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    protected ResponseEntity<ErrorResponse> handleNotAllowedSignUpException(SignUpNotAvailableException e) {
+        log.warn("Not registration period now");
+        final ErrorResponse response = ErrorResponse.of(SIGNUP_NOT_AVAILABLE);
+        return new ResponseEntity<>(response, FORBIDDEN);
     }
 
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> notAllowedException(final AccessDeniedException e) {
-        log.warn("access denied: ", e);
-
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    @ExceptionHandler(NotWriteProfileException.class)
+    protected ResponseEntity<ErrorResponse> handleNotWriteProfileException(NotWriteProfileException e) {
+        log.warn("Must write profile before signup");
+        final ErrorResponse response = ErrorResponse.of(NOT_WRITE_PROFILE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
-    //400
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> BadRequestException(final RuntimeException exception) {
-        log.warn("invalid request: ", exception);
+    @ExceptionHandler(NotWriteAnswersException.class)
+    protected ResponseEntity<ErrorResponse> handleNotWriteAnswersException(NotWriteAnswersException e) {
+        log.warn("Must write answers before signup");
+        final ErrorResponse response = ErrorResponse.of(NOT_WRITE_ANSWERS);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
 
-        return ResponseEntity.badRequest().body(exception.getMessage());
+    @ExceptionHandler
+    protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     //400
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> processValidationError(MethodArgumentNotValidException exception) {
+    protected ResponseEntity<Object> processValidationError(MethodArgumentNotValidException exception) {
         log.warn("invalid request: ", exception);
 
         BindingResult bindingResult = exception.getBindingResult();

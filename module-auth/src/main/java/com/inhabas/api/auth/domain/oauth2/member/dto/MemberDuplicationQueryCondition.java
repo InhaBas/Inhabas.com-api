@@ -1,8 +1,8 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.oauth2.member.domain.exception.NoQueryParameterException;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +23,7 @@ public class MemberDuplicationQueryCondition {
 
     public void verifyTwoParameters() {
         if (Objects.isNull(provider) || Objects.isNull(uid)) {
-            throw new NoQueryParameterException();
+            throw new InvalidInputException();
         }
     }
 

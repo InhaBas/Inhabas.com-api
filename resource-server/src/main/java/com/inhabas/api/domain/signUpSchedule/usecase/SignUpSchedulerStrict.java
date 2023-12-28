@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.signUpSchedule.domain.usecase;
+package com.inhabas.api.domain.signUpSchedule.usecase;
 
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;

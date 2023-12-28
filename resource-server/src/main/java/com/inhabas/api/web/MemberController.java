@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
@@ -9,6 +10,7 @@ import com.inhabas.api.global.dto.PagedMemberResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -39,7 +41,6 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = { @Content(
             schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
-            @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
     })
     @GetMapping("/members/unapproved")
     public ResponseEntity<PagedMemberResponseDto> getUnapprovedMembers(
@@ -65,10 +66,14 @@ public class MemberController {
             description = "(신입)미승인 멤버 비활동 멤버로 변경 / 가입 거절 처리")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400", description = "입력값이 없거나, 타입이 유효하지 않습니다."),
-            @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
-    @PostMapping("/members/unapproved")
+    @PutMapping("/members/unapproved")
     public ResponseEntity<Void> updateUnapprovedMembers(@RequestBody UpdateRequestDto updateRequestDto) {
 
         memberService.updateUnapprovedMembers(updateRequestDto.getMemberIdList(), updateRequestDto.getState());
@@ -81,8 +86,12 @@ public class MemberController {
             description = "특정 신입 멤버 지원서 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "403", description = "권한이 없습니다."),
-            @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.")
+            @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"
+                    )
+            ))
     })
     @GetMapping("/members/{memberId}/application")
     public ResponseEntity<List<AnswerDto>> getUnapprovedMemberApplication(@PathVariable Long memberId) {
@@ -96,8 +105,8 @@ public class MemberController {
     @Operation(summary = "비활동 이상 모든 멤버 목록 조회",
             description = "이름, 학번 검색 가능")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
+            @ApiResponse(responseCode = "200", content = { @Content(
+                    schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
     })
     @GetMapping("/members")
     public ResponseEntity<PagedMemberResponseDto> getApprovedMembers(
@@ -123,10 +132,14 @@ public class MemberController {
             description = "변경 가능 권한 [ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED]")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400", description = "입력값이 없거나, 타입이 유효하지 않습니다."),
-            @ApiResponse(responseCode = "403", description = "권한이 없습니다.")
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
-    @PostMapping("/members/approved")
+    @PutMapping("/members/approved")
     public ResponseEntity<Void> updateApprovedMembers(@RequestBody UpdateRoleRequestDto updateRoleRequestDto) {
 
         memberService.updateApprovedMembers(updateRoleRequestDto.getMemberIdList(), updateRoleRequestDto.getRole());

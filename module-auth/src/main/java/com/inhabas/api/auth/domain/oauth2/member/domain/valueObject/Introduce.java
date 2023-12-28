@@ -1,5 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -9,7 +11,7 @@ import java.util.Objects;
 public class Introduce {
 
     @Column(name = "INTRO")
-    private String value;
+    private String value = "";
 
     @Transient
     private static final int MAX_LENGTH = 300;
@@ -22,7 +24,7 @@ public class Introduce {
         else if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {

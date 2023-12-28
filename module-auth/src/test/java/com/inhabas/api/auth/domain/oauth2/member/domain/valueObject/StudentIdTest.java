@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +30,7 @@ public class StudentIdTest {
 
         //when
         assertThrows(
-                IllegalArgumentException.class,
+                InvalidInputException.class,
                 ()-> new StudentId(id)
         );
     }
@@ -37,7 +38,7 @@ public class StudentIdTest {
     @DisplayName("학번은 null 일 수 없다.")
     @Test
     public void StudentId_cannot_be_null() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(InvalidInputException.class,
                 ()-> new StudentId(null));
     }
 

@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import com.inhabas.api.domain.menu.MenuNotExistException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
@@ -64,14 +64,14 @@ public class MenuServiceTest {
                 .isEqualTo(MenuDto.convert(existMenu));
     }
 
-    @DisplayName("존재하지 않는 메뉴를 찾으려고 하면 MenuNotExistException")
+    @DisplayName("존재하지 않는 메뉴를 찾으려고 하면 NotFoundException")
     @Test
     public void FailToGetMenuInfoByIdTest() {
 
         given(menuRepository.findById(any(MenuId.class))).willReturn(Optional.empty());
 
         //when
-        Assertions.assertThrows(MenuNotExistException.class,
+        Assertions.assertThrows(NotFoundException.class,
                 () -> menuService.getMenuInfoById(new MenuId(1)));
     }
 }

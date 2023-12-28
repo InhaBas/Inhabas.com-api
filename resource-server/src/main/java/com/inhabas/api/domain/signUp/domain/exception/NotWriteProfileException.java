@@ -1,15 +1,12 @@
 package com.inhabas.api.domain.signUp.domain.exception;
 
-import org.springframework.security.access.AccessDeniedException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
-public class NotWriteProfileException extends AccessDeniedException {
-    private static final String DEFAULT_MESSAGE = "아직 회원 프로필을 생성하지 않아서 회원가입을 마무리 할 수 없습니다.";
+public class NotWriteProfileException extends BusinessException {
 
     public NotWriteProfileException() {
-        super(DEFAULT_MESSAGE);
+        super(ErrorCode.NOT_WRITE_PROFILE);
     }
 
-    public NotWriteProfileException(String msg) {
-        super(msg);
-    }
 }

@@ -1,8 +1,7 @@
 package com.inhabas.api.auth.domain.token;
 
-import com.inhabas.api.auth.domain.token.exception.MissingTokenException;
+import com.inhabas.api.auth.domain.token.exception.TokenMissingException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -42,7 +41,7 @@ public class JwtTokenResolverTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
 
         //then
-        assertThrows(MissingTokenException.class,
+        assertThrows(TokenMissingException.class,
                 () -> jwtTokenResolver.resolveAccessTokenOrNull(request));
     }
 
@@ -55,7 +54,7 @@ public class JwtTokenResolverTest {
         request.addHeader(AUTHORIZATION, INVALID_AUTHORIZATION_HEADER);
 
         //then
-        assertThrows(MissingTokenException.class,
+        assertThrows(TokenMissingException.class,
                 () -> jwtTokenResolver.resolveAccessTokenOrNull(request));
     }
 }

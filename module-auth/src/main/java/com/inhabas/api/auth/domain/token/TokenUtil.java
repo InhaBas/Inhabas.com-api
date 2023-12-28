@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 
 public interface TokenUtil {
 
-    boolean validate(String token);
+    void validate(String token);
 
     Authentication getAuthentication(String token);
 

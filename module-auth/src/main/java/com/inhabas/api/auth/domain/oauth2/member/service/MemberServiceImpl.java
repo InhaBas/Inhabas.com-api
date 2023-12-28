@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.service;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
@@ -102,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
                 member -> DEFAULT_ROLE_AFTER_FINISH_SIGNUP.equals(member.getRole()));
 
         if (!allNewMembers || !(state.equals(PASS_STATE) || state.equals(FAIL_STATE))) {
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
         }
 
         if (state.equals(PASS_STATE)) {
@@ -124,7 +125,7 @@ public class MemberServiceImpl implements MemberService {
 
         // 변경 가능한 ROLE 인지 확인
         if (!OLD_ROLES.contains(role)) {
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
         }
 
         List<Member> members = memberRepository.findAllById(memberIdList);
@@ -132,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
                 member -> OLD_ROLES.contains(member.getRole()));
 
         if (!allApprovedMembers) {
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
         }
 
         for (Member member : members)
