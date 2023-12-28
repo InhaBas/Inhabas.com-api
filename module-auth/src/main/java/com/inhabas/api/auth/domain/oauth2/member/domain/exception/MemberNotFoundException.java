@@ -1,14 +1,12 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.exception;
 
-public class MemberNotFoundException extends RuntimeException {
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
-    private static final String DEFAULT_MESSAGE = "해당하는 멤버가 존재하지 않습니다.";
+public class MemberNotFoundException extends BusinessException {
 
     public MemberNotFoundException() {
-        super(DEFAULT_MESSAGE);
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 
-    public MemberNotFoundException(String message) {
-        super(message);
-    }
 }

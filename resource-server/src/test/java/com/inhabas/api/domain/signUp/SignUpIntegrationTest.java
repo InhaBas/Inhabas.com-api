@@ -126,7 +126,7 @@ public class SignUpIntegrationTest {
         String response = mockMvc.perform(get("/signUp").with(accessToken(token)))
                 .andExpect(status().isForbidden())
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertThat(response).isEqualTo("회원가입 기간이 아닙니다.");
+        assertThat(response).isEqualTo("{\"status\":403,\"code\":\"S001\",\"message\":\"회원가입 기간이 아닙니다.\"}");
     }
 
     @Test

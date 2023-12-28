@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Introduce {
 
     @Column(name = "INTRO")
-    private String value;
+    private String value = "";
 
     @Transient
     private static final int MAX_LENGTH = 300;

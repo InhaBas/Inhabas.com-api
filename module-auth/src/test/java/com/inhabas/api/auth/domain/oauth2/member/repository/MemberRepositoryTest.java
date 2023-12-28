@@ -1,16 +1,17 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.GoogleOAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 
 import static com.inhabas.api.auth.domain.oauth2.OAuth2Provider.GOOGLE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.*;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.signingUpMember1;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -169,7 +169,7 @@ public class MemberRepositoryTest {
         memberRepository.save(signingUpMember1());
 
         //then
-        assertThrows(InvalidDataAccessApiUsageException.class,
+        assertThrows(InvalidInputException.class,
                 () -> memberRepository.isDuplicated(new MemberDuplicationQueryCondition(null, "1249846925629348")));
 
     }

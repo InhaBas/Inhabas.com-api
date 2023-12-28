@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
@@ -92,7 +93,7 @@ public class MemberControllerTest {
                     .andExpect(status().isNoContent());
         } else {
             //when
-            doThrow(new IllegalArgumentException()).when(memberService).updateUnapprovedMembers(anyList(), anyString());
+            doThrow(new InvalidInputException()).when(memberService).updateUnapprovedMembers(anyList(), anyString());
             //then
             mvc.perform(post("/members/unapproved")
                             .contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +166,7 @@ public class MemberControllerTest {
                     .andExpect(status().isNoContent());
         } else if (roleString.equals("SIGNING_UP")) {
             //when
-            doThrow(new IllegalArgumentException()).when(memberService).updateApprovedMembers(anyList(), any());
+            doThrow(new InvalidInputException()).when(memberService).updateApprovedMembers(anyList(), any());
             //then
             mvc.perform(post("/members/approved")
                             .contentType(MediaType.APPLICATION_JSON)

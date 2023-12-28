@@ -3,8 +3,10 @@ package com.inhabas.api.web;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.signUpSchedule.InvalidDateException;
-import com.inhabas.api.domain.signUpSchedule.SignUpNotAvailableException;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.SignUpNotAvailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import javax.validation.ConstraintViolationException;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @Slf4j
 @RestControllerAdvice
@@ -51,23 +54,44 @@ public class ExceptionController {
 
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
-        log.warn("ConstraintViolation occurred");
+        log.error("Database ConstraintViolation occurred");
         final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidInputException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidInputException(InvalidInputException e) {
-        log.warn("Invalid input value");
+        log.error("Invalid input value");
         final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
-    @ExceptionHandler(SignUpNotAvailableException.class)
-    protected ResponseEntity<String> notAllowedSignUpException(final SignUpNotAvailableException e) {
-        log.warn("no token in header: ", e);
+    @ExceptionHandler(InvalidDateException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidDateException(InvalidDateException e) {
+        log.error("Invalid SignUp date");
+        final ErrorResponse response = ErrorResponse.of(e.getErrorCode());
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
 
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler(SignUpNotAvailableException.class)
+    protected ResponseEntity<ErrorResponse> handleNotAllowedSignUpException(SignUpNotAvailableException e) {
+        log.warn("Not registration period now");
+        final ErrorResponse response = ErrorResponse.of(SIGNUP_NOT_AVAILABLE);
+        return new ResponseEntity<>(response, FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotWriteProfileException.class)
+    protected ResponseEntity<ErrorResponse> handleNotWriteProfileException(NotWriteProfileException e) {
+        log.warn("Must write profile before signup");
+        final ErrorResponse response = ErrorResponse.of(NOT_WRITE_PROFILE);
+        return new ResponseEntity<>(response, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotWriteAnswersException.class)
+    protected ResponseEntity<ErrorResponse> handleNotWriteAnswersException(NotWriteAnswersException e) {
+        log.warn("Must write answers before signup");
+        final ErrorResponse response = ErrorResponse.of(NOT_WRITE_ANSWERS);
+        return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     @ExceptionHandler

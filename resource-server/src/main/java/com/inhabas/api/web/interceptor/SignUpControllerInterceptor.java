@@ -1,7 +1,7 @@
 package com.inhabas.api.web.interceptor;
 
-import com.inhabas.api.domain.signUpSchedule.domain.usecase.SignUpAvailabilityChecker;
-import com.inhabas.api.domain.signUpSchedule.SignUpNotAvailableException;
+import com.inhabas.api.domain.signUpSchedule.usecase.SignUpAvailabilityChecker;
+import com.inhabas.api.domain.signUpSchedule.domain.exception.SignUpNotAvailableException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.HandlerInterceptor;
 

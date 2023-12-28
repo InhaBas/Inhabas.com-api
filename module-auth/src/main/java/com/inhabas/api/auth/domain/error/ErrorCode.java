@@ -14,15 +14,14 @@ public enum ErrorCode {
     NOT_FOUND(404, "G004", "데이터가 존재하지 않습니다."),
 
 
-    // Menu
-    INVALID_MENU(400, "M001", "존재 하지 않는 메뉴입니다."),
+    // Basic
 
 
     // Member
     MEMBER_NOT_FOUND(400, "M001", "존재 하지 않는 유저입니다."),
     AUTHORITY_INVALID(403, "M002", "권한이 없습니다."),
 
-    // Auth
+    // Auth (ExceptionHandler 불필요)
     /**
      * The value of one or more redirection URIs is
      * unauthorized.
@@ -49,12 +48,13 @@ public enum ErrorCode {
     EXPIRED_REFRESH_TOKEN(401, "A008", "만료된 REFRESH 토큰입니다. 재로그인 해주십시오."),
 
 
-    // SignUp,
+    // SignUp
     SIGNUP_NOT_AVAILABLE(403, "S001", "회원가입 기간이 아닙니다."),
     INVALID_SIGNUP_DATE(400, "S002", "등록 마감일이 시작일보다 앞설 수 없습니다."),
-    INVALID_INTERVIEW_DATE(400, "S002", "면접 마감일이 시작일보다 앞설 수 없습니다."),
-    INVALID_ANNOUNCE_DATE(400, "S002", "결과 발표일이 면접 마감일보다 앞설 수 없습니다.")
-
+    INVALID_INTERVIEW_DATE(400, "S003", "면접 마감일이 시작일보다 앞설 수 없습니다."),
+    INVALID_ANNOUNCE_DATE(400, "S004", "결과 발표일이 면접 마감일보다 앞설 수 없습니다."),
+    NOT_WRITE_PROFILE(400, "S005", "아직 회원 프로필을 생성하지 않아서 회원가입을 마무리 할 수 없습니다."),
+    NOT_WRITE_ANSWERS(400, "S006", "아직 면접 질문을 작성하지 않아서 회원가입을 마무리 할 수 없습니다.")
 
     ;
 
