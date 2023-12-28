@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.dto.MenuDto;
 import com.inhabas.api.domain.menu.dto.MenuGroupDto;
@@ -32,7 +33,7 @@ public class MenuController {
     @ApiResponse(responseCode = "200", content = @Content(
             array = @ArraySchema(schema = @Schema(implementation = MenuGroupDto.class)),
             examples = @ExampleObject(
-                    value = "{\"id\": 1, \"groupName\": \"IBAS\", \"menuList\": [{\"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"LIST\", \"description\": \"동아리 소개 메뉴입니다.\"}]}"
+                    value = "{\"id\": 1, \"groupName\": \"IBAS\", \"menuList\": [{\"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"INTRODUCE\", \"description\": \"동아리 소개 메뉴입니다.\"}]}"
             )
     ))
     public ResponseEntity<List<MenuGroupDto>> getTotalMenuInfo() {
@@ -55,12 +56,13 @@ public class MenuController {
             @ApiResponse(responseCode = "200", content = @Content(
                     schema = @Schema(implementation = MenuDto.class),
                     examples = @ExampleObject(
-                            value = "{ \"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"LIST\", \"description\": \"동아리 소개 메뉴입니다.\" }"
+                            value = "{ \"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"INTRODUCE\", \"description\": \"동아리 소개 메뉴입니다.\" }"
                     )
             )),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 메뉴", content = @Content(
+            @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(
-                            value = "{\"message\": \"데이터가 존재하지 않습니다.\"}"
+                            value = "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"
                     )
             ))
     })
