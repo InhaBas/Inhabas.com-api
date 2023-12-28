@@ -73,7 +73,7 @@ public class MemberController {
                     )
             )),
     })
-    @PostMapping("/members/unapproved")
+    @PutMapping("/members/unapproved")
     public ResponseEntity<Void> updateUnapprovedMembers(@RequestBody UpdateRequestDto updateRequestDto) {
 
         memberService.updateUnapprovedMembers(updateRequestDto.getMemberIdList(), updateRequestDto.getState());
@@ -105,7 +105,8 @@ public class MemberController {
     @Operation(summary = "비활동 이상 모든 멤버 목록 조회",
             description = "이름, 학번 검색 가능")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "200", content = { @Content(
+                    schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
     })
     @GetMapping("/members")
     public ResponseEntity<PagedMemberResponseDto> getApprovedMembers(
@@ -138,7 +139,7 @@ public class MemberController {
                     )
             )),
     })
-    @PostMapping("/members/approved")
+    @PutMapping("/members/approved")
     public ResponseEntity<Void> updateApprovedMembers(@RequestBody UpdateRoleRequestDto updateRoleRequestDto) {
 
         memberService.updateApprovedMembers(updateRoleRequestDto.getMemberIdList(), updateRoleRequestDto.getRole());

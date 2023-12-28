@@ -194,13 +194,19 @@ public class SignUpController {
     @PutMapping("/signUp")
     @Operation(summary = "회원가입을 완료한다")
     @ApiResponses({
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(responseCode = "403 ", description = "회원가입 기간이 아닙니다.", content = @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples = @ExampleObject(
-                        value = "{\"status\": 403, \"code\": \"S001\", \"message\": \"회원가입 기간이 아닙니다.\"}"
-                )
-        ))
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
+            @ApiResponse(responseCode = "403 ", description = "회원가입 기간이 아닙니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 403, \"code\": \"S001\", \"message\": \"회원가입 기간이 아닙니다.\"}"
+                    )
+            ))
     })
     public ResponseEntity<?> finishSignUp(@Authenticated Long memberId, @Valid @RequestBody Optional<List<AnswerDto>> answers) {
 

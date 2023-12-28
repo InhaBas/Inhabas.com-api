@@ -21,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,7 +88,7 @@ public class MemberControllerTest {
             //when
             given(memberRepository.findAllById(memberIdList)).willReturn(members);
             //then
-            mvc.perform(post("/members/unapproved")
+            mvc.perform(put("/members/unapproved")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonOf(new UpdateRequestDto(memberIdList, state))))
                     .andExpect(status().isNoContent());
@@ -95,7 +96,7 @@ public class MemberControllerTest {
             //when
             doThrow(new InvalidInputException()).when(memberService).updateUnapprovedMembers(anyList(), anyString());
             //then
-            mvc.perform(post("/members/unapproved")
+            mvc.perform(put("/members/unapproved")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonOf(new UpdateRequestDto(memberIdList, state))))
                     .andExpect(status().isBadRequest());
@@ -160,7 +161,7 @@ public class MemberControllerTest {
             //when
             given(memberRepository.findAllById(memberIdList)).willReturn(members);
             //then
-            mvc.perform(post("/members/approved")
+            mvc.perform(put("/members/approved")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonOf(new UpdateRoleRequestDto(memberIdList, Role.ADMIN))))
                     .andExpect(status().isNoContent());
@@ -168,7 +169,7 @@ public class MemberControllerTest {
             //when
             doThrow(new InvalidInputException()).when(memberService).updateApprovedMembers(anyList(), any());
             //then
-            mvc.perform(post("/members/approved")
+            mvc.perform(MockMvcRequestBuilders.put("/members/approved")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jsonOf(new UpdateRoleRequestDto(memberIdList, Role.SIGNING_UP))))
                     .andExpect(status().isBadRequest());

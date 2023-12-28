@@ -12,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     private final SignUpAvailabilityChecker signUpAvailabilityChecker;
+    private static final String[] WHITELIST_SIGNUP_SCHEDULE = {"/signUp/schedule", "/signUp/check",
+            "/signUp/questionnaires", "/signUp/majorInfo"};
 
     @Bean
     SignUpControllerInterceptor signUpControllerInterceptor() {
@@ -21,7 +23,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(signUpControllerInterceptor())
-                .addPathPatterns("/signUp/**").excludePathPatterns("/signUp/schedule", "/signUp/check");
+                .addPathPatterns("/signUp/**").excludePathPatterns(WHITELIST_SIGNUP_SCHEDULE);
 
         WebMvcConfigurer.super.addInterceptors(registry);
     }
