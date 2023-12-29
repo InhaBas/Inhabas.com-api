@@ -62,7 +62,7 @@ public class MemberControllerTest {
         dtoList.add(dto1);
 
         given(memberService.getNotApprovedMembersBySearchAndRole(any())).willReturn(dtoList);
-        given(memberService.getPagedDtoList(any(Pageable.class), eq(dtoList))).willReturn((List) dtoList);
+        given(memberService.getPagedDtoList(any(Pageable.class), eq(dtoList))).willReturn(dtoList);
 
         // then
         mvc.perform(get("/members/unapproved"))
@@ -135,7 +135,7 @@ public class MemberControllerTest {
         dtoList.add(dto1);
 
         given(memberService.getApprovedMembersBySearchAndRole(any())).willReturn(dtoList);
-        given(memberService.getPagedDtoList(any(Pageable.class), eq(dtoList))).willReturn((List) dtoList);
+        given(memberService.getPagedDtoList(any(Pageable.class), eq(dtoList))).willReturn(dtoList);
 
         // then
         mvc.perform(get("/members"))

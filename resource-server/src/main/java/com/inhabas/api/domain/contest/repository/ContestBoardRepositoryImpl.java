@@ -48,11 +48,14 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                 .fetchOne());
     }
 
+    // 보류
+    @SuppressWarnings({"unchecked"})
     public static OrderSpecifier<?> getSortedColumn(Order order, Path<?> parent, String fieldName){
         Path<Object> fieldPath = Expressions.path(Object.class, parent, fieldName);
         return new OrderSpecifier(order, fieldPath);
     }
 
+    @SuppressWarnings({"unchecked"})
     private List<OrderSpecifier> getAllOrderSpecifiers(Pageable pageable) {
         List<OrderSpecifier> ORDERS = new ArrayList<>();
         if (pageable.getSort() != null){

@@ -155,7 +155,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<?> getPagedDtoList(Pageable pageable, List<?> dtoList) {
+    public <T> List<T> getPagedDtoList(Pageable pageable, List<T> dtoList) {
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), dtoList.size());

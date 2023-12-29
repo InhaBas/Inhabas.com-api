@@ -21,7 +21,7 @@ public interface MemberService {
     void updateUnapprovedMembers(List<Long> memberIdList, String state);
     void updateApprovedMembers(List<Long> memberIdList, Role role);
     ContactDto getChiefContact();
-    List<?> getPagedDtoList(Pageable pageable, List<?> dtoList);
+    <T> List<T> getPagedDtoList(Pageable pageable, List<T> dtoList);
 
 
     // OAuth 관련

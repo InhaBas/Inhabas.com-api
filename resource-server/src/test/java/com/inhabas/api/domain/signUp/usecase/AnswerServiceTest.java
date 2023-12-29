@@ -77,6 +77,7 @@ public class AnswerServiceTest {
         answerService.saveAnswers(submittedAnswers, member.getId());
 
         //then
+        @SuppressWarnings("unchecked")
         ArgumentCaptor<ArrayList<Answer>> argumentCaptor = ArgumentCaptor.forClass(ArrayList.class);
         verify(answerRepository, times(1)).saveAll(argumentCaptor.capture());
 
@@ -86,7 +87,7 @@ public class AnswerServiceTest {
     }
 
 
-    @DisplayName("사용자가 저장한 답변을 dto로 변환해서 반환한다.")
+    @DisplayName("사용자가 저장한 답변을 dto 로 변환해서 반환한다.")
     @Test
     public void getAnswersTest() {
         //given

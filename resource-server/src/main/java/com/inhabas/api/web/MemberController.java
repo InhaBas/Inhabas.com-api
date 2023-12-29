@@ -43,7 +43,7 @@ public class MemberController {
             schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
     })
     @GetMapping("/members/unapproved")
-    public ResponseEntity<PagedMemberResponseDto> getUnapprovedMembers(
+    public ResponseEntity<PagedMemberResponseDto<NotApprovedMemberManagementDto>> getUnapprovedMembers(
             @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
             @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size,
             @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동") @RequestParam(name = "search", defaultValue = "") String search
@@ -51,13 +51,13 @@ public class MemberController {
 
         Pageable pageable = PageRequest.of(page, size);
         List<NotApprovedMemberManagementDto> allDtos = memberService.getNotApprovedMembersBySearchAndRole(search);
-        List<NotApprovedMemberManagementDto> pagedDtos = (List<NotApprovedMemberManagementDto>) memberService.getPagedDtoList(pageable, allDtos);
+        List<NotApprovedMemberManagementDto> pagedDtos = memberService.getPagedDtoList(pageable, allDtos);
 
         PageImpl<NotApprovedMemberManagementDto> newMemberManagementDtoPage =
                 new PageImpl<>(pagedDtos, pageable, allDtos.size());
         PageInfoDto pageInfoDto = new PageInfoDto(newMemberManagementDtoPage);
 
-        return ResponseEntity.ok(new PagedMemberResponseDto(pageInfoDto, pagedDtos));
+        return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
 
     }
 
@@ -109,7 +109,7 @@ public class MemberController {
                     schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
     })
     @GetMapping("/members")
-    public ResponseEntity<PagedMemberResponseDto> getApprovedMembers(
+    public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getApprovedMembers(
             @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
             @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size,
             @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동") @RequestParam(name = "search", defaultValue = "") String search
@@ -117,13 +117,13 @@ public class MemberController {
 
         Pageable pageable = PageRequest.of(page, size);
         List<ApprovedMemberManagementDto> allDtos = memberService.getApprovedMembersBySearchAndRole(search);
-        List<ApprovedMemberManagementDto> pagedDtos = (List<ApprovedMemberManagementDto>) memberService.getPagedDtoList(pageable, allDtos);
+        List<ApprovedMemberManagementDto> pagedDtos = memberService.getPagedDtoList(pageable, allDtos);
 
         PageImpl<ApprovedMemberManagementDto> oldMemberManagementDtoPage =
                 new PageImpl<>(pagedDtos, pageable, allDtos.size());
         PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
 
-        return ResponseEntity.ok(new PagedMemberResponseDto(pageInfoDto, pagedDtos));
+        return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
 
     }
 
