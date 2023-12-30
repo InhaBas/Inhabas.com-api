@@ -54,6 +54,9 @@ public class DefaultRoleHierarchy implements Hierarchical {
                     DEACTIVATED,
                     Arrays.asList(NOT_APPROVED, ANONYMOUS));
             put(
+                    NOT_APPROVED,
+                    Arrays.asList(ANONYMOUS));
+            put(
                     SIGNING_UP,
                     Arrays.asList(ANONYMOUS));
         }};
