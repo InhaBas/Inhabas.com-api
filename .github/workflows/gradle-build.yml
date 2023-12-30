@@ -8,14 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: build_gradle
-    env:
-      IBAS_DEV_JWT_SECRET_KEY: ${{ secrets.IBAS_DEV_JWT_SECRET_KEY }}
-      IBAS_DEV_KAKAO_CLIENT_ID: ${{ secrets.IBAS_DEV_KAKAO_CLIENT_ID }}
-      IBAS_DEV_KAKAO_CLIENT_SECRET: ${{ secrets.IBAS_DEV_KAKAO_CLIENT_SECRET }}
-      IBAS_DEV_NAVER_CLIENT_ID: ${{ secrets.IBAS_DEV_NAVER_CLIENT_ID }}
-      IBAS_DEV_NAVER_CLIENT_SECRET: ${{ secrets.IBAS_DEV_NAVER_CLIENT_SECRET }}
-      IBAS_DEV_GOOGLE_CLIENT_ID: ${{ secrets.IBAS_DEV_GOOGLE_CLIENT_ID }}
-      IBAS_DEV_GOOGLE_CLIENT_SECRET: ${{ secrets.IBAS_DEV_GOOGLE_CLIENT_SECRET }}
     permissions:
       contents: read
       packages: write
@@ -33,4 +25,11 @@ jobs:
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
         arguments: build
-
+      env:
+        IBAS_DEV_JWT_SECRET_KEY: ${{ secrets.IBAS_DEV_JWT_SECRET_KEY }}
+        IBAS_DEV_KAKAO_CLIENT_ID: ${{ secrets.IBAS_DEV_KAKAO_CLIENT_ID }}
+        IBAS_DEV_KAKAO_CLIENT_SECRET: ${{ secrets.IBAS_DEV_KAKAO_CLIENT_SECRET }}
+        IBAS_DEV_NAVER_CLIENT_ID: ${{ secrets.IBAS_DEV_NAVER_CLIENT_ID }}
+        IBAS_DEV_NAVER_CLIENT_SECRET: ${{ secrets.IBAS_DEV_NAVER_CLIENT_SECRET }}
+        IBAS_DEV_GOOGLE_CLIENT_ID: ${{ secrets.IBAS_DEV_GOOGLE_CLIENT_ID }}
+        IBAS_DEV_GOOGLE_CLIENT_SECRET: ${{ secrets.IBAS_DEV_GOOGLE_CLIENT_SECRET }}
