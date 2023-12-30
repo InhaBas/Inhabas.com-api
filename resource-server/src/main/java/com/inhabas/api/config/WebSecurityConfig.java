@@ -44,7 +44,7 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
     private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/member/chief", "/error"};
     private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires",
-            "/signUp/majorInfo", "/signUp/check"};
+            "/signUp/majorInfo"};
 
 
     @Order(1)
@@ -116,9 +116,10 @@ public class WebSecurityConfig {
                         .antMatchers("/lecture/**").hasRole(DEACTIVATED.toString())
 
                         // 회원가입 일정 수정
-                        .antMatchers(HttpMethod.PUT,"/signUp/schedule").hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                        .antMatchers(HttpMethod.PUT, "/signUp/schedule").hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
                         // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
+                        .antMatchers("/signUp/check").hasRole(ANONYMOUS.toString())
                         .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
 
                         // 그 외
