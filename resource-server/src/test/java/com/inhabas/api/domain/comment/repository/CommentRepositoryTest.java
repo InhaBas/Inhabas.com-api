@@ -63,7 +63,7 @@ public class CommentRepositoryTest {
 //        em.clear();
 //
 //        //then
-//        assertThat(saveComment.getContents()).isEqualTo("필력 좋다 쓴이야");
+//        assertThat(saveComment.getContent()).isEqualTo("필력 좋다 쓴이야");
 //        assertThat(saveComment.getParentBoard().getId()).isEqualTo(normalBoard.getId());
 //    }
 //
@@ -81,7 +81,7 @@ public class CommentRepositoryTest {
 //        Comment savedReply = commentRepository.save(reply);
 //
 //        //then
-//        assertThat(savedReply.getContents()).isEqualTo("익1 고마워");
+//        assertThat(savedReply.getContent()).isEqualTo("익1 고마워");
 //        assertThat(savedReply.getParentBoard().getId()).isEqualTo(normalBoard.getId());
 //        assertThat(savedReply.getParentComment().getId()).isEqualTo(comment.getId());
 //    }
@@ -121,19 +121,19 @@ public class CommentRepositoryTest {
 //        assertThat(commentList.size()).isEqualTo(2); // 루트 댓글은 2 개이다.
 //
 //        // 첫번째 루트 댓글
-//        assertThat(commentList.get(0).getContents()).isEqualTo("1) 필력 좋다 쓴이야");
+//        assertThat(commentList.get(0).getContent()).isEqualTo("1) 필력 좋다 쓴이야");
 //        // 첫번째 루트 댓글의 대댓글은 1개
 //        assertThat(commentList.get(0).getChildren())
 //                .hasSize(1)
-//                .extracting(CommentDetailDto::getContents)
+//                .extracting(CommentDetailDto::getContent)
 //                .contains("1-1) 고마워");
 //
 //        // 두번째 루트 댓글
-//        assertThat(commentList.get(1).getContents()).isEqualTo("2) 쓴이야 분발하자");
+//        assertThat(commentList.get(1).getContent()).isEqualTo("2) 쓴이야 분발하자");
 //        // 두번째 루트 댓글의 대댓글은 2개
 //        assertThat(commentList.get(1).getChildren())
 //                .hasSize(2)
-//                .extracting(CommentDetailDto::getContents)
+//                .extracting(CommentDetailDto::getContent)
 //                .containsExactly("2-1) 너 누구야?", "2-2) 나? 김첨지");
 //    }
 //
@@ -189,12 +189,12 @@ public class CommentRepositoryTest {
 //
 //        assertThat(all)
 //                .hasSize(3)
-//                .extracting(Comment::getContents)
-//                .doesNotContain(reply_2.getContents())
+//                .extracting(Comment::getContent)
+//                .doesNotContain(reply_2.getContent())
 //                .contains(
-//                        comment.getContents(),
-//                        reply_1.getContents(),
-//                        reply_3.getContents()
+//                        comment.getContent(),
+//                        reply_1.getContent(),
+//                        reply_3.getContent()
 //                );
 //
 //    }

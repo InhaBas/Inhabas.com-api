@@ -54,7 +54,7 @@ public class ContestBoardControllerTest {
 //    @WithMockJwtAuthenticationToken
 //    public void addNewContestBoard() throws Exception {
 //        //given
-//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
+//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "content", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(9022, 3, 26));
 //        given(contestBoardService.write(any(), any(SaveContestBoardDto.class))).willReturn(1);
 //
 //        // when
@@ -126,7 +126,7 @@ public class ContestBoardControllerTest {
     @Test
     public void getContestBoardDetail() throws Exception{
         //given
-        DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "contents", "association","topic",  LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
+        DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "content", "association","topic",  LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
         given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
 
         // when
@@ -145,7 +145,7 @@ public class ContestBoardControllerTest {
 //    @WithMockJwtAuthenticationToken
 //    public void TitleIsTooLongError() throws Exception {
 //        //given
-//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "contents", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
+//        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title".repeat(20)+ ".", "content", "association", "topic", LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1,26));
 //
 //
 //        // when

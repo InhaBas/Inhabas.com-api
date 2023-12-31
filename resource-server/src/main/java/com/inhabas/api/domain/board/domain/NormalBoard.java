@@ -2,7 +2,7 @@ package com.inhabas.api.domain.board.domain;
 
 import com.inhabas.api.domain.board.BaseBoard;
 import com.inhabas.api.domain.board.BoardCannotModifiableException;
-import com.inhabas.api.domain.board.domain.valueObject.Contents;
+import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.BoardFile;
@@ -39,7 +39,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class NormalBoard extends BaseBoard {
 
     @Embedded
-    protected Contents contents;
+    protected Content content;
 
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
@@ -52,14 +52,14 @@ public class NormalBoard extends BaseBoard {
 
     public NormalBoard(String title, String contents) {
         this.title = new Title(title);
-        this.contents = new Contents(contents);
+        this.content = new Content(contents);
     }
 
 
     /* getter */
 
-    public String getContents() {
-        return contents.getValue();
+    public String getContent() {
+        return content.getValue();
     }
 
     public Set<BoardFile> getFiles() {
@@ -92,7 +92,7 @@ public class NormalBoard extends BaseBoard {
         }
 
         this.title = new Title(title);
-        this.contents = new Contents(contents);
+        this.content = new Content(contents);
     }
 
     public boolean cannotModifiableBy(StudentId loginMember) {

@@ -69,7 +69,7 @@ public class ContestBoardRepositoryTest {
 //                        .id(savedContestBoard.getId())
 //                        .writerName(writer.getName())
 //                        .title(savedContestBoard.getTitle())
-//                        .contents(savedContestBoard.getContents())
+//                        .content(savedContestBoard.getContent())
 //                        .association(savedContestBoard.getAssociation())
 //                        .topic(savedContestBoard.getTopic())
 //                        .start(savedContestBoard.getStart())

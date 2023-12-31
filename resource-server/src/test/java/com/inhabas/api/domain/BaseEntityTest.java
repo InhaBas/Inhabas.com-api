@@ -44,7 +44,7 @@ public class BaseEntityTest {
 //    public void createdTimeTest() {
 //        //given
 //        Member member = em.persist(basicMember1());
-//        NormalBoard board = new NormalBoard("title", "contents")
+//        NormalBoard board = new NormalBoard("title", "content")
 //                .writtenBy(member.getId())
 //                .inMenu(freeBoardMenu.getId());
 //
@@ -60,13 +60,13 @@ public class BaseEntityTest {
 //    public void updatedTimeTest() {
 //        //given
 //        Member member = em.persist(basicMember1());
-//        NormalBoard board = new NormalBoard("title", "contents")
+//        NormalBoard board = new NormalBoard("title", "content")
 //                .writtenBy(member.getId())
 //                .inMenu(freeBoardMenu.getId());
 //        em.persist(board);
 //
 //        //when
-//        board.modify("title2", "modified contents", member.getId());
+//        board.modify("title2", "modified content", member.getId());
 //        em.merge(board);
 //        em.flush();em.clear();
 //

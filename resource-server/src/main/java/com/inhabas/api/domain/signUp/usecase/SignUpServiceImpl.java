@@ -11,8 +11,8 @@ import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSoci
 import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
 import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.questionnaire.usecase.QuestionnaireService;
-import com.inhabas.api.domain.signUp.domain.exception.NotWriteAnswersException;
-import com.inhabas.api.domain.signUp.domain.exception.NotWriteProfileException;
+import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;

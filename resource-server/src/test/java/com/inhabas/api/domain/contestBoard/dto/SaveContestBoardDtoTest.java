@@ -84,7 +84,7 @@ public class SaveContestBoardDtoTest {
         //given
         SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto(
                 "title".repeat(20) + ".",
-                "contents! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
+                "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
                 LocalDate.of(2022, 1, 1),
@@ -109,7 +109,7 @@ public class SaveContestBoardDtoTest {
     @Test
     public void DeadlineIsOutdatedError() {
         //given
-        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "contents", "association", "topic",
+        SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto("title", "content", "association", "topic",
                 LocalDate.of(2022, 1, 1), LocalDate.of(2022, 2, 1));
 
         // when

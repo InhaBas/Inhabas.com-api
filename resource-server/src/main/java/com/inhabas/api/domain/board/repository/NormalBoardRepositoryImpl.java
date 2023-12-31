@@ -26,7 +26,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
         List<BoardDto> results = queryFactory.select(Projections.constructor(BoardDto.class,
                         normalBoard.id,
                         normalBoard.title.value,
-                        Expressions.asString("").as("contents"),
+                        Expressions.asString("").as("content"),
                         member.name.value,
                         normalBoard.menuId,
                         normalBoard.dateCreated,

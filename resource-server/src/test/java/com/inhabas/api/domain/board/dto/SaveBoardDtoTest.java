@@ -34,7 +34,7 @@ public class SaveBoardDtoTest {
     @Test
     public void SaveBoardDto_is_OK(){
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", new MenuId(1));
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "content", new MenuId(1));
 
         //when
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
@@ -43,7 +43,7 @@ public class SaveBoardDtoTest {
         assertTrue(violations.isEmpty());
     }
 
-    @DisplayName("SaveBoardDto의 contents 필드가 null 이면 validation 실패")
+    @DisplayName("SaveBoardDto의 content 필드가 null 이면 validation 실패")
     @Test
     public void Contents_is_null() {
         // given

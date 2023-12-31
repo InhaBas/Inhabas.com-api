@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.signUp.domain.exception;
+package com.inhabas.api.domain.signUp.exception;
 
 import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.businessException.BusinessException;

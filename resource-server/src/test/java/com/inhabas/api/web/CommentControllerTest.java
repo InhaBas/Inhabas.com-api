@@ -76,7 +76,7 @@ public class CommentControllerTest {
 //    @Test
 //    void createNewComment() throws Exception {
 //        //given
-//        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13}";
+//        String jsonRequest = "{\"writerId\":12171652,\"content\":\"아싸 1등\",\"boardId\":13}";
 //        Integer newCommentId = 1;
 //        given(commentService.create(any(), any())).willReturn(newCommentId);
 //
@@ -97,7 +97,7 @@ public class CommentControllerTest {
 //    @Test
 //    void createNewReply() throws Exception {
 //        //given
-//        String jsonRequest = "{\"writerId\":12171652,\"contents\":\"아싸 1등\",\"boardId\":13, \"parentCommentId\":1}";
+//        String jsonRequest = "{\"writerId\":12171652,\"content\":\"아싸 1등\",\"boardId\":13, \"parentCommentId\":1}";
 //        Integer newReplyId = 2;
 //        given(commentService.create(any(), any())).willReturn(newReplyId);
 //
@@ -119,7 +119,7 @@ public class CommentControllerTest {
     void tryToSaveTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        String jsonRequest = String.format("{\"writerId\":12171652,\"contents\":\"%s\",\"boardId\":13}", tooLongContents);
+        String jsonRequest = String.format("{\"writerId\":12171652,\"content\":\"%s\",\"boardId\":13}", tooLongContents);
 
         //when
         String errorMessage = mockMvc.perform(post("/comment")
@@ -136,7 +136,7 @@ public class CommentControllerTest {
 //    @Test
 //    void updateComment() throws Exception {
 //        //given
-//        String jsonRequest = "{\"commentId\":1, \"writerId\":12171652,\"contents\":\"1등이 아니네,,,\",\"boardId\":12}";
+//        String jsonRequest = "{\"commentId\":1, \"writerId\":12171652,\"content\":\"1등이 아니네,,,\",\"boardId\":12}";
 //        given(commentService.update(any(), any())).willReturn(1);
 //
 //        String responseBody = mockMvc.perform(put("/comment")

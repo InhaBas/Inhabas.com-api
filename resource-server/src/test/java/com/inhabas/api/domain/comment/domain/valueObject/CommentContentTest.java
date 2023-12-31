@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CommentContentsTest {
+public class CommentContentTest {
 
-    @DisplayName("Contents 타입에 내용을 저장한다.")
+    @DisplayName("Content 타입에 내용을 저장한다.")
     @Test
     public void Contents_is_saved_well() {
         //given
@@ -21,7 +21,7 @@ public class CommentContentsTest {
         assertThat(contents.getValue()).isEqualTo(contentsString);
     }
 
-    @DisplayName("Contents 타입에 너무 긴 내용을 입력한다. 500자 이상")
+    @DisplayName("Content 타입에 너무 긴 내용을 입력한다. 500자 이상")
     @Test
     public void Contents_is_too_long() {
         //given
@@ -33,7 +33,7 @@ public class CommentContentsTest {
         );
     }
 
-    @DisplayName("Contents 타입에 null 은 안된다.")
+    @DisplayName("Content 타입에 null 은 안된다.")
     @Test
     public void Contents_is_Null() {
         assertThrows(IllegalArgumentException.class,
@@ -41,7 +41,7 @@ public class CommentContentsTest {
         );
     }
 
-    @DisplayName("Contents 타입에 공백댓글은 저장할 수 없다.")
+    @DisplayName("Content 타입에 공백댓글은 저장할 수 없다.")
     @Test
     public void Contents_is_Blank() {
         assertThrows(IllegalArgumentException.class,

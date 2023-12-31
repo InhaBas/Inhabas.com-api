@@ -86,7 +86,7 @@ public class UpdateContestBoardDtoTest {
         UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(
                 1,
                 "title".repeat(20) + ".",
-                "contents! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
+                "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
                 "Assoc".repeat(20) + ".",
                 "topic".repeat(100)+ ".",
                 LocalDate.of(2022, 1, 1),

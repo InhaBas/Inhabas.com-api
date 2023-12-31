@@ -57,7 +57,7 @@ public class BoardControllerTest {
 //    @WithMockJwtAuthenticationToken
 //    public void addNewBoard() throws Exception {
 //        //given
-//        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is contents", new MenuId(1));
+//        SaveBoardDto saveBoardDto = new SaveBoardDto("This is title", "This is content", new MenuId(1));
 //        given(boardService.write(any(), any(SaveBoardDto.class))).willReturn(1);
 //
 //        // when
@@ -133,7 +133,7 @@ public class BoardControllerTest {
     public void getBoardDetail() throws Exception{
         //given
         BoardDto boardDto =
-                new BoardDto(1, "Shown Title", "Shown Contents", "Mingyeom",
+                new BoardDto(1, "Shown Title", "Shown Content", "Mingyeom",
                         new MenuId(1), LocalDateTime.now(), null);
         given(boardService.getBoard(anyInt())).willReturn(boardDto);
 
@@ -153,7 +153,7 @@ public class BoardControllerTest {
 //    @WithMockJwtAuthenticationToken
 //    public void TitleIsTooLongError() throws Exception {
 //        //given
-//        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "contents", new MenuId(1));
+//        SaveBoardDto saveBoardDto = new SaveBoardDto("title".repeat(20) + ".", "content", new MenuId(1));
 //
 //        // when
 //        String errorMessage = Objects.requireNonNull(
