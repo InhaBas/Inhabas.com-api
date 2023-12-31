@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.board.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -8,7 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class Title {
 
-    @Column(name = "title", length = 100, nullable = false)
+    @Column(name = "TITLE", length = 100, nullable = false)
     private String value;
 
     @Transient
@@ -20,7 +22,7 @@ public class Title {
         if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {

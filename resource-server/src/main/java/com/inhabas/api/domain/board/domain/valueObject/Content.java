@@ -22,7 +22,7 @@ public class Content {
         if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {
