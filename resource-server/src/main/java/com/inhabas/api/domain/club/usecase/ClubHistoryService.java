@@ -1,0 +1,21 @@
+package com.inhabas.api.domain.club.usecase;
+
+import com.inhabas.api.domain.club.dto.ClubHistoryDto;
+import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
+
+import java.util.List;
+
+public interface ClubHistoryService {
+
+    Long writeClubHistory(SaveClubHistoryDto saveClubHistoryDto);
+
+    ClubHistoryDto findClubHistory(Long clubHistoryId);
+
+    List<ClubHistoryDto> getClubHistories();
+
+    void updateClubHistory(Long clubHistoryId, SaveClubHistoryDto saveClubHistoryDto);
+
+    void deleteClubHistories(Long clubHistoryId);
+
+}
+
