@@ -1,10 +1,11 @@
 package com.inhabas.api.domain.board.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class BoardContentTest {
 
@@ -24,21 +25,21 @@ public class BoardContentTest {
         String contentsString = ".".repeat(16777215 + 1); // 16 MB - 1 byte
 
         //then
-        assertThrows(IllegalArgumentException.class,
-                () -> new Content(contentsString));
+        assertThatThrownBy(() -> new Content(contentsString))
+                .isInstanceOf(InvalidInputException.class);
     }
 
     @DisplayName("Content 타입에 공백을 저장할 수 없다.")
     @Test
     public void Contents_is_Empty() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Content(""));
+        assertThatThrownBy(() -> new Content(""))
+                .isInstanceOf(InvalidInputException.class);
     }
 
     @DisplayName("Content 타입에 null 은 허용 안된다.")
     @Test
     public void Contents_is_Null() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Content(null));
+        assertThatThrownBy(() -> new Content(null))
+                .isInstanceOf(InvalidInputException.class);
     }
 }
