@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface ClubHistoryService {
 
-    Long writeClubHistory(SaveClubHistoryDto saveClubHistoryDto);
+    Long writeClubHistory(Long memberId, SaveClubHistoryDto saveClubHistoryDto);
 
     ClubHistoryDto findClubHistory(Long clubHistoryId);
 
     List<ClubHistoryDto> getClubHistories();
 
-    void updateClubHistory(Long clubHistoryId, SaveClubHistoryDto saveClubHistoryDto);
+    void updateClubHistory(Long memberId, Long clubHistoryId, SaveClubHistoryDto saveClubHistoryDto);
 
     void deleteClubHistories(Long clubHistoryId);
 

@@ -2,7 +2,7 @@ package com.inhabas.api.domain.club.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.budget.domain.valueObject.Title;
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,4 +30,5 @@ public class SaveClubHistoryDto {
         this.content = content;
         this.dateHistory = dateHistory;
     }
+
 }

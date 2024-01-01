@@ -60,7 +60,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
         BoardDto target = queryFactory.select(Projections.constructor(BoardDto.class,
                         Expressions.asNumber(id).as("id"),
                         normalBoard.title.value,
-                        normalBoard.contents.value,
+                        normalBoard.content.value,
                         member.name.value,
                         normalBoard.menuId,
                         normalBoard.dateCreated,

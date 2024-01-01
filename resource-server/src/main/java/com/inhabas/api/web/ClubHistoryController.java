@@ -4,6 +4,7 @@ import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
 import com.inhabas.api.domain.club.usecase.ClubHistoryService;
+import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -20,7 +21,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-@Tag(name = "동아리 소개", description = "동아리 소개 관련 조회, 수정")
+@Tag(name = "동아리 소개", description = "동아리 소개 관련")
 @RestController
 @RequiredArgsConstructor
 public class ClubHistoryController {
@@ -48,6 +49,12 @@ public class ClubHistoryController {
             @ApiResponse(responseCode = "200", content = { @Content(
                     schema = @Schema(implementation = ClubHistoryDto.class))
             }),
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
     })
     @GetMapping("/club/history/{clubHistoryId}")
     public ResponseEntity<ClubHistoryDto> findClubHistory(@PathVariable Long clubHistoryId) {
@@ -60,7 +67,7 @@ public class ClubHistoryController {
     @Operation(summary = "동아리 연혁 생성",
             description = "동아리 연혁 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI가 포함됩니다."),
+            @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
             @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(
@@ -69,9 +76,9 @@ public class ClubHistoryController {
             ))
     })
     @PostMapping("/club/history")
-    public ResponseEntity<ClubHistoryDto> writeClubHistories(@Valid SaveClubHistoryDto saveClubHistoryDto) {
+    public ResponseEntity<ClubHistoryDto> writeClubHistories(@Authenticated Long memberId, @Valid SaveClubHistoryDto saveClubHistoryDto) {
 
-        Long newClubHistoryId = clubHistoryService.writeClubHistory(saveClubHistoryDto);
+        Long newClubHistoryId = clubHistoryService.writeClubHistory(memberId, saveClubHistoryDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/club/history/{clubHistoryId}")
                 .buildAndExpand(newClubHistoryId)
@@ -98,9 +105,10 @@ public class ClubHistoryController {
             ))
     })
     @PutMapping("/club/history/{clubHistoryId}")
-    public ResponseEntity<Void> updateClubHistory(@PathVariable Long clubHistoryId, @Valid SaveClubHistoryDto saveClubHistoryDto) {
+    public ResponseEntity<Void> updateClubHistory(@PathVariable Long clubHistoryId, @Authenticated Long memberId,
+                                                  @Valid SaveClubHistoryDto saveClubHistoryDto) {
 
-        clubHistoryService.updateClubHistory(clubHistoryId, saveClubHistoryDto);
+        clubHistoryService.updateClubHistory(memberId, clubHistoryId, saveClubHistoryDto);
         return ResponseEntity.noContent().build();
 
     }
@@ -116,7 +124,7 @@ public class ClubHistoryController {
                     )
             ))
     })
-    @DeleteMapping ("/club/{clubHistoryId}")
+    @DeleteMapping ("/club/history/{clubHistoryId}")
     public ResponseEntity<Void> deleteClubHistory(@PathVariable Long clubHistoryId) {
 
         clubHistoryService.deleteClubHistories(clubHistoryId);
