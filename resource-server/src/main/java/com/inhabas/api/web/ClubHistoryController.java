@@ -55,6 +55,12 @@ public class ClubHistoryController {
                             value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
                     )
             )),
+            @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"
+                    )
+            ))
     })
     @GetMapping("/club/history/{clubHistoryId}")
     public ResponseEntity<ClubHistoryDto> findClubHistory(@PathVariable Long clubHistoryId) {
@@ -76,7 +82,7 @@ public class ClubHistoryController {
             ))
     })
     @PostMapping("/club/history")
-    public ResponseEntity<ClubHistoryDto> writeClubHistories(@Authenticated Long memberId, @Valid SaveClubHistoryDto saveClubHistoryDto) {
+    public ResponseEntity<ClubHistoryDto> writeClubHistory(@Authenticated Long memberId, @Valid @RequestBody SaveClubHistoryDto saveClubHistoryDto) {
 
         Long newClubHistoryId = clubHistoryService.writeClubHistory(memberId, saveClubHistoryDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -103,10 +109,11 @@ public class ClubHistoryController {
                             value = "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"
                     )
             ))
+
     })
     @PutMapping("/club/history/{clubHistoryId}")
     public ResponseEntity<Void> updateClubHistory(@PathVariable Long clubHistoryId, @Authenticated Long memberId,
-                                                  @Valid SaveClubHistoryDto saveClubHistoryDto) {
+                                                  @Valid @RequestBody SaveClubHistoryDto saveClubHistoryDto) {
 
         clubHistoryService.updateClubHistory(memberId, clubHistoryId, saveClubHistoryDto);
         return ResponseEntity.noContent().build();
@@ -117,6 +124,12 @@ public class ClubHistoryController {
             description = "동아리 연혁 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = @ExampleObject(
+                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
+                    )
+            )),
             @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.", content = @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = @ExampleObject(
@@ -127,7 +140,7 @@ public class ClubHistoryController {
     @DeleteMapping ("/club/history/{clubHistoryId}")
     public ResponseEntity<Void> deleteClubHistory(@PathVariable Long clubHistoryId) {
 
-        clubHistoryService.deleteClubHistories(clubHistoryId);
+        clubHistoryService.deleteClubHistory(clubHistoryId);
         return ResponseEntity.noContent().build();
 
     }

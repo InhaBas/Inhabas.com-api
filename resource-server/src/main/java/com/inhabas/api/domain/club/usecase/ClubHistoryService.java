@@ -15,7 +15,7 @@ public interface ClubHistoryService {
 
     void updateClubHistory(Long memberId, Long clubHistoryId, SaveClubHistoryDto saveClubHistoryDto);
 
-    void deleteClubHistories(Long clubHistoryId);
+    void deleteClubHistory(Long clubHistoryId);
 
 }
 

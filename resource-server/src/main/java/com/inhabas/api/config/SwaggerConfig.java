@@ -95,6 +95,17 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi getIBASApi() {
+
+        return GroupedOpenApi
+                .builder()
+                .group("IBAS 관련")
+                .pathsToMatch("/club/**")
+                .build();
+
+    }
+
+    @Bean
     @Profile("local")
     public OpenAPI localOpenAPI() {
         return createOpenAPI(apiInfo(), securityScheme(), securityRequirement());

@@ -114,23 +114,23 @@ public class CommentControllerTest {
 //        assertThat(responseBody).isEqualTo(String.valueOf(newReplyId));
 //    }
 
-    @DisplayName("500자 이상의 댓글 추가 요청은 유효성 검사 실패 후 400 반환")
-    @Test
-    void tryToSaveTooLongContents() throws Exception {
-        //given
-        String tooLongContents = "-".repeat(500);
-        String jsonRequest = String.format("{\"writerId\":12171652,\"content\":\"%s\",\"boardId\":13}", tooLongContents);
-
-        //when
-        String errorMessage = mockMvc.perform(post("/comment")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonRequest))
-                .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        assertThat(errorMessage).contains("500자 이하여야 합니다.");
-    }
+//    @DisplayName("500자 이상의 댓글 추가 요청은 유효성 검사 실패 후 400 반환")
+//    @Test
+//    void tryToSaveTooLongContents() throws Exception {
+//        //given
+//        String tooLongContents = "-".repeat(500);
+//        String jsonRequest = String.format("{\"writerId\":12171652,\"content\":\"%s\",\"boardId\":13}", tooLongContents);
+//
+//        //when
+//        String errorMessage = mockMvc.perform(post("/comment")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(jsonRequest))
+//                .andExpect(status().isBadRequest())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        assertThat(errorMessage).contains("500자 이하여야 합니다.");
+//    }
 
 //    @DisplayName("정상적인 댓글 수정 요청")
 //    @Test

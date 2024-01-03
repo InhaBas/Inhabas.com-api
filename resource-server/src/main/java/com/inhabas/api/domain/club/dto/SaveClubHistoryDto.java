@@ -1,8 +1,6 @@
 package com.inhabas.api.domain.club.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +13,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SaveClubHistoryDto {
 
-    private Title title;
+    private String title;
 
-    private Content content;
+    private String content;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -25,7 +23,7 @@ public class SaveClubHistoryDto {
     private LocalDateTime dateHistory;
 
     @Builder
-    public SaveClubHistoryDto(Title title, Content content, LocalDateTime dateHistory) {
+    public SaveClubHistoryDto(String title, String content, LocalDateTime dateHistory) {
         this.title = title;
         this.content = content;
         this.dateHistory = dateHistory;

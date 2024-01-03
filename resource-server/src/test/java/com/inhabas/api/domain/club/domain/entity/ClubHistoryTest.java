@@ -25,8 +25,8 @@ class ClubHistoryTest {
                 .dateHistory(LocalDateTime.now())
                 .build();
         SaveClubHistoryDto saveClubHistoryDto = SaveClubHistoryDto.builder()
-                .title(new Title("title"))
-                .content(new Content("content"))
+                .title("title")
+                .content("content")
                 .dateHistory(LocalDateTime.now())
                 .build();
 
@@ -35,7 +35,8 @@ class ClubHistoryTest {
 
         //then
         assertThat(clubHistory)
-                .extracting(ClubHistory::getTitle, ClubHistory::getContent)
+                .extracting(ClubHistory -> clubHistory.getTitle().getValue(),
+                        ClubHistory -> clubHistory.getContent().getValue())
                 .containsExactly(saveClubHistoryDto.getTitle(), saveClubHistoryDto.getContent());
 
     }

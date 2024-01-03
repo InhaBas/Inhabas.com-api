@@ -48,7 +48,7 @@ public class ClubHistoryServiceImplTest {
         Long memberId = 1L;
         Member member = MemberTest.chiefMember(); // 필요한 속성으로 Member 객체 초기화
         SaveClubHistoryDto saveClubHistoryDto = new SaveClubHistoryDto(
-                new Title("title"), new Content("content"), LocalDateTime.now());
+                "title", "content", LocalDateTime.now());
 
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
         given(clubHistoryRepository.save(any(ClubHistory.class))).willAnswer(invocation -> {
@@ -71,7 +71,7 @@ public class ClubHistoryServiceImplTest {
     void writeClubHistory_Member_Not_Found() {
         //given
         SaveClubHistoryDto saveClubHistoryDto = new SaveClubHistoryDto(
-                new Title("title"), new Content("content"), LocalDateTime.now());
+                "title", "content", LocalDateTime.now());
         given(memberRepository.findById(any())).willReturn(Optional.empty());
 
         // then
@@ -135,7 +135,7 @@ public class ClubHistoryServiceImplTest {
         assertThat(clubHistoryDtoList)
                 .hasSize(1)
                 .extracting("title", "content")
-                .contains(tuple(clubHistory.getTitle(), clubHistory.getContent()));
+                .contains(tuple(clubHistory.getTitle().getValue(), clubHistory.getContent().getValue()));
 
     }
 
@@ -152,7 +152,7 @@ public class ClubHistoryServiceImplTest {
                 .dateHistory(LocalDateTime.now())
                 .build();
         SaveClubHistoryDto saveClubHistoryDto = new SaveClubHistoryDto(
-                new Title("title"), new Content("content"), LocalDateTime.now());
+                "title", "content", LocalDateTime.now());
         given(clubHistoryRepository.findById(any())).willReturn(Optional.ofNullable(clubHistory));
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
@@ -179,7 +179,7 @@ public class ClubHistoryServiceImplTest {
         given(clubHistoryRepository.findById(any())).willReturn(Optional.ofNullable(clubHistory));
 
         //when
-        clubHistoryService.deleteClubHistories(any());
+        clubHistoryService.deleteClubHistory(any());
 
         //then
         then(clubHistoryRepository).should().findById(any());

@@ -4,6 +4,8 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.domain.board.domain.valueObject.Content;
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.club.domain.entity.ClubHistory;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
@@ -31,8 +33,8 @@ public class ClubHistoryServiceImpl implements ClubHistoryService {
         Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         ClubHistory clubHistory = ClubHistory.builder()
                 .member(writer)
-                .title(saveClubHistoryDto.getTitle())
-                .content(saveClubHistoryDto.getContent())
+                .title(new Title(saveClubHistoryDto.getTitle()))
+                .content(new Content(saveClubHistoryDto.getContent()))
                 .dateHistory(saveClubHistoryDto.getDateHistory())
                 .build();
 
@@ -77,7 +79,7 @@ public class ClubHistoryServiceImpl implements ClubHistoryService {
 
     @Override
     @Transactional
-    public void deleteClubHistories(Long clubHistoryId) {
+    public void deleteClubHistory(Long clubHistoryId) {
 
         ClubHistory clubHistory = clubHistoryRepository.findById(clubHistoryId).orElseThrow(NotFoundException::new);
         clubHistoryRepository.delete(clubHistory);

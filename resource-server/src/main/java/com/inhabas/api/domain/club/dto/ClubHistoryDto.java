@@ -1,8 +1,6 @@
 package com.inhabas.api.domain.club.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.club.domain.entity.ClubHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -21,9 +19,11 @@ public class ClubHistoryDto {
     @Positive
     private Long id;
 
-    private Title title;
+    @NotNull
+    private String title;
 
-    private Content content;
+    @NotNull
+    private String content;
 
     @NotNull
     @Positive
@@ -35,7 +35,7 @@ public class ClubHistoryDto {
     private LocalDateTime dateHistory;
 
     @Builder
-    public ClubHistoryDto(Long id, Title title, Content content, Long writerId, LocalDateTime dateHistory) {
+    public ClubHistoryDto(Long id, String title, String content, Long writerId, LocalDateTime dateHistory) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -45,8 +45,8 @@ public class ClubHistoryDto {
 
     public ClubHistoryDto(ClubHistory clubHistory) {
         this.id = clubHistory.getId();
-        this.title = clubHistory.getTitle();
-        this.content = clubHistory.getContent();
+        this.title = clubHistory.getTitle().getValue();
+        this.content = clubHistory.getContent().getValue();
         this.writerId = clubHistory.getMember().getId();
         this.dateHistory = clubHistory.getDateHistory();
     }

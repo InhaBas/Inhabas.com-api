@@ -45,7 +45,7 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_PATH = {"/menu/**", "/menus", "/member/chief", "/error"};
     private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires",
             "/signUp/majorInfo"};
-
+    private static final String[] AUTH_WHITELIST_CLUB = {"/club/histories", "/club/history/**"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -71,6 +71,7 @@ public class WebSecurityConfig {
         public void configure(WebSecurity web) throws Exception {
             web.ignoring()
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
+                    .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
                     .antMatchers(AUTH_WHITELIST_SWAGGER)
                     .antMatchers(AUTH_WHITELIST_STATIC)
                     .antMatchers(AUTH_WHITELIST_PATH);
@@ -121,6 +122,9 @@ public class WebSecurityConfig {
                         // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
                         .antMatchers("/signUp/check").hasRole(ANONYMOUS.toString())
                         .antMatchers("/signUp/**").hasRole(SIGNING_UP.toString())
+
+                        // 동아리 연혁 수정
+                        .antMatchers("/club/history/**").hasRole(EXECUTIVES.toString())
 
                         // 그 외
                         .anyRequest().hasRole(ANONYMOUS.toString());

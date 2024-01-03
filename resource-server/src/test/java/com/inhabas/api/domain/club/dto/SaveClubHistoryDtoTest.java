@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.club.dto;
 
-import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,8 +34,8 @@ class SaveClubHistoryDtoTest {
     void NotNull_Test() {
         //given
         SaveClubHistoryDto saveClubHistoryDto = SaveClubHistoryDto.builder()
-                .title(new Title("goodTitle"))
-                .content(new Content("goodContent"))
+                .title("goodTitle")
+                .content("goodContent")
                 .dateHistory(null)
                 .build();
 

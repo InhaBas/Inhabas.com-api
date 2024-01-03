@@ -52,8 +52,8 @@ public class ClubHistory {
 
     public void updateClubHistory(Member member, SaveClubHistoryDto saveClubHistoryDto) {
         this.member = member;
-        this.title = saveClubHistoryDto.getTitle();
-        this.content = saveClubHistoryDto.getContent();
+        this.title = new Title(saveClubHistoryDto.getTitle());
+        this.content = new Content(saveClubHistoryDto.getContent());
         this.dateHistory = saveClubHistoryDto.getDateHistory();
     }
 
