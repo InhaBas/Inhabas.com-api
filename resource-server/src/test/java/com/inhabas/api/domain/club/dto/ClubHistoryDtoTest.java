@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.club.dto;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +11,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ClubHistoryDtoTest {
 
@@ -45,7 +46,7 @@ class ClubHistoryDtoTest {
         Set<ConstraintViolation<ClubHistoryDto>> violations = validator.validate(clubHistoryDto);
 
         //then
-        Assertions.assertThat(violations.size()).isEqualTo(2);
+        assertThat(violations).hasSize(2);
 
     }
 
@@ -65,7 +66,7 @@ class ClubHistoryDtoTest {
         Set<ConstraintViolation<ClubHistoryDto>> violations = validator.validate(clubHistoryDto);
 
         //then
-        Assertions.assertThat(violations.size()).isEqualTo(3);
+        assertThat(violations).hasSize(3);
 
     }
 

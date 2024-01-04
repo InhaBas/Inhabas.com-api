@@ -24,7 +24,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -76,7 +78,8 @@ public class ClubHistoryServiceImplTest {
 
         // then
         assertThatThrownBy(() -> clubHistoryService.writeClubHistory(1L, saveClubHistoryDto))
-                .isInstanceOf(MemberNotFoundException.class);
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("존재 하지 않는 유저입니다.");
 
     }
 
@@ -97,7 +100,8 @@ public class ClubHistoryServiceImplTest {
 
         //then
         then(clubHistoryRepository).should().findById(any());
-        assertThat(clubHistoryDto).extracting("title", "content")
+        assertThat(clubHistoryDto).as("clubHistoryDto's title and content are equal to clubHistory")
+                .extracting("title", "content")
                 .containsExactly(clubHistory.getTitle().getValue(), clubHistory.getContent().getValue());
 
     }
@@ -110,7 +114,8 @@ public class ClubHistoryServiceImplTest {
 
         //then
         assertThatThrownBy(() -> clubHistoryService.findClubHistory(any()))
-                .isInstanceOf(NotFoundException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("데이터가 존재하지 않습니다.");
 
     }
 
