@@ -34,7 +34,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                             Expressions.asNumber(id).as("id"),
                             member.name.value,
                             contestBoard.title.value,
-                            contestBoard.contents.value,
+                            contestBoard.content.value,
                             contestBoard.association.value,
                             contestBoard.topic.value,
                             contestBoard.start,

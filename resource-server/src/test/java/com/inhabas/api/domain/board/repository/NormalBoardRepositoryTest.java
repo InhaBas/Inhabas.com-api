@@ -84,7 +84,7 @@ public class NormalBoardRepositoryTest {
 //                () -> assertThat(saveBoard.getId()).isNotNull(),
 //                () -> assertThat(saveBoard.getDateCreated()).isNotNull(),
 //                () -> assertThat(saveBoard.getTitle()).isEqualTo(FREE_BOARD.getTitle()),
-//                () -> assertThat(saveBoard.getContents()).isEqualTo(FREE_BOARD.getContents()),
+//                () -> assertThat(saveBoard.getContent()).isEqualTo(FREE_BOARD.getContent()),
 //                () -> assertThat(saveBoard.getWriterId()).isEqualTo(saveMember.getId())
 //        );
 //    }
@@ -104,7 +104,7 @@ public class NormalBoardRepositoryTest {
 //        assertAll(
 //                () -> assertThat(find.getId()).isEqualTo(NOTICE_BOARD.getId()),
 //                () -> assertThat(find.getTitle()).isEqualTo(NOTICE_BOARD.getTitle()),
-//                () -> assertThat(find.getContents()).isEqualTo(NOTICE_BOARD.getContents()),
+//                () -> assertThat(find.getContent()).isEqualTo(NOTICE_BOARD.getContent()),
 //                () -> assertThat(find.getMenuId()).isEqualTo(NOTICE_BOARD.getMenuId()),
 //                () -> assertThat(find.getWriterName()).isEqualTo(writer.getName())
 //        );
@@ -123,7 +123,7 @@ public class NormalBoardRepositoryTest {
 //                .orElseThrow(EntityNotFoundException::new);
 //
 //        //then
-//        assertThat(findBoard.getContents()).isEqualTo("내용이 수정되었습니다.");
+//        assertThat(findBoard.getContent()).isEqualTo("내용이 수정되었습니다.");
 //        assertThat(findBoard.getTitle()).isEqualTo("제목이 수정되었습니다.");
 //    }
 

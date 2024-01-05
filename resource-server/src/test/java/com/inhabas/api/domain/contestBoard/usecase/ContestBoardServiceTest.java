@@ -52,10 +52,10 @@ public class ContestBoardServiceTest {
         //given
         StudentId StudentId = new StudentId("12201863");
         SaveContestBoardDto saveContestBoardDto =
-                new SaveContestBoardDto("title", "contents", "association", "topic",
+                new SaveContestBoardDto("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26));
         ContestBoard contestBoard =
-                new ContestBoard("title", "contents", "association", "topic",
+                new ContestBoard("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26));
 
         given(contestBoardRepository.save(any())).willReturn(contestBoard);
@@ -108,7 +108,7 @@ public class ContestBoardServiceTest {
     public void getDetailBoard() {
         //given
         DetailContestBoardDto contestBoardDto =
-                new DetailContestBoardDto(1, "mingyeom", "title", "contents",
+                new DetailContestBoardDto(1, "mingyeom", "title", "content",
                         "association", "topic", LocalDate.of(2022, 1, 1),
                         LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
         given(contestBoardRepository.findDtoById(any())).willReturn(Optional.of(contestBoardDto));
@@ -127,7 +127,7 @@ public class ContestBoardServiceTest {
         //given
         StudentId StudentId = new StudentId("12201863");
         ContestBoard contestBoard =
-                new ContestBoard("title", "contents", "association", "topic",
+                new ContestBoard("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
                         .writtenBy(StudentId);
         given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));
@@ -146,7 +146,7 @@ public class ContestBoardServiceTest {
         //given
         StudentId StudentId = new StudentId("12201863");
         ContestBoard expectedContestBoard =
-                new ContestBoard("title", "contents", "association", "topic",
+                new ContestBoard("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
                         .writtenBy(StudentId);
 
@@ -171,7 +171,7 @@ public class ContestBoardServiceTest {
         StudentId badUser = new StudentId("44444444");
         StudentId originalWriter = new StudentId("12201863");
         ContestBoard expectedContestBoard =
-                new ContestBoard("title", "contents", "association", "topic",
+                new ContestBoard("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
                         .writtenBy(originalWriter);
         given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
@@ -195,7 +195,7 @@ public class ContestBoardServiceTest {
         StudentId badUser = new StudentId("44444444");
         StudentId StudentId = new StudentId("12201863");
         ContestBoard contestBoard =
-                new ContestBoard("title", "contents", "association", "topic",
+                new ContestBoard("title", "content", "association", "topic",
                         LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
                         .writtenBy(StudentId);
         given(contestBoardRepository.findById(anyInt())).willReturn(Optional.of(contestBoard));

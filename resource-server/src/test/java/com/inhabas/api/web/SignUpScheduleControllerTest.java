@@ -2,7 +2,7 @@ package com.inhabas.api.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.ErrorCode;
-import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;

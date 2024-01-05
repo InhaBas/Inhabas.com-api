@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.signUpSchedule.domain.entity;
 
-import com.inhabas.api.domain.signUpSchedule.domain.exception.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -53,8 +53,8 @@ public class BoardServiceTest {
     @Test
     public void createBoard() {
         //given
-        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "contents", new MenuId(1));
-        NormalBoard normalBoard = new NormalBoard("title", "contents");
+        SaveBoardDto saveBoardDto = new SaveBoardDto("title", "content", new MenuId(1));
+        NormalBoard normalBoard = new NormalBoard("title", "content");
         given(boardRepository.save(any())).willReturn(normalBoard);
 
         // when
@@ -71,10 +71,10 @@ public class BoardServiceTest {
         PageRequest pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "created");
 
         BoardDto boardDto1 =
-                new BoardDto(1, "title", "contents", "mingyeom",
+                new BoardDto(1, "title", "content", "mingyeom",
                         new MenuId(1), LocalDateTime.now(), LocalDateTime.now());
         BoardDto boardDto2 =
-                new BoardDto(2, "title", "contents", "minji",
+                new BoardDto(2, "title", "content", "minji",
                         new MenuId(1), LocalDateTime.now(), LocalDateTime.now());
 
         List<BoardDto> results = new ArrayList<>();
@@ -97,7 +97,7 @@ public class BoardServiceTest {
     public void getDetailBoard() {
         //given
         BoardDto boardDto =
-                new BoardDto(1, "title", "contents", "김민겸",
+                new BoardDto(1, "title", "content", "김민겸",
                         new MenuId(1), LocalDateTime.now(), null);
         given(boardRepository.findDtoById(any())).willReturn(Optional.of(boardDto));
 
@@ -113,7 +113,7 @@ public class BoardServiceTest {
     public void deleteBoard() {
         //given
         StudentId writer = new StudentId("12201863");
-        NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(writer);
+        NormalBoard board = new NormalBoard("Title", "Content").writtenBy(writer);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
         doNothing().when(boardRepository).deleteById(any());
 
@@ -130,8 +130,8 @@ public class BoardServiceTest {
         //given
         StudentId memberId = new StudentId("12201863");
         NormalBoard savedNormalBoard = new NormalBoard("Origin Title",
-                "Origin Contents").writtenBy(memberId);
-        NormalBoard updatedNormalBoard = new NormalBoard("Title", "Contents").writtenBy(
+                "Origin Content").writtenBy(memberId);
+        NormalBoard updatedNormalBoard = new NormalBoard("Title", "Content").writtenBy(
                 memberId);
 
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(savedNormalBoard));
@@ -152,7 +152,7 @@ public class BoardServiceTest {
         //given
         StudentId badUser = new StudentId("44444444");
         StudentId originWriter = new StudentId("12201863");
-        NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(originWriter);
+        NormalBoard board = new NormalBoard("Title", "Content").writtenBy(originWriter);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
 
         // when
@@ -166,7 +166,7 @@ public class BoardServiceTest {
         //given
         StudentId badUser = new StudentId("44444444");
         StudentId originWriter = new StudentId("12201863");
-        NormalBoard board = new NormalBoard("Title", "Contents").writtenBy(originWriter);
+        NormalBoard board = new NormalBoard("Title", "Content").writtenBy(originWriter);
         given(boardRepository.findById(anyInt())).willReturn(Optional.of(board));
 
         // when

@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.contest.domain;
 
 import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.board.domain.valueObject.Contents;
+import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
@@ -50,7 +50,7 @@ public class ContestBoard extends NormalBoard {
     public ContestBoard(String title, String contents, String association, String topic, LocalDate start, LocalDate deadline){
 
         this.title = new Title(title);
-        this.contents = new Contents(contents);
+        this.content = new Content(contents);
         this.association = new Association(association);
         this.topic = new Topic(topic);
         this.start = start;
