@@ -195,6 +195,7 @@ public class MemberServiceImpl implements MemberService {
                 .major(member.getSchoolInformation().getMajor())
                 .grade(member.getSchoolInformation().getGrade())
                 .email(member.getEmail())
+                .picture(member.getPicture())
                 .phoneNumber(member.getPhone())
                 .role(member.getRole())
                 .type(member.getSchoolInformation().getMemberType())

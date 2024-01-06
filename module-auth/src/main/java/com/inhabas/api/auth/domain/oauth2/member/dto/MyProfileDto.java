@@ -32,6 +32,9 @@ public class MyProfileDto {
     private String phoneNumber;
 
     @NotNull
+    private String picture;
+
+    @NotNull
     private Role role;
 
     @NotNull
@@ -41,13 +44,14 @@ public class MyProfileDto {
 
     @Builder
     public MyProfileDto(String name, String studentId, String major, Integer grade, String email,
-                        String phoneNumber, Role role, MemberType type, String introduce) {
+                        String phoneNumber, String picture, Role role, MemberType type, String introduce) {
         this.name = name;
         this.studentId = studentId;
         this.major = major;
         this.grade = grade;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.picture = picture;
         this.role = role;
         this.type = type;
         this.introduce = introduce;
