@@ -11,6 +11,7 @@ import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
 import com.inhabas.api.domain.club.repository.ClubHistoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +59,8 @@ public class ClubHistoryServiceImpl implements ClubHistoryService {
     @Transactional(readOnly = true)
     public List<ClubHistoryDto> getClubHistories() {
 
-        List<ClubHistory> clubHistoryList = clubHistoryRepository.findAll();
+        Sort sort = Sort.by(Sort.Direction.DESC, "dateHistory");
+        List<ClubHistory> clubHistoryList = clubHistoryRepository.findAll(sort);
 
         return clubHistoryList.stream()
                 .map(ClubHistoryDto::new)
