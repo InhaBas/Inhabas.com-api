@@ -46,6 +46,7 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_SIGNUP = {"/signUp/schedule", "/signUp/questionnaires",
             "/signUp/majorInfo"};
     private static final String[] AUTH_WHITELIST_CLUB = {"/club/histories", "/club/history/**"};
+    private static final String[] AUTH_WHITELIST_POLICY = {"/policy/**"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -70,6 +71,7 @@ public class WebSecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring()
+                    .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
                     .antMatchers(AUTH_WHITELIST_SWAGGER)
@@ -125,6 +127,9 @@ public class WebSecurityConfig {
 
                         // 동아리 연혁 수정
                         .antMatchers("/club/history/**").hasRole(EXECUTIVES.toString())
+
+                        // 정책 수정
+                        .antMatchers(HttpMethod.PUT, "/policy/**").hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
                         // 그 외
                         .anyRequest().hasRole(ANONYMOUS.toString());

@@ -28,9 +28,9 @@ public class PolicyTerm extends BaseEntity {
     private Content content;
 
     @Builder
-    public PolicyTerm(PolicyType policyType, Content content) {
+    public PolicyTerm(PolicyType policyType, String content) {
         this.policyType = policyType;
-        this.content = content;
+        this.content = new Content(content);
     }
 
     public void updatePolicyTerm(SavePolicyTernDto savePolicyTernDto) {
