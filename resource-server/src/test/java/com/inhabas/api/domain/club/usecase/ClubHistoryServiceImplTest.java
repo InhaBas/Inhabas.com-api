@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -130,13 +131,15 @@ public class ClubHistoryServiceImplTest {
                 .dateHistory(LocalDateTime.now())
                 .build();
         List<ClubHistory> clubHistoryList = List.of(clubHistory);
-        given(clubHistoryRepository.findAll()).willReturn(clubHistoryList);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "dateHistory");
+        given(clubHistoryRepository.findAll(sort)).willReturn(clubHistoryList);
 
         //when
         List<ClubHistoryDto> clubHistoryDtoList = clubHistoryService.getClubHistories();
 
         //then
-        then(clubHistoryRepository).should().findAll();
+        then(clubHistoryRepository).should().findAll(sort);
         assertThat(clubHistoryDtoList)
                 .hasSize(1)
                 .extracting("title", "content")
