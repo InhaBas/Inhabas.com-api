@@ -1,6 +1,4 @@
-package com.inhabas.api.domain.file.type.wrapper;
-
-import lombok.Getter;
+package com.inhabas.api.domain.file.domain.valueObject;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,17 +6,17 @@ import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
-public class FilePath {
+public class FileURL {
 
-    @Column(name = "filepath")
+    @Column(name = "URL")
     private String value;
 
     @Transient
     private final int MAX_LENGTH = 1000;
 
-    public FilePath() {}
+    public FileURL() {}
 
-    public FilePath(String value) {
+    public FileURL(String value) {
         if (validate(value))
             this.value = value;
         else
