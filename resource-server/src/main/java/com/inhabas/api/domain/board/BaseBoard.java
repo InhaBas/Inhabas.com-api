@@ -1,62 +1,37 @@
 package com.inhabas.api.domain.board;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
-import java.util.Objects;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import lombok.Getter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.util.Objects;
+
 @MappedSuperclass
+@Getter
+@DiscriminatorColumn(name = "TYPE", length = 15)
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseBoard extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    protected Long id;
 
     @Embedded
     protected Title title;
 
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "menu_id"))
-    protected MenuId menuId;
-
-    @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "writer_id"))
-    protected StudentId writerId;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title.getValue();
-    }
-
-    public MenuId getMenuId() {
-        return menuId;
-    }
-
-    public StudentId getWriterId() {
-        return writerId;
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_BOARD_OF_USER_ID"))
+    protected Member writer;
 
 
-    @SuppressWarnings("unchecked")
-    public <T extends NormalBoard> T writtenBy(StudentId writerId){
+    public <T extends NormalBoard> T writtenBy(Member writer){
 
-        if (Objects.isNull(this.writerId)) {
-            this.writerId = writerId;
+        if (Objects.isNull(this.writer)) {
+            this.writer = writer;
             return (T) this;
         }
         else {
@@ -64,13 +39,8 @@ public abstract class BaseBoard extends BaseEntity {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends NormalBoard> T inMenu(MenuId menuId) {
-        this.menuId = menuId;
-        return (T) this;
+    public boolean isWriter(Member writer) {
+        return this.writer.equals(writer);
     }
 
-    public boolean isWriter(StudentId writerId) {
-        return this.writerId.equals(writerId);
-    }
 }
