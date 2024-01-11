@@ -6,7 +6,7 @@ import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
-public class FileURL {
+public class FileUrl {
 
     @Column(name = "URL")
     private String value;
@@ -14,9 +14,9 @@ public class FileURL {
     @Transient
     private final int MAX_LENGTH = 1000;
 
-    public FileURL() {}
+    public FileUrl() {}
 
-    public FileURL(String value) {
+    public FileUrl(String value) {
         if (validate(value))
             this.value = value;
         else
