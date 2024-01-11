@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.club.domain.entity;
+package com.inhabas.api.domain.club.domain;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.valueObject.Content;

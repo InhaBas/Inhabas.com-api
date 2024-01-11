@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.club.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.club.domain.entity.ClubHistory;
+import com.inhabas.api.domain.club.domain.ClubHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
