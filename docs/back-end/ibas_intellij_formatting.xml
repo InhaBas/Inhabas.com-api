@@ -1,0 +1,92 @@
+<code_scheme name="IBAS Java Backend Style">
+  <!-- Other Indentation Options -->
+  <option name="OTHER_INDENT_OPTIONS">
+    <value>
+      <option name="INDENT_SIZE" value="4" />
+      <option name="CONTINUATION_INDENT_SIZE" value="8" />
+      <option name="TAB_SIZE" value="4" />
+      <option name="USE_TAB_CHARACTER" value="false" />
+      <option name="SMART_TABS" value="false" />
+      <option name="LABEL_INDENT_SIZE" value="0" />
+      <option name="LABEL_INDENT_ABSOLUTE" value="false" />
+      <option name="USE_RELATIVE_INDENTS" value="false" />
+    </value>
+  </option>
+
+  <!-- Line Separator and Import Settings -->
+  <option name="LINE_SEPARATOR" value="&#10;" />
+  <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="5" />
+  <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="5" />
+
+  <!-- JavaDoc Comments -->
+  <option name="JD_ADD_BLANK_AFTER_PARM_COMMENTS" value="true" />
+  <option name="JD_ADD_BLANK_AFTER_RETURN" value="true" />
+
+  <!-- Brace Style and Alignment -->
+  <option name="CLASS_BRACE_STYLE" value="1" /> <!-- 1: End of line -->
+  <option name="METHOD_BRACE_STYLE" value="1" /> <!-- 1: End of line -->
+  <option name="CATCH_ON_NEW_LINE" value="true" />
+  <option name="FINALLY_ON_NEW_LINE" value="true" />
+  <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
+  <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+  <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
+  <option name="ALIGN_MULTILINE_ASSIGNMENT" value="true" />
+  <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
+  <option name="ALIGN_MULTILINE_THROWS_LIST" value="true" />
+  <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
+
+  <!-- Method Call and Parameters Wrapping -->
+  <option name="CALL_PARAMETERS_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+  <option name="CALL_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+  <option name="METHOD_PARAMETERS_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
+  <option name="METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE" value="true" />
+
+  <!-- Extends and Throws List Wrapping -->
+  <option name="EXTENDS_LIST_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="THROWS_LIST_WRAP" value="1" /> <!-- Wrap always -->
+  <option name="EXTENDS_KEYWORD_WRAP" value="1" /> <!-- Wrap always -->
+  <option name="THROWS_KEYWORD_WRAP" value="1" /> <!-- Wrap always -->
+
+  <!-- Method Call Chain and Binary Operation Wrapping -->
+  <option name="METHOD_CALL_CHAIN_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="BINARY_OPERATION_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" value="true" />
+
+  <!-- Ternary Operation Wrapping -->
+  <option name="TERNARY_OPERATION_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" value="true" />
+
+  <!-- Other Formatting Options -->
+  <option name="KEEP_SIMPLE_METHODS_IN_ONE_LINE" value="true" />
+  <option name="ARRAY_INITIALIZER_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="ARRAY_INITIALIZER_LBRACE_ON_NEXT_LINE" value="true" />
+  <option name="ARRAY_INITIALIZER_RBRACE_ON_NEXT_LINE" value="true" />
+
+  <!-- Assertion and Control Statement Wrapping -->
+  <option name="ASSERT_STATEMENT_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="ASSERT_STATEMENT_COLON_ON_NEXT_LINE" value="true" />
+  <option name="IF_BRACE_FORCE" value="3" /> <!-- Force braces always -->
+  <option name="DOWHILE_BRACE_FORCE" value="3" /> <!-- Force braces always -->
+  <option name="WHILE_BRACE_FORCE" value="3" /> <!-- Force braces always -->
+  <option name="FOR_BRACE_FORCE" value="3" /> <!-- Force braces always -->
+
+  <!-- Annotation Wrapping -->
+  <option name="PARAMETER_ANNOTATION_WRAP" value="5" /> <!-- Wrap if long -->
+  <option name="VARIABLE_ANNOTATION_WRAP" value="2" /> <!-- Do not wrap -->
+
+  <!-- Enum Constants Wrapping -->
+  <option name="ENUM_CONSTANTS_WRAP" value="1" /> <!-- wrap -->
+
+  <!-- Java Code Style Settings -->
+  <codeStyleSettings language="JAVA">
+    <option name="BLANK_LINES_BEFORE_PACKAGE" value="1" />
+    <indentOptions>
+      <option name="INDENT_SIZE" value="4" />
+      <option name="CONTINUATION_INDENT_SIZE" value="8" />
+      <option name="TAB_SIZE" value="4" />
+      <option name="LABEL_INDENT_ABSOLUTE" value="true" />
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>
