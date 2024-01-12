@@ -33,10 +33,18 @@ public class BaseFile {
     protected LocalDateTime dateCreated;
 
     @Builder
-    public BaseFile(FileName name, FileUrl url) {
-        this.name = name;
-        this.url = url;
+    public BaseFile(String  name, String url) {
+        this.name = new FileName(name);
+        this.url = new FileUrl(url);
         this.dateCreated = LocalDateTime.now();
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public String getUrl() {
+        return url.getValue();
     }
 
     @Override

@@ -1,10 +1,9 @@
 package com.inhabas.api.domain.file.domain;
 
-import com.inhabas.api.domain.board.BaseBoard;
+import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.file.domain.valueObject.FileName;
-import com.inhabas.api.domain.file.domain.valueObject.FileUrl;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,7 +23,8 @@ public class BoardFile extends BaseFile {
 
     // boardFile 과 baseBoard 의 연관관계 편의 메소드
 
-    public BoardFile(FileName name, FileUrl url, BaseBoard board) {
+    @Builder
+    public BoardFile(String name, String url, BaseBoard board) {
         super(name, url);
         this.board = board;
     }
