@@ -2,6 +2,30 @@ plugins {
     id 'org.springframework.boot' version '2.6.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java-library'
+    id 'com.diffplug.spotless' version '6.13.0'
+}
+
+spotless {
+    java {
+        // 모든 Java 소스 파일에 포맷팅 규칙 적용
+        target("**/*.java")
+        // space로 4칸 들여쓰기 사용
+        indentWithSpaces(4)
+        // 파일의 끝에 새 줄 추가
+        endWithNewline()
+        // 사용되지 않는 import 제거
+        removeUnusedImports()
+        //import 순서 지정
+        importOrder(
+                "java",
+                "javax",
+                "lombok",
+                "org.springframework",
+                "",
+                "org.junit",
+                "com.guide"
+        )
+    }
 }
 
 springBoot {
