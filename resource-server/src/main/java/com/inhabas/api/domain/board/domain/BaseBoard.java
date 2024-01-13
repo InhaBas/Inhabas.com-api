@@ -6,7 +6,6 @@ import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -60,9 +59,8 @@ public abstract class BaseBoard extends BaseEntity {
         return title.getValue();
     }
 
-    @Builder
-    public BaseBoard(Title title, Member writer, Menu menu) {
-        this.title = title;
+    public BaseBoard(String title, Member writer, Menu menu) {
+        this.title = new Title(title);
         this.writer = writer;
         this.menu = menu;
     }
