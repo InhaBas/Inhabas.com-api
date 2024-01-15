@@ -10,7 +10,7 @@ import static com.inhabas.api.global.util.FileUtil.isValidFileName;
 @Embeddable
 public class FileName {
 
-    @Column(name = "name")
+    @Column(name = "NAME")
     private String value;
 
     @Transient

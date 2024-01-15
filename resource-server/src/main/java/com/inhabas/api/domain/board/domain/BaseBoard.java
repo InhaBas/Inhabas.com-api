@@ -3,6 +3,7 @@ package com.inhabas.api.domain.board.domain;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
+ import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import lombok.AccessLevel;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +40,10 @@ public abstract class BaseBoard extends BaseEntity {
     protected Menu menu;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<BoardFile> files;
+    protected List<BoardFile> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected List<Comment> comments = new ArrayList<>();
 
     public <T extends BaseBoard> T writtenBy(Member writer){
 
@@ -66,6 +71,15 @@ public abstract class BaseBoard extends BaseEntity {
     }
 
     public void addFile(BoardFile file) {
+        if (this.files == null) {
+            this.files = new ArrayList<>();
+        }
+
         this.files.add(file);
     }
+
+    public void addComment(Comment newComment) {
+        comments.add(newComment);
+    }
+
 }

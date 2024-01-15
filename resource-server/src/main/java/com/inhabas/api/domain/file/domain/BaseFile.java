@@ -3,7 +3,6 @@ package com.inhabas.api.domain.file.domain;
 import com.inhabas.api.domain.file.domain.valueObject.FileName;
 import com.inhabas.api.domain.file.domain.valueObject.FileUrl;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -32,19 +31,18 @@ public class BaseFile {
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
     protected LocalDateTime dateCreated;
 
-    @Builder
-    public BaseFile(String  name, String url) {
+    public BaseFile(String name, String url) {
         this.name = new FileName(name);
         this.url = new FileUrl(url);
         this.dateCreated = LocalDateTime.now();
     }
 
     public String getName() {
-        return name.getValue();
+        return this.name.getValue();
     }
 
     public String getUrl() {
-        return url.getValue();
+        return this.url.getValue();
     }
 
     @Override

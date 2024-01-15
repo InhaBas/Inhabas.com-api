@@ -47,6 +47,7 @@ public class WebSecurityConfig {
             "/signUp/majorInfo"};
     private static final String[] AUTH_WHITELIST_CLUB = {"/club/histories", "/club/history/**"};
     private static final String[] AUTH_WHITELIST_POLICY = {"/policy/**"};
+    private static final String[] AUTH_WHITELIST_CLUB_ACTIVITY = {"/club/activity/**", "/club/activities"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -71,6 +72,7 @@ public class WebSecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring()
+                    .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB_ACTIVITY)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)

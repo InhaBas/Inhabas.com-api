@@ -82,7 +82,7 @@ public class ClubHistoryController {
             ))
     })
     @PostMapping("/club/history")
-    public ResponseEntity<ClubHistoryDto> writeClubHistory(@Authenticated Long memberId, @Valid @RequestBody SaveClubHistoryDto saveClubHistoryDto) {
+    public ResponseEntity<Void> writeClubHistory(@Authenticated Long memberId, @Valid @RequestBody SaveClubHistoryDto saveClubHistoryDto) {
 
         Long newClubHistoryId = clubHistoryService.writeClubHistory(memberId, saveClubHistoryDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()

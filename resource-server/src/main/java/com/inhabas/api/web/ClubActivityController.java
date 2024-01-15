@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -76,17 +77,17 @@ public class ClubActivityController {
                     )
             ))
     })
-    @PostMapping("/club/activity")
+    @PostMapping(path = "/club/activity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> writeClubActivity(@Authenticated Long memberId,
-                                                             @RequestParam("title") String title,
-                                                             @RequestParam("content") String content,
-                                                             @RequestParam("files") List<MultipartFile> files) {
+                                                             @RequestPart("title") String title,
+                                                             @RequestPart("content") String content,
+                                                             @RequestPart("files") List<MultipartFile> files) {
 
         SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto(title, content, files);
 
         Long newClubActivityId = clubActivityService.writeClubActivity(memberId, saveClubActivityDto);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/club/activity")
+                .path("/club/activity/{boardId}")
                 .buildAndExpand(newClubActivityId)
                 .toUri();
 
@@ -138,18 +139,16 @@ public class ClubActivityController {
                     )
             ))
     })
-    @PutMapping("/club/activity/{boardId}")
+    @PutMapping(path = "/club/activity/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("@boardSecurityChecker.writerOnly(#boardId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<ClubActivityDto> updateClubActivity(@Authenticated Long memberId,
                                                              @PathVariable Long boardId,
-                                                             @RequestParam("title") String title,
-                                                             @RequestParam("content") String content,
-                                                             @RequestParam("files") List<MultipartFile> files) {
+                                                             @RequestPart("title") String title,
+                                                             @RequestPart("content") String content,
+                                                             @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
         SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto(title, content, files);
-
         clubActivityService.updateClubActivity(boardId, saveClubActivityDto);
-
 
         return ResponseEntity.noContent().build();
 

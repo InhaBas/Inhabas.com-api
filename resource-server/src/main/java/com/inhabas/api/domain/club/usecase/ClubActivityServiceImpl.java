@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -39,7 +40,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     private static final String CLUB_ACTIVITY_MENU_NAME = "동아리 활동";
 
-    private static final String dirName = "/clubActivity";
+    private static final String dirName = "clubActivity/";
 
     @Override
     @Transactional(readOnly = true)
@@ -71,7 +72,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
 
         saveClubActivityDto.getFiles().forEach(file -> {
-            String url = s3Service.uploadS3File(file, UUID.randomUUID() + "_" + dirName);
+            String url = s3Service.uploadS3File(file, generateRandomUrl());
             BoardFile boardFile = BoardFile.builder().name(file.getOriginalFilename()).url(url).board(board).build();
             board.addFile(boardFile);
         });
@@ -110,23 +111,27 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     public void updateClubActivity(Long boardId, SaveClubActivityDto saveClubActivityDto) {
 
         AlbumBoard clubActivity = clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
+        List<BoardFile> updateFiles = new ArrayList<>();
 
-        try {
-            clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
+        if (saveClubActivityDto.getFiles() != null) {
+            try {
+                clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
 
-            List<BoardFile> updateFiles = saveClubActivityDto.getFiles().stream().map(file -> {
-                String url = s3Service.uploadS3File(file, UUID.randomUUID() + "_" + dirName);
-                return BoardFile.builder()
-                        .name(file.getOriginalFilename())
-                        .url(url)
-                        .board(clubActivity)
-                        .build();
-            }).collect(Collectors.toList());
+                updateFiles = saveClubActivityDto.getFiles().stream().map(file -> {
+                    String url = s3Service.uploadS3File(file, generateRandomUrl());
+                    return BoardFile.builder()
+                            .name(file.getOriginalFilename())
+                            .url(url)
+                            .board(clubActivity)
+                            .build();
+                }).collect(Collectors.toList());
 
-            clubActivity.updateFiles(updateFiles);
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        clubActivity.updateFiles(updateFiles);
 
     }
 
@@ -138,5 +143,8 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     }
 
+    private String generateRandomUrl() {
+        return dirName + UUID.randomUUID();
+    }
 
 }

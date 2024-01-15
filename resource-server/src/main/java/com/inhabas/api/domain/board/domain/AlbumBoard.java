@@ -3,6 +3,7 @@ package com.inhabas.api.domain.board.domain;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
+import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import lombok.AccessLevel;
@@ -23,6 +24,9 @@ public class AlbumBoard extends BaseBoard {
 
     @Column
     private Content content;
+
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected List<Comment> comments = new ArrayList<>();
 
     @Builder
     public AlbumBoard(String title, Member writer, Menu menu, String content) {

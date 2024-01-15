@@ -9,14 +9,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BoardService {
-    Integer write(StudentId studentId, SaveBoardDto saveBoardDto);
+    Long write(Long memberId, SaveBoardDto saveBoardDto);
 
-    Integer update(StudentId studentId, UpdateBoardDto updateBoardDto);
+    Long update(Long memberId, UpdateBoardDto updateBoardDto);
 
-    void delete(StudentId studentId, Integer boardId);
+    void delete(Long memberId, Long boardId);
 
-    BoardDto getBoard(Integer boardId);
-
-    Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable);
+//    BoardDto getBoard(Integer boardId);
+//
+//    Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable);
 
 }
