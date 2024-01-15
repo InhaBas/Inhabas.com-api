@@ -100,16 +100,6 @@ git pull upstream master
 
 PR을 제출할 때는 다음 가이드라인을 따라야 합니다:
 
-- IBAS Style Convention을 참고하세요.
+- Style Convention을 참고하세요.
 [STYLE-CONVENTION.md](STYLE-CONVENTION.md)
 - 작성한 코드가 기존 코드 스타일을 준수하고 있는지 확인해야 합니다.
-
-Intellij를 사용하는 경우 아래 포멧팅을 참고하세요:
-
-- xml: [`ibas_intellij_formatting.xml`](
-  /docs/back-end/ibas_intellij_formatting.xml).
-
-Eclipse / VSCOde를 사용하는 경우 아래 포멧팅을 참고하세요:
-
-- xml: [`eclipse_formatting.xml`](
-  /docs/back-end/ibas_eclipse_formatting.xml).
