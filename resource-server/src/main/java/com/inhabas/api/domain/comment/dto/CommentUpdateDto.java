@@ -13,13 +13,13 @@ import org.hibernate.validator.constraints.Length;
 public class CommentUpdateDto {
 
     @NotNull
-    private Integer commentId;
+    private Long commentId;
 
     @NotBlank @Length(max = 499, message = "500자 이하여야 합니다.")
-    private String contents;
+    private String content;
 
-    public CommentUpdateDto(Integer id, String contents) {
+    public CommentUpdateDto(Long id, String content) {
         this.commentId = id;
-        this.contents = contents;
+        this.content = content;
     }
 }

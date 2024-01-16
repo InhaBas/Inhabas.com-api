@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface CustomCommentRepository {
 
-    List<CommentDetailDto> findAllByParentBoardIdOrderByCreated(Integer boardId);
+    List<CommentDetailDto> findAllByParentBoardIdOrderByCreated(Long boardId);
+
 }

@@ -18,7 +18,7 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<CommentDetailDto> findAllByParentBoardIdOrderByCreated(Integer boardId) {
+    public List<CommentDetailDto> findAllByParentBoardIdOrderByCreated(Long boardId) {
         List<Comment> comments = queryFactory.selectFrom(comment)
                 .innerJoin(comment.writer).fetchJoin()
                 .leftJoin(comment.parentComment).fetchJoin()
@@ -32,17 +32,17 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
     private List<CommentDetailDto> convertToNestedStructure(List<Comment> commentList) {
 
         List<CommentDetailDto> result = new ArrayList<>();
-        Map<Integer, CommentDetailDto> map = new HashMap<>();
+        Map<Long, CommentDetailDto> map = new HashMap<>();
 
         commentList.forEach(c -> {
             CommentDetailDto dto = CommentDetailDto.fromEntity(c);
-            if (isRootComment(c)) {
-                map.put(dto.getCommentId(), dto);
+
+            map.put(dto.getId(), dto);
+            if(isRootComment(c))
                 result.add(dto);
-            }
-            else {
-                map.get(c.getParentComment().getId()).getChildren().add(dto);
-            }
+            else
+                map.get(c.getParentComment().getId()).getChildrenComment().add(dto);
+
         });
 
         return result;

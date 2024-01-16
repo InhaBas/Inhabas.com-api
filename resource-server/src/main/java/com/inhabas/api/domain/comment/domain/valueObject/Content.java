@@ -1,12 +1,14 @@
 package com.inhabas.api.domain.comment.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
-public class Contents {
+public class Content {
 
     @Column(name = "content", length = 500, nullable = false)
     private String value;
@@ -14,13 +16,13 @@ public class Contents {
     @Transient
     private final int MAX_LENGTH = 500;
 
-    public Contents() {}
+    public Content() {}
 
-    public Contents(String value) {
+    public Content(String value) {
         if (validate(value))
             this.value = value;
         else
-            throw new IllegalArgumentException();
+            throw new InvalidInputException();
     }
 
     private boolean validate(Object value) {

@@ -1,10 +1,9 @@
 package com.inhabas.api.domain.comment.domain;
 
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.comment.domain.valueObject.Contents;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.comment.domain.valueObject.Content;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -15,42 +14,46 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "COMMENT")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "writer_id", foreignKey = @ForeignKey(name = "fk_comment_to_user"))
+    @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_COMMENT_OF_USER_ID"))
     private Member writer;
 
     @Embedded
-    private Contents contents;
+    private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "fk_comment_to_baseboard"))
-    private NormalBoard parentBoard;
+    @JoinColumn(name = "BOARD_ID", foreignKey = @ForeignKey(name = "FK_COMMENT_OF_BOARD_ID"))
+    private BaseBoard parentBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_ref", foreignKey = @ForeignKey(name = "fk_comment_to_comment"))
+    @JoinColumn(name = "COMMENT_REF_ID", foreignKey = @ForeignKey(name = "FK_COMMENT_OF_COMMENT_REF_ID"))
     private Comment parentComment;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Comment> children = new ArrayList<>();
+    private final List<Comment> childrenComment = new ArrayList<>();
+
+    @Column(nullable = false)
+    private Boolean isDeleted;
+
 
     /* constructor */
 
-    public Comment(String contents, Member writer, NormalBoard board) {
-        this.contents = new Contents(contents);
+    public Comment(String content, Member writer, BaseBoard parentBoard) {
+        this.content = new Content(content);
         this.writtenBy(writer);
-        this.toBoard(board);
+        this.toBoard(parentBoard);
     }
 
     /* getter */
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -58,7 +61,7 @@ public class Comment extends BaseEntity {
         return writer;
     }
 
-    public NormalBoard getParentBoard() {
+    public BaseBoard getParentBoard() {
         return parentBoard;
     }
 
@@ -66,33 +69,39 @@ public class Comment extends BaseEntity {
         return parentComment;
     }
 
-    public List<Comment> getChildren() {
-        return Collections.unmodifiableList(children);
+    public List<Comment> getChildrenComment() {
+        return Collections.unmodifiableList(childrenComment);
     }
 
-    public String getContents() {
-        return this.contents.getValue();
+    public String getContent() {
+        return this.content.getValue();
     }
 
-    public Integer update(String contents, StudentId writerId) {
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+
+    public Long update(String content, Long writerId) {
 
         if (isWrittenBy(writerId)) {
-            this.contents = new Contents(contents);
+            this.content = new Content(content);
             return this.id;
         }
         else
             throw new RuntimeException("작성자만 수정 가능합니다.");
+
     }
 
 
     /* relation methods */
 
-    public Comment toBoard(NormalBoard newParentBoard) {
+    public Comment toBoard(BaseBoard newBoard) {
         if (Objects.nonNull(this.parentBoard))
             throw new IllegalStateException("댓글을 다른 게시글로 옮길 수 없습니다.");
 
-        this.parentBoard = newParentBoard;
-        newParentBoard.addComment(this);
+        this.parentBoard = newBoard;
+        newBoard.addComment(this);
 
         return this;
     }
@@ -116,7 +125,11 @@ public class Comment extends BaseEntity {
     }
 
     private void addReply(Comment reply) {
-        this.children.add(reply);
+        this.childrenComment.add(reply);
+    }
+
+    public void updateIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     /* others */
@@ -128,18 +141,18 @@ public class Comment extends BaseEntity {
         Comment comment = (Comment) o;
         return getId().equals(comment.getId())
                 && getWriter().equals(comment.getWriter())
-                && getContents().equals(comment.getContents())
+                && getContent().equals(comment.getContent())
                 && getParentBoard().equals(comment.getParentBoard())
                 && Objects.equals(getParentComment(), comment.getParentComment())
-                && Objects.equals(getChildren(), comment.getChildren());
+                && Objects.equals(getChildrenComment(), comment.getChildrenComment());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getWriter(), getContents(), getParentBoard(), getParentComment(), getChildren());
+        return Objects.hash(getId(), getWriter(), getContent(), getParentBoard(), getParentComment(), getChildrenComment());
     }
 
-    public boolean isWrittenBy(StudentId writerId) {
+    public boolean isWrittenBy(Long writerId) {
         return writer.isSameMember(writerId);
     }
 
