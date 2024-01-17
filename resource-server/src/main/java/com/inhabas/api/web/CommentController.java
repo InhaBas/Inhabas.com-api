@@ -4,25 +4,19 @@ import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "댓글 관리")
+import javax.validation.Valid;
+import java.util.List;
+
+@Tag(name = "댓글 관리", description = "댓글은 게시판 종류 상관없이 같이 사용")
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
@@ -30,41 +24,50 @@ public class CommentController {
     private final CommentServiceImpl commentService;
 
     @Operation(summary = "해당 게시글의 댓글을 반환한다.")
-    @GetMapping("/board/{boardId}/comments")
+    @GetMapping("/board/{menuId}/{boardId}/comments")
     public ResponseEntity<List<CommentDetailDto>> getCommentsOfBoard(
-            @PathVariable(name = "boardId") Integer boardId) {
+            @PathVariable(name = "menuId") Integer menuId,
+            @PathVariable(name = "boardId") Long boardId) {
 
-        return new ResponseEntity<>(commentService.getComments(boardId), HttpStatus.OK);
+        return new ResponseEntity<>(commentService.getComments(menuId, boardId), HttpStatus.OK);
+
     }
 
     @Operation(summary = "댓글을 생성하기 위한 요청을 한다.",
             description = "parent_comment_id 값이 주어지면 대댓글, 아무값도 없으면 그냥 댓글")
-    @PostMapping("/comment")
-    public ResponseEntity<Integer> createNewComment(
-            @Authenticated StudentId studentId,
+    @PostMapping("/board/{menuId}/{boardId}/comment")
+    public ResponseEntity<Long> createNewComment(
+            @Authenticated Long memberId,
+            @PathVariable(name = "menuId") Integer menuId,
+            @PathVariable(name = "boardId") Long boardId,
             @Valid @RequestBody CommentSaveDto commentSaveDto) {
 
-        Integer newCommentId = commentService.create(commentSaveDto, studentId);
+        Long newCommentId = commentService.create(commentSaveDto, menuId, boardId, memberId);
         return new ResponseEntity<>(newCommentId, HttpStatus.CREATED);
     }
 
     @Operation(summary = "댓글을 수정하기 위한 요청을 한다.")
-    @PutMapping("/comment")
+    @PutMapping("/board/{menuId}/{boardId}/comment/{commentId}")
+    @PreAuthorize("@boardSecurityChecker.commentWriterOnly(#commentId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<Object> updateComment(
-            @Authenticated StudentId studentId,
+            @Authenticated Long memberId,
+            @PathVariable(name = "commentId") Long commentId,
             @Valid @RequestBody CommentUpdateDto commentUpdateDto) {
 
-        commentService.update(commentUpdateDto, studentId);
+        commentService.update(commentUpdateDto, memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "댓글 삭제 요청을 한다.")
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/board/{menuId}/{boardId}/comment/{commentId}")
+    @PreAuthorize("@boardSecurityChecker.commentWriterOnly(#commentId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<Object> deleteComment(
-            @Authenticated StudentId studentId,
-            @Positive @PathVariable Integer commentId) {
+            @Authenticated Long memberId,
+            @PathVariable(name = "commentId") Long commentId) {
 
-        commentService.delete(commentId, studentId);
+        commentService.delete(commentId, memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
+
 }

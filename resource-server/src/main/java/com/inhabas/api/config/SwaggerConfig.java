@@ -100,7 +100,7 @@ public class SwaggerConfig {
         return GroupedOpenApi
                 .builder()
                 .group("IBAS 관련")
-                .pathsToMatch("/club/**")
+                .pathsToMatch("/club/**", "/**/**/**/comment/**", "/**/**/**/comments")
                 .build();
 
     }

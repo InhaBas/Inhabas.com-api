@@ -8,11 +8,12 @@ import java.util.List;
 
 public interface CommentService {
 
-    List<CommentDetailDto> getComments(Long boardId);
+    List<CommentDetailDto> getComments(Integer menuId, Long boardId);
 
-    Long create(CommentSaveDto commentSaveDto, Long memberId);
+    Long create(CommentSaveDto commentSaveDto, Integer menuId, Long boardId, Long memberId);
 
     Long update(CommentUpdateDto commentUpdateDto, Long memberId);
 
     void delete(Long boardId, Long memberId);
+
 }

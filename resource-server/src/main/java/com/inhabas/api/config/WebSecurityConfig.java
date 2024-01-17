@@ -88,6 +88,9 @@ public class WebSecurityConfig {
                     .requestMatchers()
                         .antMatchers("/**")
                     .and()
+                    .anonymous()
+                    .authorities(ANONYMOUS.toString())
+                    .and()
                     // HTTP 기본 인증 비활성화
                     .httpBasic()
                         .disable()

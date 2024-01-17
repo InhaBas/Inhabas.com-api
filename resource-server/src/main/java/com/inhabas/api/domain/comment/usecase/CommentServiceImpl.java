@@ -3,6 +3,7 @@ package com.inhabas.api.domain.comment.usecase;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
@@ -16,23 +17,30 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
+import static com.inhabas.api.domain.board.usecase.BoardSecurityChecker.CREATE_COMMENT;
+import static com.inhabas.api.domain.board.usecase.BoardSecurityChecker.READ_COMMENT;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final EntityManager em;
     private final CommentRepository commentRepository;
+    private final BoardSecurityChecker boardSecurityChecker;
 
     @Transactional(readOnly = true)
-    public List<CommentDetailDto> getComments(Long boardId) {
+    public List<CommentDetailDto> getComments(Integer menuId, Long boardId) {
+
+        boardSecurityChecker.checkMenuAccess(menuId, READ_COMMENT);
         return commentRepository.findAllByParentBoardIdOrderByCreated(boardId);
     }
 
 
     @Transactional
-    public Long create(CommentSaveDto commentSaveDto, Long memberId) {
+    public Long create(CommentSaveDto commentSaveDto, Integer menuId, Long boardId, Long memberId) {
 
-        BaseBoard parentBoard = em.getReference(BaseBoard.class, commentSaveDto.getBoardId());
+        boardSecurityChecker.checkMenuAccess(menuId, CREATE_COMMENT);
+        BaseBoard parentBoard = em.getReference(BaseBoard.class, boardId);
         Member writer = em.getReference(Member.class, memberId);
         Comment newComment = new Comment(commentSaveDto.getContents(), writer, parentBoard);
 
@@ -42,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return commentRepository.save(newComment).getId();
+
     }
 
 
