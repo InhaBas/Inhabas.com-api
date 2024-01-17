@@ -9,13 +9,15 @@ spotless {
     java {
         // 모든 Java 소스 파일에 포맷팅 규칙 적용
         target("**/*.java")
-        // space로 4칸 들여쓰기 사용
-        indentWithSpaces(4)
-        // 파일의 끝에 새 줄 추가
-        endWithNewline()
-        // 사용되지 않는 import 제거
+        // google 자바 포맷 적용
+        googleJavaFormat()
+        // 불필요한 임포트 제거
         removeUnusedImports()
-        //import 순서 지정
+        // 마지막줄 New Line 처리
+        endWithNewline()
+        // 공백 제거
+        trimTrailingWhitespace()
+        //임포트 순서 정리
         importOrder(
                 "java",
                 "javax",
