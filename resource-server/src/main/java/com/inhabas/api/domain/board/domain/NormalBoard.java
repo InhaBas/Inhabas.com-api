@@ -1,13 +1,11 @@
 package com.inhabas.api.domain.board.domain;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.board.BaseBoard;
-import com.inhabas.api.domain.board.BoardCannotModifiableException;
+import com.inhabas.api.domain.board.exception.OnlyWriterModifiableException;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +30,6 @@ public class NormalBoard extends BaseBoard {
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
 
-
-    @Column
-    protected MenuType type;
 
     /* constructor */
 
@@ -76,7 +71,7 @@ public class NormalBoard extends BaseBoard {
     public void modify(String title, String contents, Member writer) {
 
         if (cannotModifiableBy(writer)) {
-            throw new BoardCannotModifiableException();
+            throw new OnlyWriterModifiableException();
         }
 
         this.title = new Title(title);

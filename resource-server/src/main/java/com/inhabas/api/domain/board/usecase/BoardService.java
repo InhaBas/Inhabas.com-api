@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.board.usecase;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
 import com.inhabas.api.domain.board.dto.UpdateBoardDto;
@@ -15,8 +13,8 @@ public interface BoardService {
 
     void delete(Long memberId, Long boardId);
 
-//    BoardDto getBoard(Integer boardId);
-//
-//    Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable);
+    BoardDto getBoard(Long boardId);
+
+    Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
 
 }

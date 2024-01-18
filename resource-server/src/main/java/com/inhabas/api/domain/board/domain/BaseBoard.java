@@ -1,9 +1,11 @@
 package com.inhabas.api.domain.board.domain;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
- import com.inhabas.api.domain.comment.domain.Comment;
+import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
+import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import lombok.AccessLevel;
@@ -42,21 +44,24 @@ public abstract class BaseBoard extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<BoardFile> files = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
 
-    public <T extends BaseBoard> T writtenBy(Member writer){
+    public <T extends BaseBoard> T writtenBy(Member writer, Class<T> boardClass){
 
         if (Objects.isNull(this.writer)) {
             this.writer = writer;
-            return (T) this;
+            if (!boardClass.isInstance(this)) {
+                throw new InvalidInputException();
+            }
+            return boardClass.cast(this);
         }
         else {
-            throw new IllegalStateException("게시글 작성자를 수정할 수 없습니다.");
+            throw new WriterUnmodifiableException();
         }
     }
 
-    public boolean isWriter(Member writer) {
+    public boolean isWrittenBy(Member writer) {
         return this.writer.equals(writer);
     }
 
