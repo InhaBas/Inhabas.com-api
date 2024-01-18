@@ -1,11 +1,10 @@
 package com.inhabas.api.domain.budget.valueObject;
 
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class PriceTest {
 
@@ -19,7 +18,7 @@ public class PriceTest {
         Price priceObj = new Price(price);
 
         //then
-        assertThat(priceObj.getValue()).isEqualTo(10000);
+        Assertions.assertThat(priceObj.getValue()).isEqualTo(10000);
     }
 
     @DisplayName("가격은 0 이 될 수 있다.")
@@ -32,7 +31,7 @@ public class PriceTest {
         Price priceObj = new Price(price);
 
         //then
-        assertThat(priceObj.getValue()).isEqualTo(0);
+        Assertions.assertThat(priceObj.getValue()).isEqualTo(0);
     }
 
     @DisplayName("음수 가격은 생성될 수 없다.")
@@ -42,7 +41,8 @@ public class PriceTest {
         Integer minusPrice = -10000;
 
         //when
-        Assertions.assertThrows(IllegalArgumentException.class,
-                ()->new Price(minusPrice));
+        Assertions.assertThatThrownBy(()->new Price(minusPrice))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 }
