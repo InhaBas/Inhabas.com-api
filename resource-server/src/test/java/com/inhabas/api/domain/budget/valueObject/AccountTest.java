@@ -1,11 +1,12 @@
 package com.inhabas.api.domain.budget.valueObject;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.inhabas.api.domain.budget.domain.valueObject.Account;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AccountTest {
 
@@ -29,8 +30,9 @@ public class AccountTest {
         String accountString = "지금이문장은10자임".repeat(10);
 
         //then
-        assertThrows(IllegalArgumentException.class,
-                () -> new Account(accountString));
+        assertThatThrownBy(() -> new Account(accountString))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("계좌정보는 null 이어도 됩니다.")
