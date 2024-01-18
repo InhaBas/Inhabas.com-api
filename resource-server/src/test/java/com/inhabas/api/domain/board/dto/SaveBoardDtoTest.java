@@ -1,14 +1,16 @@
 package com.inhabas.api.domain.board.dto;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.inhabas.api.domain.board.dto.SaveBoardDto;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
+import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -40,7 +42,7 @@ public class SaveBoardDtoTest {
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertTrue(violations.isEmpty());
+        assertThat(violations).isEmpty();
     }
 
     @DisplayName("SaveBoardDto의 content 필드가 null 이면 validation 실패")
@@ -53,8 +55,10 @@ public class SaveBoardDtoTest {
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertEquals(1, violations.size());
-        assertEquals("본문을 입력하세요.", violations.iterator().next().getMessage());
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage())
+               .as("violations 컬렉션의 첫 번째 요소의 메시지가 \"본문을 입력하세요.\"와 동일해야 합니다.")
+               .isEqualTo("본문을 입력하세요.");
     }
 
     @DisplayName("게시글의 제목이 100자 이상을 넘긴 경우 validation 통과하지 못함.")
@@ -70,8 +74,10 @@ public class SaveBoardDtoTest {
         Set<ConstraintViolation<SaveBoardDto>> violations = validator.validate(saveBoardDto);
 
         // then
-        assertEquals(1, violations.size());
-        assertEquals("제목은 최대 100자입니다.", violations.iterator().next().getMessage());
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage())
+               .as("violations 컬렉션의 첫 번째 요소의 메시지가 \"제목은 최대 100자입니다.\"와 동일해야 합니다.")
+               .isEqualTo("제목은 최대 100자입니다.");
     }
 
 }

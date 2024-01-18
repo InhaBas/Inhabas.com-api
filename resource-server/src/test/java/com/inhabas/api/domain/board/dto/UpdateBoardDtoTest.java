@@ -1,12 +1,14 @@
 package com.inhabas.api.domain.board.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +40,7 @@ public class UpdateBoardDtoTest {
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
 
         // then
-        assertEquals(0, violations.size());
+        assertThat(violations).hasSize(0);
     }
 
     @DisplayName("본문에 공백이 입력되었을 경우 테스트를 통과하지 못함.")
@@ -51,7 +53,9 @@ public class UpdateBoardDtoTest {
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
 
         // then
-        assertEquals(1, violations.size());
-        assertEquals("본문을 입력하세요", violations.iterator().next().getMessage());
+        assertThat(violations).hasSize(1);
+        assertThat(violations.iterator().next().getMessage())
+               .as("violations 컬렉션의 첫 번째 요소의 메시지가 \"본문을 입력하세요.\"와 동일해야 합니다.")
+               .isEqualTo("본문을 입력하세요.");
     }
 }

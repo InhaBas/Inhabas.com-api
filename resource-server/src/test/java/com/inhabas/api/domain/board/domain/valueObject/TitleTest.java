@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,23 +31,23 @@ public class TitleTest {
 
         //then
         assertThatThrownBy(() -> new Title(titleString))
-                .isInstanceOf(InvalidInputException.class)
-                .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
+               .isInstanceOf(InvalidInputException.class)
+               .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
     }
 
     @DisplayName("제목은 null 일 수 없습니다.")
     @Test
     public void Title_cannot_be_Null() {
         assertThatThrownBy(() -> new Title(null))
-                .isInstanceOf(InvalidInputException.class)
-                .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
+               .isInstanceOf(InvalidInputException.class)
+               .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
     }
 
     @DisplayName("제목은 빈 문자열일 수 없습니다.")
     @Test
     public void Title_cannot_be_Blank() {
         assertThatThrownBy(() -> new Title(""))
-                .isInstanceOf(InvalidInputException.class)
-                .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
+               .isInstanceOf(InvalidInputException.class)
+               .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
     }
 }
