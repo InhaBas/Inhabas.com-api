@@ -1,11 +1,12 @@
 package com.inhabas.api.domain.budget.valueObject;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicantAccount;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ApplicantAccountTest {
 
@@ -29,21 +30,24 @@ public class ApplicantAccountTest {
         String accountString = "지금이문장은10자임".repeat(10);
 
         //then
-        assertThrows(IllegalArgumentException.class,
-                () -> new ApplicantAccount(accountString));
+        assertThatThrownBy(() -> new ApplicantAccount(accountString))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("계좌정보는 null 일 수 없습니다.")
     @Test
     public void applicantAccountCannotBeNull() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new ApplicantAccount(null));
+        assertThatThrownBy(() -> new ApplicantAccount(null))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("계좌정보는 빈 문자열일 수 없습니다.")
     @Test
     public void applicantAccountCannotBeNullBlank() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new ApplicantAccount("\t"));
+        assertThatThrownBy(() -> new ApplicantAccount("\t"))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 }

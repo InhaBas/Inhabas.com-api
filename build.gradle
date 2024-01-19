@@ -10,7 +10,7 @@ spotless {
         // 모든 Java 소스 파일에 포맷팅 규칙 적용
         target("**/*.java")
         // google 자바 포맷 적용
-        googleJavaFormat()
+
         // 불필요한 임포트 제거
         removeUnusedImports()
         // 마지막줄 New Line 처리

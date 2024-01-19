@@ -1,11 +1,12 @@
 package com.inhabas.api.domain.budget.valueObject;
 
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
+import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DetailTest {
 
@@ -29,21 +30,26 @@ public class DetailTest {
         String detailsString = "지금이문장은10자임".repeat(30);
 
         //then
-        assertThrows(IllegalArgumentException.class,
-                () -> new Details(detailsString));
+        Assertions.assertThatThrownBy(() -> new Details(detailsString))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("예산 내역 제목은 null 일 수 없습니다.")
     @Test
     public void detailsCannotBeNullTest() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Details(null));
+
+        Assertions.assertThatThrownBy(() -> new Details(null))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("예산 상세내역 은 빈 문자열일 수 없습니다.")
     @Test
     public void detailsCannotBeBlankTest() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Details("\t"));
+
+        Assertions.assertThatThrownBy(() -> new Details("\t"))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 }
