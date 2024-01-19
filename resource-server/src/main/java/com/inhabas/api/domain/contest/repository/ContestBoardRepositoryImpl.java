@@ -27,26 +27,26 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
 
     private final JPAQueryFactory queryFactory;
 
-    @Override
-    public Optional<DetailContestBoardDto> findDtoById(Integer id) {
-        return Optional.ofNullable(queryFactory
-                .select(Projections.constructor(DetailContestBoardDto.class,
-                            Expressions.asNumber(id).as("id"),
-                            member.name.value,
-                            contestBoard.title.value,
-                            contestBoard.content.value,
-                            contestBoard.association.value,
-                            contestBoard.topic.value,
-                            contestBoard.start,
-                            contestBoard.deadline,
-                            contestBoard.dateCreated,
-                            contestBoard.dateUpdated
-                        ))
-                .from(contestBoard)
-                .innerJoin(member).on(contestBoard.writerId.eq(member.studentId))
-                .limit(1)
-                .fetchOne());
-    }
+//    @Override
+//    public Optional<DetailContestBoardDto> findDtoById(Integer id) {
+//        return Optional.ofNullable(queryFactory
+//                .select(Projections.constructor(DetailContestBoardDto.class,
+//                            Expressions.asNumber(id).as("id"),
+//                            member.name.value,
+//                            contestBoard.title.value,
+//                            contestBoard.content.value,
+//                            contestBoard.association.value,
+//                            contestBoard.topic.value,
+//                            contestBoard.start,
+//                            contestBoard.deadline,
+//                            contestBoard.dateCreated,
+//                            contestBoard.dateUpdated
+//                        ))
+//                .from(contestBoard)
+//                .innerJoin(member).on(contestBoard.writerId.eq(member.studentId))
+//                .limit(1)
+//                .fetchOne());
+//    }
 
     // 보류
     @SuppressWarnings({"unchecked"})
@@ -82,25 +82,25 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         return ORDERS;
     }
 
-    @Override
-    public Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable) {
-        List <OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
-        List<ListContestBoardDto> results = queryFactory.select(Projections.constructor(ListContestBoardDto.class,
-                        contestBoard.title.value,
-                        contestBoard.topic.value,
-                        contestBoard.start,
-                        contestBoard.deadline))
-                .from(contestBoard)
-                .where(menuEq(menuId))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
-                .fetch();
-        return new PageImpl<>(results, pageable, results.size());
-    }
+//    @Override
+//    public Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable) {
+//        List <OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
+//        List<ListContestBoardDto> results = queryFactory.select(Projections.constructor(ListContestBoardDto.class,
+//                        contestBoard.title.value,
+//                        contestBoard.topic.value,
+//                        contestBoard.start,
+//                        contestBoard.deadline))
+//                .from(contestBoard)
+//                .where(menuEq(menuId))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
+//                .fetch();
+//        return new PageImpl<>(results, pageable, results.size());
+//    }
 
-    private BooleanExpression menuEq(MenuId menuId) {
-        return contestBoard.menuId.eq(menuId);
-    }
+//    private BooleanExpression menuEq(MenuId menuId) {
+//        return contestBoard.menuId.eq(menuId);
+//    }
 
 }

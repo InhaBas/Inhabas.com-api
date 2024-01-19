@@ -42,7 +42,7 @@ public class CommentServiceImpl implements CommentService {
         boardSecurityChecker.checkMenuAccess(menuId, CREATE_COMMENT);
         BaseBoard parentBoard = em.getReference(BaseBoard.class, boardId);
         Member writer = em.getReference(Member.class, memberId);
-        Comment newComment = new Comment(commentSaveDto.getContents(), writer, parentBoard);
+        Comment newComment = new Comment(commentSaveDto.getContent(), writer, parentBoard);
 
         if (commentSaveDto.isNotRootComment()) {
             Comment parentComment = em.getReference(Comment.class, commentSaveDto.getParentCommentId());

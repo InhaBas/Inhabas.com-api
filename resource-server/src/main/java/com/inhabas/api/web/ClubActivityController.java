@@ -81,7 +81,8 @@ public class ClubActivityController {
     public ResponseEntity<Void> writeClubActivity(@Authenticated Long memberId,
                                                              @RequestPart("title") String title,
                                                              @RequestPart("content") String content,
-                                                             @RequestPart("files") List<MultipartFile> files) {
+                                                  @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+
 
         SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto(title, content, files);
 
@@ -140,7 +141,7 @@ public class ClubActivityController {
             ))
     })
     @PutMapping(path = "/club/activity/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("@boardSecurityChecker.writerOnly(#boardId) or hasRole('VICE_CHIEF')")
+    @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<ClubActivityDto> updateClubActivity(@Authenticated Long memberId,
                                                              @PathVariable Long boardId,
                                                              @RequestPart("title") String title,
@@ -172,7 +173,7 @@ public class ClubActivityController {
             ))
     })
     @DeleteMapping("/club/activity/{boardId}")
-    @PreAuthorize("@boardSecurityChecker.writerOnly(#boardId) or hasRole('VICE_CHIEF')")
+    @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<ClubActivityDto> deleteClubActivity(@Authenticated Long memberId,
                                                               @PathVariable Long boardId) {
 

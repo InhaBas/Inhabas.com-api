@@ -8,6 +8,7 @@ import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @Tag(name = "댓글 관리", description = "댓글은 게시판 종류 상관없이 같이 사용")
 @RestController
 @RequiredArgsConstructor
@@ -44,6 +46,7 @@ public class CommentController {
 
         Long newCommentId = commentService.create(commentSaveDto, menuId, boardId, memberId);
         return new ResponseEntity<>(newCommentId, HttpStatus.CREATED);
+
     }
 
     @Operation(summary = "댓글을 수정하기 위한 요청을 한다.")
@@ -56,6 +59,7 @@ public class CommentController {
 
         commentService.update(commentUpdateDto, memberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
     @Operation(summary = "댓글 삭제 요청을 한다.")

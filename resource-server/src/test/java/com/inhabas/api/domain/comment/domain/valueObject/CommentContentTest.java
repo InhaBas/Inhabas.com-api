@@ -15,10 +15,10 @@ public class CommentContentTest {
         String contentsString = "날씨 너무 좋지 않아? 개발하기 딱 좋은 날씨야! 같이 개발할래? 야 너두 할 수 있어";
 
         //when
-        Contents contents = new Contents(contentsString);
+        Content content = new Content(contentsString);
 
         //then
-        assertThat(contents.getValue()).isEqualTo(contentsString);
+        assertThat(content.getValue()).isEqualTo(contentsString);
     }
 
     @DisplayName("Content 타입에 너무 긴 내용을 입력한다. 500자 이상")
@@ -29,7 +29,7 @@ public class CommentContentTest {
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> new Contents(contentsString)
+                () -> new Content(contentsString)
         );
     }
 
@@ -37,7 +37,7 @@ public class CommentContentTest {
     @Test
     public void Contents_is_Null() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Contents(null)
+                () -> new Content(null)
         );
     }
 
@@ -45,7 +45,7 @@ public class CommentContentTest {
     @Test
     public void Contents_is_Blank() {
         assertThrows(IllegalArgumentException.class,
-                () -> new Contents("  ")
+                () -> new Content("  ")
         );
     }
 }

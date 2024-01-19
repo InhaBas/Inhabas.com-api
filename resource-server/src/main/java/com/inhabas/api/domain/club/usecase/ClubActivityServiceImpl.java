@@ -5,13 +5,13 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
+import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.repository.ClubActivityRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
-import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -30,17 +30,19 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     private final ClubActivityRepository clubActivityRepository;
 
+    private final BoardSecurityChecker boardSecurityChecker;
+
     private final MemberRepository memberRepository;
 
     private final MenuRepository menuRepository;
-
-    private final BoardFileRepository boardFileRepository;
 
     private final S3Service s3Service;
 
     private static final String CLUB_ACTIVITY_MENU_NAME = "동아리 활동";
 
-    private static final String dirName = "clubActivity/";
+    private static final String DIR_NAME = "clubActivity/";
+
+    private static final Integer CLUB_ACTIVITY_MENU_ID = 2;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,7 +53,14 @@ public class ClubActivityServiceImpl implements ClubActivityService {
         return clubActivityList.stream().map(obj -> {
             String fileName = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getName();
             String fileUrl = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getUrl();
-            return ClubActivityDto.builder().id(obj.getId()).title(obj.getTitle()).writerName(obj.getWriter().getName()).dateUpdated(obj.getDateUpdated()).thumbnail(new FileDownloadDto(fileName, fileUrl)).build();
+            return ClubActivityDto.builder()
+                    .id(obj.getId())
+                    .title(obj.getTitle())
+                    .writerName(obj.getWriter().getName())
+                    .dateCreated(obj.getDateCreated())
+                    .dateUpdated(obj.getDateUpdated())
+                    .thumbnail(new FileDownloadDto(fileName, fileUrl))
+                    .build();
         }).collect(Collectors.toList());
 
     }
@@ -60,6 +69,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     @Transactional
     public Long writeClubActivity(Long memberId, SaveClubActivityDto saveClubActivityDto) {
 
+        boardSecurityChecker.checkMenuAccess(CLUB_ACTIVITY_MENU_ID, BoardSecurityChecker.CREATE_BOARD);
         Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Menu menu = menuRepository.findByName_Value(CLUB_ACTIVITY_MENU_NAME);
 
@@ -85,6 +95,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     @Transactional(readOnly = true)
     public ClubActivityDetailDto getClubActivity(Long boardId) {
 
+        boardSecurityChecker.checkMenuAccess(CLUB_ACTIVITY_MENU_ID, BoardSecurityChecker.READ_BOARD);
         AlbumBoard clubActivity = clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
         List<FileDownloadDto> fileDownloadDtoList = null;
         if (!clubActivity.getFiles().isEmpty()) {
@@ -97,9 +108,11 @@ public class ClubActivityServiceImpl implements ClubActivityService {
         }
 
         return ClubActivityDetailDto.builder()
+                .id(clubActivity.getId())
                 .title(clubActivity.getTitle())
                 .content(clubActivity.getContent())
                 .writerName(clubActivity.getWriter().getName())
+                .dateCreated(clubActivity.getDateCreated())
                 .dateUpdated(clubActivity.getDateUpdated())
                 .files(fileDownloadDtoList)
                 .build();
@@ -144,7 +157,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     }
 
     private String generateRandomUrl() {
-        return dirName + UUID.randomUUID();
+        return DIR_NAME + UUID.randomUUID();
     }
 
 }

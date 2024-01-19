@@ -14,13 +14,13 @@ import javax.validation.constraints.Positive;
 public class CommentSaveDto {
 
     @NotBlank @Length(max = 499, message = "500자 이하여야 합니다.")
-    private String contents;
+    private String content;
 
     @Positive
-    private Integer parentCommentId;
+    private Long parentCommentId;
 
-    public CommentSaveDto(String contents, Integer parentCommentId) {
-        this.contents = contents;
+    public CommentSaveDto(String content, Long parentCommentId) {
+        this.content = content;
         this.parentCommentId = parentCommentId;
     }
 

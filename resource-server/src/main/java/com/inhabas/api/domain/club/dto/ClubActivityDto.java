@@ -29,16 +29,22 @@ public class ClubActivityDto {
     @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Schema(type="string" , example = "2024-11-01T00:00:00")
+    private LocalDateTime dateCreated;
+
+    @NotBlank
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
     private LocalDateTime dateUpdated;
 
-    @NotNull
     private FileDownloadDto thumbnail;
 
     @Builder
-    public ClubActivityDto(Long id, String title, String writerName, LocalDateTime dateUpdated, FileDownloadDto thumbnail) {
+    public ClubActivityDto(Long id, String title, String writerName, LocalDateTime dateCreated,
+                           LocalDateTime dateUpdated, FileDownloadDto thumbnail) {
         this.id = id;
         this.title = title;
         this.writerName = writerName;
+        this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;
         this.thumbnail = thumbnail;
     }

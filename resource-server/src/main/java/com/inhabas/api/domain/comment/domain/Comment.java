@@ -6,6 +6,7 @@ import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.comment.domain.valueObject.Content;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "COMMENT")
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
@@ -33,14 +35,14 @@ public class Comment extends BaseEntity {
     private BaseBoard parentBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMMENT_REF_ID", foreignKey = @ForeignKey(name = "FK_COMMENT_OF_COMMENT_REF_ID"))
+    @JoinColumn(name = "PARENT_COMMENT", foreignKey = @ForeignKey(name = "FK_COMMENT_OF_COMMENT_REF_ID"))
     private Comment parentComment;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Comment> childrenComment = new ArrayList<>();
 
     @Column(nullable = false)
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
 
     /* constructor */

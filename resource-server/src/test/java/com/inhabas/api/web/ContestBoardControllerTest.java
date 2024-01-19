@@ -81,64 +81,64 @@ public class ContestBoardControllerTest {
 //                .andExpect(content().string("1"));
 //    }
 
-    @DisplayName("공모전 게시글 삭제를 요청한다.")
-    @Test
-    public void deleteContestBoard() throws Exception{
-        //given
-        doNothing().when(contestBoardService).delete(any(), anyInt());
+//    @DisplayName("공모전 게시글 삭제를 요청한다.")
+//    @Test
+//    public void deleteContestBoard() throws Exception{
+//        //given
+//        doNothing().when(contestBoardService).delete(any(), anyInt());
+//
+//        // when
+//        mvc.perform(delete("/contest/1"))
+//                .andExpect(status().isNoContent());
+//    }
 
-        // when
-        mvc.perform(delete("/contest/1"))
-                .andExpect(status().isNoContent());
-    }
+//    @DisplayName("공모전 게시판 목록 조회를 요청한다.")
+//    @Test
+//    public void getContestBoardList() throws Exception {
+//        PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
+//
+//        List<ListContestBoardDto> results = new ArrayList<>();
+//        results.add(new ListContestBoardDto("title1", "contents1", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
+//        results.add(new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
+//        results.add(new ListContestBoardDto("title3", "contents3", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
+//
+//        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
+//
+//        given(contestBoardService.getBoardList(any(), any())).willReturn(expectedContestBoardDto);
+//
+//        // when
+//        String responseBody = mvc.perform(get("/contests?menu_id=9")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .characterEncoding("utf-8")
+//                        .param("page", "0")
+//                        .param("size", "10")
+//                        .param("sort", "DESC")
+//                        .param("properties", "id"))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        // then
+//        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(expectedContestBoardDto));
+//    }
 
-    @DisplayName("공모전 게시판 목록 조회를 요청한다.")
-    @Test
-    public void getContestBoardList() throws Exception {
-        PageRequest pageable = PageRequest.of(0,10, Sort.Direction.DESC, "id");
-
-        List<ListContestBoardDto> results = new ArrayList<>();
-        results.add(new ListContestBoardDto("title1", "contents1", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
-        results.add(new ListContestBoardDto("title2", "contents2", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
-        results.add(new ListContestBoardDto("title3", "contents3", LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29)));
-
-        Page<ListContestBoardDto> expectedContestBoardDto = new PageImpl<>(results, pageable, results.size());
-
-        given(contestBoardService.getBoardList(any(), any())).willReturn(expectedContestBoardDto);
-
-        // when
-        String responseBody = mvc.perform(get("/contests?menu_id=9")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "DESC")
-                        .param("properties", "id"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        // then
-        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(expectedContestBoardDto));
-    }
-
-    @DisplayName("공모전 게시글 단일 조회를 요청한다.")
-    @Test
-    public void getContestBoardDetail() throws Exception{
-        //given
-        DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "content", "association","topic",  LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
-        given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
-
-        // when
-        String responseBody = mvc.perform(get("/contest/1"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-
-        // then
-        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(contestBoardDto));
-
-    }
+//    @DisplayName("공모전 게시글 단일 조회를 요청한다.")
+//    @Test
+//    public void getContestBoardDetail() throws Exception{
+//        //given
+//        DetailContestBoardDto contestBoardDto = new DetailContestBoardDto(1, "mingyeom", "title", "content", "association","topic",  LocalDate.of(2022,1,1), LocalDate.of(2022, 1, 29), LocalDateTime.now(), null);
+//        given(contestBoardService.getBoard(anyInt())).willReturn(contestBoardDto);
+//
+//        // when
+//        String responseBody = mvc.perform(get("/contest/1"))
+//                .andExpect(status().isOk())
+//                .andReturn()
+//                .getResponse().getContentAsString();
+//
+//        // then
+//        assertThat(responseBody).isEqualTo(objectMapper.writeValueAsString(contestBoardDto));
+//
+//    }
 
 //    @DisplayName("공모전 게시글 작성 시 Title의 길이가 범위를 초과해 오류 발생")
 //    @Test

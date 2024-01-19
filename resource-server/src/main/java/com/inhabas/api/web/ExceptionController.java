@@ -75,27 +75,28 @@ public class ExceptionController {
 
     @ExceptionHandler(SignUpNotAvailableException.class)
     protected ResponseEntity<ErrorResponse> handleNotAllowedSignUpException(SignUpNotAvailableException e) {
-        log.warn("Not registration period now");
+        log.error("Not registration period now");
         final ErrorResponse response = ErrorResponse.of(SIGNUP_NOT_AVAILABLE);
         return new ResponseEntity<>(response, FORBIDDEN);
     }
 
     @ExceptionHandler(NotWriteProfileException.class)
     protected ResponseEntity<ErrorResponse> handleNotWriteProfileException(NotWriteProfileException e) {
-        log.warn("Must write profile before signup");
+        log.error("Must write profile before signup");
         final ErrorResponse response = ErrorResponse.of(NOT_WRITE_PROFILE);
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     @ExceptionHandler(NotWriteAnswersException.class)
     protected ResponseEntity<ErrorResponse> handleNotWriteAnswersException(NotWriteAnswersException e) {
-        log.warn("Must write answers before signup");
+        log.error("Must write answers before signup");
         final ErrorResponse response = ErrorResponse.of(NOT_WRITE_ANSWERS);
         return new ResponseEntity<>(response, BAD_REQUEST);
     }
 
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("The request does not have the proper DTO format.");
         final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
         return new ResponseEntity<>(response, BAD_REQUEST);
     }

@@ -57,13 +57,13 @@ public class ContestBoard extends NormalBoard {
         this.deadline = deadline;
     }
 
-    public void modify(String title, String contents, String association, String topic,
-            LocalDate start, LocalDate deadline, StudentId loginMember) {
-
-        super.modify(title, contents, loginMember);
-        this.association = new Association(association);
-        this.topic = new Topic(topic);
-        this.start = start;
-        this.deadline = deadline;
-    }
+//    public void modify(String title, String contents, String association, String topic,
+//            LocalDate start, LocalDate deadline, StudentId loginMember) {
+//
+//        super.modify(title, contents, loginMember);
+//        this.association = new Association(association);
+//        this.topic = new Topic(topic);
+//        this.start = start;
+//        this.deadline = deadline;
+//    }
 }
