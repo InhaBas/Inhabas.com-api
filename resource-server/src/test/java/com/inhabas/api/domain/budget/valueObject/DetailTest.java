@@ -1,12 +1,12 @@
 package com.inhabas.api.domain.budget.valueObject;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
-import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
 import org.assertj.core.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class DetailTest {
 
