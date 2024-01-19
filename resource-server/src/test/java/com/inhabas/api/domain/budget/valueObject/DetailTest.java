@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.budget.valueObject;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import org.assertj.core.api.Assertions;
 
@@ -20,7 +18,7 @@ public class DetailTest {
         Details details = new Details(detailsString);
 
         //then
-        assertThat(details.getValue()).isEqualTo("예산 내역 상세 내용입니다.");
+        Assertions.assertThat(details.getValue()).isEqualTo("예산 내역 상세 내용입니다.");
     }
 
     @DisplayName("Details 타입에 너무 긴 문자열을 저장한다. 300자 이상")
