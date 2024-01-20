@@ -1,10 +1,8 @@
 package com.inhabas.api.domain.comment.domain.valueObject;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
 
 public class CommentContentTest {
 
@@ -18,7 +16,7 @@ public class CommentContentTest {
         Contents contents = new Contents(contentsString);
 
         //then
-        assertThat(contents.getValue()).isEqualTo(contentsString);
+        Assertions.assertThat(contents.getValue()).isEqualTo(contentsString);
     }
 
     @DisplayName("Content 타입에 너무 긴 내용을 입력한다. 500자 이상")
@@ -28,24 +26,24 @@ public class CommentContentTest {
         String contentsString = "지금이문장은10자임".repeat(500);
 
         //then
-        assertThrows(IllegalArgumentException.class,
-                () -> new Contents(contentsString)
-        );
+        Assertions.assertThatThrownBy(() -> new Contents(contentsString))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("Content 타입에 null 은 안된다.")
     @Test
     public void Contents_is_Null() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Contents(null)
-        );
+        Assertions.assertThatThrownBy(() -> new Contents(null))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 
     @DisplayName("Content 타입에 공백댓글은 저장할 수 없다.")
     @Test
     public void Contents_is_Blank() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new Contents("  ")
-        );
+        Assertions.assertThatThrownBy(() -> new Contents("  "))
+               .isInstanceOf(IllegalArgumentException.class)
+               .hasMessage(null);
     }
 }

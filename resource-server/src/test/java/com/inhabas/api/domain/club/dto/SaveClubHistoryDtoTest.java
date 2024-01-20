@@ -43,7 +43,7 @@ class SaveClubHistoryDtoTest {
         Set<ConstraintViolation<SaveClubHistoryDto>> violations = validator.validate(saveClubHistoryDto);
 
         //then
-        Assertions.assertThat(violations.size()).isEqualTo(1);
+        Assertions.assertThat(violations).hasSize(1);
 
     }
 

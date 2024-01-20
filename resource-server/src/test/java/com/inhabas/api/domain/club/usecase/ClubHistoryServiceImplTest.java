@@ -20,13 +20,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
+import org.assertj.core.api.Assertions;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -66,7 +65,7 @@ public class ClubHistoryServiceImplTest {
         // then
         then(memberRepository).should().findById(memberId);
         then(clubHistoryRepository).should().save(any(ClubHistory.class));
-        assertThat(resultId).isEqualTo(1L);
+        Assertions.assertThat(resultId).isEqualTo(1L);
     }
 
     @DisplayName("동아리 연혁 생성 작성자가 존재하지 않을 시 Member nof found")
@@ -78,7 +77,7 @@ public class ClubHistoryServiceImplTest {
         given(memberRepository.findById(any())).willReturn(Optional.empty());
 
         // then
-        assertThatThrownBy(() -> clubHistoryService.writeClubHistory(1L, saveClubHistoryDto))
+        Assertions.assertThatThrownBy(() -> clubHistoryService.writeClubHistory(1L, saveClubHistoryDto))
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("존재 하지 않는 유저입니다.");
 
@@ -101,7 +100,7 @@ public class ClubHistoryServiceImplTest {
 
         //then
         then(clubHistoryRepository).should().findById(any());
-        assertThat(clubHistoryDto).as("clubHistoryDto's title and content are equal to clubHistory")
+        Assertions.assertThat(clubHistoryDto).as("클럽 히스토리Dto의 title과 content는 클럽 히스토리와 동일해야 합니다.")
                 .extracting("title", "content")
                 .containsExactly(clubHistory.getTitle().getValue(), clubHistory.getContent().getValue());
 
@@ -114,7 +113,7 @@ public class ClubHistoryServiceImplTest {
         given(clubHistoryRepository.findById(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> clubHistoryService.findClubHistory(any()))
+        Assertions.assertThatThrownBy(() -> clubHistoryService.findClubHistory(any()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("데이터가 존재하지 않습니다.");
 
@@ -140,7 +139,7 @@ public class ClubHistoryServiceImplTest {
 
         //then
         then(clubHistoryRepository).should().findAll(sort);
-        assertThat(clubHistoryDtoList)
+        Assertions.assertThat(clubHistoryDtoList)
                 .hasSize(1)
                 .extracting("title", "content")
                 .contains(tuple(clubHistory.getTitle().getValue(), clubHistory.getContent().getValue()));
