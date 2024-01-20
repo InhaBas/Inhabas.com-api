@@ -129,12 +129,9 @@ public class ClubActivityServiceImplTest {
         given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
         doThrow(InvalidAuthorityException.class).when(boardSecurityChecker).checkMenuAccess(any(), any());
 
-        //when
-        ClubActivityDetailDto clubActivityDetailDto = clubActivityService.getClubActivity(1L);
-
-        //then
+        //when ,then
         Assertions.assertThatThrownBy(() ->
-                        boardSecurityChecker.checkMenuAccess(2, BoardSecurityChecker.READ_BOARD))
+                        clubActivityService.getClubActivity(1L))
                 .isInstanceOf(InvalidAuthorityException.class)
                 .hasMessage("권한이 없습니다.");
 

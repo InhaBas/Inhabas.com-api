@@ -134,7 +134,7 @@ public class ClubHistoryControllerTest {
 
     }
 
-    @DisplayName("동아리 연혁 생성 성공 200")
+    @DisplayName("동아리 연혁 생성 성공 201")
     @Test
     void writeClubHistories() throws Exception {
         //given
