@@ -84,7 +84,7 @@ public class BoardSecurityChecker {
         }
 
         String finalRequired = ROLE_PREFIX + required;
-        if (required != null && authorities.stream().noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(finalRequired))) {
+        if (required == null || authorities.stream().noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(finalRequired))) {
             throw new InvalidAuthorityException();
         }
 

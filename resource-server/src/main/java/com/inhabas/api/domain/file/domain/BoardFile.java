@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.file.domain;
 
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.board.domain.NormalBoard;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +28,7 @@ public class BoardFile extends BaseFile {
         this.board = board;
     }
 
-    public void toBoard(NormalBoard newParentBoard) {
+    public <T extends BaseBoard> void toBoard(T newParentBoard) {
         // 기존의 file-board 연관관계를 끊는다.
         if (Objects.nonNull(this.board)) {
             this.board.getFiles().remove(this);

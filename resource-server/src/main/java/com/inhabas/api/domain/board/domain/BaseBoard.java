@@ -69,9 +69,8 @@ public abstract class BaseBoard extends BaseEntity {
         return title.getValue();
     }
 
-    public BaseBoard(String title, Member writer, Menu menu) {
+    public BaseBoard(String title, Menu menu) {
         this.title = new Title(title);
-        this.writer = writer;
         this.menu = menu;
     }
 

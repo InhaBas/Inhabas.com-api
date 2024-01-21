@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.board.domain;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
@@ -29,8 +28,8 @@ public class AlbumBoard extends BaseBoard {
     protected List<Comment> comments = new ArrayList<>();
 
     @Builder
-    public AlbumBoard(String title, Member writer, Menu menu, String content) {
-        super(title, writer, menu);
+    public AlbumBoard(String title, Menu menu, String content) {
+        super(title, menu);
         this.content = new Content(content);
     }
 

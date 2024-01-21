@@ -4,36 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.club.dto.*;
+import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
+import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.usecase.ClubActivityService;
-import com.inhabas.api.global.util.PageUtil;
-import com.inhabas.testAnnotataion.DefaultWebMvcTest;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
-import org.apache.tomcat.jni.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -72,15 +62,12 @@ public class ClubActivityControllerTest {
                 .thumbnail(null)
                 .build();
         List<ClubActivityDto> clubActivityDtoList = List.of(clubActivityDto);
-        Pageable pageable = PageRequest.of(0, 10);
         given(clubActivityService.getClubActivities()).willReturn(clubActivityDtoList);
-        given(PageUtil.getPagedDtoList(any(Pageable.class),
-                anyList(List<ClubActivityDto>))).willReturn(clubActivityDtoList);
 
         //when
         mvc.perform(get("/club/activities"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data[0].id").value(equalTo(1L)))
+                .andExpect(jsonPath("$.data[0].id").value(equalTo(1)))
                 .andExpect(jsonPath("$.data[0].title").value(equalTo("title")))
                 .andExpect(jsonPath("$.data[0].writerName").value(equalTo("jsh")))
                 .andExpect(jsonPath("$.data[0].thumbnail").value(equalTo(null)));

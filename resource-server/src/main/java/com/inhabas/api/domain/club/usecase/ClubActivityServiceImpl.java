@@ -77,9 +77,8 @@ public class ClubActivityServiceImpl implements ClubActivityService {
                 .menu(menu)
                 .title(saveClubActivityDto.getTitle())
                 .content(saveClubActivityDto.getContent())
-                .writer(writer)
-                .build();
-
+                .build()
+                .writtenBy(writer, AlbumBoard.class);
 
         saveClubActivityDto.getFiles().forEach(file -> {
             String url = s3Service.uploadS3File(file, generateRandomUrl());
