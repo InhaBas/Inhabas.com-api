@@ -3,6 +3,8 @@ package com.inhabas.api.domain.comment.domain;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
+import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
 import com.inhabas.api.domain.comment.domain.valueObject.Content;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -91,7 +93,7 @@ public class Comment extends BaseEntity {
             return this.id;
         }
         else
-            throw new RuntimeException("작성자만 수정 가능합니다.");
+            throw new OnlyWriterUpdateException();
 
     }
 
@@ -112,14 +114,11 @@ public class Comment extends BaseEntity {
         if (Objects.nonNull(writer))
             this.writer = writer;
         else
-            throw new IllegalStateException("댓글 작성자를 수정할 수 없습니다.");
+            throw new WriterUnmodifiableException();
         return this;
     }
 
     public Comment replyTo(Comment parentComment) {
-        if (Objects.nonNull(this.parentComment))
-            throw new IllegalStateException("대댓글을 다른 댓글로 옮길 수 없습니다.");
-
         this.parentComment = parentComment;
         parentComment.addReply(this);
 

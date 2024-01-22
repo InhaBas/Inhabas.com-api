@@ -4,20 +4,20 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 class BaseBoardTest {
 
-    @Mock
-    private Member member;
     @Mock
     private Menu menu;
 
@@ -27,15 +27,16 @@ class BaseBoardTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         String title = "title1";
-        baseBoard = new BaseBoard(title, member, menu) {};
-
+        Member member = MemberTest.chiefMember();
+        ReflectionTestUtils.setField(member, "id", 1L);
+        baseBoard = mock(BaseBoard.class, withSettings().useConstructor(title, menu).defaultAnswer(CALLS_REAL_METHODS));
+        baseBoard.writtenBy(member, BaseBoard.class);
     }
 
     @Test
     void ConstructorTest() {
         //then
         assertThat("title1").isEqualTo(baseBoard.getTitle());
-        assertThat(member).isEqualTo(baseBoard.writer);
         assertThat(menu).isEqualTo(baseBoard.menu);
 
     }
@@ -55,7 +56,8 @@ class BaseBoardTest {
     @Test
     void isWrittenByTest() {
         //given
-        Member anotherMember = mock(Member.class);
+        Member anotherMember = MemberTest.basicMember1();
+        ReflectionTestUtils.setField(anotherMember, "id", 2L);
 
         //when, then
         assertThat(baseBoard.isWrittenBy(anotherMember)).isFalse();
@@ -87,4 +89,5 @@ class BaseBoardTest {
         assertThat(baseBoard.comments.contains(comment)).isTrue();
 
     }
+
 }

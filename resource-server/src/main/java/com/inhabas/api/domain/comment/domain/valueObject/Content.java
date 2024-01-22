@@ -10,7 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class Content {
 
-    @Column(name = "content", length = 500, nullable = false)
+    @Column(name = "CONTENT", length = 500, nullable = false)
     private String value;
 
     @Transient

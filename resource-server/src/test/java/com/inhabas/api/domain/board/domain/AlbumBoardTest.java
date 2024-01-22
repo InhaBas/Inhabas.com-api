@@ -30,7 +30,7 @@ class AlbumBoardTest {
 
         String title = "title1";
         String content = "content1";
-        albumBoard = new AlbumBoard(title, writer, menu, content);
+        albumBoard = new AlbumBoard(title, menu, content);
 
     }
 

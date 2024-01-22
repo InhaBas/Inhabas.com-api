@@ -52,11 +52,11 @@ public class ClubActivityServiceImplTest {
         //given
         Member member = MemberTest.chiefMember();
         AlbumBoard clubActivity = AlbumBoard.builder()
-                .writer(member)
                 .title("title")
                 .content("content")
                 .menu(mock(Menu.class))
-                .build();
+                .build()
+                .writtenBy(member, AlbumBoard.class);
 
         given(clubActivityRepository.findAll()).willReturn(Arrays.asList(clubActivity));
 
@@ -98,11 +98,12 @@ public class ClubActivityServiceImplTest {
     public void getClubActivityTest_Success() {
         //given
         AlbumBoard clubActivity = AlbumBoard.builder()
-                .writer(MemberTest.chiefMember())
                 .title("title")
                 .content("content")
                 .menu(mock(Menu.class))
-                .build();
+                .build()
+                .writtenBy(MemberTest.chiefMember(), AlbumBoard.class);
+
         given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
 
         //when
@@ -120,12 +121,14 @@ public class ClubActivityServiceImplTest {
     @Test
     public void getClubActivityTest_Forbidden() {
         //given
+        Member member = MemberTest.chiefMember();
         AlbumBoard clubActivity = AlbumBoard.builder()
-                .writer(MemberTest.chiefMember())
                 .title("title")
                 .content("content")
                 .menu(mock(Menu.class))
-                .build();
+                .build()
+                .writtenBy(member, AlbumBoard.class);
+
         given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
         doThrow(InvalidAuthorityException.class).when(boardSecurityChecker).checkMenuAccess(any(), any());
 
@@ -143,11 +146,12 @@ public class ClubActivityServiceImplTest {
         // given
         Member member = MemberTest.chiefMember();
         AlbumBoard clubActivity = AlbumBoard.builder()
-                .writer(member)
                 .title("title")
                 .content("content")
                 .menu(mock(Menu.class))
-                .build();
+                .build()
+                .writtenBy(member, AlbumBoard.class);
+
         SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto(
                 "title", "content", null);
         given(clubActivityRepository.findById(any())).willReturn(Optional.ofNullable(clubActivity));

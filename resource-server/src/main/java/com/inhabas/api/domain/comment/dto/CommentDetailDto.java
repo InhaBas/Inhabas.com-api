@@ -31,6 +31,8 @@ public class CommentDetailDto {
 
     private List<CommentDetailDto> childrenComment = new ArrayList<>();
 
+    private static final String DELETED_MESSAGE = "삭제된 댓글입니다.";
+
     @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
     @Schema(type="string" , example = "2024-11-01T00:00:00")
@@ -40,7 +42,7 @@ public class CommentDetailDto {
 
     public static CommentDetailDto fromEntity(Comment comment) {
         return comment.getIsDeleted() ?
-                new CommentDetailDto(comment.getId(), null, "삭제된 댓글입니다.", comment.getDateUpdated()) :
+                new CommentDetailDto(comment.getId(), comment.getWriter(), DELETED_MESSAGE, comment.getDateUpdated()) :
                 new CommentDetailDto(comment.getId(), comment.getWriter(), comment.getContent(), comment.getDateUpdated()
                 );
     }

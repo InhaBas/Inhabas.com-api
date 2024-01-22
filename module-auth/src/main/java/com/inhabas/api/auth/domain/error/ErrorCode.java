@@ -12,7 +12,7 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(405, "G002", "허용되지 않은 HTTP method입니다."),
     INVALID_INPUT_VALUE(400, "G003", "입력값이 없거나, 타입이 유효하지 않습니다."),
     NOT_FOUND(404, "G004", "데이터가 존재하지 않습니다."),
-
+    UNSUPPORTED_MEDIA_TYPE(415, "G005", "지원되지 않는 형식입니다."),
 
     // Basic
 
@@ -59,7 +59,7 @@ public enum ErrorCode {
 
     // Board
     WRITER_UNMODIFIABLE(403, "B001", "글 작성자를 변경 할 수 없습니다."),
-
+    ONLY_WRITER_UPDATE(403, "B002", "글 작성자만 수정 가능합니다.")
     ;
 
     private final int status;

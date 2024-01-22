@@ -115,7 +115,7 @@ public class ClubActivityController {
     })
     @SecurityRequirements(value = {})
     @GetMapping("/club/activity/{boardId}")
-    public ResponseEntity<ClubActivityDetailDto> writeClubActivity(@PathVariable Long boardId) {
+    public ResponseEntity<ClubActivityDetailDto> findClubActivity(@PathVariable Long boardId) {
 
         ClubActivityDetailDto clubActivityDetailDto = clubActivityService.getClubActivity(boardId);
 
@@ -140,7 +140,7 @@ public class ClubActivityController {
                     )
             ))
     })
-    @PutMapping(path = "/club/activity/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/club/activity/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
     public ResponseEntity<ClubActivityDto> updateClubActivity(@Authenticated Long memberId,
                                                              @PathVariable Long boardId,

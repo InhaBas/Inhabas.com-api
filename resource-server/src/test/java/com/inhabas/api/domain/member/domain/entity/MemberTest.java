@@ -63,9 +63,9 @@ public class MemberTest {
     public static Member basicMember1() {
         Map<String, Object> attributes = new HashMap<>() {{
             put("provider", "GOOGLE");
-            put("sub", "3232322332323223");
+            put("sub", "121212121212112");
             put("picture", "/static/image.jpg");
-            put("email", "my@gmail.com");
+            put("email", "yu@gmail.com");
             put("name", "유동현");
             put("locale", "ko");
         }};
@@ -86,7 +86,7 @@ public class MemberTest {
             put("provider", "GOOGLE");
             put("sub", "3232322332323223");
             put("picture", "/static/image.jpg");
-            put("email", "my@gmail.com");
+            put("email", "jo@gmail.com");
             put("name", "조승현");
             put("locale", "ko");
         }};

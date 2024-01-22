@@ -3,6 +3,7 @@ package com.inhabas.api.domain.comment.usecase;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static com.inhabas.api.domain.board.usecase.BoardSecurityChecker.CREATE_COMMENT;
@@ -62,18 +62,19 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(NotFoundException::new);
 
         return oldComment.update(commentUpdateDto.getContent(), memberId);
+
     }
 
     @Transactional
     public void delete(Long id, Long memberId) {
 
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(NotFoundException::new);
 
         if (!comment.isWrittenBy(memberId))
-            throw new RuntimeException("다른 사람이 쓴 댓글은 수정할 수 없습니다.");
+            throw new OnlyWriterUpdateException();
 
-        if (comment.getChildrenComment().isEmpty()) {
+        if (!comment.getChildrenComment().isEmpty()) {
             comment.updateIsDeleted(true);
         } else {
             commentRepository.delete(getDeletableAncestorComment(comment));
@@ -90,6 +91,5 @@ public class CommentServiceImpl implements CommentService {
             return comment;
 
     }
-
 
 }
