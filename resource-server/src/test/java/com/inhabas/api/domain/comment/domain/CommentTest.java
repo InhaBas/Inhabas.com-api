@@ -2,7 +2,6 @@ package com.inhabas.api.domain.comment.domain;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,29 +50,10 @@ public class CommentTest {
 
         //when
         final String newContent = "new content";
-        comment.update(newContent, 1L);
+        comment.update(newContent);
 
         //then
         Assertions.assertThat(comment.getContent()).isEqualTo(newContent);
-
-    }
-
-    @DisplayName("댓글 작성자가 아닌 유저가 댓글 수정 시 에러.")
-    @Test
-    void updateTest_Forbidden() {
-        //given
-        String content = "content";
-        Member member = MemberTest.chiefMember();
-        ReflectionTestUtils.setField(member, "id", 1111111111L);
-        BaseBoard baseBoard = mock(BaseBoard.class);
-
-        Comment comment = new Comment(content, member, baseBoard);
-
-        //when, then
-        final String newContent = "new content";
-        Assertions.assertThatThrownBy(() -> comment.update(newContent, 1L))
-                .isInstanceOf(OnlyWriterUpdateException.class)
-                .hasMessage("글 작성자만 수정 가능합니다.");
 
     }
 

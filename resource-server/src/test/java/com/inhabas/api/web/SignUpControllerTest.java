@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.PROFESSOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -137,12 +138,8 @@ public class SignUpControllerTest {
                 .andReturn()
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(response.split("\n")).containsExactlyInAnyOrder(
-                "[studentId](은)는 must not be null 입력된 값: [null]",
-                "[major](은)는 must not be blank 입력된 값: []",
-                "[name](은)는 must not be blank 입력된 값: []",
-                "[phoneNumber](은)는 must match \"^(010)-\\d{4}-\\d{4}$\" 입력된 값: []",
-                "[memberType](은)는 must not be null 입력된 값: [null]");
+        assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
+
     }
 
     @DisplayName("학생 개인정보 입력값이 정해진 범위를 초과하면 안된다.")
@@ -165,9 +162,7 @@ public class SignUpControllerTest {
                 .andReturn()
                 .getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertThat(response.split("\n")).containsExactlyInAnyOrder(
-                "[phoneNumber](은)는 must match \"^(010)-\\d{4}-\\d{4}$\" 입력된 값: [8210-1111-1111]",
-                "[name](은)는 length must be between 0 and 50 입력된 값: [홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세홍길동만세.]");
+        assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
 
     }
 

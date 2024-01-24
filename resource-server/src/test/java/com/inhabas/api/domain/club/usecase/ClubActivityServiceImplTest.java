@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.club.usecase;
 
-import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
@@ -12,7 +11,6 @@ import com.inhabas.api.domain.club.repository.ClubActivityRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,8 +62,8 @@ public class ClubActivityServiceImplTest {
         List<ClubActivityDto> clubActivityDtoList = clubActivityService.getClubActivities();
 
         //then
-        Assertions.assertThat(clubActivityDtoList.size()).isEqualTo(1);
-        Assertions.assertThat(clubActivityDtoList.get(0).getTitle()).isEqualTo(clubActivity.getTitle());
+        assertThat(clubActivityDtoList.size()).isEqualTo(1);
+        assertThat(clubActivityDtoList.get(0).getTitle()).isEqualTo(clubActivity.getTitle());
 
     }
 
@@ -89,7 +87,7 @@ public class ClubActivityServiceImplTest {
         Long resultId = clubActivityService.writeClubActivity(memberId, saveClubActivityDto);
 
         // then
-        Assertions.assertThat(resultId).isEqualTo(1L);
+        assertThat(resultId).isEqualTo(1L);
 
     }
 
@@ -114,29 +112,6 @@ public class ClubActivityServiceImplTest {
                 .extracting("title", "content")
                 .containsExactly(clubActivity.getTitle(), clubActivity.getContent());
 
-
-    }
-
-    @DisplayName("동아리 활동 메뉴에 대한 읽기 권한이 없다면 단일 조회 실패")
-    @Test
-    public void getClubActivityTest_Forbidden() {
-        //given
-        Member member = MemberTest.chiefMember();
-        AlbumBoard clubActivity = AlbumBoard.builder()
-                .title("title")
-                .content("content")
-                .menu(mock(Menu.class))
-                .build()
-                .writtenBy(member, AlbumBoard.class);
-
-        given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
-        doThrow(InvalidAuthorityException.class).when(boardSecurityChecker).checkMenuAccess(any(), any());
-
-        //when ,then
-        Assertions.assertThatThrownBy(() ->
-                        clubActivityService.getClubActivity(1L))
-                .isInstanceOf(InvalidAuthorityException.class)
-                .hasMessage("권한이 없습니다.");
 
     }
 

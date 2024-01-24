@@ -4,7 +4,6 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
-import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
@@ -28,7 +27,7 @@ import javax.persistence.EntityManager;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -125,10 +124,10 @@ public class CommentServiceTest {
                 .willReturn(expectedCommentAfterFind(commentId, proxyWriter, proxyBoard));
 
         //given
-        CommentUpdateDto param = new CommentUpdateDto(1L, "내용 수정 좀 할게요.");
+        CommentUpdateDto commentUpdateDto = new CommentUpdateDto("내용 수정 좀 할게요.");
 
         //when
-        Long returnId = commentService.update(param, proxyWriter.getId());
+        Long returnId = commentService.update(commentId, commentUpdateDto);
 
         //then
         assertThat(returnId).isNotNull();
@@ -139,24 +138,6 @@ public class CommentServiceTest {
         ReflectionTestUtils.setField(comment, "id", commentId);
 
         return Optional.of(comment);
-    }
-
-    @DisplayName("다른 유저가 댓글 수정을 시도하면 오류")
-    @Test
-    public void IllegalUpdateTest() {
-        //given
-        Long commentId = 1L;
-        given(commentRepository.findById(commentId))
-                .willReturn(expectedCommentAfterFind(commentId, proxyWriter, proxyBoard));
-        Long anotherMemberId = 2L;
-
-        CommentUpdateDto param = new CommentUpdateDto(1L, "내용 수정 좀 할게요.");
-
-        //when
-        assertThatThrownBy(() -> commentService.update(param, anotherMemberId))
-                .isInstanceOf(OnlyWriterUpdateException.class)
-                .hasMessage("글 작성자만 수정 가능합니다.");
-
     }
 
     @DisplayName("댓글 리스트를 찾는 메소드를 호출한다.")
@@ -176,29 +157,9 @@ public class CommentServiceTest {
         //given
         given(commentRepository.findById(anyLong()))
                 .willReturn(expectedCommentAfterFind(1L, proxyWriter, proxyBoard));
-        doNothing().when(commentRepository).delete(any(Comment.class));
-
-        //when
-        commentService.delete(1L, proxyWriter.getId());
-
-        //then
-        verify(commentRepository, times(1))
-                .delete(any(Comment.class));
-
-    }
-
-    @DisplayName("다른 사람이 삭제 시도하면 오류")
-    @Test
-    public void cannotDeleteComment() {
-        //given
-        Long anotherMemberId = 123L;
-        given(commentRepository.findById(anyLong()))
-                .willReturn(expectedCommentAfterFind(1L, proxyWriter, proxyBoard));
 
         //when then
-        assertThatThrownBy(() -> commentService.delete(1L, anotherMemberId))
-                .isInstanceOf(OnlyWriterUpdateException.class)
-                .hasMessage("글 작성자만 수정 가능합니다.");
+        assertDoesNotThrow(() -> commentService.delete(1L));
 
     }
 
