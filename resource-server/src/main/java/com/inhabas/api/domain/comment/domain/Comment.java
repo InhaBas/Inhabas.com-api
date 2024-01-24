@@ -3,7 +3,6 @@ package com.inhabas.api.domain.comment.domain;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
 import com.inhabas.api.domain.comment.domain.valueObject.Content;
 import lombok.AccessLevel;
@@ -22,7 +21,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -86,15 +86,9 @@ public class Comment extends BaseEntity {
     }
 
 
-    public Long update(String content, Long writerId) {
-
-        if (isWrittenBy(writerId)) {
-            this.content = new Content(content);
-            return this.id;
-        }
-        else
-            throw new OnlyWriterUpdateException();
-
+    public Long update(String content) {
+        this.content = new Content(content);
+        return this.id;
     }
 
 

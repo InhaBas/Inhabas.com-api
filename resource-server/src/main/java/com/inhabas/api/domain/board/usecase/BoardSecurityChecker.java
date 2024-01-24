@@ -16,11 +16,15 @@ import com.inhabas.api.domain.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
+
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +36,7 @@ public class BoardSecurityChecker {
     private final CommentRepository commentRepository;
     private final DefaultRoleHierarchy roleHierarchy;
 
-
+    public final static String READ_BOARD_LIST = "readBoardList";
     public final static String CREATE_BOARD = "createBoard";
     public final static String READ_BOARD = "readBoard";
     public final static String CREATE_COMMENT = "createComment";
@@ -61,14 +65,22 @@ public class BoardSecurityChecker {
     }
 
 
-    public void checkMenuAccess(Integer menuId, String action) {
+    public boolean checkMenuAccess(Integer menuId, String action) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Collection<? extends GrantedAuthority> authorities = roleHierarchy.getHierarchy().getReachableGrantedAuthorities(authentication.getAuthorities());
+        Collection<? extends GrantedAuthority> authorities;
+        if (authentication == null) {
+            authorities = Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + ANONYMOUS));
+        } else {
+            authorities = roleHierarchy.getHierarchy().getReachableGrantedAuthorities(authentication.getAuthorities());
+        }
 
         Menu menu = menuRepository.findById(menuId).orElseThrow(NotFoundException::new);
         Role required = null;
         switch (action) {
+            case READ_BOARD_LIST:
+                required = menu.getType().getReadBoardListRole();
+                break;
             case CREATE_BOARD:
                 required = menu.getType().getCreateBoardRole();
                 break;
@@ -87,6 +99,8 @@ public class BoardSecurityChecker {
         if (required == null || authorities.stream().noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(finalRequired))) {
             throw new InvalidAuthorityException();
         }
+
+        return true;
 
     }
 

@@ -42,7 +42,6 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     private static final String DIR_NAME = "clubActivity/";
 
-    private static final Integer CLUB_ACTIVITY_MENU_ID = 2;
 
     @Override
     @Transactional(readOnly = true)
@@ -69,7 +68,6 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     @Transactional
     public Long writeClubActivity(Long memberId, SaveClubActivityDto saveClubActivityDto) {
 
-        boardSecurityChecker.checkMenuAccess(CLUB_ACTIVITY_MENU_ID, BoardSecurityChecker.CREATE_BOARD);
         Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Menu menu = menuRepository.findByName_Value(CLUB_ACTIVITY_MENU_NAME);
 
@@ -94,7 +92,6 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     @Transactional(readOnly = true)
     public ClubActivityDetailDto getClubActivity(Long boardId) {
 
-        boardSecurityChecker.checkMenuAccess(CLUB_ACTIVITY_MENU_ID, BoardSecurityChecker.READ_BOARD);
         AlbumBoard clubActivity = clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
         List<FileDownloadDto> fileDownloadDtoList = null;
         if (!clubActivity.getFiles().isEmpty()) {

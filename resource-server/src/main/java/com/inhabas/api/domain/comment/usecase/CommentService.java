@@ -12,8 +12,8 @@ public interface CommentService {
 
     Long create(CommentSaveDto commentSaveDto, Integer menuId, Long boardId, Long memberId);
 
-    Long update(CommentUpdateDto commentUpdateDto, Long memberId);
+    Long update(Long commentId, CommentUpdateDto commentUpdateDto);
 
-    void delete(Long boardId, Long memberId);
+    void delete(Long boardId);
 
 }

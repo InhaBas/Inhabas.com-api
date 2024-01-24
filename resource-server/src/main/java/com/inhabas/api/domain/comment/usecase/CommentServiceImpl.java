@@ -3,7 +3,6 @@ package com.inhabas.api.domain.comment.usecase;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
@@ -17,9 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static com.inhabas.api.domain.board.usecase.BoardSecurityChecker.CREATE_COMMENT;
-import static com.inhabas.api.domain.board.usecase.BoardSecurityChecker.READ_COMMENT;
-
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -31,7 +27,6 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public List<CommentDetailDto> getComments(Integer menuId, Long boardId) {
 
-        boardSecurityChecker.checkMenuAccess(menuId, READ_COMMENT);
         return commentRepository.findAllByParentBoardIdOrderByCreated(boardId);
     }
 
@@ -39,7 +34,6 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public Long create(CommentSaveDto commentSaveDto, Integer menuId, Long boardId, Long memberId) {
 
-        boardSecurityChecker.checkMenuAccess(menuId, CREATE_COMMENT);
         BaseBoard parentBoard = em.getReference(BaseBoard.class, boardId);
         Member writer = em.getReference(Member.class, memberId);
         Comment newComment = new Comment(commentSaveDto.getContent(), writer, parentBoard);
@@ -55,40 +49,21 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Transactional
-    public Long update(CommentUpdateDto commentUpdateDto, Long memberId) {
+    public Long update(Long commentId, CommentUpdateDto commentUpdateDto) {
 
-        Long id = commentUpdateDto.getCommentId();
-        Comment oldComment = commentRepository.findById(id)
+        Comment oldComment = commentRepository.findById(commentId)
                 .orElseThrow(NotFoundException::new);
 
-        return oldComment.update(commentUpdateDto.getContent(), memberId);
+        return oldComment.update(commentUpdateDto.getContent());
 
     }
 
     @Transactional
-    public void delete(Long id, Long memberId) {
+    public void delete(Long commentId) {
 
-        Comment comment = commentRepository.findById(id)
+        Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(NotFoundException::new);
-
-        if (!comment.isWrittenBy(memberId))
-            throw new OnlyWriterUpdateException();
-
-        if (!comment.getChildrenComment().isEmpty()) {
-            comment.updateIsDeleted(true);
-        } else {
-            commentRepository.delete(getDeletableAncestorComment(comment));
-        }
-
-    }
-
-    private Comment getDeletableAncestorComment(Comment comment) {
-        Comment parent = comment.getParentComment();
-
-        if (parent != null && parent.getChildrenComment().size() == 1 && parent.getIsDeleted()) {
-            return getDeletableAncestorComment(parent);
-        } else
-            return comment;
+        comment.updateIsDeleted(true);
 
     }
 

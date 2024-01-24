@@ -72,7 +72,6 @@ public class WebSecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring()
-                    .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB_ACTIVITY)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
                     .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
@@ -89,7 +88,7 @@ public class WebSecurityConfig {
                         .antMatchers("/**")
                     .and()
                     .anonymous()
-                    .authorities(ANONYMOUS.toString())
+                    .authorities("ROLE_" + ANONYMOUS)
                     .and()
                     // HTTP 기본 인증 비활성화
                     .httpBasic()
@@ -153,6 +152,7 @@ public class WebSecurityConfig {
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
             final List<String> skipPaths = new ArrayList<>();
             skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
+            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_CLUB_ACTIVITY).collect(Collectors.toList()));
 
             final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
