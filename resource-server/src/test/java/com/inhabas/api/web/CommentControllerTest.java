@@ -1,10 +1,14 @@
 package com.inhabas.api.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
+import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
@@ -21,6 +24,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -31,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @NoSecureWebMvcTest(CommentController.class)
 public class CommentControllerTest {
 
-    private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mvc;
 
     @Autowired
     private WebApplicationContext wac;
@@ -42,166 +47,155 @@ public class CommentControllerTest {
     @MockBean
     private CommentServiceImpl commentService;
 
+    @MockBean
+    private BoardSecurityChecker boardSecurityChecker;
+
     @BeforeEach
     void setUp() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(wac)
+        this.mvc = MockMvcBuilders.webAppContextSetup(wac)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
 
-//    @DisplayName("댓글 전체 조회")
-//    @Test
-//    void getCommentList() throws Exception {
-//        //given
-//        List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
-//                new CommentDetailDto(1, "contents1", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now()),
-//                new CommentDetailDto(2, "contents2", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now()),
-//                new CommentDetailDto(3, "contents3", new StudentId("12171652"), "유동현", "간호학과", LocalDateTime.now())
-//        });
-//        given(commentService.getComments(anyLong())).willReturn(commentList);
-//
-//        //when
-//        MvcResult result = mockMvc.perform(get("/board/3/comments"))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        //then
-//        String actualResponseBody = result.getResponse().getContentAsString();
-//        assertThat(actualResponseBody).isEqualToIgnoringWhitespace(
-//                objectMapper.writeValueAsString(commentList));
-//    }
+    private String jsonOf(Object response) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(response);
+    }
 
-//    @DisplayName("댓글 추가 요청")
-//    @Test
-//    void createNewComment() throws Exception {
-//        //given
-//        String jsonRequest = "{\"writerId\":12171652,\"content\":\"아싸 1등\",\"boardId\":13}";
-//        Integer newCommentId = 1;
-//        given(commentService.create(any(), any())).willReturn(newCommentId);
-//
-//        //when
-//        String responseBody = mockMvc.perform(post("/comment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonRequest))
-//                .andExpect(status().isCreated())
-//                .andReturn()
-//                .getResponse().getContentAsString();
-//
-//        //then
-//        assertThat(responseBody).isNotBlank();
-//        assertThat(responseBody).isEqualTo(String.valueOf(newCommentId));
-//    }
+    @DisplayName("댓글 전체 조회 성공 200")
+    @Test
+    void getCommentsOfBoardTest() throws Exception {
+        //given
+        Member writer = MemberTest.chiefMember();
+        List<CommentDetailDto> commentList = List.of(new CommentDetailDto[]{
+                new CommentDetailDto(1L, writer, "contents1", LocalDateTime.now()),
+                new CommentDetailDto(2L, writer, "contents2", LocalDateTime.now()),
+                new CommentDetailDto(3L, writer, "contents3", LocalDateTime.now())
+        });
+        given(commentService.getComments(anyInt(), anyLong())).willReturn(commentList);
 
-//    @DisplayName("대댓글 추가 요청")
-//    @Test
-//    void createNewReply() throws Exception {
-//        //given
-//        String jsonRequest = "{\"writerId\":12171652,\"content\":\"아싸 1등\",\"boardId\":13, \"parentCommentId\":1}";
-//        Integer newReplyId = 2;
-//        given(commentService.create(any(), any())).willReturn(newReplyId);
-//
-//        //when
-//        String responseBody = mockMvc.perform(post("/comment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonRequest))
-//                .andExpect(status().isCreated())
-//                .andReturn()
-//                .getResponse().getContentAsString();
-//
-//        //then
-//        assertThat(responseBody).isNotBlank();
-//        assertThat(responseBody).isEqualTo(String.valueOf(newReplyId));
-//    }
+        //when
+        String response = mvc.perform(get("/board/{menuId}/{boardId}/comments", 1, 1L))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-//    @DisplayName("500자 이상의 댓글 추가 요청은 유효성 검사 실패 후 400 반환")
-//    @Test
-//    void tryToSaveTooLongContents() throws Exception {
-//        //given
-//        String tooLongContents = "-".repeat(500);
-//        String jsonRequest = String.format("{\"writerId\":12171652,\"content\":\"%s\",\"boardId\":13}", tooLongContents);
-//
-//        //when
-//        String errorMessage = mockMvc.perform(post("/comment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonRequest))
-//                .andExpect(status().isBadRequest())
-//                .andReturn()
-//                .getResponse().getContentAsString();
-//
-//        assertThat(errorMessage).contains("500자 이하여야 합니다.");
-//    }
+        //then
+        assertThat(response).isEqualToIgnoringWhitespace(
+                objectMapper.writeValueAsString(commentList));
 
-//    @DisplayName("정상적인 댓글 수정 요청")
-//    @Test
-//    void updateComment() throws Exception {
-//        //given
-//        String jsonRequest = "{\"commentId\":1, \"writerId\":12171652,\"content\":\"1등이 아니네,,,\",\"boardId\":12}";
-//        given(commentService.update(any(), any())).willReturn(1);
-//
-//        String responseBody = mockMvc.perform(put("/comment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonRequest))
-//                .andExpect(status().isNoContent())
-//                .andReturn()
-//                .getResponse().getContentAsString();
-//
-//        //then
-//        assertThat(responseBody).isBlank();
-//    }
+    }
+
+    @DisplayName("댓글 생성 성공 201")
+    @Test
+    void createNewCommentTest() throws Exception {
+        //given
+        Long newCommentId = 1L;
+        CommentSaveDto commentSaveDto = new CommentSaveDto("new content", null);
+        given(commentService.create(any(), anyInt(), anyLong(), anyLong())).willReturn(newCommentId);
+
+        //when
+        String header = mvc.perform(post("/board/{menuId}/{boardId}/comment", 1, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(commentSaveDto)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getHeader("Location");
+
+        //then
+        assertThat(header).contains("/board/1/1/comments");
+
+    }
+
+    @DisplayName("대댓글 생성 성공 201")
+    @Test
+    void createNewReply() throws Exception {
+        //given
+        Long newReplyId = 2L;
+        CommentSaveDto commentSaveDto = new CommentSaveDto("new children content", 1L);
+        given(commentService.create(any(), anyInt(), anyLong(), anyLong())).willReturn(newReplyId);
+
+        //when
+        String header = mvc.perform(post("/board/{menuId}/{boardId}/comment", 1, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(commentSaveDto)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getHeader("Location");
+
+        //then
+        assertThat(header).contains("/board/1/1/comments");
+
+    }
+
+    @DisplayName("댓글 생성 시 500자 이상의 댓글 400")
+    @Test
+    void tryToSaveTooLongContents() throws Exception {
+        //given
+        String tooLongContents = "-".repeat(500);
+        CommentSaveDto commentSaveDto = new CommentSaveDto(tooLongContents, null);
+
+        //when
+        String errorMessage = mvc.perform(post("/board/{menuId}/{boardId}/comment", 1, 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(commentSaveDto)))
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse().getContentAsString();
+
+        //then
+        assertThat(errorMessage).contains(INVALID_INPUT_VALUE.getMessage());
+
+    }
+
+    @DisplayName("댓글 수정 성공 204")
+    @Test
+    void updateComment() throws Exception {
+        //given
+        CommentUpdateDto commentUpdateDto = new CommentUpdateDto("update comment");
+        given(commentService.update(anyLong(), any())).willReturn(1L);
+
+        //when then
+        mvc.perform(put("/comment/{commentId}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonOf(commentUpdateDto)))
+                .andExpect(status().isNoContent());
+
+    }
 
 
-    @DisplayName("500자 이상의 댓글 수정은 유효성 검사 실패 후 400 반환")
+    @DisplayName("댓글 수정 시 500자 이상의 댓글 400")
     @Test
     void tryToUpdateTooLongContents() throws Exception {
         //given
         String tooLongContents = "-".repeat(500);
-        CommentUpdateDto param = new CommentUpdateDto(1L, tooLongContents);
+        CommentUpdateDto param = new CommentUpdateDto(tooLongContents);
 
         //when
-        String errorMessage = mockMvc.perform(put("/comment")
+        String errorMessage = mvc.perform(put("/comment/{commendId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(param)))
                 .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse().getContentAsString();
 
-        assertThat(errorMessage).contains("500자 이하여야 합니다.");
+        //then
+        assertThat(errorMessage).contains(INVALID_INPUT_VALUE.getMessage());
+
     }
 
-//    @DisplayName("타인의 댓글 수정 요청")
-//    @Test
-//    void illegalTryToUpdateComment() throws Exception {
-//        //given
-//        CommentUpdateDto param = new CommentUpdateDto(1, "1등이 아니네,,,");
-//        given(commentService.update(any(), any())).willThrow(RuntimeException.class);
-//
-//        //when
-//        mockMvc.perform(put("/comment")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(param)))
-//                .andExpect(status().isBadRequest());
-//    }
-
-    @DisplayName("정상적인 댓글 삭제 요청")
+    @DisplayName("댓글 삭제 성공 204")
     @Test
     void deleteComment() throws Exception {
         //given
-        doNothing().when(commentService).delete(any(), any());
+        doNothing().when(commentService).delete(anyLong());
 
         //when
-        mockMvc.perform(delete("/comment/1"))
+        mvc.perform(delete("/comment/{commentId}", 1L))
                 .andExpect(status().isNoContent());
+
     }
 
-//    @DisplayName("다른 사람의 댓글을 삭제 요청")
-//    @Test
-//    void illegalTryToDeleteComment() throws Exception {
-//        //given
-//        doThrow(RuntimeException.class).when(commentService).delete(any(), any());
-//
-//        //when
-//        mockMvc.perform(delete("/comment/1"))
-//                .andExpect(status().isBadRequest());
-//
-//    }
 }

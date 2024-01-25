@@ -49,6 +49,7 @@ public class ClubActivityController {
     })
     @SecurityRequirements(value = {})
     @GetMapping("/club/activities")
+    @PreAuthorize("@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
     public ResponseEntity<PagedMemberResponseDto<ClubActivityDto>> getClubActivities(
             @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
             @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size
@@ -78,6 +79,7 @@ public class ClubActivityController {
             ))
     })
     @PostMapping(path = "/club/activity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
     public ResponseEntity<Void> writeClubActivity(@Authenticated Long memberId,
                                                              @RequestPart("title") String title,
                                                              @RequestPart("content") String content,
@@ -115,6 +117,7 @@ public class ClubActivityController {
     })
     @SecurityRequirements(value = {})
     @GetMapping("/club/activity/{boardId}")
+    @PreAuthorize("@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
     public ResponseEntity<ClubActivityDetailDto> findClubActivity(@PathVariable Long boardId) {
 
         ClubActivityDetailDto clubActivityDetailDto = clubActivityService.getClubActivity(boardId);

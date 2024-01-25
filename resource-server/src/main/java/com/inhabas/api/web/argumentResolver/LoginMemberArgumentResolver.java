@@ -1,16 +1,16 @@
 package com.inhabas.api.web.argumentResolver;
 
+import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -30,8 +30,9 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (Objects.isNull(authentication)) return null;  // login not processed, anonymous user!
+        System.out.println(authentication.getPrincipal());
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS")))
+            throw new InvalidAuthorityException();  // login not processed, anonymous user!
         return (Long) authentication.getPrincipal();
 
     }
