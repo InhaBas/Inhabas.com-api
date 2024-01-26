@@ -21,9 +21,10 @@ public class S3ServiceImpl implements S3Service{
     private final AmazonS3Client s3Client;
 
     @Override
-    public String uploadS3File(MultipartFile multipartFile) {
+    public String uploadS3File(MultipartFile multipartFile, String dirName) {
 
-        String fileName = multipartFile.getOriginalFilename();
+        String fileName = dirName + "_" + multipartFile.getOriginalFilename();
+
         try {
             String contentType = getContentType(fileName);
 
@@ -39,6 +40,19 @@ public class S3ServiceImpl implements S3Service{
         printS3ObjectSummaries();
 
         return s3Client.getUrl(bucket, fileName).toString();
+    }
+
+    @Override
+    public S3ObjectInputStream downloadS3File(String dirName) {
+
+        S3Object s3Object = s3Client.getObject(new GetObjectRequest(bucket, dirName));
+        return s3Object.getObjectContent();
+
+    }
+
+    @Override
+    public void deleteS3File(String fileUrl) {
+        s3Client.deleteObject(new DeleteObjectRequest(bucket, fileUrl));
     }
 
     private String getContentType(String fileName) throws IOException {
