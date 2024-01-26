@@ -3,7 +3,6 @@ package com.inhabas.api.auth.domain.oauth2.handler;
 import com.inhabas.api.auth.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,7 +65,6 @@ public class Oauth2AuthenticationFailureHandlerTest {
     }
 
     @DisplayName("유효하지 않은 redirect_url 은 허용하지 않는다.")
-    @Disabled
     @Test
     public void validateRedirectUrlTest() throws IOException {
         //given

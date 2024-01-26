@@ -25,7 +25,8 @@ import java.net.URI;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "댓글 관리", description = "댓글은 게시판 종류 상관없이 같이 사용")
+@Tag(name = "댓글 관리", description = "댓글은 게시판 종류 상관없이 같이 사용 / menuId로 CRUD 권한을 각각 확인함. 자물쇠 표기가" +
+        "되어있지만 비회원이 접근 가능한 경우 토큰이 없어도 됨")
 @RestController
 @RequiredArgsConstructor
 public class CommentController {

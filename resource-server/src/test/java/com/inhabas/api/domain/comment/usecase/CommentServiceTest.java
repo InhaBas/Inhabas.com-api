@@ -4,7 +4,6 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
-import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
@@ -30,15 +29,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
 
     @Mock
     private CommentRepository commentRepository;
-    @Mock
-    private BoardSecurityChecker boardSecurityChecker;
     @Mock
     private EntityManager em;
 
@@ -72,7 +70,6 @@ public class CommentServiceTest {
         given(em.getReference(eq(Member.class), any())).willReturn(proxyWriter);
         given(em.getReference(eq(BaseBoard.class), any())).willReturn(proxyBoard);
         given(commentRepository.save(any(Comment.class))).willReturn(comment);
-        doNothing().when(boardSecurityChecker).checkMenuAccess(any(),any());
 
         //given
         CommentSaveDto newCommentCreateRequest = new CommentSaveDto("이야 이게 댓글 기능이라고??", null);
