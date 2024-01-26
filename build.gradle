@@ -129,6 +129,7 @@ project(':resource-server') {
     dependencies {
         api project(':module-auth')
         api project(':module-fileStorage')
+        api 'org.springframework.boot:spring-boot-starter-security'
         testImplementation 'org.springframework.security:spring-security-test'
     }
 
