@@ -2,12 +2,15 @@ package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondition;
 import com.inhabas.api.auth.domain.oauth2.member.security.MemberAuthorityProvider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 
 @Repository
@@ -72,10 +76,23 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public List<Member> findAllByRolesInAndStudentIdLike(Collection<Role> roles, String studentId) {
 
+        OrderSpecifier<Integer> orderByRole = new CaseBuilder()
+                .when(member.ibasInformation.role.eq(ADMIN)).then(1)
+                .when(member.ibasInformation.role.eq(CHIEF)).then(2)
+                .when(member.ibasInformation.role.eq(VICE_CHIEF)).then(3)
+                .when(member.ibasInformation.role.eq(EXECUTIVES)).then(4)
+                .when(member.ibasInformation.role.eq(SECRETARY)).then(5)
+                .when(member.ibasInformation.role.eq(BASIC)).then(6)
+                .when(member.ibasInformation.role.eq(DEACTIVATED)).then(7)
+                .otherwise(8).desc();
+
+        OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
         return queryFactory.
                 selectFrom(member)
                 .where(member.ibasInformation.role.in(roles)
                     .and(member.studentId.id.like("%" + studentId + "%")))
+                .orderBy(orderByRole, orderByStudentId)
                 .fetch();
 
     }
@@ -83,14 +100,74 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     @Override
     public List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name) {
 
+        OrderSpecifier<Integer> orderByRole = new CaseBuilder()
+                .when(member.ibasInformation.role.eq(ADMIN)).then(1)
+                .when(member.ibasInformation.role.eq(CHIEF)).then(2)
+                .when(member.ibasInformation.role.eq(VICE_CHIEF)).then(3)
+                .when(member.ibasInformation.role.eq(EXECUTIVES)).then(4)
+                .when(member.ibasInformation.role.eq(SECRETARY)).then(5)
+                .when(member.ibasInformation.role.eq(BASIC)).then(6)
+                .when(member.ibasInformation.role.eq(DEACTIVATED)).then(7)
+                .otherwise(8).desc();
+
+        OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
         return queryFactory.
                 selectFrom(member)
                 .where(member.ibasInformation.role.in(roles)
                         .and(member.name.value.like("%" + name + "%")))
+                .orderBy(orderByRole, orderByStudentId)
                 .fetch();
 
     }
 
+    @Override
+    public List<Member> findAllGraduatedByRolesInAndStudentLike(String studentId) {
+
+        OrderSpecifier<Integer> orderByRole = new CaseBuilder()
+                .when(member.ibasInformation.role.eq(ADMIN)).then(1)
+                .when(member.ibasInformation.role.eq(CHIEF)).then(2)
+                .when(member.ibasInformation.role.eq(VICE_CHIEF)).then(3)
+                .when(member.ibasInformation.role.eq(EXECUTIVES)).then(4)
+                .when(member.ibasInformation.role.eq(SECRETARY)).then(5)
+                .when(member.ibasInformation.role.eq(BASIC)).then(6)
+                .when(member.ibasInformation.role.eq(DEACTIVATED)).then(7)
+                .otherwise(8).desc();
+
+        OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
+        return queryFactory
+                .selectFrom(member)
+                .where(member.schoolInformation.memberType.eq(MemberType.GRADUATED)
+                        .and(member.studentId.id.like("%" + studentId + "%")))
+                .orderBy(orderByRole, orderByStudentId)
+                .fetch();
+
+    }
+
+    @Override
+    public List<Member> findAllGraduatedByRolesInAndNameLike(String name) {
+
+        OrderSpecifier<Integer> orderByRole = new CaseBuilder()
+                .when(member.ibasInformation.role.eq(ADMIN)).then(1)
+                .when(member.ibasInformation.role.eq(CHIEF)).then(2)
+                .when(member.ibasInformation.role.eq(VICE_CHIEF)).then(3)
+                .when(member.ibasInformation.role.eq(EXECUTIVES)).then(4)
+                .when(member.ibasInformation.role.eq(SECRETARY)).then(5)
+                .when(member.ibasInformation.role.eq(BASIC)).then(6)
+                .when(member.ibasInformation.role.eq(DEACTIVATED)).then(7)
+                .otherwise(8).desc();
+
+        OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
+        return queryFactory
+                .selectFrom(member)
+                .where(member.schoolInformation.memberType.eq(MemberType.GRADUATED)
+                        .and(member.name.value.like("%" + name + "%")))
+                .orderBy(orderByRole, orderByStudentId)
+                .fetch();
+
+    }
 
     private BooleanExpression eqRole(Role role) {
         return member.ibasInformation.role.eq(role);

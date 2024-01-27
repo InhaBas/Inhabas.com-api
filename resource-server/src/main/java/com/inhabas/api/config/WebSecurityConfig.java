@@ -47,7 +47,6 @@ public class WebSecurityConfig {
     private static final String[] AUTH_WHITELIST_CLUB = {"/club/histories", "/club/history/**"};
     private static final String[] AUTH_WHITELIST_POLICY = {"/policy/**"};
     private static final String[] AUTH_WHITELIST_CLUB_ACTIVITY = {"/club/activity/**", "/club/activities"};
-    private static final String[] AUTH_WHITELIST_COMMENT = {"/board/**/**/comments", "/board/**/**/comment", "/comment/**"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -114,6 +113,8 @@ public class WebSecurityConfig {
                         // Preflight 방식
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         // 회원 관리
+                        .antMatchers("/members/approved/role").hasRole(SECRETARY.toString())
+                        .antMatchers("/members/approved/type").hasRole(VICE_CHIEF.toString())
                         .antMatchers("/members/**", "/member/**").hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
                         // 회계내역
                         .antMatchers("/budget/history/**", "/budget/histories",

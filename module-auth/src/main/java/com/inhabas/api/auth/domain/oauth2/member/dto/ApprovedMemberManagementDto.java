@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
@@ -31,6 +32,9 @@ public class ApprovedMemberManagementDto {
     @Pattern(regexp = "^(010)-\\d{4}-\\d{4}$")
     @Masked(type = MaskingType.PHONE)
     private String phoneNumber;
+
+    @NotNull
+    private MemberType memberType;
 
     @NotBlank
     private Role role;

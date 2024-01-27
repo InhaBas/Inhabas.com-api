@@ -143,6 +143,9 @@ public class Member {
         this.schoolInformation = schoolInformation;
     }
 
+    public void setMemberType(MemberType memberType) {
+        this.schoolInformation.setMemberType(memberType);
+    }
     public void setRole(Role role) {
         this.ibasInformation.setRole(role);
     }

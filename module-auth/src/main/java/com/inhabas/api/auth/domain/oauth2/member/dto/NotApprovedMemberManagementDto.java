@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
 import lombok.*;
@@ -29,6 +30,9 @@ public class NotApprovedMemberManagementDto {
 
     @Email
     private String email;
+
+    @NotNull
+    private MemberType type;
 
     @NotNull
     @Positive
