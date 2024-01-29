@@ -7,15 +7,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MajorInfoDto {
 
-    private Integer id;
+  private Integer id;
 
-    private String college;
+  private String college;
 
-    private String major;
+  private String major;
 
-    public MajorInfoDto(Integer id, String college, String major) {
-        this.id = id;
-        this.college = college;
-        this.major = major;
-    }
+  public MajorInfoDto(Integer id, String college, String major) {
+    this.id = id;
+    this.college = college;
+    this.major = major;
+  }
 }

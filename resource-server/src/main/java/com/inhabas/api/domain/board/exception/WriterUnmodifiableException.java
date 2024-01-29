@@ -5,8 +5,7 @@ import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
 public class WriterUnmodifiableException extends BusinessException {
 
-    public WriterUnmodifiableException() {
-        super(ErrorCode.WRITER_UNMODIFIABLE);
-    }
-
+  public WriterUnmodifiableException() {
+    super(ErrorCode.WRITER_UNMODIFIABLE);
+  }
 }

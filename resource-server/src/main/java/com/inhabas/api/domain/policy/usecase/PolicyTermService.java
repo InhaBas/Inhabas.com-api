@@ -5,8 +5,7 @@ import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 
 public interface PolicyTermService {
 
-    PolicyTermDto findPolicyTerm(Long policyTermId);
+  PolicyTermDto findPolicyTerm(Long policyTermId);
 
-    void updatePolicyTerm(Long policyTermId, SavePolicyTernDto savePolicyTernDto);
-
+  void updatePolicyTerm(Long policyTermId, SavePolicyTernDto savePolicyTernDto);
 }

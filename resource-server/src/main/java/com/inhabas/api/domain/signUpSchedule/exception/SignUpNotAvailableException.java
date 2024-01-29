@@ -5,8 +5,7 @@ import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
 public class SignUpNotAvailableException extends BusinessException {
 
-    public SignUpNotAvailableException() {
-        super(ErrorCode.SIGNUP_NOT_AVAILABLE);
-    }
-
+  public SignUpNotAvailableException() {
+    super(ErrorCode.SIGNUP_NOT_AVAILABLE);
+  }
 }

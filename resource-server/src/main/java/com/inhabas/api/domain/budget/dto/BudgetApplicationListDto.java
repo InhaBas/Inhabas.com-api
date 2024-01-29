@@ -1,26 +1,27 @@
 package com.inhabas.api.domain.budget.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 
 @Getter
 @AllArgsConstructor
 public class BudgetApplicationListDto {
 
-    private Integer applicationId;
+  private Integer applicationId;
 
-    private String title;
+  private String title;
 
-    private Integer applicantId;
+  private Integer applicantId;
 
-    private String applicantName;
+  private String applicantName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime dateCreated;
+  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  private LocalDateTime dateCreated;
 
-    private ApplicationStatus status;
+  private ApplicationStatus status;
 }
