@@ -39,6 +39,8 @@ spring:
       ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      discriminator:
+        ignore_explicit_for_joined: false
     properties:
       hibernate:
         format_sql: true
@@ -95,7 +97,20 @@ auth:
     authorizedRedirectUris:
       - http://localhost:8080/
       - http://localhost:3000/
-    default-redirect-uri: http://localhost:3000/login/process
+    default-redirect-uri: https://dev.inhabas.com/login/process
+
+
+cloud:
+  aws:
+    s3:
+      bucket: inhabas-bucket
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    credentials:
+      accessKey: ${IBAS_DEV_S3_ACCESS_KEY}
+      secretKey: ${IBAS_DEV_S3_SECRET_KEY}
 
 
 logging:
@@ -107,5 +122,3 @@ logging:
 
 jwt:
   secretKey: ${IBAS_DEV_JWT_SECRET_KEY}
-
-

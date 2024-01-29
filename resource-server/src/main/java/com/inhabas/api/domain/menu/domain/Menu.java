@@ -2,18 +2,19 @@ package com.inhabas.api.domain.menu.domain;
 
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.menu.domain.valueObject.Description;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuName;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MENU",
         uniqueConstraints = { @UniqueConstraint(name = "UniqueNumberAndStatus", columnNames = { "MENU_GROUP_ID", "PRIORITY" })},
@@ -59,7 +60,4 @@ public class Menu extends BaseEntity {
         this.description = new Description(description);
     }
 
-    public MenuId getId() {
-        return new MenuId(this.id);
-    }
 }

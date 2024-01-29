@@ -1,49 +1,60 @@
 package com.inhabas.api.domain.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 public class CommentDetailDto {
 
-    private Integer commentId;
-    private String contents;
-    @JsonUnwrapped(prefix = "writer_")
-    private StudentId writerId;
-    private String writerName;
-    private String writerMajor;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime created;
-    private List<CommentDetailDto> children;
+    @NotNull
+    @Positive
+    private Long id;
+
+    @JsonProperty("writer")
+    private WriterInfo writerInfo;
+
+    @NotBlank
+    private String content;
+
+    private List<CommentDetailDto> childrenComment = new ArrayList<>();
+
+    private static final String DELETED_MESSAGE = "삭제된 댓글입니다.";
+
+    @NotBlank
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type="string" , example = "2024-11-01T00:00:00")
+    private LocalDateTime dateUpdated;
+
+
 
     public static CommentDetailDto fromEntity(Comment comment) {
-        return new CommentDetailDto(
-                comment.getId(),
-                comment.getContents(),
-                new StudentId("11121212"), // 임시방편, 수정 필요
-                comment.getWriter().getName(),
-                comment.getWriter().getSchoolInformation().getMajor(),
-                comment.getDateCreated()
-        );
+        return comment.getIsDeleted() ?
+                new CommentDetailDto(comment.getId(), comment.getWriter(), DELETED_MESSAGE, comment.getDateUpdated()) :
+                new CommentDetailDto(comment.getId(), comment.getWriter(), comment.getContent(), comment.getDateUpdated()
+                );
     }
 
-    public CommentDetailDto(Integer id, String contents, StudentId writerId, String memberName, String major, LocalDateTime created) {
-        this.commentId = id;
-        this.contents = contents;
-        this.writerId = writerId;
-        this.writerName = memberName;
-        this.writerMajor = major;
-        this.created = created;
-        this.children = new ArrayList<>();
+    public CommentDetailDto(Long id, Member writer,
+                            String content, LocalDateTime dateUpdated) {
+        this.id = id;
+        if (writer != null) {
+            this.writerInfo = new WriterInfo(writer.getId(), writer.getName(),
+                    writer.getSchoolInformation().getMajor(), writer.getPicture());
+        }
+        this.content = content;
+        this.dateUpdated = dateUpdated;
     }
-
-
 }

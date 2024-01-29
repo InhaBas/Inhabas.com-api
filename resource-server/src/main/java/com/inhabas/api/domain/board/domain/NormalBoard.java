@@ -1,32 +1,18 @@
 package com.inhabas.api.domain.board.domain;
 
-import com.inhabas.api.domain.board.BaseBoard;
-import com.inhabas.api.domain.board.BoardCannotModifiableException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.domain.board.exception.OnlyWriterModifiableException;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.domain.file.BoardFile;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import com.inhabas.api.domain.file.domain.BoardFile;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.util.*;
 
 
 @Entity
@@ -35,7 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "TYPE", length = 15)
+@DiscriminatorValue("NORMAL")
 public class NormalBoard extends BaseBoard {
 
     @Embedded
@@ -43,9 +29,6 @@ public class NormalBoard extends BaseBoard {
 
     @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected Set<BoardFile> files = new HashSet<>();
 
 
     /* constructor */
@@ -62,8 +45,8 @@ public class NormalBoard extends BaseBoard {
         return content.getValue();
     }
 
-    public Set<BoardFile> getFiles() {
-        return Collections.unmodifiableSet(files);
+    public List<BoardFile> getFiles() {
+        return Collections.unmodifiableList(files);
     }
 
 
@@ -85,17 +68,17 @@ public class NormalBoard extends BaseBoard {
         comments.add(newComment);
     }
 
-    public void modify(String title, String contents, StudentId loginMember) {
+    public void modify(String title, String contents, Member writer) {
 
-        if (cannotModifiableBy(loginMember)) {
-            throw new BoardCannotModifiableException();
+        if (cannotModifiableBy(writer)) {
+            throw new OnlyWriterModifiableException();
         }
 
         this.title = new Title(title);
         this.content = new Content(contents);
     }
 
-    public boolean cannotModifiableBy(StudentId loginMember) {
-        return !this.writerId.equals(loginMember);
+    public boolean cannotModifiableBy(Member writer) {
+        return !this.writer.equals(writer);
     }
 }

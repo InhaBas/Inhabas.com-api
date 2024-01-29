@@ -23,7 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 
-        log.info("Unexpected JWT error");
+        log.error("Unexpected JWT error");
         response.setStatus(AUTHORITY_INVALID.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         try (OutputStream os = response.getOutputStream()) {

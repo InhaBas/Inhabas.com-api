@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.board.usecase;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.inhabas.api.domain.board.dto.SaveBoardDto;
 import com.inhabas.api.domain.board.dto.UpdateBoardDto;
@@ -9,14 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BoardService {
-    Integer write(StudentId studentId, SaveBoardDto saveBoardDto);
+    Long write(Long memberId, SaveBoardDto saveBoardDto);
 
-    Integer update(StudentId studentId, UpdateBoardDto updateBoardDto);
+    Long update(Long memberId, UpdateBoardDto updateBoardDto);
 
-    void delete(StudentId studentId, Integer boardId);
+    void delete(Long memberId, Long boardId);
 
-    BoardDto getBoard(Integer boardId);
+    BoardDto getBoard(Long boardId);
 
-    Page<BoardDto> getBoardList(MenuId menuId, Pageable pageable);
+    Page<BoardDto> getBoardList(Integer menuId, Pageable pageable);
 
 }

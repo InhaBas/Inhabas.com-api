@@ -11,21 +11,21 @@ public class BoardContentTest {
 
     @DisplayName("Content 타입에 게시글 내용을 저장한다.")
     @Test
-    public void Contents_is_OK() {
-        String contentsString = ".".repeat(16777215); // 16 MB - 1
+    public void Content_is_OK() {
+        String contentString = ".".repeat(16777215); // 16 MB - 1
 
-        Content content = new Content(contentsString);
+        Content content = new Content(contentString);
 
-        assertThat(content.getValue()).isEqualTo(contentsString);
+        assertThat(content.getValue()).isEqualTo(contentString);
     }
 
     @DisplayName("Content 타입에 너무 긴 게시글을 저장한다. (16 MB - 1 byte) 이상")
     @Test
     public void Contents_is_too_long() {
-        String contentsString = ".".repeat(16777215 + 1); // 16 MB - 1 byte
+        String contentString = ".".repeat(16777215 + 1); // 16 MB - 1 byte
 
         //then
-        assertThatThrownBy(() -> new Content(contentsString))
+        assertThatThrownBy(() -> new Content(contentString))
                 .isInstanceOf(InvalidInputException.class)
                 .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
     }

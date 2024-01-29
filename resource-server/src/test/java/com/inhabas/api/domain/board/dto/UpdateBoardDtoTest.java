@@ -32,7 +32,7 @@ public class UpdateBoardDtoTest {
     @Test
     public void UpdateBoardDto_is_OK() {
         //given
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1, "title", "content");
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(1L, "title", "content");
 
         // when
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);
@@ -45,7 +45,7 @@ public class UpdateBoardDtoTest {
     @Test
     public void Contents_is_empty() {
         //given
-        UpdateBoardDto updateBoardDto = new UpdateBoardDto(2, "title", " ");
+        UpdateBoardDto updateBoardDto = new UpdateBoardDto(2L, "title", " ");
 
         // when
         Set<ConstraintViolation<UpdateBoardDto>> violations = validator.validate(updateBoardDto);

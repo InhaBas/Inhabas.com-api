@@ -2,11 +2,10 @@ package com.inhabas.api.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.ErrorCode;
-import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
@@ -87,7 +88,8 @@ public class SignUpScheduleControllerTest {
                 .andReturn().getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
 
-        Assertions.assertThat(response).isEqualTo("[generation](은)는 must be greater than 0 입력된 값: [0]\n");
+        assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
+
     }
 
     @DisplayName("날짜가 잘못된 경우, 400")

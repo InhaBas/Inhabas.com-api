@@ -8,8 +8,10 @@ import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -20,13 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
 @Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final TokenResolver tokenResolver;
+    private static final String ROLE_PREFIX = "ROLE_";
 
+    
     public JwtAuthenticationFilter(
             RequestMatcher requestMatcher,
             JwtTokenUtil jwtTokenUtil,
@@ -42,10 +49,16 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             throws AuthenticationException, IOException, ServletException {
 
         final String token = tokenResolver.resolveAccessTokenOrNull(request);
-        jwtTokenUtil.validate(token);
-        final JwtAuthenticationToken authRequest = JwtAuthenticationToken.of(token);
 
-        return this.getAuthenticationManager().authenticate(authRequest);
+        if (token != null) {
+            jwtTokenUtil.validate(token);
+            final JwtAuthenticationToken authRequest = JwtAuthenticationToken.of(token);
+            return this.getAuthenticationManager().authenticate(authRequest);
+        } else {
+            log.info("Anonymous user request");
+            return new AnonymousAuthenticationToken("anonymous", this.hashCode(),
+                    Collections.singleton(new SimpleGrantedAuthority(ROLE_PREFIX + ANONYMOUS)));
+        }
     }
 
     @Override

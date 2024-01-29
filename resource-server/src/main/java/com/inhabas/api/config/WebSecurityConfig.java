@@ -24,13 +24,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
@@ -47,6 +46,8 @@ public class WebSecurityConfig {
             "/signUp/majorInfo"};
     private static final String[] AUTH_WHITELIST_CLUB = {"/club/histories", "/club/history/**"};
     private static final String[] AUTH_WHITELIST_POLICY = {"/policy/**"};
+    private static final String[] AUTH_WHITELIST_CLUB_ACTIVITY = {"/club/activity/**", "/club/activities"};
+    private static final String[] AUTH_WHITELIST_COMMENT = {"/board/**/**/comments", "/board/**/**/comment", "/comment/**"};
 
     @Order(1)
     @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -85,6 +86,9 @@ public class WebSecurityConfig {
                     // OAuth 관련 경로 제외 모든 경로
                     .requestMatchers()
                         .antMatchers("/**")
+                    .and()
+                    .anonymous()
+                    .authorities("ROLE_" + ANONYMOUS)
                     .and()
                     // HTTP 기본 인증 비활성화
                     .httpBasic()
@@ -146,10 +150,17 @@ public class WebSecurityConfig {
         }
 
         public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-            final List<String> skipPaths = new ArrayList<>();
-            skipPaths.addAll(Arrays.stream(AUTH_WHITELIST_TOKEN).collect(Collectors.toList()));
+            final List<RequestMatcher> skipPaths = new ArrayList<>();
 
-            final RequestMatcher requestMatcher = new CustomRequestMatcher(skipPaths);
+            for (String path : AUTH_WHITELIST_CLUB_ACTIVITY) {
+                skipPaths.add(new CustomRequestMatcher(path, "GET"));
+            }
+
+            for (String path : AUTH_WHITELIST_TOKEN) {
+                skipPaths.add(new CustomRequestMatcher(path, "POST"));
+            }
+
+            final RequestMatcher requestMatcher = new AndRequestMatcher(skipPaths);
             final JwtAuthenticationFilter filter = new JwtAuthenticationFilter(
                     requestMatcher,
                     jwtTokenUtil,

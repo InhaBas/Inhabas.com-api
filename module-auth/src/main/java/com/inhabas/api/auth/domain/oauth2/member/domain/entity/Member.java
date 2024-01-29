@@ -164,8 +164,8 @@ public class Member {
                 && getIbasInformation().equals(member.getIbasInformation());
     }
 
-    public boolean isSameMember(StudentId id) {
-        return this.studentId.equals(id);
+    public boolean isSameMember(Long id) {
+        return this.id.equals(id);
     }
 
     public boolean isUnderGraduate() {

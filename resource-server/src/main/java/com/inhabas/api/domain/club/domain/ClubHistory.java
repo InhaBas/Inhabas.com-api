@@ -1,6 +1,7 @@
-package com.inhabas.api.domain.club.domain.entity;
+package com.inhabas.api.domain.club.domain;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class ClubHistory {
+public class ClubHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,10 +38,6 @@ public class ClubHistory {
 
     @Column(name = "DATE_HISTORY", nullable = false, columnDefinition = "DATETIME(0)")
     private LocalDateTime dateHistory;
-
-    @CreatedDate
-    @Column(name = "DATE_CREATED", nullable = false, updatable = false, insertable = false, columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime dateCreated;
 
     @Builder
     public ClubHistory(Member member, Title title, Content content, LocalDateTime dateHistory) {

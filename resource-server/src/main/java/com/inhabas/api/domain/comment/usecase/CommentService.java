@@ -3,17 +3,17 @@ package com.inhabas.api.domain.comment.usecase;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 
 import java.util.List;
 
 public interface CommentService {
 
-    List<CommentDetailDto> getComments(Integer boardId);
+    List<CommentDetailDto> getComments(Integer menuId, Long boardId);
 
-    Integer create(CommentSaveDto commentSaveDto, StudentId writerId);
+    Long create(CommentSaveDto commentSaveDto, Integer menuId, Long boardId, Long memberId);
 
-    Integer update(CommentUpdateDto commentUpdateDto, StudentId writerId);
+    Long update(Long commentId, CommentUpdateDto commentUpdateDto);
 
-    void delete(Integer boardId, StudentId writerId);
+    void delete(Long boardId);
+
 }

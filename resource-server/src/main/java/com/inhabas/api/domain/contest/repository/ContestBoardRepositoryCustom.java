@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface ContestBoardRepositoryCustom {
 
-    Optional<DetailContestBoardDto> findDtoById(Integer id);
-
-    Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable);
+//    Optional<DetailContestBoardDto> findDtoById(Integer id);
+//
+//    Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable);
 
 }
