@@ -1,16 +1,16 @@
 package com.inhabas.api.web.argumentResolver;
 
+import com.inhabas.api.auth.domain.token.exception.TokenMissingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Objects;
 
 @Slf4j
 @Component
@@ -31,7 +31,14 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (Objects.isNull(authentication)) return null;  // login not processed, anonymous user!
+        // login not processed, anonymous user!
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            if ("ROLE_ANONYMOUS".equals(authority.getAuthority())) {
+                log.error("Anonymous cannot access");
+                throw new TokenMissingException();
+            }
+        }
+
         return (Long) authentication.getPrincipal();
 
     }

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ClubHistoryController {
                     schema = @Schema(implementation = ClubHistoryDto.class,
                     type = "array")) }),
     })
+    @SecurityRequirements(value = {})
     @GetMapping("/club/histories")
     public ResponseEntity<List<ClubHistoryDto>> getClubHistories() {
 
@@ -62,6 +64,7 @@ public class ClubHistoryController {
                     )
             ))
     })
+    @SecurityRequirements(value = {})
     @GetMapping("/club/history/{clubHistoryId}")
     public ResponseEntity<ClubHistoryDto> findClubHistory(@PathVariable Long clubHistoryId) {
 
