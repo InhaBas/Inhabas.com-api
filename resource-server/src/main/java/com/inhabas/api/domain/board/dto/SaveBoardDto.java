@@ -1,13 +1,11 @@
 package com.inhabas.api.domain.board.dto;
 
+import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import org.hibernate.validator.constraints.Length;
 
 @Getter

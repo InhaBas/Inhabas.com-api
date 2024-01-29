@@ -1,12 +1,5 @@
 package com.inhabas.api.web;
 
-import javax.validation.Valid;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
@@ -18,6 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "회원가입 일정", description = "회원가입 일정 조회, 수정 / 회장만")
 @RestController

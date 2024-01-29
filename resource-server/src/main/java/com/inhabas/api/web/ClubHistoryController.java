@@ -1,16 +1,5 @@
 package com.inhabas.api.web;
 
-import java.net.URI;
-import java.util.List;
-
-import javax.validation.Valid;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
@@ -24,6 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
+import java.util.List;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Tag(name = "동아리 소개", description = "동아리 소개 관련")
 @RestController

@@ -1,11 +1,9 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import java.util.Collections;
 import java.util.Map;
-
 import org.springframework.util.StringUtils;
-
-import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 
 public abstract class OAuth2UserInfo {
 

@@ -1,15 +1,5 @@
 package com.inhabas.testConfig;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-
 import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
@@ -18,6 +8,14 @@ import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 import com.inhabas.api.web.interceptor.InterceptorConfig;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @TestConfiguration
 public class TestConfigurationForSecurity {

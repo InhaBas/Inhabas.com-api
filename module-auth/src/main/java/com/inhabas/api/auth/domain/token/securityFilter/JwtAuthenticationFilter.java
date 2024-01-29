@@ -2,17 +2,20 @@ package com.inhabas.api.auth.domain.token.securityFilter;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
+import com.inhabas.api.auth.domain.token.TokenResolver;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,13 +24,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
-import com.inhabas.api.auth.domain.token.TokenResolver;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
 
 @Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {

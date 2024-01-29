@@ -1,20 +1,17 @@
 package com.inhabas.api.domain.lecture.domain;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.lecture.LectureCannotModifiableException;
 import com.inhabas.api.domain.lecture.domain.converter.LectureStatusConverter;
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
+import java.time.LocalDateTime;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 @Entity

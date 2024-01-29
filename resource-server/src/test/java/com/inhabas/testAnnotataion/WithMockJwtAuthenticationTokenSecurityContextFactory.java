@@ -1,14 +1,12 @@
 package com.inhabas.testAnnotataion;
 
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import java.util.List;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 
 /**
  * WithMockJwtAuthenticationToken 어노테이션 정보를 기반으로 SecurityContext 를 설정한다. <br>

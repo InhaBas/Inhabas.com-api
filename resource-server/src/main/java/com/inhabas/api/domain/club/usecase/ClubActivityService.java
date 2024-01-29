@@ -1,10 +1,9 @@
 package com.inhabas.api.domain.club.usecase;
 
-import java.util.List;
-
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
+import java.util.List;
 
 public interface ClubActivityService {
 

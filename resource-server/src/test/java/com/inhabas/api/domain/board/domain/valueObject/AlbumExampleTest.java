@@ -1,11 +1,10 @@
 package com.inhabas.api.domain.board.domain.valueObject;
 
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class AlbumExampleTest {
 

@@ -2,11 +2,6 @@ package com.inhabas.api.domain.signUp.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
@@ -14,9 +9,11 @@ import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @DefaultDataJpaTest
 class AnswerRepositoryTest {

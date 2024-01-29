@@ -1,14 +1,12 @@
 package com.inhabas.api.domain.signUp.domain.entity;
 
-import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
+import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(

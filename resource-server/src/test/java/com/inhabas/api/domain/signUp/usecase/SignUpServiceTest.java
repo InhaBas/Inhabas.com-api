@@ -10,12 +10,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
@@ -31,13 +25,16 @@ import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class SignUpServiceTest {

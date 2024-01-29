@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.lecture.dto;
 
 import javax.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,13 +1,11 @@
 package com.inhabas.api.domain.budget.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DefaultDataJpaTest
 public class BudgetApplicationRepositoryTest {

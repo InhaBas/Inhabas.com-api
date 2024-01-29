@@ -1,7 +1,6 @@
 package com.inhabas.api.auth.domain.token;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 

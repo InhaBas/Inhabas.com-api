@@ -1,10 +1,8 @@
 package com.inhabas.api.auth.domain.error.authException;
 
-import lombok.Getter;
-
-import org.springframework.security.core.AuthenticationException;
-
 import com.inhabas.api.auth.domain.error.ErrorCode;
+import lombok.Getter;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * {@code auth-module} 에서 발생하는 오류들은 {@code CustomAuthException} 을 상속받아서 구현해야함. 특히 spring security

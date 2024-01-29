@@ -9,22 +9,19 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoSaveDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class MajorInfoServiceTest {

@@ -1,12 +1,11 @@
 package com.inhabas.api.domain.menu.dto;
 
-import lombok.Getter;
-
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
 @Getter
 public class MenuDto {

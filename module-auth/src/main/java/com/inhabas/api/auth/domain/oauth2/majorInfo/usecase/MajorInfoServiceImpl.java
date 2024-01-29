@@ -1,16 +1,13 @@
 package com.inhabas.api.auth.domain.oauth2.majorInfo.usecase;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.MajorInfo;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoSaveDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.repository.MajorInfoRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

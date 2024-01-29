@@ -1,9 +1,8 @@
 package com.inhabas.api.domain.budget.repository;
 
+import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import com.inhabas.api.domain.budget.domain.BudgetHistory;
 
 public interface BudgetHistoryRepository
     extends JpaRepository<BudgetHistory, Integer>, BudgetHistoryRepositoryCustom {

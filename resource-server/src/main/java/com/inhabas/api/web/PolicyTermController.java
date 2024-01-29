@@ -1,12 +1,5 @@
 package com.inhabas.api.web;
 
-import javax.validation.Valid;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.policy.dto.PolicyTermDto;
 import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
@@ -19,6 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "정책 관리")
 @RestController

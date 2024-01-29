@@ -2,17 +2,15 @@ package com.inhabas.api.domain.comment.repository;
 
 import static com.inhabas.api.domain.comment.domain.QComment.comment;
 
+import com.inhabas.api.domain.comment.domain.Comment;
+import com.inhabas.api.domain.comment.dto.CommentDetailDto;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
-
-import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.domain.comment.dto.CommentDetailDto;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @RequiredArgsConstructor
 public class CommentRepositoryImpl implements CustomCommentRepository {

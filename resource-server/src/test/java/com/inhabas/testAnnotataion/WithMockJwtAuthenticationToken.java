@@ -1,11 +1,9 @@
 package com.inhabas.testAnnotataion;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
 import org.springframework.security.test.context.support.WithSecurityContext;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 
 /**
  * Jwt 인증 결과를 securityContext 에 담아두기 위한 test 용 annotation. Jwt 인증 후의 어떤 특정한 상황을 Mocking 하고 싶을 때

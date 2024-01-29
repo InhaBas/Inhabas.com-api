@@ -1,17 +1,15 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
+import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
-import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
 import org.hibernate.validator.constraints.Length;
 
 @Data

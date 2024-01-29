@@ -1,21 +1,17 @@
 package com.inhabas.api.domain.club.domain;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
+import java.time.LocalDateTime;
+import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "CLUB_HISTORY")

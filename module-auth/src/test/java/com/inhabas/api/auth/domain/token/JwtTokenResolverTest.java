@@ -2,13 +2,11 @@ package com.inhabas.api.auth.domain.token;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import org.assertj.core.api.Assertions;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 public class JwtTokenResolverTest {
 

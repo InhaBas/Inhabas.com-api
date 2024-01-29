@@ -2,7 +2,6 @@ package com.inhabas.api.domain.policy.domain;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import org.assertj.core.api.Assertions;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

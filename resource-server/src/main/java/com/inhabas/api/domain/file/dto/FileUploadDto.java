@@ -3,7 +3,6 @@ package com.inhabas.api.domain.file.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter

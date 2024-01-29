@@ -2,13 +2,11 @@ package com.inhabas.api.domain.lecture.repository;
 
 import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DefaultDataJpaTest
 public class LectureRepositoryTest {

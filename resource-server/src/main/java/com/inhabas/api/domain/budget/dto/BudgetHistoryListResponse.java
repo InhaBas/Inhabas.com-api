@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.budget.dto;
 
 import lombok.Getter;
-
 import org.springframework.data.domain.Page;
 
 @Getter

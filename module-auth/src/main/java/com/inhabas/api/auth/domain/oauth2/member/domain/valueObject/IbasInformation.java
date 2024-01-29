@@ -2,9 +2,7 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-
 import javax.persistence.*;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

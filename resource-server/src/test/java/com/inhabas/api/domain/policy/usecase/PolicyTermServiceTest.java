@@ -6,22 +6,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.policy.domain.PolicyTerm;
 import com.inhabas.api.domain.policy.domain.PolicyType;
 import com.inhabas.api.domain.policy.dto.PolicyTermDto;
 import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 import com.inhabas.api.domain.policy.respository.PolicyTermRepository;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class PolicyTermServiceTest {

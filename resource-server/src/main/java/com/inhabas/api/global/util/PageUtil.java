@@ -2,7 +2,6 @@ package com.inhabas.api.global.util;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.springframework.data.domain.Pageable;
 
 public class PageUtil {

@@ -2,16 +2,14 @@ package com.inhabas.api.domain.comment.domain;
 
 import static org.mockito.Mockito.mock;
 
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.assertj.core.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class CommentTest {
 

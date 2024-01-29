@@ -2,22 +2,18 @@ package com.inhabas.api.auth.domain.token.securityFilter;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.AUTHORITY_INVALID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.ErrorResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.inhabas.api.auth.domain.error.ErrorResponse;
 
 @Component
 @Slf4j

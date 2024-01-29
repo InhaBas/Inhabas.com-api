@@ -1,16 +1,13 @@
 package com.inhabas.api.domain.lecture.domain;
 
-import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-import org.springframework.security.access.AccessDeniedException;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.lecture.domain.converter.StudentStatusConverter;
 import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
+import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 
 @Entity
 @Table(

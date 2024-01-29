@@ -1,13 +1,12 @@
 package com.inhabas.api.auth.domain.oauth2.member.security.masking;
 
-import java.io.IOException;
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import java.io.IOException;
 
 public class StringPropertyMasker extends StdSerializer<String> implements ContextualSerializer {
   private MaskingType maskingType;

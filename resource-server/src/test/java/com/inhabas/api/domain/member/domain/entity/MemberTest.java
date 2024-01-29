@@ -3,9 +3,6 @@ package com.inhabas.api.domain.member.domain.entity;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.IbasInformation;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
@@ -13,6 +10,8 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.SchoolInform
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.auth.domain.oauth2.userInfo.GoogleOAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MemberTest {
 

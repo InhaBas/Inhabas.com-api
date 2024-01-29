@@ -1,7 +1,5 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import lombok.RequiredArgsConstructor;
-
 import com.inhabas.api.auth.domain.token.TokenDto;
 import com.inhabas.api.auth.domain.token.TokenReIssuer;
 import com.inhabas.api.auth.domain.token.TokenResolver;
@@ -9,6 +7,7 @@ import com.inhabas.api.auth.domain.token.TokenUtil;
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenNotFoundException;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JwtTokenReIssuer implements TokenReIssuer {

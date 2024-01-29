@@ -1,14 +1,12 @@
 package com.inhabas.api.domain.lecture.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

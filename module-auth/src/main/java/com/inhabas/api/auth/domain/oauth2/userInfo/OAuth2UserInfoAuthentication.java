@@ -1,10 +1,8 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
-import java.util.Collection;
-
-import org.springframework.security.core.GrantedAuthority;
-
 import com.inhabas.api.auth.domain.token.TokenAuthenticationResult;
+import java.util.Collection;
+import org.springframework.security.core.GrantedAuthority;
 
 public class OAuth2UserInfoAuthentication extends TokenAuthenticationResult {
 

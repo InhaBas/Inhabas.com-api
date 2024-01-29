@@ -1,14 +1,5 @@
 package com.inhabas.api.auth.domain.oauth2.member.security;
 
-import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
@@ -17,6 +8,12 @@ import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialA
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.SocialNotFoundException;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor

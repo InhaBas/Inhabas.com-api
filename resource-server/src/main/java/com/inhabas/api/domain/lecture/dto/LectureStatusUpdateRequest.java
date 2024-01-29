@@ -1,12 +1,10 @@
 package com.inhabas.api.domain.lecture.dto;
 
+import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import javax.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import org.hibernate.validator.constraints.Length;
 
 @Getter

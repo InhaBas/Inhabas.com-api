@@ -1,17 +1,13 @@
 package com.inhabas.api.domain.file.domain;
 
+import com.inhabas.api.domain.board.domain.BaseBoard;
 import java.util.Objects;
-
 import javax.persistence.*;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.inhabas.api.domain.board.domain.BaseBoard;
 
 @Entity
 @Getter

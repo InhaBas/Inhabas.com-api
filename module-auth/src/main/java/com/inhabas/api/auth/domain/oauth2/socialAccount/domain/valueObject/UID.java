@@ -1,12 +1,10 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
-
-import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 
 @Embeddable
 public class UID {

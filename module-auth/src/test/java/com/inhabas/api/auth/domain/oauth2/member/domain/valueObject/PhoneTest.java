@@ -3,10 +3,8 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
-
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
-
+import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

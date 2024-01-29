@@ -1,22 +1,18 @@
 package com.inhabas.api.domain.comment.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.BaseEntity;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
 import com.inhabas.api.domain.comment.domain.valueObject.Content;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "COMMENT")

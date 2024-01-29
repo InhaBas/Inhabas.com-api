@@ -4,12 +4,6 @@ import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember
 import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember2;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
@@ -19,10 +13,13 @@ import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 @DefaultDataJpaTest
 public class CommentRepositoryTest {

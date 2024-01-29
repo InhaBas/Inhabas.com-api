@@ -1,14 +1,12 @@
 package com.inhabas.api.domain.lecture.usecase;
 
-import javax.persistence.EntityManager;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.lecture.repository.StudentRepository;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import javax.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @DefaultDataJpaTest
 public class LectureStudentServiceDBTest {

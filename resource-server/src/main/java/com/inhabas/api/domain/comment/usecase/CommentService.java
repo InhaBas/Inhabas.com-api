@@ -1,10 +1,9 @@
 package com.inhabas.api.domain.comment.usecase;
 
-import java.util.List;
-
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
+import java.util.List;
 
 public interface CommentService {
 

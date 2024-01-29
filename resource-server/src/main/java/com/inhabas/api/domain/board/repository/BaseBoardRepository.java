@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.board.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BaseBoardRepository extends JpaRepository<BaseBoard, Long> {}

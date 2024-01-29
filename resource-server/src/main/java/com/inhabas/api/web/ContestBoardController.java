@@ -1,11 +1,9 @@
 package com.inhabas.api.web;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.*;
-
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "공모전 관리")
 @RestController

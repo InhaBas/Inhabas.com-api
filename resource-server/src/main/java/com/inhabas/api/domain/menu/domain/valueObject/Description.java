@@ -1,11 +1,9 @@
 package com.inhabas.api.domain.menu.domain.valueObject;
 
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

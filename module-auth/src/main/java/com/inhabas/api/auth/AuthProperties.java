@@ -3,7 +3,6 @@ package com.inhabas.api.auth;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 

@@ -1,8 +1,7 @@
 package com.inhabas.api.auth.domain.token;
 
-import org.springframework.security.core.Authentication;
-
 import io.jsonwebtoken.JwtException;
+import org.springframework.security.core.Authentication;
 
 public interface TokenUtil {
 

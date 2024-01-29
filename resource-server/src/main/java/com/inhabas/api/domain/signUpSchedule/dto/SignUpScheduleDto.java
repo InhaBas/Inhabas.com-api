@@ -1,17 +1,14 @@
 package com.inhabas.api.domain.signUpSchedule.dto;
 
-import java.time.LocalDateTime;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

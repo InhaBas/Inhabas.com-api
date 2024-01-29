@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.file.dto;
 
 import javax.validation.constraints.NotBlank;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

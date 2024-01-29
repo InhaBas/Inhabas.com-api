@@ -2,16 +2,14 @@ package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @DefaultDataJpaTest
 class UpdateNameRequestRepositoryTest {

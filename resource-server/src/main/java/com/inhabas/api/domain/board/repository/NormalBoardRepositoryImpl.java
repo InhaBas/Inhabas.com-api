@@ -3,20 +3,17 @@ package com.inhabas.api.domain.board.repository;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
 import static com.inhabas.api.domain.board.domain.QNormalBoard.normalBoard;
 
-import java.util.List;
-import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import com.inhabas.api.domain.board.dto.BoardDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {

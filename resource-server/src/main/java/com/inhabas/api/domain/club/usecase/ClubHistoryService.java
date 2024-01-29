@@ -1,9 +1,8 @@
 package com.inhabas.api.domain.club.usecase;
 
-import java.util.List;
-
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
+import java.util.List;
 
 public interface ClubHistoryService {
 

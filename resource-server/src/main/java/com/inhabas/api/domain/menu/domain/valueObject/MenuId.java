@@ -1,17 +1,14 @@
 package com.inhabas.api.domain.menu.domain.valueObject;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

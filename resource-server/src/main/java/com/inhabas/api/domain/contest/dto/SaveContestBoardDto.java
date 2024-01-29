@@ -1,16 +1,13 @@
 package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDate;
-
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import org.hibernate.validator.constraints.Length;
 
 @Getter

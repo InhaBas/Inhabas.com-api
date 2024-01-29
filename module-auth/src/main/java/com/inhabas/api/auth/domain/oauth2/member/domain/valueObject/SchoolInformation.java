@@ -1,13 +1,10 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
+import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject.Major;
 import java.util.Objects;
-
 import javax.persistence.*;
-
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject.Major;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,10 +1,8 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
-import java.util.List;
-
-import lombok.*;
-
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
+import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter

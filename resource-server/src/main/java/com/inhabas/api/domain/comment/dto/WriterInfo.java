@@ -3,7 +3,6 @@ package com.inhabas.api.domain.comment.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

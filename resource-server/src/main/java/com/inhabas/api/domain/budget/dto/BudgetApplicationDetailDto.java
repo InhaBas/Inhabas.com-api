@@ -1,12 +1,10 @@
 package com.inhabas.api.domain.budget.dto;
 
-import java.time.LocalDateTime;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 @AllArgsConstructor

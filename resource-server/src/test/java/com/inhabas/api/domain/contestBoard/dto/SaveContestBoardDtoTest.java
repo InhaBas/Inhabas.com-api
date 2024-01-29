@@ -3,18 +3,15 @@ package com.inhabas.api.domain.contestBoard.dto;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
-import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
-
 import org.junit.jupiter.api.*;
 
 public class SaveContestBoardDtoTest {

@@ -1,11 +1,10 @@
 package com.inhabas.api.domain.lecture.dto;
 
+import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

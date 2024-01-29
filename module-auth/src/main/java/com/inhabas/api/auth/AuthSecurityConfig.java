@@ -1,7 +1,10 @@
 package com.inhabas.api.auth;
 
+import com.inhabas.api.auth.domain.oauth2.CustomOAuth2UserService;
+import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
+import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,11 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.cors.CorsUtils;
-
-import com.inhabas.api.auth.domain.oauth2.CustomOAuth2UserService;
-import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
-import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 
 @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
 @EnableWebSecurity

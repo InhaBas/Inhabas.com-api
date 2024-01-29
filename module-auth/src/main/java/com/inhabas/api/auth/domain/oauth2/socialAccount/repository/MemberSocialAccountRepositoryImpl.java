@@ -2,14 +2,12 @@ package com.inhabas.api.auth.domain.oauth2.socialAccount.repository;
 
 import static com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.QMemberSocialAccount.memberSocialAccount;
 
-import java.util.Optional;
-
-import lombok.RequiredArgsConstructor;
-
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class MemberSocialAccountRepositoryImpl implements MemberSocialAccountRepositoryCustom {
