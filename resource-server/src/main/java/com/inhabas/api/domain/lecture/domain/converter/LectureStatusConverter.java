@@ -1,9 +1,11 @@
 package com.inhabas.api.domain.lecture.domain.converter;
 
-import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 import java.util.Objects;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+
+import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 
 @Converter
 public class LectureStatusConverter implements AttributeConverter<LectureStatus, Integer> {

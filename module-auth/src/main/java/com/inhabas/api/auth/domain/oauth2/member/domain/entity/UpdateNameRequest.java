@@ -2,16 +2,20 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.entity;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus.PENDING;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import java.time.LocalDateTime;
+
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 
 @Entity
 @Table(name = "UPDATE_NAME_REQUEST")

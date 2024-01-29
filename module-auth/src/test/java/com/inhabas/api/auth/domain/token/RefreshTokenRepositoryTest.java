@@ -1,12 +1,14 @@
 package com.inhabas.api.auth.domain.token;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshToken;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @DefaultDataJpaTest
 public class RefreshTokenRepositoryTest {

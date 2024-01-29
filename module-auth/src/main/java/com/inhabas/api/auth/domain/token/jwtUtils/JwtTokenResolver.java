@@ -1,8 +1,10 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import com.inhabas.api.auth.domain.token.TokenResolver;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.util.StringUtils;
+
+import com.inhabas.api.auth.domain.token.TokenResolver;
 
 public class JwtTokenResolver implements TokenResolver {
 

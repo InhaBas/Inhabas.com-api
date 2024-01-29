@@ -1,11 +1,12 @@
 package com.inhabas.api.domain.lecture.usecase;
 
-import com.inhabas.api.domain.lecture.repository.LectureRepository;
-import com.inhabas.api.web.LectureController;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+
+import com.inhabas.api.domain.lecture.repository.LectureRepository;
+import com.inhabas.api.web.LectureController;
+import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
 @NoSecureWebMvcTest(LectureController.class)
 @Import(LectureSecurityChecker.class)

@@ -1,9 +1,12 @@
 package com.inhabas.api.domain.contest.usecase;
 
-import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import javax.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+
+import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 
 @Service
 @Transactional

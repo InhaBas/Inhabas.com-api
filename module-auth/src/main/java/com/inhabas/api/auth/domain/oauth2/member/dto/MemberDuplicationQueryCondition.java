@@ -1,11 +1,13 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
+import java.util.Objects;
+
+import lombok.NoArgsConstructor;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
-import java.util.Objects;
-import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -4,17 +4,20 @@ import static com.inhabas.api.auth.domain.oauth2.OAuth2Provider.GOOGLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
-import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DefaultDataJpaTest
 public class MemberSocialAccountRepositoryTest {

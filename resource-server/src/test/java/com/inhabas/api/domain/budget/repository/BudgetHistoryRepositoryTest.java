@@ -1,9 +1,10 @@
 package com.inhabas.api.domain.budget.repository;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 
 @DefaultDataJpaTest
 public class BudgetHistoryRepositoryTest {

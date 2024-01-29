@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.signUp.usecase;
 
-import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import java.util.List;
+
+import com.inhabas.api.domain.signUp.dto.AnswerDto;
 
 public interface AnswerService {
 

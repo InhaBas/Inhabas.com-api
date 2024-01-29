@@ -3,15 +3,18 @@ package com.inhabas.api.domain.lecture.repository;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
 import static com.inhabas.api.domain.lecture.domain.QStudent.student;
 
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import com.inhabas.api.domain.lecture.dto.StudentListDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 @RequiredArgsConstructor
 public class StudentRepositoryImpl implements StudentRepositoryCustom {

@@ -3,6 +3,7 @@ package com.inhabas.api.auth.domain.oauth2.member.security.masking;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 

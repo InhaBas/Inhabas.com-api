@@ -1,11 +1,13 @@
 package com.inhabas.api.auth.domain.oauth2.majorInfo.domain;
 
+import javax.persistence.*;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject.College;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.domain.valueObject.Major;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * 전공 정보는 학교 운영 방침에 따라 변함. 항상 전공 목록을 최신으로 유지하기는 하지만, 과거 변경되기 이전의 전공을 갖는 학생 정보가 남아있어야 한다. <br>

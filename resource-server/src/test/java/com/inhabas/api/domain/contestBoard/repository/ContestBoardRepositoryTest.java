@@ -1,12 +1,13 @@
 package com.inhabas.api.domain.contestBoard.repository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DefaultDataJpaTest
 public class ContestBoardRepositoryTest {

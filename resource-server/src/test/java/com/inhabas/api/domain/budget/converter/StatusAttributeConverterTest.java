@@ -2,13 +2,16 @@ package com.inhabas.api.domain.budget.converter;
 
 import static com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus.*;
 
+import javax.persistence.EntityManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @DefaultDataJpaTest
 public class StatusAttributeConverterTest {

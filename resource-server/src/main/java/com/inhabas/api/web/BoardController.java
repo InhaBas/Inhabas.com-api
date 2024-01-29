@@ -1,9 +1,11 @@
 package com.inhabas.api.web;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.bind.annotation.*;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Slf4j
 @Tag(name = "게시글 관리")

@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.contestBoard;
 
-import com.inhabas.api.domain.contest.domain.ContestBoard;
 import java.time.LocalDate;
+
+import com.inhabas.api.domain.contest.domain.ContestBoard;
 
 public class ContestBoardTest {
   public static ContestBoard getContestBoard1() {

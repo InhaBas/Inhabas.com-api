@@ -1,7 +1,8 @@
 package com.inhabas.api.auth.domain.error.businessException;
 
-import com.inhabas.api.auth.domain.error.ErrorCode;
 import lombok.Getter;
+
+import com.inhabas.api.auth.domain.error.ErrorCode;
 
 @Getter
 public class BusinessException extends RuntimeException {

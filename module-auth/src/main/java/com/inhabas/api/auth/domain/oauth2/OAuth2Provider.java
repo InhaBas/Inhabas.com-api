@@ -1,7 +1,8 @@
 package com.inhabas.api.auth.domain.oauth2;
 
-import com.inhabas.api.auth.domain.error.authException.UnsupportedOAuth2ProviderException;
 import java.util.Arrays;
+
+import com.inhabas.api.auth.domain.error.authException.UnsupportedOAuth2ProviderException;
 
 public enum OAuth2Provider {
   GOOGLE,

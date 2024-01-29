@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.comment.repository;
 
-import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import java.util.List;
+
+import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 
 public interface CustomCommentRepository {
 

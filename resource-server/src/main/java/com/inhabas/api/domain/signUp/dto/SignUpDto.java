@@ -1,14 +1,16 @@
 package com.inhabas.api.domain.signUp.dto;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
-import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 @Data

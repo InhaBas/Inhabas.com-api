@@ -2,8 +2,9 @@ package com.inhabas.api.domain.menu.domain.valueObject;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import lombok.Getter;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 
 @Getter
 public enum MenuType {

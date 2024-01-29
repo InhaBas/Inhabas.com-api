@@ -1,7 +1,7 @@
 package com.inhabas.api.web.argumentResolver;
 
-import com.inhabas.api.auth.domain.token.exception.TokenMissingException;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
+import com.inhabas.api.auth.domain.token.exception.TokenMissingException;
 
 @Slf4j
 @Component

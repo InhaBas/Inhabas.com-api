@@ -1,10 +1,11 @@
 package com.inhabas.api.domain.signUp.usecase;
 
+import java.util.List;
+
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
-import java.util.List;
 
 public interface SignUpService {
 

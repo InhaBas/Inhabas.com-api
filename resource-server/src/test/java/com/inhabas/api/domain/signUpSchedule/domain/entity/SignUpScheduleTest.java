@@ -3,8 +3,10 @@ package com.inhabas.api.domain.signUpSchedule.domain.entity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import java.time.LocalDateTime;
+
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

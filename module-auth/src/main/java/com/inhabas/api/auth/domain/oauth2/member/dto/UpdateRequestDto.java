@@ -1,8 +1,10 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+
 import lombok.*;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter

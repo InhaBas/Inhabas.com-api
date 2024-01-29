@@ -1,14 +1,17 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
-import io.micrometer.core.instrument.util.StringUtils;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.SerializationUtils;
+
+import io.micrometer.core.instrument.util.StringUtils;
 
 public interface CookieUtils {
 

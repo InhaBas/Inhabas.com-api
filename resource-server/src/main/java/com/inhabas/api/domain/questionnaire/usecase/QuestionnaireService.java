@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.questionnaire.usecase;
 
-import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import java.util.List;
+
+import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 
 public interface QuestionnaireService {
 

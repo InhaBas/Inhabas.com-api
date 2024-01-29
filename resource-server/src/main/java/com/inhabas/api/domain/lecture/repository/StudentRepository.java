@@ -1,11 +1,13 @@
 package com.inhabas.api.domain.lecture.repository;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.lecture.domain.Student;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.domain.lecture.domain.Student;
 
 public interface StudentRepository
     extends JpaRepository<Student, Integer>, StudentRepositoryCustom {

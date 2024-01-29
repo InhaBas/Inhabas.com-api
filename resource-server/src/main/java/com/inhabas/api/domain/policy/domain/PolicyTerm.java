@@ -1,13 +1,15 @@
 package com.inhabas.api.domain.policy.domain;
 
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.board.domain.valueObject.Content;
+import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

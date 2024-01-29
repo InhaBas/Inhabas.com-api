@@ -3,9 +3,10 @@ package com.inhabas.api.domain.file.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import org.mockito.Mockito;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 public class BoardFileTest {
 

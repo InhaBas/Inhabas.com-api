@@ -1,9 +1,10 @@
 package com.inhabas.api.domain.lecture.usecase;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.lecture.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.domain.lecture.dto.*;
 
 public interface LectureService {
 

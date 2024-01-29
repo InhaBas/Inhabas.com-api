@@ -1,12 +1,15 @@
 package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
-import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,10 +1,12 @@
 package com.inhabas.api.domain.comment.dto;
 
 import javax.validation.constraints.NotBlank;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import org.hibernate.validator.constraints.Length;
 
 @Setter

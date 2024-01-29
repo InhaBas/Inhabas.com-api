@@ -2,17 +2,11 @@ package com.inhabas.api.config;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
-import com.inhabas.api.auth.AuthBeansConfig;
-import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
-import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
-import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
-import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
-import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
-import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -31,6 +25,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
+
+import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
+import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
+import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 
 /**
  * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.AuthSecurityConfig

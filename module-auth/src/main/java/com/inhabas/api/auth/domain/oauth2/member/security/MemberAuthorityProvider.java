@@ -2,6 +2,16 @@ package com.inhabas.api.auth.domain.oauth2.member.security;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.inhabas.api.auth.domain.error.authException.InvalidOAuth2InfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
@@ -11,13 +21,6 @@ import com.inhabas.api.auth.domain.oauth2.userAuthorityProvider.UserAuthorityPro
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor

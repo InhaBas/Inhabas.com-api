@@ -2,6 +2,13 @@ package com.inhabas.api.domain.signUp.usecase;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.PROFESSOR;
 
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.usecase.MajorInfoService;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
@@ -18,10 +25,6 @@ import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

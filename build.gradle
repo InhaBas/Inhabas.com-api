@@ -17,6 +17,16 @@ spotless {
         endWithNewline()
         // 공백 제거
         trimTrailingWhitespace()
+        //임포트 순서 정리
+        importOrder(
+                "java",
+                "javax",
+                "lombok",
+                "org.springframework",
+                "",
+                "org.junit",
+                "com.guide"
+        )
     }
 }
 

@@ -1,15 +1,18 @@
 package com.inhabas.api.domain.menu.domain;
 
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.menu.domain.valueObject.Description;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuName;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.menu.domain.valueObject.Description;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuName;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 
 @Entity
 @Getter

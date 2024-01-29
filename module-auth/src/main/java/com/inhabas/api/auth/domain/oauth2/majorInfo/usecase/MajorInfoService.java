@@ -1,8 +1,9 @@
 package com.inhabas.api.auth.domain.oauth2.majorInfo.usecase;
 
+import java.util.List;
+
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoSaveDto;
-import java.util.List;
 
 public interface MajorInfoService {
 

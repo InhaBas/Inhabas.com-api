@@ -2,6 +2,7 @@ package com.inhabas.api.global.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.domain.Page;
 
 @Data

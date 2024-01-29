@@ -1,8 +1,10 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 import java.util.Collection;
+
 import org.springframework.security.core.GrantedAuthority;
+
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoAuthentication;
 
 public class JwtAuthenticationResult extends OAuth2UserInfoAuthentication {
 

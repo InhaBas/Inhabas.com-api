@@ -1,9 +1,11 @@
 package com.inhabas.api.domain.signUp.dto;
 
 import javax.validation.constraints.Positive;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import org.hibernate.validator.constraints.Length;
 
 @Data

@@ -1,9 +1,11 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
+import javax.validation.constraints.*;
+
+import lombok.*;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import javax.validation.constraints.*;
-import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 @Getter

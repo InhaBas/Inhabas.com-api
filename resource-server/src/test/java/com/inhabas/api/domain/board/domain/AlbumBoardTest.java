@@ -1,16 +1,18 @@
 package com.inhabas.api.domain.board.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
-import java.util.ArrayList;
-import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 class AlbumBoardTest {
 

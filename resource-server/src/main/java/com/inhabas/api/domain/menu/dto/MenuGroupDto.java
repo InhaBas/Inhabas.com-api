@@ -1,8 +1,10 @@
 package com.inhabas.api.domain.menu.dto;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import java.util.List;
+
 import lombok.Getter;
+
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 @Getter
 public class MenuGroupDto {

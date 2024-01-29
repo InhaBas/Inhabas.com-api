@@ -1,10 +1,12 @@
 package com.inhabas.api.domain.policy.domain;
 
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 
 @Entity
 @Getter

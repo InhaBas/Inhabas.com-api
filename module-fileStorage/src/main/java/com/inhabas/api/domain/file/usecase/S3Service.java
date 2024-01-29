@@ -1,7 +1,8 @@
 package com.inhabas.api.domain.file.usecase;
 
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
 public interface S3Service {
 

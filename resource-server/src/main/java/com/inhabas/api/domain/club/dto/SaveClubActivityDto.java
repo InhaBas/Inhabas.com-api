@@ -2,10 +2,13 @@ package com.inhabas.api.domain.club.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.validation.constraints.NotBlank;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter

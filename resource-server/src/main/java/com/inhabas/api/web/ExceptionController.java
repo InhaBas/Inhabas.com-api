@@ -4,15 +4,10 @@ import static com.inhabas.api.auth.domain.error.ErrorCode.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
-import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
-import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
-import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
-import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
-import com.inhabas.api.domain.signUpSchedule.exception.SignUpNotAvailableException;
 import javax.validation.ConstraintViolationException;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,6 +17,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
+import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
+import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
+import com.inhabas.api.domain.signUpSchedule.exception.SignUpNotAvailableException;
 
 @Slf4j
 @RestControllerAdvice

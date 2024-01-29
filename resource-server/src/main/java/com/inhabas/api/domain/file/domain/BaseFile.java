@@ -1,15 +1,19 @@
 package com.inhabas.api.domain.file.domain;
 
-import com.inhabas.api.domain.file.domain.valueObject.FileName;
-import com.inhabas.api.domain.file.domain.valueObject.FileUrl;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.inhabas.api.domain.file.domain.valueObject.FileName;
+import com.inhabas.api.domain.file.domain.valueObject.FileUrl;
 
 @Getter
 @MappedSuperclass

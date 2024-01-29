@@ -1,12 +1,15 @@
 package com.inhabas.api.domain.signUpSchedule.domain.entity;
 
-import com.inhabas.api.auth.domain.error.ErrorCode;
-import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import java.time.LocalDateTime;
+
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 
 /**
  * This entity exists only one in database table. No reason for many entities. <br>

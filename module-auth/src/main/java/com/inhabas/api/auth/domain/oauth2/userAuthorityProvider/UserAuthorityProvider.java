@@ -1,8 +1,10 @@
 package com.inhabas.api.auth.domain.oauth2.userAuthorityProvider;
 
-import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import java.util.Collection;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 
 /**
  * OAuth 2.0 인증이 끝난 후에, 로그인하려는 유저에게 부여할 권한을 결정한다. 아래와 같은 상황에서는, 이 인터페이스를 상속받아서 구현해야한다. <br>

@@ -1,11 +1,13 @@
 package com.inhabas.api.auth.domain.oauth2.member.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
-import java.util.List;
-import org.springframework.data.domain.Pageable;
 
 public interface MemberService {
 

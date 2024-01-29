@@ -1,8 +1,9 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
-import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import java.util.Map;
 import java.util.Objects;
+
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 
 public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
 

@@ -1,11 +1,13 @@
 package com.inhabas.api.domain.menu.domain;
 
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupName;
 import javax.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.inhabas.api.domain.BaseEntity;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupName;
 
 @Entity
 @Getter
