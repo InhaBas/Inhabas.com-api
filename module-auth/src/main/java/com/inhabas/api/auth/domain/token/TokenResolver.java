@@ -4,11 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface TokenResolver {
 
-    /**
-     *
-     * @param request HttpServletRequest
-     * @return a resolved token from request header, otherwise null
-     */
-    String resolveAccessTokenOrNull(HttpServletRequest request);
-
+  /**
+   * @param request HttpServletRequest
+   * @return a resolved token from request header, otherwise null
+   */
+  String resolveAccessTokenOrNull(HttpServletRequest request);
 }

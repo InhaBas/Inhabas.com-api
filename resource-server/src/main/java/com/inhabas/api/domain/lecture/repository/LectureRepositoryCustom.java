@@ -1,15 +1,16 @@
 package com.inhabas.api.domain.lecture.repository;
 
-import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
-import com.inhabas.api.domain.lecture.dto.LectureListDto;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
+import com.inhabas.api.domain.lecture.dto.LectureDetailDto;
+import com.inhabas.api.domain.lecture.dto.LectureListDto;
 
 public interface LectureRepositoryCustom {
 
-    Optional<LectureDetailDto> getDetails(Integer id);
+  Optional<LectureDetailDto> getDetails(Integer id);
 
-    Page<LectureListDto> getList(Pageable pageable);
+  Page<LectureListDto> getList(Pageable pageable);
 }
