@@ -59,7 +59,8 @@ public enum ErrorCode {
 
     // Board
     WRITER_UNMODIFIABLE(403, "B001", "글 작성자를 변경 할 수 없습니다."),
-    ONLY_WRITER_UPDATE(403, "B002", "글 작성자만 수정 가능합니다.")
+    ONLY_WRITER_UPDATE(403, "B002", "글 작성자만 수정 가능합니다."),
+    S3_UPLOAD_FAILED(500, "B003", "파일 업로드를 실패했습니다.")
     ;
 
     private final int status;

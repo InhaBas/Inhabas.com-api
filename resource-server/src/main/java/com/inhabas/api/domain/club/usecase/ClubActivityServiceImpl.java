@@ -5,6 +5,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
+import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
@@ -69,22 +70,16 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     public Long writeClubActivity(Long memberId, SaveClubActivityDto saveClubActivityDto) {
 
         Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-        Menu menu = menuRepository.findByName_Value(CLUB_ACTIVITY_MENU_NAME);
+        Menu menu = menuRepository.findByName_Value(CLUB_ACTIVITY_MENU_NAME).orElseThrow(NotFoundException::new);
 
-        AlbumBoard board = AlbumBoard.builder()
+        AlbumBoard clubActivity = AlbumBoard.builder()
                 .menu(menu)
                 .title(saveClubActivityDto.getTitle())
                 .content(saveClubActivityDto.getContent())
                 .build()
                 .writtenBy(writer, AlbumBoard.class);
 
-        saveClubActivityDto.getFiles().forEach(file -> {
-            String url = s3Service.uploadS3File(file, generateRandomUrl());
-            BoardFile boardFile = BoardFile.builder().name(file.getOriginalFilename()).url(url).board(board).build();
-            board.addFile(boardFile);
-        });
-
-        return clubActivityRepository.save(board).getId();
+        return updateClubActivityFiles(saveClubActivityDto, clubActivity);
 
     }
 
@@ -120,27 +115,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     public void updateClubActivity(Long boardId, SaveClubActivityDto saveClubActivityDto) {
 
         AlbumBoard clubActivity = clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
-        List<BoardFile> updateFiles = new ArrayList<>();
-
-        if (saveClubActivityDto.getFiles() != null) {
-            try {
-                clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
-
-                updateFiles = saveClubActivityDto.getFiles().stream().map(file -> {
-                    String url = s3Service.uploadS3File(file, generateRandomUrl());
-                    return BoardFile.builder()
-                            .name(file.getOriginalFilename())
-                            .url(url)
-                            .board(clubActivity)
-                            .build();
-                }).collect(Collectors.toList());
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        clubActivity.updateFiles(updateFiles);
+        updateClubActivityFiles(saveClubActivityDto, clubActivity);
 
     }
 
@@ -149,6 +124,36 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     public void deleteClubActivity(Long boardId) {
 
         clubActivityRepository.deleteById(boardId);
+
+    }
+
+    private Long updateClubActivityFiles(SaveClubActivityDto saveClubActivityDto, AlbumBoard clubActivity) {
+        List<BoardFile> updateFiles = new ArrayList<>();
+        List<String> urlListForDelete = new ArrayList<>();
+
+        if (saveClubActivityDto.getFiles() != null) {
+            clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
+            try {
+                updateFiles = saveClubActivityDto.getFiles().stream().map(file -> {
+                    String url = s3Service.uploadS3File(file, generateRandomUrl());
+                    urlListForDelete.add(url);
+                    return BoardFile.builder()
+                            .name(file.getOriginalFilename())
+                            .url(url)
+                            .board(clubActivity)
+                            .build();
+                }).collect(Collectors.toList());
+
+            } catch (RuntimeException e) {
+                for (String url : urlListForDelete) {
+                    s3Service.deleteS3File(url);
+                }
+                throw new S3UploadFailedException();
+            }
+        }
+
+        clubActivity.updateFiles(updateFiles);
+        return clubActivityRepository.save(clubActivity).getId();
 
     }
 

@@ -52,8 +52,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: 1c53a2cc424b53b72d06803dbdf3f374
-            client-secret: Z11ClZAgIxHKvsMdXB9TGPt4v4AXv9ZF
+            client-id: ${IBAS_DEV_KAKAO_CLIENT_ID}
+            client-secret: ${IBAS_DEV_KAKAO_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/api/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -64,8 +64,8 @@ spring:
               - profile_image
               - account_email
           naver:
-            client-id: QgGjZtUT2pz2eBNm_w7P # 테스트용
-            client-secret: FTaATQnmJd
+            client-id: ${IBAS_DEV_NAVER_CLIENT_ID} # 테스트용
+            client-secret: ${IBAS_DEV_NAVER_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/api/login/oauth2/code/naver
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -75,8 +75,8 @@ spring:
               - email
           google:
             redirect-uri: http://localhost:8080/api/login/oauth2/code/google
-            client-id: 349486696525-bl18641l8gks0tam0a9so61ujjkquurc.apps.googleusercontent.com
-            client-secret: D4597GxTTMsxAHQEmNriyR-m
+            client-id: ${IBAS_DEV_GOOGLE_CLIENT_ID}
+            client-secret: ${IBAS_DEV_GOOGLE_CLIENT_SECRET}
             scope:
               - profile
               - email
@@ -99,17 +99,17 @@ auth:
       - http://localhost:3000/
     default-redirect-uri: https://dev.inhabas.com/login/process
 
-cloud:
-  aws:
-    s3:
-      bucket: inhabas-bucket
-    stack:
-      auto: false
-    region:
-      static: ap-northeast-2
-    credentials:
-      accessKey: ${IBAS_DEV_S3_ACCESS_KEY}
-      secretKey: ${IBAS_DEV_S3_SECRET_KEY}
+    cloud:
+      aws:
+        s3:
+          bucket: inhabas-bucket
+        stack:
+          auto: false
+        region:
+          static: ap-northeast-2
+        credentials:
+          accessKey: ${IBAS_DEV_S3_ACCESS_KEY}
+          secretKey: ${IBAS_DEV_S3_SECRET_KEY}
 
 
 logging:
@@ -120,6 +120,4 @@ logging:
     org.springframework.security.oauth2: DEBUG
 
 jwt:
-  secretKey: 0825n52gn825gn82nf2f8j308f2323g87574hgf9280375h48f32gfh82hg3758h725g38h725g38h75gf8h72g53f8h7235gf8h7235g8h75gf8h7253g8h7235gh87
-
-
+  secretKey: ${IBAS_DEV_JWT_SECRET_KEY}
