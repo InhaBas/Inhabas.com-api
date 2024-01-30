@@ -18,7 +18,7 @@ import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
 
 @Entity
-@Table(name = "normal_board")
+@Table(name = "NORMAL_BOARD")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
