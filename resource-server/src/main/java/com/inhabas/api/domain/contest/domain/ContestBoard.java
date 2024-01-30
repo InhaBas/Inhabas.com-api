@@ -19,7 +19,7 @@ import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 
 @Entity
-@Table(name = "contest_board")
+@Table(name = "CONTEST")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContestBoard extends NormalBoard {
@@ -28,9 +28,11 @@ public class ContestBoard extends NormalBoard {
 
   @Embedded private Association association;
 
-  @Column private LocalDate start;
+  @Column(name = "DATE_CONTEST_START", nullable = false)
+  private LocalDate dateContestStart;
 
-  @Column private LocalDate deadline;
+  @Column(name = "DATE_CONTEST_END", nullable = false)
+  private LocalDate dateContestEnd;
 
   /* Getter */
   public String getAssociation() {
@@ -46,18 +48,18 @@ public class ContestBoard extends NormalBoard {
   @Builder
   public ContestBoard(
       String title,
-      String contents,
+      String content,
       String association,
       String topic,
-      LocalDate start,
-      LocalDate deadline) {
+      LocalDate dateContestStart,
+      LocalDate dateContestEnd) {
 
     this.title = new Title(title);
-    this.content = new Content(contents);
+    this.content = new Content(content);
     this.association = new Association(association);
     this.topic = new Topic(topic);
-    this.start = start;
-    this.deadline = deadline;
+    this.dateContestStart = dateContestStart;
+    this.dateContestEnd = dateContestEnd;
   }
 
   //    public void modify(String title, String contents, String association, String topic,
