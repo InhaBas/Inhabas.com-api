@@ -14,8 +14,8 @@ public class ListContestBoardDto {
   private String topic;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate start;
+  private LocalDate dateContestSTart;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate deadline;
+  private LocalDate dateContestEnd;
 }

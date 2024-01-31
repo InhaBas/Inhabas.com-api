@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @AllArgsConstructor
 public class DetailContestBoardDto {
 
-  private Integer id;
+  private Long id;
   private String writerName;
   private String title;
   private String contents;
