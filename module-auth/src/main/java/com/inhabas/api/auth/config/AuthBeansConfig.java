@@ -1,4 +1,4 @@
-package com.inhabas.api.auth;
+package com.inhabas.api.auth.config;
 
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
@@ -14,7 +14,6 @@ import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenResolver;
 import com.inhabas.api.auth.domain.token.jwtUtils.refreshToken.RefreshTokenRepository;
 import com.inhabas.api.auth.domain.token.securityFilter.DefaultUserPrincipalService;
 import com.inhabas.api.auth.domain.token.securityFilter.UserPrincipalService;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

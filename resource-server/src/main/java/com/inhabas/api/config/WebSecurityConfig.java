@@ -1,6 +1,6 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
@@ -34,7 +34,7 @@ import java.util.List;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 /**
- * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.AuthSecurityConfig AuthSecurityConfig} 참고
+ * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.config.AuthSecurityConfig AuthSecurityConfig} 참고
  */
 public class WebSecurityConfig {
 

@@ -1,8 +1,6 @@
 package com.inhabas.testAnnotataion;
 
-import com.inhabas.api.auth.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.DefaultRoleHierarchy;
-import com.inhabas.api.config.WebSecurityConfig;
 import com.inhabas.testConfig.TestConfigurationForSecurity;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

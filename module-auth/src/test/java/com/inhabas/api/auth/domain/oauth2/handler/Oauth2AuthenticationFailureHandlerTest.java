@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.handler;
 
-import com.inhabas.api.auth.AuthProperties;
+import com.inhabas.api.auth.config.AuthProperties;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package com.inhabas.testConfig;
 
-import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;

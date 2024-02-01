@@ -1,4 +1,4 @@
-package com.inhabas.api.auth;
+package com.inhabas.api.auth.config;
 
 import com.inhabas.api.auth.domain.oauth2.CustomOAuth2UserService;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
