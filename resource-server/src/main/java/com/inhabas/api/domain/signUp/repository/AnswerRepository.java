@@ -9,4 +9,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     List<Answer> findByMember_Id(Long memberId);
 
+    void deleteByMember_IdIn(List<Long> memberIdList);
+
 }
