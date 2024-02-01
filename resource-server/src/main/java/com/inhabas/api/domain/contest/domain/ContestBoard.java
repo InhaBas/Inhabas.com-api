@@ -50,10 +50,6 @@ public class ContestBoard extends BaseBoard {
   @Column(name = "DATE_CONTEST_END", nullable = false)
   private LocalDate dateContestEnd;
 
-  @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-  protected List<Comment> comments = new ArrayList<>();
-
-  /* Getter */
   public String getAssociation() {
     return association.getValue();
   }
@@ -62,7 +58,10 @@ public class ContestBoard extends BaseBoard {
     return topic.getValue();
   }
 
-  /* Constructor */
+  public String getContent() {
+    return content.getValue();
+  }
+
   @Builder
   public ContestBoard(
       String title,
@@ -80,15 +79,7 @@ public class ContestBoard extends BaseBoard {
     this.dateContestEnd = dateContestEnd;
   }
 
-  public String getContent() {
-    return content.getValue();
-  }
-
-  public void updateText(String title, String content) {
-    this.title = new Title(title);
-    this.content = new Content(content);
-  }
-
+  // 첨부파일 수정
   public void updateFiles(List<BoardFile> files) {
 
     if (this.files != null) {
@@ -102,7 +93,8 @@ public class ContestBoard extends BaseBoard {
     }
   }
 
-  public void modify(
+  // 공모전 정보 수정
+  public void updateContest(
       String title,
       String content,
       Member writer,
@@ -115,6 +107,8 @@ public class ContestBoard extends BaseBoard {
       throw new OnlyWriterModifiableException();
     }
 
+    this.title = new Title(title);
+    this.content = new Content(content);
     this.association = new Association(association);
     this.topic = new Topic(topic);
     this.dateContestStart = dateContestStart;
