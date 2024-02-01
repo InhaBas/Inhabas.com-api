@@ -3,7 +3,7 @@ package com.inhabas.api.securityConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
 import com.inhabas.api.auth.domain.token.TokenResolver;
@@ -33,7 +33,7 @@ public class RoleHierarchyTest {
 //    BoardService boardService;
 //
 //    @MockBean
-//    MemberService memberService;
+//    MemberManageService memberService;
 //
 //    @MockBean
 //    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

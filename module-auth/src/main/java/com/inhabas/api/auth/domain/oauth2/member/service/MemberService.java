@@ -2,26 +2,17 @@ package com.inhabas.api.auth.domain.oauth2.member.service;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
-import com.inhabas.api.auth.domain.oauth2.member.dto.*;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileDetailDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileNameDto;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface MemberService {
 
     // 가입 관련
     void changeRole(Member member, Role role);
     void finishSignUp(Member member);
-
-
-    // 회원관리 관련
-    List<NotApprovedMemberManagementDto> getNotApprovedMembersBySearchAndRole(String search);
-    List<ApprovedMemberManagementDto> getApprovedMembersBySearchAndRole(String search);
-    void updateUnapprovedMembers(List<Long> memberIdList, String state);
-    void updateApprovedMembers(List<Long> memberIdList, Role role);
-    ContactDto getChiefContact();
-    <T> List<T> getPagedDtoList(Pageable pageable, List<T> dtoList);
 
 
     // OAuth 관련

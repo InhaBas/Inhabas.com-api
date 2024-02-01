@@ -2,23 +2,22 @@ package com.inhabas.api.auth.domain.oauth2.member.service;
 
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.dto.*;
+import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileDetailDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileNameDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.*;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.EXECUTIVES;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.basicMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,106 +34,6 @@ public class MemberServiceTest {
     @Mock
     UpdateNameRequestRepository updateNameRequestRepository;
 
-
-    @DisplayName("미승인 회원을 [역할과 {학번 or 이름}] 으로 조회한다.")
-    @Test
-    void getNotApprovedMembersBySearchAndRoleTest() {
-        //given
-        Member member = notapprovedMember();
-        given(memberRepository.findAllByRoleAndStudentIdLike(any(), any())).willReturn(List.of(member));
-        NotApprovedMemberManagementDto notApprovedMemberManagementDto =
-                new NotApprovedMemberManagementDto(
-                        member.getName(),
-                        member.getId(),
-                        member.getStudentId(),
-                        member.getPhone(),
-                        member.getEmail(),
-                        member.getSchoolInformation().getGrade(),
-                        member.getSchoolInformation().getMajor());
-
-        //when
-        List<NotApprovedMemberManagementDto> notApprovedMemberManagementDtos =
-                memberService.getNotApprovedMembersBySearchAndRole("12171707");
-
-        //then
-        assertThat(notApprovedMemberManagementDtos.get(0).getMemberId()).isEqualTo(notApprovedMemberManagementDto.getMemberId());
-
-    }
-
-    @DisplayName("비활동이상 회원을 [역할과 {학번 or 이름}] 으로 조회한다.")
-    @Test
-    void getApprovedMembersBySearchAndRole() {
-        //given
-        Member member = deactivatedMember();
-        given(memberRepository.findAllByRolesInAndStudentIdLike(any(), any())).willReturn(List.of(member));
-        ApprovedMemberManagementDto approvedMemberManagementDto =
-                new ApprovedMemberManagementDto(
-                        member.getName(),
-                        member.getId(),
-                        member.getStudentId(),
-                        member.getPhone(),
-                        member.getRole(),
-                        member.getSchoolInformation().getGeneration(),
-                        member.getSchoolInformation().getMajor());
-
-        //when
-        List<ApprovedMemberManagementDto> approvedMemberManagementDtos =
-                memberService.getApprovedMembersBySearchAndRole("12171707");
-
-        //then
-        assertThat(approvedMemberManagementDtos.get(0).getMemberId()).isEqualTo(approvedMemberManagementDto.getMemberId());
-
-    }
-
-    @DisplayName("미승인 회원들을 합격하거나 불합격한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"pass", "fail"})
-    void updateUnapprovedMembersTest(String state) {
-        //given
-        Member member = notapprovedMember();
-        given(memberRepository.findAllById(any())).willReturn(List.of(member));
-
-        //when
-        memberService.updateUnapprovedMembers(any(), state);
-
-        //then
-        if (state.equals("pass"))
-            then(memberRepository).should(times(1)).saveAll(any());
-        else if (state.equals("fail"))
-            then(memberRepository).should(times(1)).deleteAll(any());
-
-    }
-
-    @DisplayName("비활동 이상 회원들의 역할을 가능한 만큼만 수정한다.")
-    @Test
-    void updateApprovedMembersTest() {
-        //given
-        Member member = deactivatedMember();
-        given(memberRepository.findAllById(any())).willReturn(List.of(member));
-
-        //when
-        memberService.updateApprovedMembers(List.of(1L), EXECUTIVES);
-
-        //then
-        then(memberRepository).should(times(1)).saveAll(any());
-
-    }
-
-    @DisplayName("회장 연락처 조회한다.")
-    @Test
-    public void getChiefContactTest() {
-        //given
-        Member member = chiefMember();
-        given(memberRepository.findByIbasInformation_Role(any())).willReturn(member);
-
-        //when
-        ContactDto chiefContact = memberService.getChiefContact();
-
-        //then
-        assertThat(chiefContact.getEmail()).isEqualTo(member.getEmail());
-        assertThat(chiefContact.getPhoneNumber()).isEqualTo(member.getPhone());
-        assertThat(chiefContact.getName()).isEqualTo(member.getName());
-    }
 
     @DisplayName("내 정보를 조회한다.")
     @Test
