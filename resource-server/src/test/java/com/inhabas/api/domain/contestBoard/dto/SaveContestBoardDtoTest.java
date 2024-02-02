@@ -37,7 +37,7 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreNullError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(null, null, null, null, null, null);
+        new SaveContestBoardDto(null, null, null, null, null, null, null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -62,7 +62,7 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreBlankedError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(" ", " ", " ", " ", null, null);
+        new SaveContestBoardDto(" ", " ", " ", " ", null, null, null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -93,7 +93,8 @@ public class SaveContestBoardDtoTest {
             "Assoc".repeat(20) + ".",
             "topic".repeat(100) + ".",
             LocalDate.of(2022, 1, 1),
-            LocalDate.of(9999, 3, 3));
+            LocalDate.of(9999, 3, 3),
+            null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -119,7 +120,8 @@ public class SaveContestBoardDtoTest {
             "association",
             "topic",
             LocalDate.of(2022, 1, 1),
-            LocalDate.of(2022, 2, 1));
+            LocalDate.of(2022, 2, 1),
+            null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =

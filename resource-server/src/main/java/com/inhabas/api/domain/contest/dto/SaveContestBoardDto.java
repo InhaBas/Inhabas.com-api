@@ -1,21 +1,25 @@
 package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import org.hibernate.validator.constraints.Length;
 
+// 공모전 게시판 글 업데이트 및 저장
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class SaveContestBoardDto {
 
   @NotBlank(message = "제목을 입력하세요.")
@@ -23,7 +27,7 @@ public class SaveContestBoardDto {
   private String title;
 
   @NotBlank(message = "본문을 입력하세요.")
-  private String contents;
+  private String content;
 
   @Length(max = 100, message = "100자 이내로 작성해주세요.")
   @NotBlank(message = "협회기관을 입력하세요.")
@@ -39,4 +43,24 @@ public class SaveContestBoardDto {
   @NotNull(message = "공모전 모집 마감일을 등록해주세요.")
   @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
   private LocalDate dateContestEnd;
+
+  private List<MultipartFile> files;
+
+  @Builder
+  public SaveContestBoardDto(
+      String title,
+      String content,
+      String association,
+      String topic,
+      LocalDate dateContestStart,
+      LocalDate dateContestEnd,
+      List<MultipartFile> files) {
+    this.title = title;
+    this.content = content;
+    this.association = association;
+    this.topic = topic;
+    this.dateContestStart = dateContestStart;
+    this.dateContestEnd = dateContestEnd;
+    this.files = (files != null) ? files : new ArrayList<>();
+  }
 }

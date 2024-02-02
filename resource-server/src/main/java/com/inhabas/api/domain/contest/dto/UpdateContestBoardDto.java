@@ -13,19 +13,20 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.validator.constraints.Length;
 
+// 공모전 게시판 글 업데이트
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UpdateContestBoardDto {
   @NotNull(message = "수정할 게시글을 선택해주세요.")
-  private Integer id;
+  private Long id;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")
   private String title;
 
   @NotBlank(message = "본문을 입력하세요.")
-  private String contents;
+  private String content;
 
   @Length(max = 100, message = "100자 이내로 작성해주세요.")
   @NotBlank(message = "협회기관을 입력하세요.")
