@@ -1,14 +1,14 @@
 package com.inhabas.api.domain.signUp.repository;
 
-import com.inhabas.api.domain.signUp.domain.entity.Answer;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import com.inhabas.api.domain.signUp.domain.entity.Answer;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    List<Answer> findByMember_Id(Long memberId);
+  List<Answer> findByMember_Id(Long memberId);
 
-    void deleteByMember_IdIn(List<Long> memberIdList);
-
+  void deleteByMember_IdIn(List<Long> memberIdList);
 }

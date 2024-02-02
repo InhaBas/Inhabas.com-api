@@ -5,7 +5,7 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.MemberDuplicationQueryCondi
 
 public interface MemberDuplicationChecker {
 
-    Boolean isDuplicatedMember(MemberDuplicationQueryCondition condition);
+  Boolean isDuplicatedMember(MemberDuplicationQueryCondition condition);
 
-    Boolean isDuplicatedMember(Member member);
+  Boolean isDuplicatedMember(Member member);
 }

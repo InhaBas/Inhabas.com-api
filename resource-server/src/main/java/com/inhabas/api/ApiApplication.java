@@ -9,9 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @SpringBootApplication
 public class ApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(ApiApplication.class);
-		app.addListeners(new ApplicationPidFileWriter());
-		app.run(args);
-	}
+  public static void main(String[] args) {
+    SpringApplication app = new SpringApplication(ApiApplication.class);
+    app.addListeners(new ApplicationPidFileWriter());
+    app.run(args);
+  }
 }

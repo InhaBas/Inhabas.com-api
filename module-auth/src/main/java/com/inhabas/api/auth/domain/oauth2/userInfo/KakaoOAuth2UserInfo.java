@@ -1,59 +1,58 @@
 package com.inhabas.api.auth.domain.oauth2.userInfo;
 
-import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-
 import java.util.Map;
 import java.util.Objects;
 
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "nickname";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_IMAGE_URL = "profile_image_url";
-    private static final String KEY_EXTRA_DATA = "kakao_account";
+  private static final String KEY_ID = "id";
+  private static final String KEY_NAME = "nickname";
+  private static final String KEY_EMAIL = "email";
+  private static final String KEY_IMAGE_URL = "profile_image_url";
+  private static final String KEY_EXTRA_DATA = "kakao_account";
 
-    public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
-        super(OAuth2Provider.KAKAO, attributes);
-    }
+  public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
+    super(OAuth2Provider.KAKAO, attributes);
+  }
 
-    @Override
-    public String getId() {
+  @Override
+  public String getId() {
 
-        return Objects.toString(attributes.get(KEY_ID));
-    }
+    return Objects.toString(attributes.get(KEY_ID));
+  }
 
-    @Override
-    public String getName() {
+  @Override
+  public String getName() {
 
-        return (String) this.getProfile().get(KEY_NAME);
-    }
+    return (String) this.getProfile().get(KEY_NAME);
+  }
 
-    @Override
-    public String getEmail() {
+  @Override
+  public String getEmail() {
 
-        return (String) this.getExtraData().get(KEY_EMAIL);
-    }
+    return (String) this.getExtraData().get(KEY_EMAIL);
+  }
 
-    @Override
-    public String getImageUrl() {
+  @Override
+  public String getImageUrl() {
 
-        return (String) this.getProfile().get(KEY_IMAGE_URL);
-    }
+    return (String) this.getProfile().get(KEY_IMAGE_URL);
+  }
 
-    @SuppressWarnings({"unchecked"})
-    @Override
-    public Map<String, Object> getExtraData() {
+  @SuppressWarnings({"unchecked"})
+  @Override
+  public Map<String, Object> getExtraData() {
 
-        return (Map<String, Object>) attributes.get(KEY_EXTRA_DATA);
-    }
+    return (Map<String, Object>) attributes.get(KEY_EXTRA_DATA);
+  }
 
-    @SuppressWarnings({"unchecked"})
-    private Map<String, Object> getProfile() {
+  @SuppressWarnings({"unchecked"})
+  private Map<String, Object> getProfile() {
 
-        return (Map<String, Object>) this.getExtraData().get("profile");
-    }
+    return (Map<String, Object>) this.getExtraData().get("profile");
+  }
 }
 
 /*  attribute 는 아래와 같은 형식

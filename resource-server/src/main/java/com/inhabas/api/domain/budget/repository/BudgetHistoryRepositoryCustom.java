@@ -1,17 +1,18 @@
 package com.inhabas.api.domain.budget.repository;
 
-import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+
 public interface BudgetHistoryRepositoryCustom {
 
-    Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable);
+  Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable);
 
-    Optional<BudgetHistoryDetailDto> findDtoById(Integer id);
+  Optional<BudgetHistoryDetailDto> findDtoById(Integer id);
 
-    List<Integer> findAllYear();
+  List<Integer> findAllYear();
 }

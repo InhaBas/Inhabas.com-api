@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuestionnaireDto {
 
-    private Long id;
+  private Long id;
 
-    private String question;
-
+  private String question;
 }

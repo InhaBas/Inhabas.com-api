@@ -1,19 +1,21 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.repository;
 
-import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
-import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
+import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
+
 public interface MemberSocialAccountRepository
-        extends JpaRepository<MemberSocialAccount, Long>, MemberSocialAccountRepositoryCustom {
+    extends JpaRepository<MemberSocialAccount, Long>, MemberSocialAccountRepositoryCustom {
 
-    Optional<MemberSocialAccount> findMemberSocialAccountByEmailAndProvider(Email email, OAuth2Provider provider);
+  Optional<MemberSocialAccount> findMemberSocialAccountByEmailAndProvider(
+      Email email, OAuth2Provider provider);
 
-    boolean existsByMember_Id(Long memberId);
+  boolean existsByMember_Id(Long memberId);
 
-    void deleteByMember_IdIn(List<Long> memberIdList);
+  void deleteByMember_IdIn(List<Long> memberIdList);
 }

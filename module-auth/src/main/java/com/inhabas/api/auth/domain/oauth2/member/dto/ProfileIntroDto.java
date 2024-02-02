@@ -10,12 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfileIntroDto {
 
-    private String introduce;
-    private Boolean isHOF;
+  private String introduce;
+  private Boolean isHOF;
 
-    @Builder
-    public ProfileIntroDto(String introduce, Boolean isHOF) {
-        this.introduce = introduce;
-        this.isHOF = isHOF;
-    }
+  @Builder
+  public ProfileIntroDto(String introduce, Boolean isHOF) {
+    this.introduce = introduce;
+    this.isHOF = isHOF;
+  }
 }

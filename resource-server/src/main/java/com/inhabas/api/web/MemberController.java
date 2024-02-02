@@ -1,5 +1,16 @@
 package com.inhabas.api.web;
 
+import java.util.List;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.usecase.MemberManageService;
@@ -17,15 +28,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @Tag(name = "회원관리", description = "회원 정보 조회, 수정 / 총무, 회장단 이상")
@@ -33,177 +35,214 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberManageService memberManageService;
-    private final AnswerService answerService;
+  private final MemberManageService memberManageService;
+  private final AnswerService answerService;
 
+  @Operation(summary = "(신입)미승인 멤버 정보 목록 조회", description = "신입 멤버 정보 목록 조회 (미승인 → 비활동 처리하기위해)")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+      })
+  @GetMapping("/members/unapproved")
+  public ResponseEntity<PagedMemberResponseDto<NotApprovedMemberManagementDto>>
+      getUnapprovedMembers(
+          @Parameter(description = "페이지", example = "0")
+              @RequestParam(name = "page", defaultValue = "0")
+              int page,
+          @Parameter(description = "페이지당 개수", example = "10")
+              @RequestParam(name = "size", defaultValue = "10")
+              int size,
+          @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+              @RequestParam(name = "search", defaultValue = "")
+              String search) {
 
-    @Operation(summary = "(신입)미승인 멤버 정보 목록 조회",
-            description = "신입 멤버 정보 목록 조회 (미승인 → 비활동 처리하기위해)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(
-            schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
-    })
-    @GetMapping("/members/unapproved")
-    public ResponseEntity<PagedMemberResponseDto<NotApprovedMemberManagementDto>> getUnapprovedMembers(
-            @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
-            @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size,
-            @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동") @RequestParam(name = "search", defaultValue = "") String search
-    ) {
+    Pageable pageable = PageRequest.of(page, size);
+    List<NotApprovedMemberManagementDto> allDtos =
+        memberManageService.getNotApprovedMembersBySearchAndRole(search);
+    List<NotApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
-        Pageable pageable = PageRequest.of(page, size);
-        List<NotApprovedMemberManagementDto> allDtos = memberManageService.getNotApprovedMembersBySearchAndRole(search);
-        List<NotApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    PageImpl<NotApprovedMemberManagementDto> newMemberManagementDtoPage =
+        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(newMemberManagementDtoPage);
 
-        PageImpl<NotApprovedMemberManagementDto> newMemberManagementDtoPage =
-                new PageImpl<>(pagedDtos, pageable, allDtos.size());
-        PageInfoDto pageInfoDto = new PageInfoDto(newMemberManagementDtoPage);
+    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+  }
 
-        return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
-
-    }
-
-
-    @Operation(summary = "(신입)미승인 멤버 -> 비활동 멤버로 변경 / 가입 거절 처리",
-            description = "(신입)미승인 멤버 비활동 멤버로 변경 / 가입 거절 처리")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+  @Operation(
+      summary = "(신입)미승인 멤버 -> 비활동 멤버로 변경 / 가입 거절 처리",
+      description = "(신입)미승인 멤버 비활동 멤버로 변경 / 가입 거절 처리")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
-                    examples = @ExampleObject(
-                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
-                    )
-            )),
-    })
-    @PutMapping("/members/unapproved")
-    public ResponseEntity<Void> updateUnapprovedMembers(@RequestBody UpdateRequestDto updateRequestDto) {
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+      })
+  @PutMapping("/members/unapproved")
+  public ResponseEntity<Void> updateUnapprovedMembers(
+      @RequestBody UpdateRequestDto updateRequestDto) {
 
-        memberManageService.updateUnapprovedMembers(updateRequestDto.getMemberIdList(), updateRequestDto.getState());
-        return ResponseEntity.noContent().build();
+    memberManageService.updateUnapprovedMembers(
+        updateRequestDto.getMemberIdList(), updateRequestDto.getState());
+    return ResponseEntity.noContent().build();
+  }
 
-    }
-
-
-    @Operation(summary = "특정 신입 멤버 지원서 조회",
-            description = "특정 신입 멤버 지원서 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "404", description = "데이터가 존재하지 않습니다.", content = @Content(
+  @Operation(summary = "특정 신입 멤버 지원서 조회", description = "특정 신입 멤버 지원서 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
-                    examples = @ExampleObject(
-                            value = "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"
-                    )
-            ))
-    })
-    @GetMapping("/members/{memberId}/application")
-    public ResponseEntity<ApplicationDetailDto> getUnapprovedMemberApplication(@PathVariable Long memberId) {
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  @GetMapping("/members/{memberId}/application")
+  public ResponseEntity<ApplicationDetailDto> getUnapprovedMemberApplication(
+      @PathVariable Long memberId) {
 
-        ApplicationDetailDto applicationDetailDto = answerService.getApplication(memberId);
-        return ResponseEntity.ok(applicationDetailDto);
+    ApplicationDetailDto applicationDetailDto = answerService.getApplication(memberId);
+    return ResponseEntity.ok(applicationDetailDto);
+  }
 
-    }
+  @Operation(summary = "졸업자 목록 조회", description = "졸업자 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+      })
+  @GetMapping("/members/graduated")
+  public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getGraduatedMembers(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
 
-    @Operation(summary = "졸업자 목록 조회",
-            description = "졸업자 목록 조회")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(
-                    schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
-    })
-    @GetMapping("/members/graduated")
-    public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getGraduatedMembers(
-            @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
-            @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size,
-            @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동") @RequestParam(name = "search", defaultValue = "") String search
-    ) {
+    Pageable pageable = PageRequest.of(page, size);
+    List<ApprovedMemberManagementDto> allDtos =
+        memberManageService.getGraduatedMembersBySearch(search);
+    List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
-        Pageable pageable = PageRequest.of(page, size);
-        List<ApprovedMemberManagementDto> allDtos = memberManageService.getGraduatedMembersBySearch(search);
-        List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    PageImpl<ApprovedMemberManagementDto> graduatedMemberManagementDtoPage =
+        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(graduatedMemberManagementDtoPage);
 
-        PageImpl<ApprovedMemberManagementDto> graduatedMemberManagementDtoPage =
-                new PageImpl<>(pagedDtos, pageable, allDtos.size());
-        PageInfoDto pageInfoDto = new PageInfoDto(graduatedMemberManagementDtoPage);
+    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+  }
 
-        return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+  @Operation(summary = "비활동 이상 졸업자 아닌 멤버 목록 조회", description = "이름, 학번 검색 가능")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+      })
+  @GetMapping("/members/notGraduated")
+  public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getNotGraduatedMembers(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
 
-    }
+    Pageable pageable = PageRequest.of(page, size);
+    List<ApprovedMemberManagementDto> allDtos =
+        memberManageService.getApprovedMembersBySearchAndRole(search);
+    List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
+    PageImpl<ApprovedMemberManagementDto> oldMemberManagementDtoPage =
+        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
 
-    @Operation(summary = "비활동 이상 졸업자 아닌 멤버 목록 조회",
-            description = "이름, 학번 검색 가능")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", content = { @Content(
-                    schema = @Schema(implementation = PagedMemberResponseDto.class)) }),
-    })
-    @GetMapping("/members/notGraduated")
-    public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getNotGraduatedMembers(
-            @Parameter(description = "페이지", example = "0") @RequestParam(name = "page", defaultValue = "0") int page,
-            @Parameter(description = "페이지당 개수", example = "10") @RequestParam(name = "size", defaultValue = "10") int size,
-            @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동") @RequestParam(name = "search", defaultValue = "") String search
-    ) {
+    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+  }
 
-        Pageable pageable = PageRequest.of(page, size);
-        List<ApprovedMemberManagementDto> allDtos = memberManageService.getApprovedMembersBySearchAndRole(search);
-        List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
-
-        PageImpl<ApprovedMemberManagementDto> oldMemberManagementDtoPage =
-                new PageImpl<>(pagedDtos, pageable, allDtos.size());
-        PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
-
-        return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
-
-    }
-
-
-    @Operation(summary = "비활동 이상 멤버 권한 수정",
-            description = "변경 가능 권한 [ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED]")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+  @Operation(
+      summary = "비활동 이상 멤버 권한 수정",
+      description =
+          "변경 가능 권한 [ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED]")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
-                    examples = @ExampleObject(
-                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
-                    )
-            )),
-    })
-    @PutMapping("/members/approved/role")
-    public ResponseEntity<Void> updateApprovedMembersRole(@RequestBody UpdateRoleRequestDto updateRoleRequestDto) {
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+      })
+  @PutMapping("/members/approved/role")
+  public ResponseEntity<Void> updateApprovedMembersRole(
+      @RequestBody UpdateRoleRequestDto updateRoleRequestDto) {
 
-        memberManageService.updateApprovedMembersRole(updateRoleRequestDto.getMemberIdList(), updateRoleRequestDto.getRole());
-        return ResponseEntity.noContent().build();
+    memberManageService.updateApprovedMembersRole(
+        updateRoleRequestDto.getMemberIdList(), updateRoleRequestDto.getRole());
+    return ResponseEntity.noContent().build();
+  }
 
-    }
-
-    @Operation(summary = "비활동 이상 멤버 타입 수정",
-            description = "변경 가능 타입 [UNDERGRADUATE, BACHELOR, GRADUATED, PROFESSOR, OTHER]")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204"),
-            @ApiResponse(responseCode = "400 ", description = "입력값이 없거나, 타입이 유효하지 않습니다.", content = @Content(
+  @Operation(
+      summary = "비활동 이상 멤버 타입 수정",
+      description = "변경 가능 타입 [UNDERGRADUATE, BACHELOR, GRADUATED, PROFESSOR, OTHER]")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
                     schema = @Schema(implementation = ErrorResponse.class),
-                    examples = @ExampleObject(
-                            value = "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"
-                    )
-            )),
-    })
-    @PutMapping("/members/approved/type")
-    public ResponseEntity<Void> updateApprovedMembersType(@RequestBody UpdateTypeRequestDto updateTypeRequestDto) {
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+      })
+  @PutMapping("/members/approved/type")
+  public ResponseEntity<Void> updateApprovedMembersType(
+      @RequestBody UpdateTypeRequestDto updateTypeRequestDto) {
 
-        memberManageService.updateApprovedMembersType(updateTypeRequestDto.getMemberIdList(), updateTypeRequestDto.getType());
-        return ResponseEntity.noContent().build();
+    memberManageService.updateApprovedMembersType(
+        updateTypeRequestDto.getMemberIdList(), updateTypeRequestDto.getType());
+    return ResponseEntity.noContent().build();
+  }
 
-    }
+  @Operation(summary = "회장 연락처 조회", description = "CHIEF 의 이름, 전화번호, 이메일")
+  @SecurityRequirements(value = {})
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200"),
+      })
+  @GetMapping("/member/chief")
+  public ResponseEntity<ContactDto> getChiefContact() {
 
-
-    @Operation(summary = "회장 연락처 조회",
-            description = "CHIEF 의 이름, 전화번호, 이메일")
-    @SecurityRequirements(value = {})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-    })
-    @GetMapping("/member/chief")
-    public ResponseEntity<ContactDto> getChiefContact() {
-
-        return ResponseEntity.ok(memberManageService.getChiefContact());
-
-    }
-
+    return ResponseEntity.ok(memberManageService.getChiefContact());
+  }
 }

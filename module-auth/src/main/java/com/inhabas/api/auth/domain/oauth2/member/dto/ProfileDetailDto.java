@@ -10,14 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ProfileDetailDto {
 
-    private String major;
-    private Integer grade;
-    private String phoneNumber;
+  private String major;
+  private Integer grade;
+  private String phoneNumber;
 
-    @Builder
-    public ProfileDetailDto(String major, Integer grade, String phoneNumber) {
-        this.major = major;
-        this.grade = grade;
-        this.phoneNumber = phoneNumber;
-    }
+  @Builder
+  public ProfileDetailDto(String major, Integer grade, String phoneNumber) {
+    this.major = major;
+    this.grade = grade;
+    this.phoneNumber = phoneNumber;
+  }
 }
