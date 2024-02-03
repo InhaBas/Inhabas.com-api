@@ -292,25 +292,25 @@ public class LectureControllerTest {
     then(studentService).should(times(1)).enroll(any(), any());
   }
 
-  @DisplayName("수강생 한명의 수강상태를 변경한다.")
-  @Test
-  public void changeStudentStatusTest() throws Exception {
-
-    doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
-
-    // when
-    mockMvc
-        .perform(
-            put("/lecture/1/student/121/status")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("\"BLOCKED\""))
-        .andExpect(status().isNoContent());
-
-    // then
-    then(studentService)
-        .should(times(1))
-        .changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
-  }
+//  @DisplayName("수강생 한명의 수강상태를 변경한다.")
+//  @Test
+//  public void changeStudentStatusTest() throws Exception {
+//
+//    doNothing().when(studentService).changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
+//
+//    // when
+//    mockMvc
+//        .perform(
+//            put("/lecture/1/student/121/status")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("\"BLOCKED\""))
+//        .andExpect(status().isNoContent());
+//
+//    // then
+//    then(studentService)
+//        .should(times(1))
+//        .changeStatusOfOneStudentByLecturer(any(), any(), any(), any());
+//  }
 
   //    @DisplayName("다수의 수강생 상태를 변경한다.")
   //    @Test

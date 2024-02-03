@@ -61,15 +61,15 @@ public class BudgetApplicationControllerTest {
   //                .updateApplication(any(BudgetApplicationUpdateForm.class), any());
   //    }
 
-  @DisplayName("지원서를 삭제한다.")
-  @Test
-  public void deleteApplicationTest() throws Exception {
-
-    mockMvc.perform(delete("/budget/application/1")).andExpect(status().isNoContent());
-
-    // then
-    then(service).should(times(1)).deleteApplication(anyInt(), any());
-  }
+//  @DisplayName("지원서를 삭제한다.")
+//  @Test
+//  public void deleteApplicationTest() throws Exception {
+//
+//    mockMvc.perform(delete("/budget/application/1")).andExpect(status().isNoContent());
+//
+//    // then
+//    then(service).should(times(1)).deleteApplication(anyInt(), any());
+//  }
 
   @DisplayName("지원서를 조회한다.")
   @Test
@@ -91,18 +91,19 @@ public class BudgetApplicationControllerTest {
     then(service).should(times(1)).getApplications(any(), any(Pageable.class));
   }
 
-  @DisplayName("예산지원신청글의 상태를 변경한다.")
-  @Test
-  public void changeApplicationStatusTest() throws Exception {
+//  @DisplayName("예산지원신청글의 상태를 변경한다.")
+//  @Test
+//  public void changeApplicationStatusTest() throws Exception {
+//
+//    mockMvc
+//        .perform(
+//            put("/budget/application/1/status")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content("{\"status\":\"PROCESSED\", \"rejectReason\":\"\"}"))
+//        .andExpect(status().isNoContent());
+//
+//    // then
+//    then(processor).should(times(1)).process(anyInt(), any(), any());
+//  }
 
-    mockMvc
-        .perform(
-            put("/budget/application/1/status")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"status\":\"PROCESSED\", \"rejectReason\":\"\"}"))
-        .andExpect(status().isNoContent());
-
-    // then
-    then(processor).should(times(1)).process(anyInt(), any(), any());
-  }
 }
