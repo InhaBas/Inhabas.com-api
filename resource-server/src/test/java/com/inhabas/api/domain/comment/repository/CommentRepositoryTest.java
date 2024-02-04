@@ -155,6 +155,6 @@ public class CommentRepositoryTest {
 
     // then
     List<Comment> all = commentRepository.findAll();
-    assertThat(all.size()).isEqualTo(0);
+    assertThat(all).hasSize(0);
   }
 }

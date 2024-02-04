@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.comment.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -154,6 +154,6 @@ public class CommentServiceTest {
         .willReturn(expectedCommentAfterFind(1L, proxyWriter, proxyBoard));
 
     // when then
-    assertDoesNotThrow(() -> commentService.delete(1L));
+    assertThatCode(() -> commentService.delete(1L)).doesNotThrowAnyException();
   }
 }

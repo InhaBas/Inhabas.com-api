@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -121,16 +120,16 @@ public class BudgetHistoryControllerTest {
   //        then(budgetHistoryService).should(times(1)).modifyHistory(any(), any());
   //    }
 
-//  @DisplayName("예산내역 삭제 시 validation 을 통과한다.")
-//  @Test
-//  public void budgetDeletionFormWillPassValidationTest() throws Exception {
-//    // given
-//
-//    // when
-//    mockMvc.perform(delete("/budget/history/2")).andExpect(status().isNoContent());
-//
-//    then(budgetHistoryService).should(times(1)).deleteHistory(any(), any());
-//  }
+  //  @DisplayName("예산내역 삭제 시 validation 을 통과한다.")
+  //  @Test
+  //  public void budgetDeletionFormWillPassValidationTest() throws Exception {
+  //    // given
+  //
+  //    // when
+  //    mockMvc.perform(delete("/budget/history/2")).andExpect(status().isNoContent());
+  //
+  //    then(budgetHistoryService).should(times(1)).deleteHistory(any(), any());
+  //  }
 
   @DisplayName("회계내역 리스트를 불러온다.")
   @Test

@@ -32,12 +32,14 @@ public class S3ServiceImpl implements S3Service {
 
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentType(contentType);
+      metadata.setContentLength(multipartFile.getSize());
 
       s3Client.putObject(
           new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
               .withCannedAcl(CannedAccessControlList.PublicRead));
     } catch (IOException e) {
       e.printStackTrace();
+      throw new RuntimeException();
     }
 
     printS3ObjectSummaries();

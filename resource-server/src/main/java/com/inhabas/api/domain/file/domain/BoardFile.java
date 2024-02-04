@@ -21,7 +21,7 @@ import com.inhabas.api.domain.board.domain.BaseBoard;
 public class BoardFile extends BaseFile {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "board_id", foreignKey = @ForeignKey(name = "FK_FILE_OF_BOARD"))
+  @JoinColumn(name = "BOARD_ID", foreignKey = @ForeignKey(name = "FK_FILE_OF_BOARD"))
   private BaseBoard board;
 
   // boardFile 과 baseBoard 의 연관관계 편의 메소드

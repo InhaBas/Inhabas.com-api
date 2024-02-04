@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "동아리 소개", description = "동아리 소개 관련")
@@ -40,6 +41,7 @@ public class ClubHistoryController {
               @Content(schema = @Schema(implementation = ClubHistoryDto.class, type = "array"))
             }),
       })
+  @SecurityRequirements(value = {})
   @GetMapping("/club/histories")
   public ResponseEntity<List<ClubHistoryDto>> getClubHistories() {
 
@@ -74,6 +76,7 @@ public class ClubHistoryController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
+  @SecurityRequirements(value = {})
   @GetMapping("/club/history/{clubHistoryId}")
   public ResponseEntity<ClubHistoryDto> findClubHistory(@PathVariable Long clubHistoryId) {
 

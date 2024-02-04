@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
@@ -24,6 +25,7 @@ public class CommentServiceImpl implements CommentService {
 
   private final EntityManager em;
   private final CommentRepository commentRepository;
+  private final MemberRepository memberRepository;
 
   @Transactional(readOnly = true)
   public List<CommentDetailDto> getComments(Integer menuId, Long boardId) {
