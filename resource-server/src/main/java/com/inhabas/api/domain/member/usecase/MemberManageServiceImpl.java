@@ -101,8 +101,8 @@ public class MemberManageServiceImpl implements MemberManageService {
   public List<ApprovedMemberManagementDto> getGraduatedMembersBySearch(String search) {
     final List<Member> members =
         StringUtils.isNumeric(search)
-            ? memberRepository.findAllGraduatedByRolesInAndStudentLike(search)
-            : memberRepository.findAllGraduatedByRolesInAndNameLike(search);
+            ? memberRepository.findAllGraduatedByRolesInAndStudentLike(OLD_ROLES, search)
+            : memberRepository.findAllGraduatedByRolesInAndNameLike(OLD_ROLES, search);
 
     return members.stream()
         .map(

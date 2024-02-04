@@ -22,7 +22,7 @@ public interface MemberRepositoryCustom {
 
   List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name);
 
-  List<Member> findAllGraduatedByRolesInAndStudentLike(String studentId);
+  List<Member> findAllGraduatedByRolesInAndStudentLike(Collection<Role> roles, String studentId);
 
-  List<Member> findAllGraduatedByRolesInAndNameLike(String name);
+  List<Member> findAllGraduatedByRolesInAndNameLike(Collection<Role> roles, String name);
 }

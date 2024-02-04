@@ -84,10 +84,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return queryFactory
         .selectFrom(member)
-        .where(
-            eqRole(role)
-                .and(member.name.value.like("%" + name + "%"))
-                .and(member.schoolInformation.memberType.ne(MemberType.GRADUATED)))
+        .where(eqRole(role).and(member.name.value.like("%" + name + "%")))
         .fetch();
   }
 
@@ -116,13 +113,20 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return queryFactory
         .selectFrom(member)
-        .where(member.ibasInformation.role.in(roles).and(member.name.value.like("%" + name + "%")))
+        .where(
+            member
+                .ibasInformation
+                .role
+                .in(roles)
+                .and(member.name.value.like("%" + name + "%"))
+                .and(member.schoolInformation.memberType.ne(MemberType.GRADUATED)))
         .orderBy(ORDER_BY_ROLE, orderByStudentId)
         .fetch();
   }
 
   @Override
-  public List<Member> findAllGraduatedByRolesInAndStudentLike(String studentId) {
+  public List<Member> findAllGraduatedByRolesInAndStudentLike(
+      Collection<Role> roles, String studentId) {
 
     OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
 
@@ -130,16 +134,17 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         .selectFrom(member)
         .where(
             member
-                .schoolInformation
-                .memberType
-                .eq(MemberType.GRADUATED)
+                .ibasInformation
+                .role
+                .in(roles)
+                .and(member.schoolInformation.memberType.eq(MemberType.GRADUATED))
                 .and(member.studentId.id.like("%" + studentId + "%")))
         .orderBy(ORDER_BY_ROLE, orderByStudentId)
         .fetch();
   }
 
   @Override
-  public List<Member> findAllGraduatedByRolesInAndNameLike(String name) {
+  public List<Member> findAllGraduatedByRolesInAndNameLike(Collection<Role> roles, String name) {
 
     OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
 
@@ -147,9 +152,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         .selectFrom(member)
         .where(
             member
-                .schoolInformation
-                .memberType
-                .eq(MemberType.GRADUATED)
+                .ibasInformation
+                .role
+                .in(roles)
+                .and(member.schoolInformation.memberType.eq(MemberType.GRADUATED))
                 .and(member.name.value.like("%" + name + "%")))
         .orderBy(ORDER_BY_ROLE, orderByStudentId)
         .fetch();
