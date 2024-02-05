@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
+import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -97,4 +99,33 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   //        return contestBoard.menuId.eq(menuId);
   //    }
 
+  // 공모전 게시판 검색
+  @Override
+  public List<ContestBoard> findAllByWriterNameLike(Name writerName, String name) {
+    return queryFactory
+        .selectFrom(contestBoard)
+        .where(
+            contestBoard
+                .writer
+                .name
+                .eq(writerName)
+                .and(contestBoard.writer.name.value.likeIgnoreCase("%" + name + "%")))
+        .fetch();
+  }
+
+  @Override
+  public List<ContestBoard> findAllByTitleLike(String title) {
+    return queryFactory
+        .selectFrom(contestBoard)
+        .where(contestBoard.title.value.likeIgnoreCase("%" + title + "%"))
+        .fetch();
+  }
+
+  @Override
+  public List<ContestBoard> findAllByContentLike(String content) {
+    return queryFactory
+        .selectFrom(contestBoard)
+        .where(contestBoard.content.value.likeIgnoreCase("%" + content + "%"))
+        .fetch();
+  }
 }
