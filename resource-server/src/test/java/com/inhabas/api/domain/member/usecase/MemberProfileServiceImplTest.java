@@ -1,6 +1,5 @@
-package com.inhabas.api.auth.domain.oauth2.member.service;
+package com.inhabas.api.domain.member.usecase;
 
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.basicMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -16,6 +15,7 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileNameDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,9 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberServiceTest {
+public class MemberProfileServiceImplTest {
 
-  @InjectMocks MemberServiceImpl memberService;
+  @InjectMocks
+  MemberProfileServiceImpl memberProfileService;
   @Mock MemberRepository memberRepository;
   @Mock UpdateNameRequestRepository updateNameRequestRepository;
 
@@ -35,11 +36,11 @@ public class MemberServiceTest {
   @Test
   void getMyProfileTest() {
     // given
-    Member member = basicMember();
+    Member member = MemberTest.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
     // when
-    MyProfileDto myProfileDto = memberService.getMyProfile(any());
+    MyProfileDto myProfileDto = memberProfileService.getMyProfile(any());
 
     // then
     assertThat(myProfileDto.getName()).isEqualTo(member.getName());
@@ -57,12 +58,12 @@ public class MemberServiceTest {
   @Test
   void updateMyProfileDetailTest() {
     // given
-    Member member = basicMember();
+    Member member = MemberTest.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
-    ProfileDetailDto profileDetailDto = new ProfileDetailDto("경영학과", null, null);
+    ProfileDetailDto profileDetailDto = new ProfileDetailDto("경영학과", null, null, null);
 
     // when
-    memberService.updateMyProfileDetail(any(), profileDetailDto);
+    memberProfileService.updateMyProfileDetail(any(), profileDetailDto);
 
     // then
     assertThat(member.getSchoolInformation().getMajor()).isEqualTo(profileDetailDto.getMajor());
@@ -72,12 +73,12 @@ public class MemberServiceTest {
   @Test
   void updateMyProfileIntroTest() {
     // given
-    Member member = basicMember();
+    Member member = MemberTest.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     ProfileIntroDto profileIntroDto = new ProfileIntroDto("HELLO", true);
 
     // when
-    memberService.updateMyProfileIntro(any(), profileIntroDto);
+    memberProfileService.updateMyProfileIntro(any(), profileIntroDto);
 
     // then
     assertThat(member.getIbasInformation().getIntroduce())
@@ -89,12 +90,12 @@ public class MemberServiceTest {
   @Test
   void requestMyProfileNameTest() {
     // given
-    Member member = basicMember();
+    Member member = MemberTest.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     ProfileNameDto profileNameDto = new ProfileNameDto("유동현");
 
     // when
-    memberService.requestMyProfileName(any(), profileNameDto);
+    memberProfileService.requestMyProfileName(any(), profileNameDto);
 
     // then
     then(updateNameRequestRepository).should(times(1)).save(any());
