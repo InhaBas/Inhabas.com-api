@@ -23,9 +23,7 @@ public class S3ServiceImpl implements S3Service {
   private final AmazonS3Client s3Client;
 
   @Override
-  public String uploadS3File(MultipartFile multipartFile, String dirName) {
-
-    String fileName = dirName + "_" + multipartFile.getOriginalFilename();
+  public String uploadS3File(MultipartFile multipartFile, String fileName) {
 
     try {
       String contentType = getContentType(fileName);
@@ -37,6 +35,29 @@ public class S3ServiceImpl implements S3Service {
       s3Client.putObject(
           new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
               .withCannedAcl(CannedAccessControlList.PublicRead));
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
+
+    printS3ObjectSummaries();
+
+    return s3Client.getUrl(bucket, fileName).toString();
+  }
+
+  @Override
+  public String uploadS3Image(MultipartFile multipartFile, String fileName) {
+
+    try {
+      String contentType = getOnlyImageContentType(fileName);
+
+      ObjectMetadata metadata = new ObjectMetadata();
+      metadata.setContentType(contentType);
+      metadata.setContentLength(multipartFile.getSize());
+
+      s3Client.putObject(
+              new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+                      .withCannedAcl(CannedAccessControlList.PublicRead));
     } catch (IOException e) {
       e.printStackTrace();
       throw new RuntimeException();
@@ -78,6 +99,21 @@ public class S3ServiceImpl implements S3Service {
     contentTypeMap.put("pdf", "application/pdf");
     contentTypeMap.put("zip", "application/zip");
     contentTypeMap.put("csv", "text/csv");
+
+    if (!contentTypeMap.containsKey(ext)) {
+      throw new IOException();
+    }
+    return contentTypeMap.get(ext);
+  }
+
+  private String getOnlyImageContentType(String fileName) throws IOException {
+
+    String ext = getExtension(fileName);
+    Map<String, String> contentTypeMap = new HashMap<>();
+
+    contentTypeMap.put("gif", "image/gif");
+    contentTypeMap.put("jpeg", "image/jpeg");
+    contentTypeMap.put("png", "image/png");
 
     if (!contentTypeMap.containsKey(ext)) {
       throw new IOException();
