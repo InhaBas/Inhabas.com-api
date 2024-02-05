@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -27,6 +25,7 @@ import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -92,7 +91,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   }
 
   @Override
-  @org.springframework.transaction.annotation.Transactional(readOnly = true)
+  @Transactional(readOnly = true)
   public ContestBoardDetailDto getContestBoard(Long boardId) {
 
     ContestBoard contestBoard =
