@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequiredArgsConstructor
 public class ContestBoardController {
 
-  private final ContestBoardService boardService;
+  private final ContestBoardService contestBoardService;
 
   @Operation(summary = "공모전 게시판 목록 조회", description = "공모전 게시판 목록 조회 (썸네일은 첫 사진 첨부파일)")
   @ApiResponses(
