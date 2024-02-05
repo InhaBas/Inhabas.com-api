@@ -16,7 +16,7 @@ public class RoleHierarchyTest {
   //    BoardService boardService;
   //
   //    @MockBean
-  //    MemberService memberService;
+  //    MemberManageService memberService;
   //
   //    @MockBean
   //    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

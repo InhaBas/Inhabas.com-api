@@ -79,6 +79,12 @@ subprojects {
                 'org.springframework.cloud:spring-cloud-starter-config:3.1.0',
                 'org.springframework.boot:spring-boot-starter-actuator:2.6.2',
                 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.0',
+
+                // mail
+                'org.springframework.boot:spring-boot-starter-mail',
+                'com.amazonaws:aws-java-sdk-ses:1.12.3',
+                'org.springframework.boot:spring-boot-starter-thymeleaf'
+
         )
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

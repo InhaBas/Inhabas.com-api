@@ -10,7 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;

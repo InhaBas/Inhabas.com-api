@@ -18,6 +18,8 @@ import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
+import com.inhabas.api.domain.signUp.dto.QuestionAnswerDto;
 import com.inhabas.api.domain.signUp.repository.AnswerRepository;
 
 @Service
@@ -106,5 +108,31 @@ public class AnswerServiceImpl implements AnswerService {
               return new AnswerDto(questionnaireId, answer.getContent());
             })
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public ApplicationDetailDto getApplication(Long memberId) {
+
+    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    List<QuestionAnswerDto> questionAnswerDtoList =
+        answerRepository.findByMember_Id(memberId).stream()
+            .map(
+                answer ->
+                    new QuestionAnswerDto(
+                        answer.getQuestionnaire().getId(),
+                        answer.getQuestionnaire().getQuestion(),
+                        answer.getContent()))
+            .collect(Collectors.toList());
+
+    return ApplicationDetailDto.builder()
+        .memberId(member.getId())
+        .name(member.getName())
+        .grade(member.getSchoolInformation().getGrade())
+        .major(member.getSchoolInformation().getMajor())
+        .email(member.getEmail())
+        .phoneNumber(member.getPhone())
+        .dateJoined(member.getIbasInformation().getDateJoined())
+        .answers(questionAnswerDtoList)
+        .build();
   }
 }

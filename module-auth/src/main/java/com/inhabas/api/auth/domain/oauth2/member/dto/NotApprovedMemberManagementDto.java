@@ -4,6 +4,7 @@ import javax.validation.constraints.*;
 
 import lombok.*;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.Masked;
 import com.inhabas.api.auth.domain.oauth2.member.security.masking.MaskingType;
 import org.hibernate.validator.constraints.Length;
@@ -26,6 +27,8 @@ public class NotApprovedMemberManagementDto {
   private String phoneNumber;
 
   @Email private String email;
+
+  @NotNull private MemberType type;
 
   @NotNull @Positive private Integer grade;
 

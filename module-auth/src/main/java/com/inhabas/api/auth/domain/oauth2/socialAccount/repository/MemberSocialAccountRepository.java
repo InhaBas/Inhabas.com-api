@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface MemberSocialAccountRepository
       Email email, OAuth2Provider provider);
 
   boolean existsByMember_Id(Long memberId);
+
+  void deleteByMember_IdIn(List<Long> memberIdList);
 }

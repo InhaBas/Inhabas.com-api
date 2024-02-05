@@ -1,7 +1,5 @@
 package com.inhabas.api.web.argumentResolver;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import org.springframework.core.MethodParameter;
@@ -10,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import com.inhabas.api.auth.domain.token.exception.TokenMissingException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationToken;
 import org.assertj.core.api.Assertions;
 import org.mockito.InjectMocks;
@@ -38,12 +37,18 @@ public class ArgumentResolverTest {
   @DisplayName("인증이 이루어지지 않았으면, null을 반환한다.")
   @Test
   public void returnNullIfNotAuthenticated() {
-    // when
-    Object invalidUser =
-        loginMemberArgumentResolver.resolveArgument(parameter, null, request, null);
+    // given
+    List<? extends GrantedAuthority> grantedAuthorities =
+        List.of(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+    JwtAuthenticationToken authentication =
+        JwtAuthenticationToken.of(1L, "Nodata", grantedAuthorities);
+    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    // then
-    assertThat(invalidUser).isNull();
+    // when then
+    Assertions.assertThatThrownBy(
+            () -> loginMemberArgumentResolver.resolveArgument(parameter, null, request, null))
+        .isInstanceOf(TokenMissingException.class)
+        .hasMessage("토큰이 존재하지 않습니다.");
   }
 
   @DisplayName("Jwt 토큰 인증된 회원의 Member Id를 반환한다.")

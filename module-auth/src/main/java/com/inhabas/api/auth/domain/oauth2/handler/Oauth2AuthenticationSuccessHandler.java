@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.inhabas.api.auth.AuthProperties;
+import com.inhabas.api.auth.config.AuthProperties;
 import com.inhabas.api.auth.domain.error.authException.UnauthorizedRedirectUrlException;
 import com.inhabas.api.auth.domain.oauth2.cookie.CookieUtils;
 import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository;
