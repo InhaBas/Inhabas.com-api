@@ -1,5 +1,9 @@
 package com.inhabas.api.global.util;
 
+import java.util.UUID;
+
+import org.springframework.web.multipart.MultipartFile;
+
 public class FileUtil {
 
   private static final String INVALID_CHARS_REGEX = "[\\\\/:*?\"<>|]";
@@ -56,5 +60,9 @@ public class FileUtil {
 
   public static String getNameWithoutExtension(String fileName) {
     return fileName.substring(0, fileName.lastIndexOf("."));
+  }
+
+  public static String generateFileName(MultipartFile multipartFile, String dirName) {
+    return dirName + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
   }
 }

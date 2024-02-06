@@ -124,6 +124,11 @@ public class WebSecurityConfig {
           // Preflight 방식
           .requestMatchers(CorsUtils::isPreFlightRequest)
           .permitAll()
+          .antMatchers("/myInfo/reqeusts")
+          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+          .antMatchers("/myInfo/request/**")
+          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+
           // 회원 관리
           .antMatchers("/members/approved/role")
           .hasRole(SECRETARY.toString())

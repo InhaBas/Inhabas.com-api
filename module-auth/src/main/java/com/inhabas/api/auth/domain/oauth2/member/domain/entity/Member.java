@@ -146,6 +146,10 @@ public class Member {
     this.phone = new Phone(phone);
   }
 
+  public void setPicture(String picture) {
+    this.picture = picture;
+  }
+
   public void setEmail(String email) {
     this.email = new Email(email);
   }
