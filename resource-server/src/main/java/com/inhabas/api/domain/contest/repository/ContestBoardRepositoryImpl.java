@@ -2,6 +2,7 @@ package com.inhabas.api.domain.contest.repository;
 
 import static com.inhabas.api.domain.contest.domain.QContestBoard.contestBoard;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,31 +102,33 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
 
   // 공모전 게시판 검색
   @Override
-  public List<ContestBoard> findAllByWriterNameLike(Name writerName, String name) {
+  public List<ContestBoard> findAllByContestBoardLike(String search) {
     return queryFactory
         .selectFrom(contestBoard)
-        .where(
-            contestBoard
-                .writer
-                .name
-                .eq(writerName)
-                .and(contestBoard.writer.name.value.likeIgnoreCase("%" + name + "%")))
+        .where(titleLike(search)
+            .or(contentLike(search))
+            .or(writerNameLike(search))
+            .or(associationLike(search))
+            .or(topicLike(search)))
         .fetch();
   }
 
-  @Override
-  public List<ContestBoard> findAllByTitleLike(String title) {
-    return queryFactory
-        .selectFrom(contestBoard)
-        .where(contestBoard.title.value.likeIgnoreCase("%" + title + "%"))
-        .fetch();
+  private BooleanExpression titleLike(String search) {
+    return contestBoard.title.value.likeIgnoreCase("%" + search + "%");
   }
 
-  @Override
-  public List<ContestBoard> findAllByContentLike(String content) {
-    return queryFactory
-        .selectFrom(contestBoard)
-        .where(contestBoard.content.value.likeIgnoreCase("%" + content + "%"))
-        .fetch();
+  private BooleanExpression contentLike(String search) {
+    return contestBoard.content.value.likeIgnoreCase("%" + search + "%");
+  }
+
+  private BooleanExpression writerNameLike(String search) {
+    return contestBoard.writer.name.value.likeIgnoreCase("%" + search + "%");
+  }
+  private BooleanExpression associationLike(String search) {
+    return contestBoard.association.value.likeIgnoreCase("%" + search + "%");
+  }
+
+  private BooleanExpression topicLike(String search) {
+    return contestBoard.topic.value.likeIgnoreCase("%" + search + "%");
   }
 }

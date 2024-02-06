@@ -17,4 +17,6 @@ public interface ContestBoardService {
   void updateContestBoard(Long boardId, SaveContestBoardDto saveContestBoardDto);
 
   void deleteContestBoard(Long boardId);
+
+  List<ContestBoardDto> searchContestBoards(String search);
 }

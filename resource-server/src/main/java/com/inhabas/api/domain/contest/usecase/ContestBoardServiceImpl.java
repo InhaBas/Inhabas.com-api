@@ -171,6 +171,27 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     return contestBoardRepository.save(contestBoard).getId();
   }
 
+  @Override
+  @Transactional(readOnly = true)
+  public List<ContestBoardDto> searchContestBoards(String search) {
+    List<ContestBoard> contestBoards = contestBoardRepository.findAllByContestBoardLike(search);
+
+    return contestBoards.stream().map(contestBoard -> {
+      FileDownloadDto thumbnail = contestBoard.getFiles().isEmpty() ? null : new FileDownloadDto(
+          contestBoard.getFiles().get(0).getName(),
+          contestBoard.getFiles().get(0).getUrl());
+
+      return ContestBoardDto.builder()
+          .id(contestBoard.getId())
+          .title(contestBoard.getTitle())
+          .topic(contestBoard.getTopic())
+          .dateContestStart(contestBoard.getDateContestStart())
+          .dateContestEnd(contestBoard.getDateContestEnd())
+          .thumbnail(thumbnail) // 파일 정보 포함
+          .build();
+    }).collect(Collectors.toList());
+  }
+
   private String generateRandomUrl() {
     return DIR_NAME + UUID.randomUUID();
   }
