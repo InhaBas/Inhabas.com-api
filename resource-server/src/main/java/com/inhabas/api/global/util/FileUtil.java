@@ -1,8 +1,8 @@
 package com.inhabas.api.global.util;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.UUID;
+
+import org.springframework.web.multipart.MultipartFile;
 
 public class FileUtil {
 
@@ -65,5 +65,4 @@ public class FileUtil {
   public static String generateFileName(MultipartFile multipartFile, String dirName) {
     return dirName + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
   }
-
 }

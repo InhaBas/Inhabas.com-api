@@ -17,7 +17,9 @@ public interface MemberProfileService {
 
     void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto);
 
+    List<UpdateNameRequestDto> getMyInfoMyRequests(Long memberId);
     List<UpdateNameRequestDto> getMyInfoRequests();
+    void handleMyInfoRequest(HandleNameRequestDto handleNameRequestDto);
 
 
 }

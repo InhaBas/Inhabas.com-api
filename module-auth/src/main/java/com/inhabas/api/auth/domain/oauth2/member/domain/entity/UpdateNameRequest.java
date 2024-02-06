@@ -58,4 +58,14 @@ public class UpdateNameRequest {
     this.dateRequested = LocalDateTime.now();
     this.requestStatus = PENDING;
   }
+
+  public void handleRequest(String status, String rejectReason) {
+    if (status.equals("pass")) {
+      this.requestStatus = RequestStatus.APPROVED;
+    } else if (status.equals("fail")) {
+      this.requestStatus = RequestStatus.REJECTED;
+      this.rejectReason = rejectReason;
+    }
+
+  }
 }
