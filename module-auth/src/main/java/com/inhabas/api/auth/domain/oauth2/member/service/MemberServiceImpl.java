@@ -1,18 +1,20 @@
 package com.inhabas.api.auth.domain.oauth2.member.service;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
+
+import java.time.LocalDateTime;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-
-import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
 
 @Slf4j
 @Service
@@ -47,5 +49,4 @@ public class MemberServiceImpl implements MemberService {
 
     memberRepository.save(member);
   }
-
 }

@@ -1,10 +1,11 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 
 @Getter
 @Setter

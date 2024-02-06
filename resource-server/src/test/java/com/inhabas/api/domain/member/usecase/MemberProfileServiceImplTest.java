@@ -27,8 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MockitoExtension.class)
 public class MemberProfileServiceImplTest {
 
-  @InjectMocks
-  MemberProfileServiceImpl memberProfileService;
+  @InjectMocks MemberProfileServiceImpl memberProfileService;
   @Mock MemberRepository memberRepository;
   @Mock UpdateNameRequestRepository updateNameRequestRepository;
 

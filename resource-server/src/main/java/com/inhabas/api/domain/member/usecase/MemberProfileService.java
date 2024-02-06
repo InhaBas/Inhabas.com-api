@@ -1,25 +1,26 @@
 package com.inhabas.api.domain.member.usecase;
 
-import com.inhabas.api.auth.domain.oauth2.member.dto.*;
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 
 public interface MemberProfileService {
 
-    MyProfileDto getMyProfile(Long memberId);
+  MyProfileDto getMyProfile(Long memberId);
 
-    void updateMyProfileDetail(Long memberId, ProfileDetailDto profileDetailDto);
+  void updateMyProfileDetail(Long memberId, ProfileDetailDto profileDetailDto);
 
-    void updateMyProfileIntro(Long memberId, ProfileIntroDto profileIntroDto);
+  void updateMyProfileIntro(Long memberId, ProfileIntroDto profileIntroDto);
 
-    void updateMyProfileImage(Long memberId, MultipartFile file);
+  void updateMyProfileImage(Long memberId, MultipartFile file);
 
-    void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto);
+  void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto);
 
-    List<UpdateNameRequestDto> getMyInfoMyRequests(Long memberId);
-    List<UpdateNameRequestDto> getMyInfoRequests();
-    void handleMyInfoRequest(HandleNameRequestDto handleNameRequestDto);
+  List<UpdateNameRequestDto> getMyInfoMyRequests(Long memberId);
 
+  List<UpdateNameRequestDto> getMyInfoRequests();
 
+  void handleMyInfoRequest(HandleNameRequestDto handleNameRequestDto);
 }

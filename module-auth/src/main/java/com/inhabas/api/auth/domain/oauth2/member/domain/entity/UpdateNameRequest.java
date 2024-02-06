@@ -66,6 +66,5 @@ public class UpdateNameRequest {
       this.requestStatus = RequestStatus.REJECTED;
       this.rejectReason = rejectReason;
     }
-
   }
 }

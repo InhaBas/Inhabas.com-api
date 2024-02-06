@@ -13,5 +13,4 @@ public interface MemberService {
 
   // OAuth 관련
   void updateSocialAccountInfo(OAuth2UserInfo oAuth2UserInfo);
-
 }

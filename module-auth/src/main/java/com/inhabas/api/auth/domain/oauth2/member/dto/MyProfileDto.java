@@ -33,8 +33,7 @@ public class MyProfileDto {
 
   @NotNull private MemberType type;
 
-  @NotNull
-  private Boolean isHOF;
+  @NotNull private Boolean isHOF;
 
   private String introduce;
 
