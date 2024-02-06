@@ -17,6 +17,7 @@ public class ContestBoardDto {
   private Long id;
   private String title;
   private String topic;
+  private String association;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate dateContestStart;
@@ -31,12 +32,14 @@ public class ContestBoardDto {
       Long id,
       String title,
       String topic,
+      String association,
       LocalDate dateContestStart,
       LocalDate dateContestEnd,
       FileDownloadDto thumbnail) {
     this.id = id;
     this.title = title;
     this.topic = topic;
+    this.association = association;
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
     this.thumbnail = thumbnail;

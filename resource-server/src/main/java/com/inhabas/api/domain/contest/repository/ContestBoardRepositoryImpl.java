@@ -2,7 +2,6 @@ package com.inhabas.api.domain.contest.repository;
 
 import static com.inhabas.api.domain.contest.domain.QContestBoard.contestBoard;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Name;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -105,11 +104,12 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   public List<ContestBoard> findAllByContestBoardLike(String search) {
     return queryFactory
         .selectFrom(contestBoard)
-        .where(titleLike(search)
-            .or(contentLike(search))
-            .or(writerNameLike(search))
-            .or(associationLike(search))
-            .or(topicLike(search)))
+        .where(
+            titleLike(search)
+                .or(contentLike(search))
+                .or(writerNameLike(search))
+                .or(associationLike(search))
+                .or(topicLike(search)))
         .fetch();
   }
 
@@ -124,6 +124,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   private BooleanExpression writerNameLike(String search) {
     return contestBoard.writer.name.value.likeIgnoreCase("%" + search + "%");
   }
+
   private BooleanExpression associationLike(String search) {
     return contestBoard.association.value.likeIgnoreCase("%" + search + "%");
   }
