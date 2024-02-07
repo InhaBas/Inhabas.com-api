@@ -60,6 +60,10 @@ public class SchoolInformation {
     return this.memberType;
   }
 
+  public void setMemberType(MemberType memberType) {
+    this.memberType = memberType;
+  }
+
   public void setMajor(String major) {
     this.major = new Major(major);
   }

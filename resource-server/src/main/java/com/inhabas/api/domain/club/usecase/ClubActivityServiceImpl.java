@@ -2,7 +2,6 @@ package com.inhabas.api.domain.club.usecase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -142,7 +142,8 @@ public class ClubActivityServiceImpl implements ClubActivityService {
             saveClubActivityDto.getFiles().stream()
                 .map(
                     file -> {
-                      String url = s3Service.uploadS3File(file, generateRandomUrl());
+                      String path = FileUtil.generateFileName(file, DIR_NAME);
+                      String url = s3Service.uploadS3File(file, path);
                       urlListForDelete.add(url);
                       return BoardFile.builder()
                           .name(file.getOriginalFilename())
@@ -162,9 +163,5 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     clubActivity.updateFiles(updateFiles);
     return clubActivityRepository.save(clubActivity).getId();
-  }
-
-  private String generateRandomUrl() {
-    return DIR_NAME + UUID.randomUUID();
   }
 }

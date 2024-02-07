@@ -1,4 +1,4 @@
-package com.inhabas.api.auth;
+package com.inhabas.api.auth.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

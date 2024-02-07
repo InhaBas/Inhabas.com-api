@@ -26,7 +26,7 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
-import com.inhabas.api.auth.AuthBeansConfig;
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
 import com.inhabas.api.auth.domain.token.CustomRequestMatcher;
 import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
@@ -36,7 +36,7 @@ import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPo
 import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 
 /**
- * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.AuthSecurityConfig
+ * api 엔드포인트에 대한 여러 보안 설정을 담당함. 인증 관련 보안 설정은 {@link com.inhabas.api.auth.config.AuthSecurityConfig
  * AuthSecurityConfig} 참고
  */
 public class WebSecurityConfig {
@@ -58,9 +58,6 @@ public class WebSecurityConfig {
   private static final String[] AUTH_WHITELIST_POLICY = {"/policy/**"};
   private static final String[] AUTH_WHITELIST_CLUB_ACTIVITY = {
     "/club/activity/**", "/club/activities"
-  };
-  private static final String[] AUTH_WHITELIST_COMMENT = {
-    "/board/**/**/comments", "/board/**/**/comment", "/comment/**"
   };
 
   @Order(1)
@@ -127,7 +124,16 @@ public class WebSecurityConfig {
           // Preflight 방식
           .requestMatchers(CorsUtils::isPreFlightRequest)
           .permitAll()
+          .antMatchers("/myInfo/reqeusts")
+          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+          .antMatchers("/myInfo/request/**")
+          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+
           // 회원 관리
+          .antMatchers("/members/approved/role")
+          .hasRole(SECRETARY.toString())
+          .antMatchers("/members/approved/type")
+          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
           .antMatchers("/members/**", "/member/**")
           .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
           // 회계내역

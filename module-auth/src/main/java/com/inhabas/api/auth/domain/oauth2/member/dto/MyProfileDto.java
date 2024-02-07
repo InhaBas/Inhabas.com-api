@@ -33,6 +33,8 @@ public class MyProfileDto {
 
   @NotNull private MemberType type;
 
+  @NotNull private Boolean isHOF;
+
   private String introduce;
 
   @Builder
@@ -46,6 +48,7 @@ public class MyProfileDto {
       String picture,
       Role role,
       MemberType type,
+      Boolean isHOF,
       String introduce) {
     this.name = name;
     this.studentId = studentId;
@@ -56,6 +59,7 @@ public class MyProfileDto {
     this.picture = picture;
     this.role = role;
     this.type = type;
+    this.isHOF = isHOF;
     this.introduce = introduce;
   }
 }

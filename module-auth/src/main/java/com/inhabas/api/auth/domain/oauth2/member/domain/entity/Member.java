@@ -146,12 +146,20 @@ public class Member {
     this.phone = new Phone(phone);
   }
 
+  public void setPicture(String picture) {
+    this.picture = picture;
+  }
+
   public void setEmail(String email) {
     this.email = new Email(email);
   }
 
   public void setSchoolInformation(SchoolInformation schoolInformation) {
     this.schoolInformation = schoolInformation;
+  }
+
+  public void setMemberType(MemberType memberType) {
+    this.schoolInformation.setMemberType(memberType);
   }
 
   public void setRole(Role role) {
@@ -178,30 +186,6 @@ public class Member {
 
   public boolean isSameMember(Long id) {
     return this.id.equals(id);
-  }
-
-  public boolean isUnderGraduate() {
-    return this.schoolInformation.getMemberType() == MemberType.UNDERGRADUATE;
-  }
-
-  public boolean isGraduated() {
-    return this.schoolInformation.getMemberType() == MemberType.GRADUATED;
-  }
-
-  public boolean isProfessor() {
-    return this.schoolInformation.getMemberType() == MemberType.PROFESSOR;
-  }
-
-  public boolean isOther() {
-    return this.schoolInformation.getMemberType() == MemberType.OTHER;
-  }
-
-  public boolean isBachelor() {
-    return this.schoolInformation.getMemberType() == MemberType.BACHELOR;
-  }
-
-  public boolean isCompleteToSignUp() {
-    return this.ibasInformation.isCompleteToSignUp();
   }
 
   public void finishSignUp() {

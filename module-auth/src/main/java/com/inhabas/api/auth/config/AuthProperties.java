@@ -1,4 +1,4 @@
-package com.inhabas.api.auth;
+package com.inhabas.api.auth.config;
 
 import java.net.URI;
 import java.util.ArrayList;

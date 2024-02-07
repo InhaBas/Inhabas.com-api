@@ -8,6 +8,8 @@ public interface S3Service {
 
   String uploadS3File(MultipartFile multipartFile, String dirName);
 
+  String uploadS3Image(MultipartFile multipartFile, String fileName);
+
   S3ObjectInputStream downloadS3File(String dirName);
 
   void deleteS3File(String fileUrl);
