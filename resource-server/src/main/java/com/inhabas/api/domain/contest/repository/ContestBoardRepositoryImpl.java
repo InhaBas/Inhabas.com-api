@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -99,17 +100,23 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   //        return contestBoard.menuId.eq(menuId);
   //    }
 
-  // 공모전 게시판 검색
+  // 각 공모전 타입(공모전, 대외활동)에 따른 공모전 게시판, 대외활동 게시판 검색기능 각각 구현.
+  // 예를 들어 contestType = EXTERNAL_ACTIVITY 이면 대외활동 게시판 검색기능.
   @Override
-  public List<ContestBoard> findAllByContestBoardLike(String search) {
+  public List<ContestBoard> findAllByContestBoardAndContestTypeLike(
+      ContestType contestType, String search) {
     return queryFactory
         .selectFrom(contestBoard)
         .where(
-            titleLike(search)
-                .or(contentLike(search))
-                .or(writerNameLike(search))
-                .or(associationLike(search))
-                .or(topicLike(search)))
+            contestBoard
+                .contestType
+                .eq(contestType)
+                .and(
+                    titleLike(search)
+                        .or(contentLike(search))
+                        .or(writerNameLike(search))
+                        .or(associationLike(search))
+                        .or(topicLike(search))))
         .fetch();
   }
 

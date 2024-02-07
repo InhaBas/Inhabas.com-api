@@ -15,12 +15,15 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import org.hibernate.validator.constraints.Length;
 
 // 공모전 게시판 글 업데이트 및 저장
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaveContestBoardDto {
+
+  private ContestType contestType;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")

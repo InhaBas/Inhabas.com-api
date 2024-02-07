@@ -2,7 +2,6 @@ package com.inhabas.api.domain.contest.usecase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
@@ -26,6 +26,7 @@ import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Transactional
@@ -46,21 +47,35 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
   private static final String DIR_NAME = "contest/";
 
+  // 타입별 공모전 게시판 목록 조회
   @Override
-  @org.springframework.transaction.annotation.Transactional(readOnly = true)
-  public List<ContestBoardDto> getContestBoard() {
+  @Transactional(readOnly = true)
+  public List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search) {
+    // 검색어가 비어있는 경우 모든 해당 타입의 게시물을 조회
+    if (search == null || search.trim().isEmpty()) {
+      search = ""; // 검색 조건을 무시하기 위해 검색어를 빈 문자열로 설정
+    }
 
-    // ContestBoardDto를 받으면 에러가 생김.
-    List<ContestBoard> contestBoardList = contestBoardRepository.findAll();
+    List<ContestBoard> contestBoardList =
+        contestBoardRepository.findAllByContestBoardAndContestTypeLike(contestType, search);
 
     return contestBoardList.stream()
         .map(
-            obj -> {
-              String fileName = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getName();
-              String fileUrl = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getUrl();
+            contestBoard -> {
+              FileDownloadDto thumbnail =
+                  contestBoard.getFiles().isEmpty()
+                      ? null
+                      : new FileDownloadDto(
+                          contestBoard.getFiles().get(0).getName(),
+                          contestBoard.getFiles().get(0).getUrl());
               return ContestBoardDto.builder()
-                  .id(obj.getId())
-                  .thumbnail(new FileDownloadDto(fileName, fileUrl))
+                  .id(contestBoard.getId())
+                  .title(contestBoard.getTitle())
+                  .association(contestBoard.getAssociation())
+                  .topic(contestBoard.getTopic())
+                  .dateContestStart(contestBoard.getDateContestStart())
+                  .dateContestEnd(contestBoard.getDateContestEnd())
+                  .thumbnail(thumbnail)
                   .build();
             })
         .collect(Collectors.toList());
@@ -90,6 +105,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     return updateContestBoardFiles(saveContestBoardDto, contestBoard);
   }
 
+  // 공모전 게시판 단일조회
   @Override
   @Transactional(readOnly = true)
   public ContestBoardDetailDto getContestBoard(Long boardId) {
@@ -149,7 +165,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
             saveContestBoardDto.getFiles().stream()
                 .map(
                     file -> {
-                      String url = s3Service.uploadS3File(file, generateRandomUrl());
+                      String path = FileUtil.generateFileName(file, DIR_NAME);
+                      String url = s3Service.uploadS3File(file, path);
                       urlListForDelete.add(url);
                       return BoardFile.builder()
                           .name(file.getOriginalFilename())
@@ -174,8 +191,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   // 공모전 게시판 검색 기능
   @Override
   @Transactional(readOnly = true)
-  public List<ContestBoardDto> getContestBoardsBySearch(String search) {
-    List<ContestBoard> contestBoards = contestBoardRepository.findAllByContestBoardLike(search);
+  public List<ContestBoardDto> getContestBoardsBySearch(ContestType contestType, String search) {
+    List<ContestBoard> contestBoards =
+        contestBoardRepository.findAllByContestBoardAndContestTypeLike(contestType, search);
 
     return contestBoards.stream()
         .map(
@@ -197,9 +215,5 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                   thumbnail);
             })
         .collect(Collectors.toList());
-  }
-
-  private String generateRandomUrl() {
-    return DIR_NAME + UUID.randomUUID();
   }
 }

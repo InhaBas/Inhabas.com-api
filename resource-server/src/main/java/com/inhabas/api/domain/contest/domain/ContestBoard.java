@@ -9,6 +9,8 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 import com.inhabas.api.domain.file.domain.BoardFile;
 
@@ -32,6 +35,10 @@ import com.inhabas.api.domain.file.domain.BoardFile;
 @EntityListeners(AuditingEntityListener.class)
 @DiscriminatorValue("CONTEST")
 public class ContestBoard extends BaseBoard {
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "CONTEST_TYPE", nullable = false)
+  private ContestType contestType;
 
   @Embedded private Topic topic;
 
@@ -59,6 +66,7 @@ public class ContestBoard extends BaseBoard {
 
   @Builder
   public ContestBoard(
+      ContestType contestType,
       String title,
       String content,
       String association,
@@ -66,6 +74,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
+    this.contestType = contestType;
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);

@@ -2,13 +2,14 @@ package com.inhabas.api.domain.contest.usecase;
 
 import java.util.List;
 
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 
 public interface ContestBoardService {
 
-  List<ContestBoardDto> getContestBoard();
+  List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search);
 
   Long writeContestBoard(Long memberId, SaveContestBoardDto saveContestBoardDto);
 
@@ -18,5 +19,5 @@ public interface ContestBoardService {
 
   void deleteContestBoard(Long boardId);
 
-  List<ContestBoardDto> getContestBoardsBySearch(String search);
+  List<ContestBoardDto> getContestBoardsBySearch(ContestType contestType, String search);
 }

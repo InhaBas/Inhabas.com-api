@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -21,6 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.domain.club.dto.ClubActivityDto;
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
@@ -58,6 +63,7 @@ public class ContestBoardController {
       // 공모전 게시판 MenuId : 18
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
+      @PathVariable("contestType") ContestType contestType,
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -67,10 +73,10 @@ public class ContestBoardController {
       @Parameter(description = "검색어", example = "")
           @RequestParam(name = "search", defaultValue = "")
           String search) {
-    // search 파라미터 구현 필요 -> Member 컨트롤러 확인
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ContestBoardDto> allDtos = contestBoardService.getContestBoard();
+    List<ContestBoardDto> allDtos =
+        contestBoardService.getContestBoardsBySearch(contestType, search);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
@@ -95,8 +101,7 @@ public class ContestBoardController {
                             value =
                                 "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
       })
-  // 주소 전반적으로 수정해야함.
-  @PostMapping(path = "/club/activity", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(path = "/contest/{contestType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   public ResponseEntity<Void> writeContestBoard(
@@ -116,78 +121,130 @@ public class ContestBoardController {
     Long newContestBoardId = contestBoardService.writeContestBoard(memberId, saveContestBoardDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/club/activity/{boardId}")
+            .path("/contest/{contestType}/{boardId}")
             .buildAndExpand(newContestBoardId)
             .toUri();
 
     return ResponseEntity.created(location).build();
   }
 
-  //
-  //    @Operation(description = "공모전 게시판의 게시글 단일 조회")
-  //    @GetMapping("/contest/{id}")
-  //    @ApiResponses({
-  //            @ApiResponse(responseCode = "200"),
-  //            @ApiResponse(responseCode = "400", description = "잘못된 게시글 조회 URL 요청"),
-  //            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
-  //    })
-  //    public ResponseEntity<DetailContestBoardDto> getBoard(@PathVariable Integer id) {
-  //
-  //        return new ResponseEntity<>(boardService.getBoard(id), HttpStatus.OK);
-  //    }
-  //
-  //    @Operation(description = "공모전 게시판의 모든 게시글 조회")
-  //    @GetMapping("/contests")
-  //    @ApiResponses({
-  //            @ApiResponse(responseCode = "200"),
-  //            @ApiResponse(responseCode = "400", description = "잘못된 게시글 목록 조회 URL 요청"),
-  //            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
-  //    })
-  //    public ResponseEntity<Page<ListContestBoardDto>> getBoardList(
-  //            @RequestParam("menu_id") MenuId menuId,
-  //            @PageableDefault(size = 8, direction = Direction.DESC, sort = "created") Pageable
-  // pageable) {
-  //
-  //        return new ResponseEntity<>(boardService.getBoardList(menuId, pageable), HttpStatus.OK);
-  //    }
-  //
-  //    @Operation(description = "공모전 게시판 게시글 추가")
-  //    @PostMapping("/contest")
-  //    @ApiResponses({
-  //            @ApiResponse(responseCode = "201"),
-  //            @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
-  //            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
-  //    })
-  //    public ResponseEntity<Integer> addBoard(@Authenticated StudentId studentId, @Valid
-  // @RequestBody SaveContestBoardDto dto) {
-  //        return new ResponseEntity<>(boardService.write(studentId, dto), HttpStatus.CREATED);
-  //    }
-  //
-  //    @Operation(description = "공모전 게시판의 게시글 수정")
-  //    @PutMapping("/contest")
-  //    @ApiResponses({
-  //            @ApiResponse(responseCode = "200"),
-  //            @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
-  //            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
-  //    })
-  //    public ResponseEntity<Integer> updateBoard(
-  //            @Authenticated StudentId studentId, @Valid @RequestBody UpdateContestBoardDto dto) {
-  //
-  //        return new ResponseEntity<>(boardService.update(studentId, dto), HttpStatus.OK);
-  //    }
-  //
-  //    @Operation(description = "공모전 게시판의 게시글 삭제")
-  //    @DeleteMapping("/contest/{id}")
-  //    @ApiResponses({
-  //            @ApiResponse(responseCode = "204"),
-  //            @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
-  //            @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
-  //    })
-  //    public ResponseEntity<?> deleteBoard(
-  //            @Authenticated StudentId studentId, @PathVariable Integer id) {
-  //
-  //        boardService.delete(studentId, id);
-  //        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  //    }
+  @Operation(summary = "공모전 게시판 글 단일 조회", description = "공모전 게시판 글 단일 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  @SecurityRequirements(value = {})
+  // contestType 경로 변수 구현 필요
+  @GetMapping("/contest/{contestType}/{boardId}")
+  @PreAuthorize(
+      "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
+  public ResponseEntity<ContestBoardDetailDto> findContestBoard(@PathVariable Long boardId) {
 
+    ContestBoardDetailDto contestBoardDetailDto = contestBoardService.getContestBoard(boardId);
+
+    return ResponseEntity.ok(contestBoardDetailDto);
+  }
+
+  @Operation(summary = "공모전 게시판 글 수정", description = "공모전 게시판 글 수정 (작성자, 회장만)")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  @PostMapping(
+      path = "/contest/{contestType}/{boardId}",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
+  public ResponseEntity<ClubActivityDto> updateClubActivity(
+      @Authenticated Long memberId,
+      @PathVariable Long boardId,
+      @RequestPart("title") String title,
+      @RequestPart("content") String content,
+      @RequestPart("topic") String topic,
+      @RequestPart("association") String association,
+      @RequestPart("dateContestStart") LocalDate dateContestStart,
+      @RequestPart("dateContestEnd") LocalDate dateContestEnd,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+
+    SaveContestBoardDto saveContestBoardDto =
+        new SaveContestBoardDto(
+            title, content, topic, association, dateContestStart, dateContestEnd, files);
+    contestBoardService.updateContestBoard(boardId, saveContestBoardDto);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @Operation(summary = "공모전 게시판 글 삭제", description = "공모전 게시판 글 삭제 (작성자, 회장만)")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "204"),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  @DeleteMapping("contest/{contestType}/{boardId}")
+  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
+  public ResponseEntity<ContestBoardDto> deleteContestBoard(
+      @Authenticated Long memberId, @PathVariable Long boardId) {
+
+    contestBoardService.deleteContestBoard(boardId);
+
+    return ResponseEntity.noContent().build();
+  }
 }
