@@ -77,7 +77,7 @@ public class ContestBoardController {
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
   @SecurityRequirements(value = {})
-  @GetMapping("/contest/{contestTypeString}")
+  @GetMapping("/contest/{contestType}")
   @PreAuthorize(
       // 공모전 게시판 MenuId : 18
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
