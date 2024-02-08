@@ -11,7 +11,8 @@ public interface ContestBoardService {
 
   List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search);
 
-  Long writeContestBoard(Long memberId, SaveContestBoardDto saveContestBoardDto);
+  Long writeContestBoard(
+      Long memberId, SaveContestBoardDto saveContestBoardDto, ContestType contestType);
 
   ContestBoardDetailDto getContestBoard(Long boardId);
 

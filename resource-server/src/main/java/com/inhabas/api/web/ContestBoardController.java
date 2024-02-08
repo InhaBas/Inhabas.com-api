@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
@@ -58,7 +57,7 @@ public class ContestBoardController {
             content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
       })
   @SecurityRequirements(value = {})
-  @GetMapping("/contest/{contestType}")
+  @GetMapping("/contest/{contestTypeString}")
   @PreAuthorize(
       // 공모전 게시판 MenuId : 18
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
@@ -106,6 +105,7 @@ public class ContestBoardController {
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
+      @PathVariable("contestType") ContestType contestType,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("association") String association,
@@ -118,10 +118,14 @@ public class ContestBoardController {
         new SaveContestBoardDto(
             title, content, association, topic, dateContestStart, dateContestEnd, files);
 
-    Long newContestBoardId = contestBoardService.writeContestBoard(memberId, saveContestBoardDto);
+    // PathVariable인 {contestType}에 따라 공모전 글 작성 페이지가 CONTEST와 EXTERNAL_ACTIVITY로 분류됨
+    Long newContestBoardId =
+        contestBoardService.writeContestBoard(memberId, saveContestBoardDto, contestType);
+
+    // 뒤에 추가 URI 생성
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/contest/{contestType}/{boardId}")
+            .path("/{boardId}")
             .buildAndExpand(newContestBoardId)
             .toUri();
 
@@ -154,11 +158,11 @@ public class ContestBoardController {
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
   @SecurityRequirements(value = {})
-  // contestType 경로 변수 구현 필요
   @GetMapping("/contest/{contestType}/{boardId}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
-  public ResponseEntity<ContestBoardDetailDto> findContestBoard(@PathVariable Long boardId) {
+  public ResponseEntity<ContestBoardDetailDto> findContestBoard(
+      @PathVariable("contestType") ContestType contestType, @PathVariable Long boardId) {
 
     ContestBoardDetailDto contestBoardDetailDto = contestBoardService.getContestBoard(boardId);
 
@@ -194,8 +198,9 @@ public class ContestBoardController {
       path = "/contest/{contestType}/{boardId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
-  public ResponseEntity<ClubActivityDto> updateClubActivity(
+  public ResponseEntity<ContestBoardDto> updateContestBoard(
       @Authenticated Long memberId,
+      @PathVariable("contestType") ContestType contestType,
       @PathVariable Long boardId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
@@ -241,7 +246,9 @@ public class ContestBoardController {
   @DeleteMapping("contest/{contestType}/{boardId}")
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<ContestBoardDto> deleteContestBoard(
-      @Authenticated Long memberId, @PathVariable Long boardId) {
+      @Authenticated Long memberId,
+      @PathVariable ContestType contestType,
+      @PathVariable Long boardId) {
 
     contestBoardService.deleteContestBoard(boardId);
 

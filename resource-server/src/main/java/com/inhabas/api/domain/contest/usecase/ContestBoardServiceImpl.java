@@ -53,7 +53,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   public List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search) {
     // 검색어가 비어있는 경우 모든 해당 타입의 게시물을 조회
     if (search == null || search.trim().isEmpty()) {
-      search = ""; // 검색 조건을 무시하기 위해 검색어를 빈 문자열로 설정
+      search = "";
     }
 
     List<ContestBoard> contestBoardList =
@@ -81,9 +81,11 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         .collect(Collectors.toList());
   }
 
+  // contestType 별로 게시글 작성
   @Override
   @Transactional
-  public Long writeContestBoard(Long memberId, SaveContestBoardDto saveContestBoardDto) {
+  public Long writeContestBoard(
+      Long memberId, SaveContestBoardDto saveContestBoardDto, ContestType contestType) {
 
     Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     Menu menu =
@@ -99,6 +101,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
             .topic(saveContestBoardDto.getTopic())
             .dateContestStart(saveContestBoardDto.getDateContestStart())
             .dateContestEnd(saveContestBoardDto.getDateContestEnd())
+            .contestType(contestType)
             .build()
             .writtenBy(writer, ContestBoard.class);
 
