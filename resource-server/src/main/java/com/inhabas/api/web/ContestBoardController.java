@@ -55,6 +55,26 @@ public class ContestBoardController {
         @ApiResponse(
             responseCode = "200",
             content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+        @ApiResponse(
+            responseCode = "400 ",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
   @SecurityRequirements(value = {})
   @GetMapping("/contest/{contestTypeString}")
@@ -63,8 +83,8 @@ public class ContestBoardController {
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
-      @Parameter(description = "페이지", example = "0")
-          @RequestParam(name = "page", defaultValue = "0")
+      @Parameter(description = "페이지", example = "1")
+          @RequestParam(name = "page", defaultValue = "1")
           int page,
       @Parameter(description = "페이지당 개수", example = "4")
           @RequestParam(name = "size", defaultValue = "4")
@@ -98,7 +118,17 @@ public class ContestBoardController {
                     examples =
                         @ExampleObject(
                             value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
   @PostMapping(path = "/contest/{contestType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(
@@ -172,7 +202,7 @@ public class ContestBoardController {
   @Operation(summary = "공모전 게시판 글 수정", description = "공모전 게시판 글 수정 (작성자, 회장만)")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "204"),
+        @ApiResponse(responseCode = "200"),
         @ApiResponse(
             responseCode = "400 ",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
