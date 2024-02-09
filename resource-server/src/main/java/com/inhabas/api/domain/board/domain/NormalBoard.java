@@ -1,41 +1,40 @@
 package com.inhabas.api.domain.board.domain;
 
-import java.util.*;
-
-import javax.persistence.*;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
-import com.inhabas.api.domain.board.exception.OnlyWriterModifiableException;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.menu.domain.Menu;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
-@Table(name = "normal_board")
-@Getter
+@Table(name = "NORMAL_BOARD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorValue("NORMAL")
 public class NormalBoard extends BaseBoard {
 
-  @Embedded protected Content content;
+  @Embedded private Content content;
+
+  @Column
+  private Boolean isPinned = false;
 
   @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
-  protected List<Comment> comments = new ArrayList<>();
+  private List<Comment> comments = new ArrayList<>();
 
   /* constructor */
 
-  public NormalBoard(String title, String contents) {
-    this.title = new Title(title);
-    this.content = new Content(contents);
+  public NormalBoard(String title, Menu menu, String content) {
+    super(title, menu);
+    this.content = new Content(content);
   }
 
   /* getter */
@@ -50,32 +49,22 @@ public class NormalBoard extends BaseBoard {
 
   /* relation method */
 
-  public NormalBoard addFiles(Set<BoardFile> UploadFiles) {
-    if (Objects.nonNull(UploadFiles)) UploadFiles.forEach(this::addFile);
-
-    return this;
+  public void updateText(String title, String content) {
+    this.title = new Title(title);
+    this.content = new Content(content);
   }
 
-  public void addFile(BoardFile uploadFile) {
-    files.add(uploadFile);
-    uploadFile.toBoard(this);
-  }
+  public void updateFiles(List<BoardFile> files) {
 
-  public void addComment(Comment newComment) {
-    comments.add(newComment);
-  }
-
-  public void modify(String title, String contents, Member writer) {
-
-    if (cannotModifiableBy(writer)) {
-      throw new OnlyWriterModifiableException();
+    if (this.files != null) {
+      this.files.clear();
+    } else {
+      this.files = new ArrayList<>();
     }
 
-    this.title = new Title(title);
-    this.content = new Content(contents);
+    for (BoardFile file : files) {
+      addFile(file);
+    }
   }
 
-  public boolean cannotModifiableBy(Member writer) {
-    return !this.writer.equals(writer);
-  }
 }

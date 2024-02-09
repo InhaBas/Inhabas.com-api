@@ -19,7 +19,7 @@ import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
 import com.inhabas.api.global.dto.PageInfoDto;
-import com.inhabas.api.global.dto.PagedMemberResponseDto;
+import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -147,7 +147,7 @@ public class MyProfileController {
             content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
       })
   @GetMapping("/myInfo/myRequests")
-  public ResponseEntity<PagedMemberResponseDto<UpdateNameRequestDto>> getMyInfoMyRequests(
+  public ResponseEntity<PagedResponseDto<UpdateNameRequestDto>> getMyInfoMyRequests(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -163,7 +163,7 @@ public class MyProfileController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(updateNameRequestDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(summary = "이름 수정 요청 조회", description = "이름 수정 요청 조회")
@@ -174,7 +174,7 @@ public class MyProfileController {
             content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
       })
   @GetMapping("/myInfo/requests")
-  public ResponseEntity<PagedMemberResponseDto<UpdateNameRequestDto>> getMyInfoRequests(
+  public ResponseEntity<PagedResponseDto<UpdateNameRequestDto>> getMyInfoRequests(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -190,7 +190,7 @@ public class MyProfileController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(updateNameRequestDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(summary = "이름 수정 요청 처리", description = "이름 수정 요청 처리")

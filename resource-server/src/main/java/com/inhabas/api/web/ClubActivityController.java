@@ -21,7 +21,7 @@ import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.usecase.ClubActivityService;
 import com.inhabas.api.global.dto.PageInfoDto;
-import com.inhabas.api.global.dto.PagedMemberResponseDto;
+ import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,13 +46,13 @@ public class ClubActivityController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
       })
   @SecurityRequirements(value = {})
   @GetMapping("/club/activities")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
-  public ResponseEntity<PagedMemberResponseDto<ClubActivityDto>> getClubActivities(
+  public ResponseEntity<PagedResponseDto<ClubActivityDto>> getClubActivities(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -68,7 +68,7 @@ public class ClubActivityController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(ClubActivityDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(summary = "동아리 활동 글 생성", description = "동아리 활동 글 생성 (운영진 이상)")
