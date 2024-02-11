@@ -16,4 +16,11 @@ public enum NormalBoardType {
         this.menuId = menuId;
     }
 
+    public String getBoardType() {
+        return boardType;
+    }
+
+    public int getMenuId() {
+        return menuId;
+    }
 }

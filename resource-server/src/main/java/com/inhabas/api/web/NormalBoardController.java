@@ -146,7 +146,7 @@ public class NormalBoardController {
               @PathVariable NormalBoardType boardType,
               @Authenticated Long memberId) {
 
-          return ResponseEntity.ok(normalBoardService.getBoard(boardId));
+          return ResponseEntity.ok(normalBoardService.getPost(boardId));
       }
 
       @Operation(summary = "게시글 추가")
