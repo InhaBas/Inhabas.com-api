@@ -32,9 +32,9 @@ public class NormalBoard extends BaseBoard {
 
   /* constructor */
 
-  public NormalBoard(String title, Menu menu, Content content, Boolean isPinned) {
+  public NormalBoard(String title, Menu menu, String content, Boolean isPinned) {
     super(title, menu);
-    this.content = content;
+    this.content = new Content(content);
     this.isPinned = isPinned;
   }
 

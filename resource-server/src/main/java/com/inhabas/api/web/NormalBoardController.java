@@ -2,8 +2,7 @@ package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.domain.NormalBoardType;
-import com.inhabas.api.domain.board.dto.NormalBoardDto;
-import com.inhabas.api.domain.board.dto.UpdateBoardDto;
+import com.inhabas.api.domain.board.dto.*;
 import com.inhabas.api.domain.board.usecase.NormalBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
@@ -141,12 +140,12 @@ public class NormalBoardController {
                                       value =
                                               "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-      public ResponseEntity<NormalBoardDto> getBoard(
+      public ResponseEntity<NormalBoardDetailDto> getBoard(
               @PathVariable Long boardId,
               @PathVariable NormalBoardType boardType,
               @Authenticated Long memberId) {
 
-          return ResponseEntity.ok(normalBoardService.getPost(boardId));
+          return ResponseEntity.ok(normalBoardService.getPost(memberId, boardType, boardId));
       }
 
       @Operation(summary = "게시글 추가")
@@ -203,9 +202,10 @@ public class NormalBoardController {
       public ResponseEntity<Long> updateBoard(
               @Authenticated Long memberId,
               @PathVariable NormalBoardType boardType,
-              @Valid @RequestBody UpdateBoardDto updateBoardDto) {
+              @PathVariable Long boardId,
+              @Valid @RequestBody SaveNormalBoardDto saveNormalBoardDto) {
 
-          normalBoardService.update(memberId, boardType, updateBoardDto);
+          normalBoardService.update(boardId, boardType, saveNormalBoardDto);
           return ResponseEntity.noContent().build();
       }
 
@@ -222,7 +222,7 @@ public class NormalBoardController {
               @PathVariable NormalBoardType boardType,
               @PathVariable Long boardId) {
 
-          normalBoardService.delete(memberId, boardType, boardId);
+          normalBoardService.delete(boardId);
           return ResponseEntity.noContent().build();
       }
 }
