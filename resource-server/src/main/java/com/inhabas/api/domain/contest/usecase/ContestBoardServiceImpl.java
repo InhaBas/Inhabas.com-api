@@ -51,7 +51,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   @Override
   @Transactional(readOnly = true)
   public List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search) {
-    // 검색어가 비어있는 경우 모든 해당 타입의 게시물을 조회
+
     if (search == null || search.trim().isEmpty()) {
       search = "";
     }
@@ -63,11 +63,12 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         .map(
             contestBoard -> {
               FileDownloadDto thumbnail =
-                  contestBoard.getFiles().isEmpty()
-                      ? null
-                      : new FileDownloadDto(
-                          contestBoard.getFiles().get(0).getName(),
-                          contestBoard.getFiles().get(0).getUrl());
+                  contestBoard.getFiles().stream()
+                      .filter(file -> isImageFile(file.getName()))
+                      .findFirst()
+                      .map(file -> new FileDownloadDto(file.getName(), file.getUrl()))
+                      .orElse(null);
+
               return ContestBoardDto.builder()
                   .id(contestBoard.getId())
                   .title(contestBoard.getTitle())
@@ -79,6 +80,17 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                   .build();
             })
         .collect(Collectors.toList());
+  }
+
+  // 파일 확장자를 기반으로 이미지 파일인지 판단
+  private boolean isImageFile(String fileName) {
+    String lowerCaseFileName = fileName.toLowerCase();
+    return lowerCaseFileName.endsWith(".jpg")
+        || lowerCaseFileName.endsWith(".jpeg")
+        || lowerCaseFileName.endsWith(".png")
+        || lowerCaseFileName.endsWith(".gif")
+        || lowerCaseFileName.endsWith(".bmp")
+        || lowerCaseFileName.endsWith(".webp");
   }
 
   // contestType 별로 게시글 작성
@@ -189,34 +201,5 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     contestBoard.updateFiles(updateFiles);
     return contestBoardRepository.save(contestBoard).getId();
-  }
-
-  // 공모전 게시판 검색 기능
-  @Override
-  @Transactional(readOnly = true)
-  public List<ContestBoardDto> getContestBoardsBySearch(ContestType contestType, String search) {
-    List<ContestBoard> contestBoards =
-        contestBoardRepository.findAllByContestBoardAndContestTypeLike(contestType, search);
-
-    return contestBoards.stream()
-        .map(
-            contestBoard -> {
-              FileDownloadDto thumbnail =
-                  contestBoard.getFiles().isEmpty()
-                      ? null
-                      : new FileDownloadDto(
-                          contestBoard.getFiles().get(0).getName(),
-                          contestBoard.getFiles().get(0).getUrl());
-
-              return new ContestBoardDto(
-                  contestBoard.getId(),
-                  contestBoard.getTitle(),
-                  contestBoard.getTopic(),
-                  contestBoard.getAssociation(),
-                  contestBoard.getDateContestStart(),
-                  contestBoard.getDateContestEnd(),
-                  thumbnail);
-            })
-        .collect(Collectors.toList());
   }
 }

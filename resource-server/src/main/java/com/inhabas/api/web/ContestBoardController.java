@@ -94,8 +94,7 @@ public class ContestBoardController {
           String search) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ContestBoardDto> allDtos =
-        contestBoardService.getContestBoardsBySearch(contestType, search);
+    List<ContestBoardDto> allDtos = contestBoardService.getContestBoardsByType(contestType, search);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
