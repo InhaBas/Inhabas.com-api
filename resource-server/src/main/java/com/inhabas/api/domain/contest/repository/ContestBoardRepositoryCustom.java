@@ -7,10 +7,6 @@ import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 
 public interface ContestBoardRepositoryCustom {
 
-  //    Optional<DetailContestBoardDto> findDtoById(Integer id);
-  //
-  //    Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable);
-
   List<ContestBoard> findAllByContestBoardAndContestTypeLike(
       ContestType contestType, String search);
 }
