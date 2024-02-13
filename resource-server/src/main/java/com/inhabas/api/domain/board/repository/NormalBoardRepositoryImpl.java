@@ -1,22 +1,17 @@
 package com.inhabas.api.domain.board.repository;
 
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
-import static com.inhabas.api.domain.board.domain.QNormalBoard.normalBoard;
+import com.inhabas.api.domain.board.domain.NormalBoard;
+import com.inhabas.api.domain.board.domain.NormalBoardType;
+import com.inhabas.api.domain.board.dto.NormalBoardDto;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import com.inhabas.api.domain.board.dto.BoardDto;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import static com.inhabas.api.domain.board.domain.QNormalBoard.normalBoard;
 
 @RequiredArgsConstructor
 public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
@@ -24,65 +19,81 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public Page<BoardDto> findAllByMenuId(Integer menuId, Pageable pageable) {
-    List<BoardDto> results =
-        queryFactory
+  public List<NormalBoardDto> findAllByMemberIdAndTypeAndSearch(Long memberId, NormalBoardType boardType, String search) {
+    return queryFactory
             .select(
-                Projections.constructor(
-                    BoardDto.class,
-                    normalBoard.id,
-                    normalBoard.title.value,
-                    Expressions.asString("").as("content"),
-                    member.name.value,
-                    normalBoard.menu.id,
-                    normalBoard.dateCreated,
-                    normalBoard.dateUpdated))
+                    Projections.constructor(
+                            NormalBoardDto.class,
+                            normalBoard.id,
+                            normalBoard.title.value,
+                            normalBoard.writer.name.value,
+                            normalBoard.dateCreated,
+                            normalBoard.dateUpdated,
+                            normalBoard.isPinned))
             .from(normalBoard)
-            .innerJoin(member)
-            .on(eqMemberId())
-            .where(eqMenuId(menuId))
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
+            .where(eqMemberId(memberId)
+                    .and(eqNormalBoardType(boardType))
+                    .and(likeTitle(search))
+                    .or(likeContent(search)))
             .orderBy(normalBoard.dateCreated.desc())
             .fetch();
-
-    return new PageImpl<>(results, pageable, this.getCount(menuId));
-  }
-
-  private BooleanExpression eqMenuId(Integer menuId) {
-    return normalBoard.menu.id.eq(menuId);
-  }
-
-  // 캐시 필요함.
-  private Integer getCount(Integer menuId) {
-    return queryFactory.selectFrom(normalBoard).where(eqMenuId(menuId)).fetch().size();
   }
 
   @Override
-  public Optional<BoardDto> findDtoById(Long id) {
-
-    BoardDto target =
-        queryFactory
+  public List<NormalBoardDto> findAllByTypeAndSearch(NormalBoardType boardType, String search) {
+    return queryFactory
             .select(
-                Projections.constructor(
-                    BoardDto.class,
-                    Expressions.asNumber(id).as("id"),
-                    normalBoard.title.value,
-                    normalBoard.content.value,
-                    member.name.value,
-                    normalBoard.menu.id,
-                    normalBoard.dateCreated,
-                    normalBoard.dateUpdated))
+                    Projections.constructor(
+                            NormalBoardDto.class,
+                            normalBoard.id,
+                            normalBoard.title.value,
+                            normalBoard.writer.name.value,
+                            normalBoard.dateCreated,
+                            normalBoard.dateUpdated,
+                            normalBoard.isPinned))
             .from(normalBoard)
-            .innerJoin(member)
-            .on(eqMemberId())
-            .where(normalBoard.id.eq(id))
-            .fetchOne();
-
-    return Optional.ofNullable(target);
+            .where(eqNormalBoardType(boardType)
+                    .and(likeTitle(search))
+                    .or(likeContent(search)))
+            .orderBy(normalBoard.dateCreated.desc())
+            .fetch();
   }
 
-  private BooleanExpression eqMemberId() {
-    return normalBoard.writer.id.eq(member.id);
+  @Override
+  public Optional<NormalBoard> findByMemberIdAndTypeAndId(Long memberId, NormalBoardType boardType, Long boardId) {
+    return Optional.ofNullable(queryFactory
+            .selectFrom(normalBoard)
+            .where(eqMemberId(memberId)
+                    .and(eqNormalBoardType(boardType))
+                    .and(normalBoard.id.eq(boardId)))
+            .orderBy(normalBoard.dateCreated.desc())
+            .fetchOne());
   }
+
+  @Override
+  public Optional<NormalBoard> findByTypeAndId(NormalBoardType boardType, Long boardId) {
+    return Optional.ofNullable(queryFactory
+            .selectFrom(normalBoard)
+            .where((eqNormalBoardType(boardType))
+                    .and(normalBoard.id.eq(boardId)))
+            .orderBy(normalBoard.dateCreated.desc())
+            .fetchOne());
+  }
+
+  private BooleanExpression eqMemberId(Long memberId) {
+    return normalBoard.writer.id.eq(memberId);
+  }
+
+  private BooleanExpression eqNormalBoardType(NormalBoardType normalBoardType) {
+    return normalBoard.menu.id.eq(normalBoardType.getMenuId());
+  }
+
+  private BooleanExpression likeTitle(String search) {
+    return normalBoard.title.value.like(search);
+  }
+
+  private BooleanExpression likeContent(String search) {
+    return normalBoard.content.value.like(search);
+  }
+
 }

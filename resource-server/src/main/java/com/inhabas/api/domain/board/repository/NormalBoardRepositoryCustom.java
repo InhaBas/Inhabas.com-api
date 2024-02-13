@@ -1,14 +1,16 @@
 package com.inhabas.api.domain.board.repository;
 
-import java.util.Optional;
-
+import com.inhabas.api.domain.board.domain.NormalBoard;
+import com.inhabas.api.domain.board.domain.NormalBoardType;
 import com.inhabas.api.domain.board.dto.NormalBoardDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface NormalBoardRepositoryCustom {
 
-  Page<NormalBoardDto> findAllByMenuId(Integer menuId);
-
-  Optional<NormalBoardDto> findDtoById(Long id);
+  List<NormalBoardDto> findAllByMemberIdAndTypeAndSearch(Long memberId, NormalBoardType boardType, String search);
+  List<NormalBoardDto> findAllByTypeAndSearch(NormalBoardType boardType, String search);
+  Optional<NormalBoard> findByMemberIdAndTypeAndId(Long memberId, NormalBoardType boardType, Long boardId);
+  Optional<NormalBoard> findByTypeAndId(NormalBoardType boardType, Long boardId);
 }

@@ -2,7 +2,6 @@ package com.inhabas.api.domain.board.usecase;
 
 import com.inhabas.api.domain.board.domain.NormalBoardType;
 
-import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.board.dto.NormalBoardDto;
 import com.inhabas.api.domain.board.dto.SaveNormalBoardDto;
@@ -10,8 +9,6 @@ import com.inhabas.api.domain.board.dto.SaveNormalBoardDto;
 import java.util.List;
 
 public interface NormalBoardService {
-
-  List<BoardCountDto> getPostCount();
 
   List<NormalBoardDto> getPosts(Long memberId, NormalBoardType boardType, String search);
 

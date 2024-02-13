@@ -1,30 +1,24 @@
 package com.inhabas.api.domain.board.usecase;
 
-import javax.transaction.Transactional;
-
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.NormalBoardType;
-import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.dto.NormalBoardDetailDto;
+import com.inhabas.api.domain.board.dto.NormalBoardDto;
 import com.inhabas.api.domain.board.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
-import com.inhabas.api.domain.board.repository.BaseBoardRepository;
+import com.inhabas.api.domain.board.repository.NormalBoardRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
+import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 
-import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.board.dto.NormalBoardDto;
-import com.inhabas.api.domain.board.repository.NormalBoardRepository;
-import com.inhabas.api.domain.menu.repository.MenuRepository;
-
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,36 +30,19 @@ import java.util.stream.Collectors;
 public class NormalNormalBoardServiceImpl implements NormalBoardService {
 
   private final NormalBoardRepository normalBoardRepository;
-  private final BaseBoardRepository baseBoardRepository;
   private final MenuRepository menuRepository;
-  private final MemberRepository memberRepository;
   private final S3Service s3Service;
 
 
   @Override
-  public List<BoardCountDto> getPostCount() {
-    return baseBoardRepository.countRowsGroupByMenuId();
-  }
-
-
-  @Override
   public List<NormalBoardDto> getPosts(Long memberId, NormalBoardType boardType, String search) {
-    List<NormalBoard> normalBoardList;
+    List<NormalBoardDto> normalBoardList;
     if (boardType.equals(NormalBoardType.SUGGEST)) {
       normalBoardList = normalBoardRepository.findAllByMemberIdAndTypeAndSearch(memberId, boardType, search);
     } else {
       normalBoardList = normalBoardRepository.findAllByTypeAndSearch(boardType, search);
     }
-
-    return normalBoardList.stream().map(board -> NormalBoardDto.builder()
-            .id(board.getId())
-            .title(board.getTitle())
-            .isPinned(board.getPinned())
-            .writerName(board.getWriter().getName())
-            .dateCreated(board.getDateCreated())
-            .dateUpdated(board.getDateUpdated())
-            .build())
-            .collect(Collectors.toList());
+    return normalBoardList;
   }
 
   @Override
@@ -73,9 +50,9 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
     NormalBoard normalBoard;
     List<FileDownloadDto> fileDownloadDtoList = null;
     if (boardType.equals(NormalBoardType.SUGGEST)) {
-      normalBoard = normalBoardRepository.findMyByMemberIdAndTypeAndId(memberId, boardType, boardId);
+      normalBoard = normalBoardRepository.findByMemberIdAndTypeAndId(memberId, boardType, boardId).orElseThrow(NotFoundException::new);
     } else {
-      normalBoard = normalBoardRepository.findByTypeAndId(boardType, boardId);
+      normalBoard = normalBoardRepository.findByTypeAndId(boardType, boardId).orElseThrow(NotFoundException::new);
     }
     if (!normalBoard.getFiles().isEmpty()) {
       fileDownloadDtoList =
@@ -123,7 +100,7 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
   }
 
 
-  private Long updateNormalBoardFiles(
+  private void updateNormalBoardFiles(
           SaveNormalBoardDto saveNormalBoardDto, NormalBoardType normalBoardType, NormalBoard normalBoard) {
     final String DIR_NAME = "/" + normalBoardType.getBoardType();
     List<BoardFile> updateFiles = new ArrayList<>();
@@ -156,7 +133,7 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
     }
 
     normalBoard.updateFiles(updateFiles);
-    return normalBoardRepository.save(normalBoard).getId();
+    normalBoardRepository.save(normalBoard);
   }
 
 }

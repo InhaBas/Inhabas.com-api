@@ -3,6 +3,7 @@ package com.inhabas.api.web;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.domain.NormalBoardType;
 import com.inhabas.api.domain.board.dto.*;
+import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.board.usecase.NormalBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
@@ -37,7 +38,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NormalBoardController {
 
-      private final NormalBoardService normalBoardService;
+    private final NormalBoardService normalBoardService;
+    private final BaseBoardRepository baseBoardRepository;
 
     @Operation(summary = "게시판 종류 당 글 개수 조회")
     @ApiResponses(
@@ -52,7 +54,7 @@ public class NormalBoardController {
     )
     @SecurityRequirements(value = {})
     public ResponseEntity<List<BoardCountDto>> getBoardList() {
-        return ResponseEntity.ok(normalBoardService.getPostCount());
+        return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuId());
     }
 
     @Operation(summary = "게시글 목록 조회")
