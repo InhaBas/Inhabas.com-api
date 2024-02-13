@@ -4,6 +4,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 
 public class ContestTypeConverter {
@@ -15,12 +17,12 @@ public class ContestTypeConverter {
     @Override
     public ContestType convert(String source) {
       if (!StringUtils.hasText(source)) {
-        throw new IllegalArgumentException("공모전 게시판 타입은 빈 값일 수 없습니다.");
+        throw new InvalidInputException();
       }
       try {
         return ContestType.valueOf(source.trim().toUpperCase());
       } catch (IllegalArgumentException e) {
-        throw new IllegalArgumentException(source.trim() + "는 등록되지 않은 공모전 게시판 타입입니다.");
+        throw new NotFoundException();
       }
     }
   }
