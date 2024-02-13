@@ -1,10 +1,13 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.domain.board.domain.NormalBoardType;
 import com.inhabas.api.domain.board.dto.*;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
-import com.inhabas.api.domain.board.usecase.NormalBoardService;
+import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
+import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
+import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
+import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
+import com.inhabas.api.domain.normalBoard.usecase.NormalBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
@@ -49,9 +52,6 @@ public class NormalBoardController {
                             content = {@Content(schema = @Schema(implementation = BoardCountDto.class))}),
             })
     @GetMapping("/board/count")
-    @PreAuthorize(
-            "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)"
-    )
     @SecurityRequirements(value = {})
     public ResponseEntity<List<BoardCountDto>> getBoardList() {
         return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuId());
