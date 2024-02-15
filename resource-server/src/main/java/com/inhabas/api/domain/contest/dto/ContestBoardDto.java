@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 
 // 공모전 게시판 전체 조회
@@ -17,6 +18,7 @@ import com.inhabas.api.domain.file.dto.FileDownloadDto;
 public class ContestBoardDto {
   // 공모전 게시판 id
   private Long id;
+  private ContestField contestField;
   private String title;
   private String topic;
   private String association;
@@ -35,6 +37,7 @@ public class ContestBoardDto {
   @Builder
   public ContestBoardDto(
       Long id,
+      ContestField contestField,
       String title,
       String topic,
       String association,
@@ -42,6 +45,7 @@ public class ContestBoardDto {
       LocalDate dateContestEnd,
       FileDownloadDto thumbnail) {
     this.id = id;
+    this.contestField = contestField;
     this.title = title;
     this.topic = topic;
     this.association = association;

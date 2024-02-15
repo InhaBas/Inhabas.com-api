@@ -60,43 +60,54 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     return ORDERS;
   }
 
-  // 각 공모전 타입(공모전, 대외활동)에 따른 공모전 게시판, 대외활동 게시판 검색기능 각각 구현.
-  // 예를 들어 contestType = EXTERNAL_ACTIVITY 이면 대외활동 게시판 검색기능.
-  @Override
-  public List<ContestBoard> findAllByContestBoardAndContestTypeLike(
-      ContestType contestType, String search) {
-    return queryFactory
-        .selectFrom(contestBoard)
-        .where(
-            contestBoard
-                .contestType
-                .eq(contestType)
-                .and(
-                    titleLike(search)
-                        .or(contentLike(search))
-                        .or(writerNameLike(search))
-                        .or(associationLike(search))
-                        .or(topicLike(search))))
-        .fetch();
+  // 공모전 검색 및 필터링 기능
+  public List<ContestBoard> findAllByContestTypeAndFieldLike(
+      ContestType contestType, Long contestFieldId, String search) {
+    BooleanExpression target =
+        contestTypeEq(contestType)
+            .and(contestFieldEq(contestFieldId))
+            .and(
+                titleLike(search)
+                    .or(contentLike(search))
+                    .or(writerNameLike(search))
+                    .or(associationLike(search))
+                    .or(topicLike(search)));
+
+    return queryFactory.selectFrom(contestBoard).where(target).fetch();
+  }
+
+  private BooleanExpression contestTypeEq(ContestType contestType) {
+    return contestBoard.contestType.eq(contestType);
+  }
+
+  private BooleanExpression contestFieldEq(Long contestField) {
+    if (contestField == null) {
+      return null;
+    }
+    return contestBoard.contestField.id.eq(contestField);
   }
 
   private BooleanExpression titleLike(String search) {
-    return contestBoard.title.value.likeIgnoreCase("%" + search + "%");
+    return hasText(search) ? contestBoard.title.value.containsIgnoreCase(search) : null;
   }
 
   private BooleanExpression contentLike(String search) {
-    return contestBoard.content.value.likeIgnoreCase("%" + search + "%");
+    return hasText(search) ? contestBoard.content.value.containsIgnoreCase(search) : null;
   }
 
   private BooleanExpression writerNameLike(String search) {
-    return contestBoard.writer.name.value.likeIgnoreCase("%" + search + "%");
+    return hasText(search) ? contestBoard.writer.name.value.containsIgnoreCase(search) : null;
   }
 
   private BooleanExpression associationLike(String search) {
-    return contestBoard.association.value.likeIgnoreCase("%" + search + "%");
+    return hasText(search) ? contestBoard.association.value.containsIgnoreCase(search) : null;
   }
 
   private BooleanExpression topicLike(String search) {
-    return contestBoard.topic.value.likeIgnoreCase("%" + search + "%");
+    return hasText(search) ? contestBoard.topic.value.containsIgnoreCase(search) : null;
+  }
+
+  private Boolean hasText(String text) {
+    return text != null && !text.trim().isEmpty();
   }
 }

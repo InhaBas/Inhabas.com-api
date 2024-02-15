@@ -56,7 +56,7 @@ public class ContestBoardController {
             responseCode = "200",
             content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -83,6 +83,9 @@ public class ContestBoardController {
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
+      @Parameter(description = "공모전 분야 ID", example = "1")
+          @RequestParam(name = "field", required = false)
+          Long contestFieldId,
       @Parameter(description = "페이지", example = "1")
           @RequestParam(name = "page", defaultValue = "1")
           int page,
@@ -93,8 +96,10 @@ public class ContestBoardController {
           @RequestParam(name = "search", defaultValue = "")
           String search) {
 
-    Pageable pageable = PageRequest.of(page, size);
-    List<ContestBoardDto> allDtos = contestBoardService.getContestBoardsByType(contestType, search);
+    // Page 1부터 시작
+    Pageable pageable = PageRequest.of(page - 1, size);
+    List<ContestBoardDto> allDtos =
+        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
@@ -109,7 +114,7 @@ public class ContestBoardController {
       value = {
         @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -135,6 +140,7 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
+      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("association") String association,
@@ -145,7 +151,14 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            title, content, association, topic, dateContestStart, dateContestEnd, files);
+            contestFieldId,
+            title,
+            content,
+            association,
+            topic,
+            dateContestStart,
+            dateContestEnd,
+            files);
 
     // PathVariable인 {contestType}에 따라 공모전 글 작성 페이지가 CONTEST와 EXTERNAL_ACTIVITY로 분류됨
     Long newContestBoardId =
@@ -166,7 +179,7 @@ public class ContestBoardController {
       value = {
         @ApiResponse(responseCode = "200"),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -203,7 +216,7 @@ public class ContestBoardController {
       value = {
         @ApiResponse(responseCode = "200"),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -231,6 +244,7 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
       @PathVariable Long boardId,
+      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("topic") String topic,
@@ -241,7 +255,14 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            title, content, topic, association, dateContestStart, dateContestEnd, files);
+            contestFieldId,
+            title,
+            content,
+            topic,
+            association,
+            dateContestStart,
+            dateContestEnd,
+            files);
     contestBoardService.updateContestBoard(boardId, saveContestBoardDto);
 
     return ResponseEntity.noContent().build();
@@ -252,7 +273,7 @@ public class ContestBoardController {
       value = {
         @ApiResponse(responseCode = "204"),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(

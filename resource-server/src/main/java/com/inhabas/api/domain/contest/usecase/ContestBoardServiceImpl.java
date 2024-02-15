@@ -21,6 +21,7 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
+import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
@@ -34,6 +35,8 @@ import com.inhabas.api.global.util.FileUtil;
 public class ContestBoardServiceImpl implements ContestBoardService {
 
   private final ContestBoardRepository contestBoardRepository;
+
+  private final ContestFieldRepository contestFieldRepository;
 
   private final BoardSecurityChecker boardSecurityChecker;
 
@@ -50,14 +53,16 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   // 타입별 공모전 게시판 목록 조회
   @Override
   @Transactional(readOnly = true)
-  public List<ContestBoardDto> getContestBoardsByType(ContestType contestType, String search) {
+  public List<ContestBoardDto> getContestBoardsByType(
+      ContestType contestType, Long contestFieldId, String search) {
 
     if (search == null || search.trim().isEmpty()) {
       search = "";
     }
 
     List<ContestBoard> contestBoardList =
-        contestBoardRepository.findAllByContestBoardAndContestTypeLike(contestType, search);
+        contestBoardRepository.findAllByContestTypeAndFieldLike(
+            contestType, contestFieldId, search);
 
     return contestBoardList.stream()
         .map(
@@ -71,6 +76,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
               return ContestBoardDto.builder()
                   .id(contestBoard.getId())
+                  .contestField(contestBoard.getContestField())
                   .title(contestBoard.getTitle())
                   .association(contestBoard.getAssociation())
                   .topic(contestBoard.getTopic())
@@ -114,6 +120,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
             .dateContestStart(saveContestBoardDto.getDateContestStart())
             .dateContestEnd(saveContestBoardDto.getDateContestEnd())
             .contestType(contestType)
+            .contestField(saveContestBoardDto.getContestField())
             .build()
             .writtenBy(writer, ContestBoard.class);
 
@@ -169,6 +176,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     if (saveContestBoardDto.getFiles() != null) {
       contestBoard.updateContest(
+          saveContestBoardDto.getContestField(),
           saveContestBoardDto.getTitle(),
           saveContestBoardDto.getContent(),
           saveContestBoardDto.getAssociation(),

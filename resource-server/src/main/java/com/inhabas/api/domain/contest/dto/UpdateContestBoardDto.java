@@ -11,15 +11,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.inhabas.api.domain.contest.domain.ContestField;
 import org.hibernate.validator.constraints.Length;
 
-// 공모전 게시판 글 업데이트
+// 공모전 게시판 글 업데이트 - 삭제예정
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class UpdateContestBoardDto {
   @NotNull(message = "수정할 게시글을 선택해주세요.")
   private Long id;
+
+  @NotNull(message = "공모전 분야를 선택해주세요.")
+  private ContestField contestField;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")

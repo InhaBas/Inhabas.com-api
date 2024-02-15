@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import org.hibernate.validator.constraints.Length;
 
@@ -23,7 +24,11 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaveContestBoardDto {
 
+  @NotNull(message = "공모전 게시판 타입을 선택해주세요.")
   private ContestType contestType;
+
+  @NotNull(message = "공모전 분야를 선택해주세요.")
+  private ContestField contestField;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")
@@ -51,6 +56,7 @@ public class SaveContestBoardDto {
 
   @Builder
   public SaveContestBoardDto(
+      ContestField contestField,
       String title,
       String content,
       String association,
@@ -58,6 +64,8 @@ public class SaveContestBoardDto {
       LocalDate dateContestStart,
       LocalDate dateContestEnd,
       List<MultipartFile> files) {
+
+    this.contestField = contestField;
     this.title = title;
     this.content = content;
     this.association = association;

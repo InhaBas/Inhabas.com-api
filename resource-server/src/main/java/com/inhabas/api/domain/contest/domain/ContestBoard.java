@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -40,6 +42,10 @@ public class ContestBoard extends BaseBoard {
   @Column(name = "CONTEST_TYPE", nullable = false)
   private ContestType contestType;
 
+  @ManyToOne
+  @JoinColumn(name = "CONTEST_FIELD_ID_FK", referencedColumnName = "ID")
+  private ContestField contestField;
+
   @Embedded private Topic topic;
 
   @Embedded private Association association;
@@ -67,6 +73,7 @@ public class ContestBoard extends BaseBoard {
   @Builder
   public ContestBoard(
       ContestType contestType,
+      ContestField contestField,
       String title,
       String content,
       String association,
@@ -75,6 +82,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestEnd) {
 
     this.contestType = contestType;
+    this.contestField = contestField;
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);
@@ -99,6 +107,7 @@ public class ContestBoard extends BaseBoard {
 
   // 공모전 정보 수정
   public void updateContest(
+      ContestField contestField,
       String title,
       String content,
       String association,
@@ -106,6 +115,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
+    this.contestField = contestField;
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);

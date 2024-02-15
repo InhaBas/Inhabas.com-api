@@ -7,6 +7,6 @@ import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 
 public interface ContestBoardRepositoryCustom {
 
-  List<ContestBoard> findAllByContestBoardAndContestTypeLike(
-      ContestType contestType, String search);
+  List<ContestBoard> findAllByContestTypeAndFieldLike(
+      ContestType contestType, Long contestFieldId, String search);
 }
