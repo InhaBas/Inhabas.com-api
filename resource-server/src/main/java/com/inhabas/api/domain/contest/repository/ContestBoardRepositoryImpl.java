@@ -2,9 +2,13 @@ package com.inhabas.api.domain.contest.repository;
 
 import static com.inhabas.api.domain.contest.domain.QContestBoard.contestBoard;
 
+import com.inhabas.api.domain.contest.domain.QContestBoard;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
+import java.util.function.BiFunction;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
@@ -24,42 +28,32 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
 
   private final JPAQueryFactory queryFactory;
 
-  // 보류
-  @SuppressWarnings({"unchecked"})
-  public static OrderSpecifier<?> getSortedColumn(Order order, Path<?> parent, String fieldName) {
-    Path<Object> fieldPath = Expressions.path(Object.class, parent, fieldName);
-    return new OrderSpecifier(order, fieldPath);
+  private QContestBoard contestBoard = QContestBoard.contestBoard;
+
+  // 필드 이름과 정렬 기준을 매핑
+  private OrderSpecifier<?> getSortedColumn(Order order, QContestBoard contestBoard, String fieldName) {
+    Map<String, BiFunction<Order, QContestBoard, OrderSpecifier<?>>> orderSpecifierMap = new HashMap<>();
+    orderSpecifierMap.put("id", (o, cb) -> new OrderSpecifier<>(o, cb.id));
+    orderSpecifierMap.put("dateContestEnd", (o, cb) -> new OrderSpecifier<>(o, cb.dateContestEnd));
+
+    return orderSpecifierMap.getOrDefault(fieldName, (o, cb) -> new OrderSpecifier<>(Order.DESC, cb.dateContestEnd)).apply(order, contestBoard);
   }
 
-  // 공모전 게시판 정렬 기능
-  @SuppressWarnings({"unchecked"})
-  private List<OrderSpecifier<?>> getAllOrderSpecifiers(Pageable pageable) {
-    List<OrderSpecifier<?>> ORDERS = new ArrayList<>();
+  // 페이지 요청에 따른 정렬
+  public List<OrderSpecifier<?>> getAllOrderSpecifiers(Pageable pageable) {
+    List<OrderSpecifier<?>> orders = new ArrayList<>();
     if (pageable.getSort() != null) {
       for (Sort.Order order : pageable.getSort()) {
         Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-        switch (order.getProperty()) {
-          case "id":
-            OrderSpecifier<?> orderId = getSortedColumn(direction, contestBoard, "id");
-            ORDERS.add(orderId);
-            break;
-          case "dateContestEnd":
-            OrderSpecifier<?> orderDateContestEnd =
-                getSortedColumn(direction, contestBoard, "dateContestEnd");
-            ORDERS.add(orderDateContestEnd);
-            break;
-          default:
-            break;
-        }
+        OrderSpecifier<?> orderSpecifier = getSortedColumn(direction, contestBoard, order.getProperty());
+        orders.add(orderSpecifier);
       }
     } else {
-      OrderSpecifier<?> orderDateContestEnd =
-          getSortedColumn(Order.DESC, contestBoard, "dateContestEnd");
-      ORDERS.add(orderDateContestEnd);
+      // 기본 정렬 조건
+      orders.add(getSortedColumn(Order.DESC, contestBoard, "dateContestEnd"));
     }
-    return ORDERS;
+    return orders;
   }
-
   // 공모전 검색 및 필터링 기능
   public List<ContestBoard> findAllByContestTypeAndFieldLike(
       ContestType contestType, Long contestFieldId, String search) {
