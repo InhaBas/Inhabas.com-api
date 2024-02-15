@@ -90,11 +90,11 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
   }
 
   private BooleanExpression likeTitle(String search) {
-    return normalBoard.title.value.like(search);
+    return normalBoard.title.value.like("%" + search + "%");
   }
 
   private BooleanExpression likeContent(String search) {
-    return normalBoard.content.value.like(search);
+    return normalBoard.content.value.like("%" + search + "%");
   }
 
 }

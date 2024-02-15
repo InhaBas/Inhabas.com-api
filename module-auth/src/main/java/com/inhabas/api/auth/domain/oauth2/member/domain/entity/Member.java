@@ -22,7 +22,7 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 
 @Entity
 @Table(
-    name = "user",
+     name = "USER",
     uniqueConstraints = {
       @UniqueConstraint(
           name = "UNIQUE_PROVIDER_UID",
