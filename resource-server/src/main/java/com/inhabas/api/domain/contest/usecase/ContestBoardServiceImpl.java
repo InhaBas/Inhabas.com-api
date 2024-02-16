@@ -36,8 +36,6 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
   private final ContestBoardRepository contestBoardRepository;
 
-  private final ContestFieldRepository contestFieldRepository;
-
   private final BoardSecurityChecker boardSecurityChecker;
 
   private final MemberRepository memberRepository;
@@ -67,6 +65,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     return contestBoardList.stream()
         .map(
             contestBoard -> {
+              //첨부파일들 중 첫번째 이미지 = 썸네일
               FileDownloadDto thumbnail =
                   contestBoard.getFiles().stream()
                       .filter(file -> isImageFile(file.getName()))
