@@ -27,7 +27,7 @@ public class SaveContestBoardDto {
   private ContestType contestType;
 
   @NotNull(message = "공모전 분야를 선택해주세요.")
-  private Long contestField;
+  private Long contestFieldId;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")
@@ -55,7 +55,7 @@ public class SaveContestBoardDto {
 
   @Builder
   public SaveContestBoardDto(
-      Long contestField,
+      Long contestFieldId,
       String title,
       String content,
       String association,
@@ -64,7 +64,7 @@ public class SaveContestBoardDto {
       LocalDate dateContestEnd,
       List<MultipartFile> files) {
 
-    this.contestField = contestField;
+    this.contestFieldId = contestFieldId;
     this.title = title;
     this.content = content;
     this.association = association;

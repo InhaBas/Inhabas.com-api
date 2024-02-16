@@ -17,7 +17,7 @@ import com.inhabas.api.domain.file.dto.FileDownloadDto;
 public class ContestBoardDto {
   // 공모전 게시판 id
   private Long id;
-  private Long contestField;
+  private Long contestFieldId;
   private String title;
   private String topic;
   private String association;
@@ -36,7 +36,7 @@ public class ContestBoardDto {
   @Builder
   public ContestBoardDto(
       Long id,
-      Long contestField,
+      Long contestFieldId,
       String title,
       String topic,
       String association,
@@ -44,7 +44,7 @@ public class ContestBoardDto {
       LocalDate dateContestEnd,
       FileDownloadDto thumbnail) {
     this.id = id;
-    this.contestField = contestField;
+    this.contestFieldId = contestFieldId;
     this.title = title;
     this.topic = topic;
     this.association = association;

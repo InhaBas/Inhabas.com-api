@@ -85,8 +85,8 @@ public class ContestBoardController {
   public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
       @Parameter(description = "공모전 분야", example = "1")
-          @RequestParam(name = "contestField", required = false)
-          Long contestField,
+          @RequestParam(name = "contestFieldId", required = false)
+          Long contestFieldId,
       @Parameter(description = "페이지", example = "1")
           @RequestParam(name = "page", defaultValue = "1")
           int page,
@@ -99,7 +99,7 @@ public class ContestBoardController {
 
     Pageable pageable = PageRequest.of(page, size);
     List<ContestBoardDto> allDtos =
-        contestBoardService.getContestBoardsByType(contestType, contestField, search);
+        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
@@ -142,7 +142,7 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
-      @RequestPart("contestField") Long contestField,
+      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("association") String association,
@@ -153,7 +153,7 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            contestField,
+            contestFieldId,
             title,
             content,
             association,
@@ -246,7 +246,7 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
       @PathVariable Long boardId,
-      @RequestPart("contestField") Long contestField,
+      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("topic") String topic,
@@ -257,7 +257,7 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            contestField,
+            contestFieldId,
             title,
             content,
             topic,

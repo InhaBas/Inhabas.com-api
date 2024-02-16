@@ -57,10 +57,10 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   }
   // 공모전 검색 및 필터링 기능
   public List<ContestBoard> findAllByContestTypeAndFieldLike(
-      ContestType contestType, Long contestField, String search) {
+      ContestType contestType, Long contestFieldId, String search) {
     BooleanExpression target =
         contestTypeEq(contestType)
-            .and(contestFieldEq(contestField))
+            .and(contestFieldEq(contestFieldId))
             .and(
                 titleLike(search)
                     .or(contentLike(search))
@@ -75,11 +75,11 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     return contestBoard.contestType.eq(contestType);
   }
 
-  private BooleanExpression contestFieldEq(Long contestField) {
-    if (contestField == null) {
+  private BooleanExpression contestFieldEq(Long contestFieldId) {
+    if (contestFieldId == null) {
       return null;
     }
-    return contestBoard.contestField.id.eq(contestField);
+    return contestBoard.contestField.id.eq(contestFieldId);
   }
 
   private BooleanExpression titleLike(String search) {

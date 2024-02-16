@@ -10,7 +10,7 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 public interface ContestBoardService {
 
   List<ContestBoardDto> getContestBoardsByType(
-      ContestType contestType, Long contestField, String search);
+      ContestType contestType, Long contestFieldId, String search);
 
   Long writeContestBoard(
       Long memberId, SaveContestBoardDto saveContestBoardDto, ContestType contestType);

@@ -23,7 +23,7 @@ public class UpdateContestBoardDto {
   private Long id;
 
   @NotNull(message = "공모전 분야를 선택해주세요.")
-  private ContestField contestField;
+  private ContestField contestFieldId;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")

@@ -23,7 +23,7 @@ public class ContestBoardDetailDto {
 
   @NotNull @Positive private Long id;
 
-  @NotBlank private Long contestField;
+  @NotNull private Long contestField;
 
   @NotBlank private String title;
 
@@ -35,7 +35,11 @@ public class ContestBoardDetailDto {
 
   @NotBlank private String topic;
 
-  @NotNull private List<FileDownloadDto> files;
+  @NotNull private FileDownloadDto thumbnail;
+
+  private List<FileDownloadDto> images;
+
+  private List<FileDownloadDto> otherFiles;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate dateContestStart;
@@ -66,7 +70,9 @@ public class ContestBoardDetailDto {
       LocalDate dateContestEnd,
       LocalDateTime dateCreated,
       LocalDateTime dateUpdated,
-      List<FileDownloadDto> files) {
+      FileDownloadDto thumbnail,
+      List<FileDownloadDto> images,
+      List<FileDownloadDto> otherFiles) {
     this.id = id;
     this.contestField = contestField;
     this.title = title;
@@ -78,6 +84,8 @@ public class ContestBoardDetailDto {
     this.dateContestEnd = dateContestEnd;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;
-    this.files = files;
+    this.thumbnail = thumbnail;
+    this.images = images;
+    this.otherFiles = otherFiles;
   }
 }
