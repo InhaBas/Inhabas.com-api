@@ -4,8 +4,11 @@ import com.inhabas.api.domain.menu.domain.MenuGroup;
 
 public class MenuGroupExampleTest {
 
-  public static MenuGroup getMenuGroup1() {
+  public static MenuGroup getIBASMenuGroup() {
     return new MenuGroup("IBAS");
+  }
+  public static MenuGroup getNormalMenuGroup() {
+    return new MenuGroup("게시판");
   }
 
   public static MenuGroup getMenuGroup2() {

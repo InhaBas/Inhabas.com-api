@@ -1,6 +1,9 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
@@ -27,10 +30,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional
 @RequiredArgsConstructor
-public class NormalNormalBoardServiceImpl implements NormalBoardService {
+public class NormalBoardServiceImpl implements NormalBoardService {
 
   private final NormalBoardRepository normalBoardRepository;
   private final MenuRepository menuRepository;
+  private final MemberRepository memberRepository;
   private final S3Service s3Service;
 
 
@@ -77,12 +81,18 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
   @Override
   public Long write(Long memberId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto) {
 
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     Menu menu = menuRepository.findById(normalBoardType.getMenuId()).orElseThrow(NotFoundException::new);
 
     NormalBoard normalBoard =
-            new NormalBoard(saveNormalBoardDto.getTitle(), menu, saveNormalBoardDto.getContent(), saveNormalBoardDto.getIsPinned());
+            new NormalBoard(
+                    saveNormalBoardDto.getTitle(),
+                    menu,
+                    saveNormalBoardDto.getContent(),
+                    saveNormalBoardDto.getIsPinned())
+                    .writtenBy(writer, NormalBoard.class);
 
-    return normalBoardRepository.save(normalBoard).getId();
+    return updateNormalBoardFiles(saveNormalBoardDto, normalBoardType, normalBoard);
   }
 
   @Override
@@ -100,7 +110,7 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
   }
 
 
-  private void updateNormalBoardFiles(
+  private Long updateNormalBoardFiles(
           SaveNormalBoardDto saveNormalBoardDto, NormalBoardType normalBoardType, NormalBoard normalBoard) {
     final String DIR_NAME = "/" + normalBoardType.getBoardType();
     List<BoardFile> updateFiles = new ArrayList<>();
@@ -133,7 +143,7 @@ public class NormalNormalBoardServiceImpl implements NormalBoardService {
     }
 
     normalBoard.updateFiles(updateFiles);
-    normalBoardRepository.save(normalBoard);
+    return normalBoardRepository.save(normalBoard).getId();
   }
 
 }
