@@ -30,6 +30,10 @@ public class ContestField extends BaseEntity {
   @Column(name = "ID")
   protected Long id;
 
+  public ContestField(Long id) {
+    this.id = id;
+  }
+
   public Long getId() {
     return id;
   }

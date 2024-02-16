@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -24,7 +23,7 @@ public class ContestBoardDetailDto {
 
   @NotNull @Positive private Long id;
 
-  @NotBlank private ContestField contestField;
+  @NotBlank private Long contestField;
 
   @NotBlank private String title;
 
@@ -57,7 +56,7 @@ public class ContestBoardDetailDto {
   @Builder
   public ContestBoardDetailDto(
       Long id,
-      ContestField contestField,
+      Long contestField,
       String title,
       String content,
       String writerName,

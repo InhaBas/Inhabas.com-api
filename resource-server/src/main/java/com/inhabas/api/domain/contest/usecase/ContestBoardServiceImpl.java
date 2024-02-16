@@ -51,15 +51,14 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   @Override
   @Transactional(readOnly = true)
   public List<ContestBoardDto> getContestBoardsByType(
-      ContestType contestType, Long contestFieldId, String search) {
+      ContestType contestType, Long contestField, String search) {
 
     if (search == null || search.trim().isEmpty()) {
       search = "";
     }
 
     List<ContestBoard> contestBoardList =
-        contestBoardRepository.findAllByContestTypeAndFieldLike(
-            contestType, contestFieldId, search);
+        contestBoardRepository.findAllByContestTypeAndFieldLike(contestType, contestField, search);
 
     return contestBoardList.stream()
         .map(
@@ -69,7 +68,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
               return ContestBoardDto.builder()
                   .id(contestBoard.getId())
-                  .contestField(contestBoard.getContestField())
+                  .contestField(contestBoard.getContestField().getId())
                   .title(contestBoard.getTitle())
                   .association(contestBoard.getAssociation())
                   .topic(contestBoard.getTopic())

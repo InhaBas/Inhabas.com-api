@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import org.hibernate.validator.constraints.Length;
 
@@ -28,7 +27,7 @@ public class SaveContestBoardDto {
   private ContestType contestType;
 
   @NotNull(message = "공모전 분야를 선택해주세요.")
-  private ContestField contestField;
+  private Long contestField;
 
   @NotBlank(message = "제목을 입력하세요.")
   @Length(max = 100, message = "제목은 최대 100자입니다.")
@@ -56,7 +55,7 @@ public class SaveContestBoardDto {
 
   @Builder
   public SaveContestBoardDto(
-      ContestField contestField,
+      Long contestField,
       String title,
       String content,
       String association,

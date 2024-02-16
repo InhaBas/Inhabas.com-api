@@ -73,7 +73,7 @@ public class ContestBoard extends BaseBoard {
   @Builder
   public ContestBoard(
       ContestType contestType,
-      ContestField contestField,
+      Long contestField,
       String title,
       String content,
       String association,
@@ -82,7 +82,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestEnd) {
 
     this.contestType = contestType;
-    this.contestField = contestField;
+    this.contestField = new ContestField(contestField);
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);
@@ -107,7 +107,7 @@ public class ContestBoard extends BaseBoard {
 
   // 공모전 정보 수정
   public void updateContest(
-      ContestField contestField,
+      Long contestField,
       String title,
       String content,
       String association,
@@ -115,7 +115,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
-    this.contestField = contestField;
+    this.contestField = new ContestField(contestField);
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);

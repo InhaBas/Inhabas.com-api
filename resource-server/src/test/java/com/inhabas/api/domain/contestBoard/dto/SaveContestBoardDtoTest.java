@@ -37,7 +37,7 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreNullError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(null, null, null, null, null, null, null);
+        new SaveContestBoardDto(null, null, null, null, null, null, null, null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -62,7 +62,7 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreBlankedError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(" ", " ", " ", " ", null, null, null);
+        new SaveContestBoardDto(null, " ", " ", " ", " ", null, null, null);
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -88,6 +88,7 @@ public class SaveContestBoardDtoTest {
     // given
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
+            1L,
             "title".repeat(20) + ".",
             "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
             "Assoc".repeat(20) + ".",
@@ -115,6 +116,7 @@ public class SaveContestBoardDtoTest {
     // given
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
+            1L,
             "title",
             "content",
             "association",

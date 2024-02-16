@@ -27,6 +27,7 @@ import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
+import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedMemberResponseDto;
@@ -83,9 +84,9 @@ public class ContestBoardController {
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
-      @Parameter(description = "공모전 분야 ID", example = "1")
-          @RequestParam(name = "field", required = false)
-          Long contestFieldId,
+      @Parameter(description = "공모전 분야", example = "1")
+          @RequestParam(name = "contestField", required = false)
+          Long contestField,
       @Parameter(description = "페이지", example = "1")
           @RequestParam(name = "page", defaultValue = "1")
           int page,
@@ -96,10 +97,9 @@ public class ContestBoardController {
           @RequestParam(name = "search", defaultValue = "")
           String search) {
 
-    // Page 1부터 시작
-    Pageable pageable = PageRequest.of(page - 1, size);
+    Pageable pageable = PageRequest.of(page, size);
     List<ContestBoardDto> allDtos =
-        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search);
+        contestBoardService.getContestBoardsByType(contestType, contestField, search);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
@@ -108,6 +108,8 @@ public class ContestBoardController {
 
     return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
   }
+
+  private final ContestFieldRepository contestFieldRepository;
 
   @Operation(summary = "공모전 게시판 글 생성", description = "공모전 게시판 글 생성 (활동회원 이상)")
   @ApiResponses(
@@ -140,7 +142,7 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
-      @RequestPart("contestFieldId") Long contestFieldId,
+      @RequestPart("contestField") Long contestField,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("association") String association,
@@ -151,7 +153,7 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            contestFieldId,
+            contestField,
             title,
             content,
             association,
@@ -244,7 +246,7 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable("contestType") ContestType contestType,
       @PathVariable Long boardId,
-      @RequestPart("contestFieldId") Long contestFieldId,
+      @RequestPart("contestField") Long contestField,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("topic") String topic,
@@ -255,7 +257,7 @@ public class ContestBoardController {
 
     SaveContestBoardDto saveContestBoardDto =
         new SaveContestBoardDto(
-            contestFieldId,
+            contestField,
             title,
             content,
             topic,
