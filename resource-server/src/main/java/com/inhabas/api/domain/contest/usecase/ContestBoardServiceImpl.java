@@ -21,7 +21,6 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
-import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
@@ -65,13 +64,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     return contestBoardList.stream()
         .map(
             contestBoard -> {
-              //첨부파일들 중 첫번째 이미지 = 썸네일
               FileDownloadDto thumbnail =
-                  contestBoard.getFiles().stream()
-                      .filter(file -> isImageFile(file.getName()))
-                      .findFirst()
-                      .map(file -> new FileDownloadDto(file.getName(), file.getUrl()))
-                      .orElse(null);
+                  getFirstImageAsThumbnail(new ArrayList<>(contestBoard.getFiles()));
 
               return ContestBoardDto.builder()
                   .id(contestBoard.getId())
@@ -96,6 +90,15 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         || lowerCaseFileName.endsWith(".gif")
         || lowerCaseFileName.endsWith(".bmp")
         || lowerCaseFileName.endsWith(".webp");
+  }
+
+  // 첨부파일들 중 첫 번째 이미지 파일을 썸네일로 반환
+  private FileDownloadDto getFirstImageAsThumbnail(List<BoardFile> files) {
+    return files.stream()
+        .filter(file -> isImageFile(file.getName()))
+        .findFirst()
+        .map(file -> new FileDownloadDto(file.getName(), file.getUrl()))
+        .orElse(null);
   }
 
   // contestType 별로 게시글 작성

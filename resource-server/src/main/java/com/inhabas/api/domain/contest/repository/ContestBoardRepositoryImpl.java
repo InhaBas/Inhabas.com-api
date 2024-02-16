@@ -1,18 +1,18 @@
 package com.inhabas.api.domain.contest.repository;
 
-import com.inhabas.api.domain.contest.domain.QContestBoard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import java.util.Map;
 import java.util.function.BiFunction;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.QContestBoard;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -27,12 +27,16 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   private QContestBoard contestBoard = QContestBoard.contestBoard;
 
   // 필드 이름과 정렬 기준을 매핑
-  private OrderSpecifier<?> getSortedColumn(Order order, QContestBoard contestBoard, String fieldName) {
-    Map<String, BiFunction<Order, QContestBoard, OrderSpecifier<?>>> orderSpecifierMap = new HashMap<>();
+  private OrderSpecifier<?> getSortedColumn(
+      Order order, QContestBoard contestBoard, String fieldName) {
+    Map<String, BiFunction<Order, QContestBoard, OrderSpecifier<?>>> orderSpecifierMap =
+        new HashMap<>();
     orderSpecifierMap.put("id", (o, cb) -> new OrderSpecifier<>(o, cb.id));
     orderSpecifierMap.put("dateContestEnd", (o, cb) -> new OrderSpecifier<>(o, cb.dateContestEnd));
 
-    return orderSpecifierMap.getOrDefault(fieldName, (o, cb) -> new OrderSpecifier<>(Order.DESC, cb.dateContestEnd)).apply(order, contestBoard);
+    return orderSpecifierMap
+        .getOrDefault(fieldName, (o, cb) -> new OrderSpecifier<>(Order.DESC, cb.dateContestEnd))
+        .apply(order, contestBoard);
   }
 
   // 페이지 요청에 따른 정렬
@@ -41,7 +45,8 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     if (pageable.getSort() != null) {
       for (Sort.Order order : pageable.getSort()) {
         Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-        OrderSpecifier<?> orderSpecifier = getSortedColumn(direction, contestBoard, order.getProperty());
+        OrderSpecifier<?> orderSpecifier =
+            getSortedColumn(direction, contestBoard, order.getProperty());
         orders.add(orderSpecifier);
       }
     } else {
