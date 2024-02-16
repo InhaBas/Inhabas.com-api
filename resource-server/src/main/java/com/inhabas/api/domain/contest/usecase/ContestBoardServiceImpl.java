@@ -1,9 +1,7 @@
 package com.inhabas.api.domain.contest.usecase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -23,8 +21,9 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
+import com.inhabas.api.domain.contest.util.ClassifiedFiles;
+import com.inhabas.api.domain.contest.util.ClassifyFiles;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -66,8 +65,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     return contestBoardList.stream()
         .map(
             contestBoard -> {
-              Map<String, Object> classifiedFiles =
-                  classifyFiles(new ArrayList<>(contestBoard.getFiles()));
+              ClassifiedFiles classifiedFiles =
+                  ClassifyFiles.classifyFiles(new ArrayList<>(contestBoard.getFiles()));
 
               return ContestBoardDto.builder()
                   .id(contestBoard.getId())
@@ -77,7 +76,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
                   .topic(contestBoard.getTopic())
                   .dateContestStart(contestBoard.getDateContestStart())
                   .dateContestEnd(contestBoard.getDateContestEnd())
-                  .thumbnail((FileDownloadDto) classifiedFiles.get("thumbnail"))
+                  .thumbnail(classifiedFiles.getThumbnail())
                   .build();
             })
         .collect(Collectors.toList());
@@ -119,14 +118,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     ContestBoard contestBoard =
         contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
 
-    Map<String, Object> classifiedFiles = classifyFiles(new ArrayList<>(contestBoard.getFiles()));
-    List<FileDownloadDto> fileDownloadDtoList = null;
-    if (!contestBoard.getFiles().isEmpty()) {
-      fileDownloadDtoList =
-          contestBoard.getFiles().stream()
-              .map(obj -> FileDownloadDto.builder().name(obj.getName()).url(obj.getUrl()).build())
-              .collect(Collectors.toList());
-    }
+    ClassifiedFiles classifiedFiles =
+        ClassifyFiles.classifyFiles(new ArrayList<>(contestBoard.getFiles()));
 
     return ContestBoardDetailDto.builder()
         .id(contestBoard.getId())
@@ -135,9 +128,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         .writerName(contestBoard.getWriter().getName())
         .dateCreated(contestBoard.getDateCreated())
         .dateUpdated(contestBoard.getDateUpdated())
-        .thumbnail((FileDownloadDto) classifiedFiles.get("thumbnail"))
-        .images((List<FileDownloadDto>) classifiedFiles.get("images"))
-        .otherFiles((List<FileDownloadDto>) classifiedFiles.get("otherFiles"))
+        .thumbnail(classifiedFiles.getThumbnail())
+        .images(classifiedFiles.getImages())
+        .otherFiles(classifiedFiles.getOtherFiles())
         .build();
   }
 
@@ -197,42 +190,5 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     contestBoard.updateFiles(updateFiles);
     return contestBoardRepository.save(contestBoard).getId();
-  }
-
-  // 파일 확장자를 기반으로 이미지 파일인지 판단
-  private boolean isImageFile(String fileName) {
-    String lowerCaseFileName = fileName.toLowerCase();
-    return lowerCaseFileName.endsWith(".jpg")
-        || lowerCaseFileName.endsWith(".jpeg")
-        || lowerCaseFileName.endsWith(".png")
-        || lowerCaseFileName.endsWith(".gif")
-        || lowerCaseFileName.endsWith(".bmp")
-        || lowerCaseFileName.endsWith(".webp");
-  }
-
-  // 파일 분류 및 썸네일 설정
-  private Map<String, Object> classifyFiles(List<BoardFile> files) {
-    List<FileDownloadDto> images = new ArrayList<>();
-    List<FileDownloadDto> otherFiles = new ArrayList<>();
-    FileDownloadDto thumbnail = null;
-
-    for (BoardFile file : files) {
-      if (isImageFile(file.getName())) {
-        FileDownloadDto image = new FileDownloadDto(file.getName(), file.getUrl());
-        images.add(image);
-        if (thumbnail == null) {
-          thumbnail = image; // 첫 번째 이미지 파일 썸네일로 지정
-        }
-      } else {
-        otherFiles.add(new FileDownloadDto(file.getName(), file.getUrl()));
-      }
-    }
-
-    Map<String, Object> classifiedFiles = new HashMap<>();
-    classifiedFiles.put("thumbnail", thumbnail);
-    classifiedFiles.put("images", images);
-    classifiedFiles.put("otherFiles", otherFiles);
-
-    return classifiedFiles;
   }
 }
