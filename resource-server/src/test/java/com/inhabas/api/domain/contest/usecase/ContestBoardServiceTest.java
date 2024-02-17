@@ -1,7 +1,6 @@
-package com.inhabas.api.domain.contestBoard.usecase;
+package com.inhabas.api.domain.contest.usecase;
 
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
-import com.inhabas.api.domain.contest.usecase.ContestBoardServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

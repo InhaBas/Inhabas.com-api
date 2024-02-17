@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.contestBoard.dto;
+package com.inhabas.api.domain.contest.dto;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,8 +12,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-
-import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 
 import org.junit.jupiter.api.*;
 

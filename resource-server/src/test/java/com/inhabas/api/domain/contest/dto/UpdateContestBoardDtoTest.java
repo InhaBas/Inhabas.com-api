@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.contestBoard.dto;
+package com.inhabas.api.domain.contest.dto;
 
 // import static org.assertj.core.api.Assertions.assertThat;
 // import static org.junit.jupiter.api.Assertions.assertEquals;

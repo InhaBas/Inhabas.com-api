@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.contestBoard;
+package com.inhabas.api.domain.contest;
 
 // import java.time.LocalDate;
 

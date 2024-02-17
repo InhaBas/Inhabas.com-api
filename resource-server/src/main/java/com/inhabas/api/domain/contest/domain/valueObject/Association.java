@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 @Embeddable
 public class Association {
 
-  @Column(name = "ASSO", length = 100, nullable = false)
+  @Column(name = "ASSOCIATION", length = 100, nullable = false)
   private String value;
 
   @Transient private final int MAX_LENGTH = 100;

@@ -8,10 +8,10 @@ import javax.persistence.Transient;
 
 @Embeddable
 public class Topic {
-  @Column(name = "TOPIC", length = 500, nullable = false)
+  @Column(name = "TOPIC", length = 100, nullable = false)
   private String value;
 
-  @Transient private final int MAX_LENGTH = 500;
+  @Transient private final int MAX_LENGTH = 150;
 
   public Topic() {}
 

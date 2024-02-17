@@ -1,5 +1,3 @@
-package com.inhabas.api.domain.contest.domain;
+package com.inhabas.api.domain.contest.domain.valueObject;
 
-public class ContestFieldNameTest {
-
-}
+public class ContestFieldNameTest {}

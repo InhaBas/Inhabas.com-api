@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -31,11 +31,10 @@ import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 import com.inhabas.api.domain.file.domain.BoardFile;
 
 @Entity
-@Table(name = "CONTEST")
+@Table(name = "CONTEST_BOARD")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-@DiscriminatorValue("CONTEST")
 public class ContestBoard extends BaseBoard {
 
   @Enumerated(EnumType.STRING)
@@ -43,7 +42,7 @@ public class ContestBoard extends BaseBoard {
   private ContestType contestType;
 
   @ManyToOne
-  @JoinColumn(name = "CONTEST_FIELD_ID_FK", referencedColumnName = "ID")
+  @JoinColumn(name = "CONTEST_FIELD_ID", foreignKey = @ForeignKey(name = "FK_CONTEST_FIELD_OF_ID"))
   private ContestField contestField;
 
   @Embedded private Topic topic;
