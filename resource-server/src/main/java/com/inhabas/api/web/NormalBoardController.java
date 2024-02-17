@@ -53,7 +53,7 @@ public class NormalBoardController {
             })
     @GetMapping("/board/count")
     @SecurityRequirements(value = {})
-    public ResponseEntity<List<BoardCountDto>> getBoardList() {
+    public ResponseEntity<List<BoardCountDto>> getBoardCount() {
         return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuId());
     }
 
@@ -73,16 +73,6 @@ public class NormalBoardController {
                                     @ExampleObject(
                                             value =
                                                     "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "데이터가 존재하지 않습니다.",
-                            content =
-                            @Content(
-                                    schema = @Schema(implementation = ErrorResponse.class),
-                                    examples =
-                                    @ExampleObject(
-                                            value =
-                                                    "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
             })
     @GetMapping("/board/{boardType}")
     @PreAuthorize(
@@ -167,16 +157,6 @@ public class NormalBoardController {
                               @ExampleObject(
                                       value =
                                               "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-              @ApiResponse(
-                      responseCode = "404",
-                      description = "데이터가 존재하지 않습니다.",
-                      content =
-                      @Content(
-                              schema = @Schema(implementation = ErrorResponse.class),
-                              examples =
-                              @ExampleObject(
-                                      value =
-                                              "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
       public ResponseEntity<Long> addBoard(
               @Authenticated Long memberId,
@@ -187,7 +167,7 @@ public class NormalBoardController {
           URI location =
                   ServletUriComponentsBuilder.fromCurrentRequest()
                           .path("/board/{boardType}/{boardId}")
-                          .buildAndExpand(boardType, newNormalBoardId)
+                          .buildAndExpand(boardType.getBoardType(), newNormalBoardId)
                           .toUri();
 
           return ResponseEntity.created(location).build();
@@ -197,8 +177,26 @@ public class NormalBoardController {
       @PutMapping("/board/{boardType}/{boardId}")
       @ApiResponses({
               @ApiResponse(responseCode = "200"),
-              @ApiResponse(responseCode = "400", description = "잘못된 게시글 폼 데이터 요청"),
-              @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+              @ApiResponse(
+                      responseCode = "400 ",
+                      description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+                      content =
+                      @Content(
+                              schema = @Schema(implementation = ErrorResponse.class),
+                              examples =
+                              @ExampleObject(
+                                      value =
+                                              "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+              @ApiResponse(
+                      responseCode = "404",
+                      description = "데이터가 존재하지 않습니다.",
+                      content =
+                      @Content(
+                              schema = @Schema(implementation = ErrorResponse.class),
+                              examples =
+                              @ExampleObject(
+                                      value =
+                                              "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
       @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
       public ResponseEntity<Long> updateBoard(
@@ -215,8 +213,26 @@ public class NormalBoardController {
       @DeleteMapping("/board/{boardType}/{boardId}")
       @ApiResponses({
               @ApiResponse(responseCode = "204"),
-              @ApiResponse(responseCode = "400", description = "잘못된 게시글 삭제 요청"),
-              @ApiResponse(responseCode = "403", description = "클라이언트의 접근 권한이 없음")
+              @ApiResponse(
+                      responseCode = "400 ",
+                      description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+                      content =
+                      @Content(
+                              schema = @Schema(implementation = ErrorResponse.class),
+                              examples =
+                              @ExampleObject(
+                                      value =
+                                              "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+              @ApiResponse(
+                      responseCode = "404",
+                      description = "데이터가 존재하지 않습니다.",
+                      content =
+                      @Content(
+                              schema = @Schema(implementation = ErrorResponse.class),
+                              examples =
+                              @ExampleObject(
+                                      value =
+                                              "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
       @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
       public ResponseEntity<?> deleteBoard(
