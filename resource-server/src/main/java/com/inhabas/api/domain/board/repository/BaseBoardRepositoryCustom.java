@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface BaseBoardRepositoryCustom {
 
-    List<BoardCountDto> countRowsGroupByMenuId();
-
+    List<BoardCountDto> countRowsGroupByMenuName(Integer menuGroupId);
 }

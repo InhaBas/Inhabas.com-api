@@ -51,7 +51,7 @@ public class MyProfileController {
     return ResponseEntity.ok(memberProfileService.getMyProfile(memberId));
   }
 
-  @Operation(summary = "내 [학과, 학년, 전화번호] 수정", description = "학과, 학년, 전화번호 수정. ")
+  @Operation(summary = "내 [학과, 학년, 전화번호, 타입] 수정", description = "학과, 학년, 전화번호 수정. ")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),

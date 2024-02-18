@@ -99,6 +99,15 @@ public class SwaggerConfig {
   }
 
   @Bean
+  public GroupedOpenApi getBoardApi() {
+
+    return GroupedOpenApi.builder()
+            .group("게시판 관련")
+            .pathsToMatch("/board/**", "/**/**/**/comment/**", "/**/**/**/comments")
+            .build();
+  }
+
+  @Bean
   @Profile("local")
   public OpenAPI localOpenAPI() {
     return createOpenAPI(apiInfo(), securityScheme(), securityRequirement());
