@@ -20,6 +20,25 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
+  public List<NormalBoardDto> findAllByTypeAndIsPinned(NormalBoardType boardType) {
+    return queryFactory
+            .select(
+                    Projections.constructor(
+                            NormalBoardDto.class,
+                            normalBoard.id,
+                            normalBoard.title.value,
+                            normalBoard.writer.name.value,
+                            normalBoard.dateCreated,
+                            normalBoard.dateUpdated,
+                            normalBoard.isPinned))
+            .from(normalBoard)
+            .where(eqNormalBoardType(boardType)
+                    .and(normalBoard.isPinned.isTrue()))
+            .orderBy(normalBoard.dateCreated.desc())
+            .fetch();
+  }
+
+  @Override
   public List<NormalBoardDto> findAllByMemberIdAndTypeAndSearch(Long memberId, NormalBoardType boardType, String search) {
     return queryFactory
             .select(

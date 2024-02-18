@@ -1,7 +1,7 @@
 package com.inhabas.api.web;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.domain.board.dto.*;
+import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
@@ -26,9 +26,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -54,7 +56,7 @@ public class NormalBoardController {
     @GetMapping("/board/count")
     @SecurityRequirements(value = {})
     public ResponseEntity<List<BoardCountDto>> getBoardCount() {
-        return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuId());
+        return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(2));
     }
 
     @Operation(summary = "게시글 목록 조회")
@@ -88,11 +90,10 @@ public class NormalBoardController {
             @Parameter(description = "검색어 (작성자 이름 or 제목 or 내용)", example = "")
             @RequestParam(name = "search", defaultValue = "")
             String search,
-            @PathVariable NormalBoardType boardType,
-            @Authenticated Long memberId) {
+            @PathVariable NormalBoardType boardType) {
 
         Pageable pageable = PageRequest.of(page, size);
-        List<NormalBoardDto> allDtos = normalBoardService.getPosts(memberId, boardType, search);
+        List<NormalBoardDto> allDtos = normalBoardService.getPosts(boardType, search);
         List<NormalBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
         PageImpl<NormalBoardDto> normalBoardDtoPage =
@@ -141,7 +142,7 @@ public class NormalBoardController {
       }
 
       @Operation(summary = "게시글 추가")
-      @PostMapping("/board/{boardType}")
+      @PostMapping(path = "/board/{boardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
       @PreAuthorize(
               "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)"
       )
@@ -161,8 +162,11 @@ public class NormalBoardController {
       public ResponseEntity<Long> addBoard(
               @Authenticated Long memberId,
               @PathVariable NormalBoardType boardType,
-              @Valid @RequestBody SaveNormalBoardDto saveNormalBoardDto) {
-
+              @RequestPart("title") String title,
+              @RequestPart("content") String content,
+              @RequestPart(value = "files", required = false) List<MultipartFile> files,
+              @RequestPart(value = "isPinned", required = false) Boolean isPinned) {
+          SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto(title, content, files, isPinned);
           Long newNormalBoardId = normalBoardService.write(memberId, boardType, saveNormalBoardDto);
           URI location =
                   ServletUriComponentsBuilder.fromCurrentRequest()

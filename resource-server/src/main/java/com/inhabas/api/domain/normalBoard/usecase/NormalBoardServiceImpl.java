@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
+import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
@@ -19,12 +21,15 @@ import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
 import com.inhabas.api.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.EXECUTIVE;
+import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
 
 @Service
 @Slf4j
@@ -37,14 +42,30 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   private final MemberRepository memberRepository;
   private final S3Service s3Service;
 
+  private static final Set<NormalBoardType> hasPinnedBoardTypeSet = new HashSet<>(
+          Arrays.asList(NOTICE, EXECUTIVE));
+
 
   @Override
-  public List<NormalBoardDto> getPosts(Long memberId, NormalBoardType boardType, String search) {
-    List<NormalBoardDto> normalBoardList;
+  public List<NormalBoardDto> getPinned(NormalBoardType boardType) {
+    List<NormalBoardDto> normalBoardList = new ArrayList<>();
+    if (boardType.equals(NOTICE) || boardType.equals(NormalBoardType.EXECUTIVE)) {
+      normalBoardList = normalBoardRepository.findAllByTypeAndIsPinned(boardType);
+    }
+    return normalBoardList;
+  }
+
+  @Override
+  public List<NormalBoardDto> getPosts(NormalBoardType boardType, String search) {
+    List<NormalBoardDto> normalBoardList = getPinned(boardType);
     if (boardType.equals(NormalBoardType.SUGGEST)) {
-      normalBoardList = normalBoardRepository.findAllByMemberIdAndTypeAndSearch(memberId, boardType, search);
+      if (SecurityContextHolder.getContext() == null) {
+        throw new InvalidAuthorityException();
+      }
+      Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      normalBoardList.addAll(normalBoardRepository.findAllByMemberIdAndTypeAndSearch(memberId, boardType, search));
     } else {
-      normalBoardList = normalBoardRepository.findAllByTypeAndSearch(boardType, search);
+      normalBoardList.addAll(normalBoardRepository.findAllByTypeAndSearch(boardType, search));
     }
     return normalBoardList;
   }
@@ -79,29 +100,31 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   }
 
   @Override
-  public Long write(Long memberId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto) {
+  public Long write(Long memberId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
 
     Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    Menu menu = menuRepository.findById(normalBoardType.getMenuId()).orElseThrow(NotFoundException::new);
+    Menu menu = menuRepository.findById(boardType.getMenuId()).orElseThrow(NotFoundException::new);
+    if (!hasPinned(boardType) && saveNormalBoardDto.getIsPinned()) {
+      throw new InvalidInputException();
+    }
+      NormalBoard normalBoard =
+              new NormalBoard(
+                      saveNormalBoardDto.getTitle(),
+                      menu,
+                      saveNormalBoardDto.getContent(),
+                      saveNormalBoardDto.getIsPinned())
+                      .writtenBy(writer, NormalBoard.class);
 
-    NormalBoard normalBoard =
-            new NormalBoard(
-                    saveNormalBoardDto.getTitle(),
-                    menu,
-                    saveNormalBoardDto.getContent(),
-                    saveNormalBoardDto.getIsPinned())
-                    .writtenBy(writer, NormalBoard.class);
-
-    return updateNormalBoardFiles(saveNormalBoardDto, normalBoardType, normalBoard);
-  }
+      return updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
+    }
 
   @Override
-  public void update(Long boardId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto) {
+  public void update(Long boardId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
 
     NormalBoard normalBoard =
         normalBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
 
-    updateNormalBoardFiles(saveNormalBoardDto, normalBoardType, normalBoard);
+    updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
   }
 
   @Override
@@ -111,8 +134,8 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
 
   private Long updateNormalBoardFiles(
-          SaveNormalBoardDto saveNormalBoardDto, NormalBoardType normalBoardType, NormalBoard normalBoard) {
-    final String DIR_NAME = "/" + normalBoardType.getBoardType();
+          SaveNormalBoardDto saveNormalBoardDto, NormalBoardType boardType, NormalBoard normalBoard) {
+    final String DIR_NAME = "/" + boardType.getBoardType();
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
 
@@ -144,6 +167,10 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
     normalBoard.updateFiles(updateFiles);
     return normalBoardRepository.save(normalBoard).getId();
+  }
+
+  private boolean hasPinned(NormalBoardType boardType) {
+    return hasPinnedBoardTypeSet.contains(boardType);
   }
 
 }

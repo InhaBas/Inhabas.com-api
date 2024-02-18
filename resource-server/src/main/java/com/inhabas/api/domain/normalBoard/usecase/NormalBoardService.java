@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface NormalBoardService {
 
-  List<NormalBoardDto> getPosts(Long memberId, NormalBoardType boardType, String search);
+  List<NormalBoardDto> getPinned(NormalBoardType boardType);
+
+  List<NormalBoardDto> getPosts(NormalBoardType boardType, String search);
 
   NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId);
 
