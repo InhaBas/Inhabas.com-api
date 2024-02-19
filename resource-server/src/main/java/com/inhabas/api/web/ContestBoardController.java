@@ -95,7 +95,7 @@ public class ContestBoardController {
       @Parameter(description = "검색어", example = "")
           @RequestParam(name = "search", defaultValue = "")
           String search,
-      @Parameter(description = "게시판 정렬", example = "boardId")
+      @Parameter(description = "'boardId' 또는 'dateContestEnd' 기준 내림차순 정렬", example = "boardId")
           @RequestParam(name = "sortBy", defaultValue = "dateContestEnd")
           String sortBy) {
 
