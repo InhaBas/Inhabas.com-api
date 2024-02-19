@@ -22,6 +22,9 @@ public class NormalBoardDto {
   @NotBlank
   private String title;
 
+  @NotNull
+  private Long writerId;
+
   @NotBlank
   private String writerName;
 
@@ -42,6 +45,7 @@ public class NormalBoardDto {
   public NormalBoardDto(Long id, String title, String writerName, LocalDateTime dateCreated, LocalDateTime dateUpdated, Boolean isPinned) {
     this.id = id;
     this.title = title;
+    this.writerId = writerId;
     this.writerName = writerName;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;

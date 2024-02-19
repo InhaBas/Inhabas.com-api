@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -165,11 +164,12 @@ public class NormalBoardController {
               @RequestPart("title") String title,
               @RequestPart("content") String content,
               @RequestPart(value = "files", required = false) List<MultipartFile> files,
-              @RequestPart(value = "isPinned", required = false) Boolean isPinned) {
-          SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto(title, content, files, isPinned);
+              @RequestParam(value = "pinOption", required = false) Integer pinOption) {
+          SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto(title, content, files, pinOption);
           Long newNormalBoardId = normalBoardService.write(memberId, boardType, saveNormalBoardDto);
           URI location =
                   ServletUriComponentsBuilder.fromCurrentRequest()
+                          .replaceQueryParam("pinOption")
                           .path("/board/{boardType}/{boardId}")
                           .buildAndExpand(boardType.getBoardType(), newNormalBoardId)
                           .toUri();
@@ -178,7 +178,7 @@ public class NormalBoardController {
       }
 
       @Operation(summary = "게시글 수정")
-      @PutMapping("/board/{boardType}/{boardId}")
+      @PostMapping(value = "/board/{boardType}/{boardId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
       @ApiResponses({
               @ApiResponse(responseCode = "200"),
               @ApiResponse(
@@ -207,13 +207,16 @@ public class NormalBoardController {
               @Authenticated Long memberId,
               @PathVariable NormalBoardType boardType,
               @PathVariable Long boardId,
-              @Valid @RequestBody SaveNormalBoardDto saveNormalBoardDto) {
-
+              @RequestPart("title") String title,
+              @RequestPart("content") String content,
+              @RequestPart(value = "files", required = false) List<MultipartFile> files,
+              @RequestParam(value = "pinOption", required = false) Integer pinOption) {
+          SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto(title, content, files, pinOption);
           normalBoardService.update(boardId, boardType, saveNormalBoardDto);
           return ResponseEntity.noContent().build();
       }
 
-      @Operation(description = "게시글 삭제")
+      @Operation(summary = "게시글 삭제")
       @DeleteMapping("/board/{boardType}/{boardId}")
       @ApiResponses({
               @ApiResponse(responseCode = "204"),

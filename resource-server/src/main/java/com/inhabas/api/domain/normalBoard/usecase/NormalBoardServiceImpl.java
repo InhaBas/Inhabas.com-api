@@ -57,8 +57,8 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
   @Override
   public List<NormalBoardDto> getPosts(NormalBoardType boardType, String search) {
-    List<NormalBoardDto> normalBoardList = getPinned(boardType);
-    if (boardType.equals(NormalBoardType.SUGGEST)) {
+    List<NormalBoardDto> normalBoardList = new ArrayList<>();
+    if (boardType.equals(SUGGEST)) {
       if (SecurityContextHolder.getContext() == null) {
         throw new InvalidAuthorityException();
       }
@@ -74,7 +74,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   public NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId) {
     NormalBoard normalBoard;
     List<FileDownloadDto> fileDownloadDtoList = null;
-    if (boardType.equals(NormalBoardType.SUGGEST)) {
+    if (boardType.equals(SUGGEST)) {
       normalBoard = normalBoardRepository.findByMemberIdAndTypeAndId(memberId, boardType, boardId).orElseThrow(NotFoundException::new);
     } else {
       normalBoard = normalBoardRepository.findByTypeAndId(boardType, boardId).orElseThrow(NotFoundException::new);
@@ -91,6 +91,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
             .id(normalBoard.getId())
             .title(normalBoard.getTitle())
             .content(normalBoard.getContent())
+            .writerId(normalBoard.getWriter().getId())
             .writerName(normalBoard.getWriter().getName())
             .dateCreated(normalBoard.getDateCreated())
             .dateUpdated(normalBoard.getDateUpdated())

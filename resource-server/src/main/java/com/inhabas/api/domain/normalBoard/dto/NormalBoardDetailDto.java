@@ -25,6 +25,8 @@ public class NormalBoardDetailDto {
     private String title;
 
     @NotBlank private String content;
+    @NotNull
+    private Long writerId;
 
     @NotBlank private String writerName;
 
@@ -48,6 +50,7 @@ public class NormalBoardDetailDto {
             Long id,
             String title,
             String content,
+            Long writerId,
             String writerName,
             LocalDateTime dateCreated,
             LocalDateTime dateUpdated,
@@ -56,6 +59,7 @@ public class NormalBoardDetailDto {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.writerId = writerId;
         this.writerName = writerName;
         this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;

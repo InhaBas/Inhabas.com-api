@@ -5,9 +5,11 @@ import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,7 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                             NormalBoardDto.class,
                             normalBoard.id,
                             normalBoard.title.value,
+                            normalBoard.writer.id,
                             normalBoard.writer.name.value,
                             normalBoard.dateCreated,
                             normalBoard.dateUpdated,
@@ -46,15 +49,16 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                             NormalBoardDto.class,
                             normalBoard.id,
                             normalBoard.title.value,
+                            normalBoard.writer.id,
                             normalBoard.writer.name.value,
+                            normalBoard.datePinExpiration,
                             normalBoard.dateCreated,
                             normalBoard.dateUpdated,
                             normalBoard.isPinned))
             .from(normalBoard)
             .where(eqMemberId(memberId)
                     .and(eqNormalBoardType(boardType))
-                    .and(likeTitle(search))
-                    .or(likeContent(search)))
+                    .and(likeTitle(search).or(likeContent(search))))
             .orderBy(normalBoard.dateCreated.desc())
             .fetch();
   }
@@ -67,14 +71,15 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                             NormalBoardDto.class,
                             normalBoard.id,
                             normalBoard.title.value,
+                            normalBoard.writer.id,
                             normalBoard.writer.name.value,
+                            normalBoard.datePinExpiration,
                             normalBoard.dateCreated,
                             normalBoard.dateUpdated,
                             normalBoard.isPinned))
             .from(normalBoard)
             .where(eqNormalBoardType(boardType)
-                    .and(likeTitle(search))
-                    .or(likeContent(search)))
+                    .and(likeTitle(search).or(likeContent(search))))
             .orderBy(normalBoard.dateCreated.desc())
             .fetch();
   }
