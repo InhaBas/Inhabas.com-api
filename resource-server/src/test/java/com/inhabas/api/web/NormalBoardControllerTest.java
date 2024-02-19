@@ -10,7 +10,6 @@ import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.normalBoard.usecase.NormalBoardService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -58,7 +58,7 @@ public class NormalBoardControllerTest {
         // given
         BoardCountDto boardCountDto = new BoardCountDto("공지사항", 10);
         List<BoardCountDto> dtoList = List.of(boardCountDto);
-        given(baseBoardRepository.countRowsGroupByMenuId()).willReturn(dtoList);
+        given(baseBoardRepository.countRowsGroupByMenuName(any())).willReturn(dtoList);
 
         // when
         String response =
@@ -87,7 +87,7 @@ public class NormalBoardControllerTest {
                         .isPinned(false)
                         .build();
         List<NormalBoardDto> dtoList = List.of(normalBoardDto);
-        given(normalBoardService.getPosts(any(),any(),any())).willReturn(dtoList);
+        given(normalBoardService.getPosts(any(),any())).willReturn(dtoList);
 
         // when
         String response =
@@ -183,16 +183,19 @@ public class NormalBoardControllerTest {
     @Test
     void addBoard() throws Exception {
         // given
-        SaveNormalBoardDto saveNormalBoardDto =
-                new SaveNormalBoardDto("title", "content", null, false);
         given(normalBoardService.write(any(),any(),any())).willReturn(1L);
+        MockMultipartFile titlePart =
+                new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile contentPart =
+                new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
 
         // when
         String header =
                 mvc.perform(
-                                post("/board/notice")
-                                        .contentType(MediaType.APPLICATION_JSON)
-                                        .content(jsonOf(saveNormalBoardDto)))
+                                multipart("/board/notice?pinOption=2")
+                                        .file(titlePart)
+                                        .file(contentPart)
+                                        .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(status().isCreated())
                         .andReturn()
                         .getResponse()
@@ -206,14 +209,16 @@ public class NormalBoardControllerTest {
     @Test
     void addBoard_Invalid_Input() throws Exception {
         //given
-        SaveNormalBoardDto saveNormalBoardDto =
-                new SaveNormalBoardDto("meaningless", "meaningless", null, false);
-
+        MockMultipartFile titlePart =
+                new MockMultipartFile("title", "".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile contentPart =
+                new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
         // when
         String response =
-                mvc.perform(post("/board/invalid")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOf(saveNormalBoardDto)))
+                mvc.perform(multipart("/board/notice?pinOption=2")
+                                .file(titlePart)
+                                .file(contentPart)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(status().isBadRequest())
                         .andReturn()
                         .getResponse()
@@ -227,15 +232,18 @@ public class NormalBoardControllerTest {
     @Test
     void updateBoard() throws Exception {
         // given
-        SaveNormalBoardDto saveNormalBoardDto =
-                new SaveNormalBoardDto("title", "content", null, false);
+        MockMultipartFile titlePart =
+                new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile contentPart =
+                new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
         doNothing().when(normalBoardService).update(any(), any(), any());
 
         // when then
         mvc.perform(
-                        put("/board/notice/1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOf(saveNormalBoardDto)))
+                        multipart("/board/notice/1?pinOption=2")
+                                .file(titlePart)
+                                .file(contentPart)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isNoContent());
     }
 
@@ -243,15 +251,18 @@ public class NormalBoardControllerTest {
     @Test
     void updateBoard_Invalid_Input() throws Exception {
         //given
-        SaveNormalBoardDto saveNormalBoardDto =
-                new SaveNormalBoardDto("title", "content", null, false);
+        MockMultipartFile titlePart =
+                new MockMultipartFile("title", "".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile contentPart =
+                new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
         doThrow(InvalidInputException.class).when(normalBoardService).update(any(), any(), any());
 
         // when
         String response =
-                mvc.perform(put("/board/notice/1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOf(saveNormalBoardDto)))
+                mvc.perform(multipart("/board/notice?pinOption=2")
+                                .file(titlePart)
+                                .file(contentPart)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(status().isBadRequest())
                         .andReturn()
                         .getResponse()
@@ -265,15 +276,18 @@ public class NormalBoardControllerTest {
     @Test
     void updateBoard_Not_Found() throws Exception {
         //given
-        SaveNormalBoardDto saveNormalBoardDto =
-                new SaveNormalBoardDto("title", "content", null, false);
+        MockMultipartFile titlePart =
+                new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile contentPart =
+                new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
         doThrow(NotFoundException.class).when(normalBoardService).update(any(), any(), any());
 
         // when
         String response =
-                mvc.perform(put("/board/notice/1")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonOf(saveNormalBoardDto)))
+                mvc.perform(multipart("/board/notice/1?pinOption=2")
+                                .file(titlePart)
+                                .file(contentPart)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(status().isNotFound())
                         .andReturn()
                         .getResponse()

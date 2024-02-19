@@ -4,18 +4,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NormalBoardDtoTest {
 
@@ -38,7 +36,7 @@ class NormalBoardDtoTest {
     public void NormalBoardDto_is_OK() {
         // given
         NormalBoardDto normalBoardDto =
-                new NormalBoardDto(1L, "title", "writer",
+                new NormalBoardDto(1L, "title", 1L, "writer", LocalDateTime.now(),
                         LocalDateTime.now(), LocalDateTime.now(), false);
 
         // when
@@ -53,7 +51,7 @@ class NormalBoardDtoTest {
     public void Title_is_null() {
         // given
         NormalBoardDto normalBoardDto =
-                new NormalBoardDto(1L, null, "writer",
+                new NormalBoardDto(1L, null, 1L, "writer", LocalDateTime.now(),
                         LocalDateTime.now(), LocalDateTime.now(), false);
 
         // when

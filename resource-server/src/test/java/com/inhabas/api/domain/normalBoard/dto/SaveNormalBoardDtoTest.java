@@ -39,7 +39,7 @@ public class SaveNormalBoardDtoTest {
   public void SaveNormalBoardDto_is_OK() {
     // given
     SaveNormalBoardDto saveNormalBoardDto =
-            new SaveNormalBoardDto("title", "content", emptyList, false);
+            new SaveNormalBoardDto("title", "content", emptyList, 2);
 
     // when
     Set<ConstraintViolation<SaveNormalBoardDto>> violations = validator.validate(saveNormalBoardDto);
@@ -52,7 +52,7 @@ public class SaveNormalBoardDtoTest {
   @Test
   public void Content_is_null() {
     // given
-    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", null, emptyList,false);
+    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", null, emptyList,2);
 
     // when
     Set<ConstraintViolation<SaveNormalBoardDto>> violations = validator.validate(saveNormalBoardDto);

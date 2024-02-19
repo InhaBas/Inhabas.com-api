@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.normalBoard.domain;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.assertj.core.api.Assertions;
@@ -10,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +26,7 @@ public class NormalBoardTest {
 
     String title = "title1";
     String content = "content1";
-    normalBoard = new NormalBoard(title, menu, content, false);
+    normalBoard = new NormalBoard(title, menu, content, false, null);
   }
 
   @DisplayName("올바른 NormalBoard 를 생성한다.")

@@ -20,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,15 +53,14 @@ public class NormalBoardServiceImplTest {
     @Test
     void getPosts() {
         // given
-        Member member = MemberTest.chiefMember();
-        NormalBoardDto dto = new NormalBoardDto(
-                1L, "title", member.getName(), LocalDateTime.now(), LocalDateTime.now(), false);
+        NormalBoardDto dto = new NormalBoardDto(1L, "title", 1L, "writer", LocalDateTime.now(),
+                LocalDateTime.now(), LocalDateTime.now(), false);
 
         given(normalBoardRepository.findAllByTypeAndSearch(any(), any()))
-                .willReturn(Arrays.asList(dto));
+                .willReturn(List.of(dto));
 
         // when
-        List<NormalBoardDto> clubActivityDtoList = normalBoardService.getPosts(1L, NOTICE, "");
+        List<NormalBoardDto> clubActivityDtoList = normalBoardService.getPosts(NOTICE, "");
 
         // then
         assertThat(clubActivityDtoList).hasSize(1);
@@ -75,7 +73,7 @@ public class NormalBoardServiceImplTest {
         Member member = MemberTest.chiefMember();
         Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
         NormalBoard normalBoard =
-                new NormalBoard("title", menu, "content", false)
+                new NormalBoard("title", menu, "content", false, LocalDateTime.now())
                         .writtenBy(member, NormalBoard.class);
 
         given(normalBoardRepository.findByTypeAndId(any(), any())).willReturn(Optional.of(normalBoard));
@@ -93,10 +91,10 @@ public class NormalBoardServiceImplTest {
     void write() {
         //given
         Member member = MemberTest.chiefMember();
-        SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, false);
+        SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
         Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
         NormalBoard normalBoard =
-                new NormalBoard("title", menu, "content", false)
+                new NormalBoard("title", menu, "content", false, LocalDateTime.now())
                         .writtenBy(member, NormalBoard.class);
 
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
@@ -115,9 +113,9 @@ public class NormalBoardServiceImplTest {
     @Test
     void update() {
         //given
-        SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, false);
+        SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
         Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
-        NormalBoard normalBoard = new NormalBoard("title", menu, "content", false);
+        NormalBoard normalBoard = new NormalBoard("title", menu, "content", false, LocalDateTime.now());
         ReflectionTestUtils.setField(normalBoard, "id", 1L);
 
         given(normalBoardRepository.findById(any())).willReturn(Optional.of(normalBoard));

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -16,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NormalBoardDetailDtoTest {
 
@@ -40,8 +40,8 @@ class NormalBoardDetailDtoTest {
     public void NormalBoardDetailDto_is_OK() {
         // given
         NormalBoardDetailDto normalBoardDetailDto =
-                new NormalBoardDetailDto(1L, "title", "content", "writer",
-                        LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
+                new NormalBoardDetailDto(1L, "title", "content", 1L, "writer",
+                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
 
         // when
         Set<ConstraintViolation<NormalBoardDetailDto>> violations = validator.validate(normalBoardDetailDto);
@@ -55,8 +55,8 @@ class NormalBoardDetailDtoTest {
     public void Title_is_null() {
         // given
         NormalBoardDetailDto normalBoardDetailDto =
-                new NormalBoardDetailDto(1L, null, "content", "writer",
-                        LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
+                new NormalBoardDetailDto(1L, null, "content", 1L, "writer",
+                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
 
         // when
         Set<ConstraintViolation<NormalBoardDetailDto>> violations = validator.validate(normalBoardDetailDto);
