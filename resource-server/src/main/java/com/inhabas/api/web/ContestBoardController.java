@@ -27,7 +27,6 @@ import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
-import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedMemberResponseDto;
@@ -50,7 +49,7 @@ public class ContestBoardController {
 
   private final ContestBoardService contestBoardService;
 
-  @Operation(summary = "공모전 게시판 목록 조회", description = "공모전 게시판 목록 조회 (썸네일은 첫 사진 첨부파일)")
+  @Operation(summary = "공모전 게시판 목록 조회", description = "공모전 게시판 목록 조회")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -95,11 +94,14 @@ public class ContestBoardController {
           int size,
       @Parameter(description = "검색어", example = "")
           @RequestParam(name = "search", defaultValue = "")
-          String search) {
+          String search,
+      @Parameter(description = "게시판 정렬", example = "boardId")
+          @RequestParam(name = "sortBy", defaultValue = "dateContestEnd")
+          String sortBy) {
 
     Pageable pageable = PageRequest.of(page, size);
     List<ContestBoardDto> allDtos =
-        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search);
+        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search, sortBy);
     List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
@@ -108,8 +110,6 @@ public class ContestBoardController {
 
     return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
   }
-
-  private final ContestFieldRepository contestFieldRepository;
 
   @Operation(summary = "공모전 게시판 글 생성", description = "공모전 게시판 글 생성 (활동회원 이상)")
   @ApiResponses(

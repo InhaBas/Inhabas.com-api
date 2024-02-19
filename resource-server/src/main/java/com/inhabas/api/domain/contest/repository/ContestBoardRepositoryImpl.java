@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.contest.repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +7,13 @@ import java.util.function.BiFunction;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.QContestBoard;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @RequiredArgsConstructor
@@ -39,26 +36,9 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         .apply(order, contestBoard);
   }
 
-  // 페이지 요청에 따른 정렬
-  public List<OrderSpecifier<?>> getAllOrderSpecifiers(Pageable pageable) {
-    List<OrderSpecifier<?>> orders = new ArrayList<>();
-    if (pageable.getSort() != null) {
-      for (Sort.Order order : pageable.getSort()) {
-        Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-        OrderSpecifier<?> orderSpecifier =
-            getSortedColumn(direction, contestBoard, order.getProperty());
-        orders.add(orderSpecifier);
-      }
-    } else {
-      // 기본 정렬 조건
-      orders.add(getSortedColumn(Order.DESC, contestBoard, "dateContestEnd"));
-    }
-    return orders;
-  }
-
   // 공모전 검색 및 필터링 기능
   public List<ContestBoard> findAllByContestTypeAndFieldLike(
-      ContestType contestType, Long contestFieldId, String search) {
+      ContestType contestType, Long contestFieldId, String search, String sortBy) {
     BooleanExpression target =
         contestTypeEq(contestType)
             .and(contestFieldEq(contestFieldId))
@@ -68,8 +48,15 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                     .or(writerNameLike(search))
                     .or(associationLike(search))
                     .or(topicLike(search)));
-    // 정렬 기능 추가
-    return queryFactory.selectFrom(contestBoard).where(target).fetch();
+    JPAQuery<ContestBoard> query = queryFactory.selectFrom(contestBoard).where(target);
+
+    if ("boardId".equals(sortBy)) {
+      query.orderBy(contestBoard.id.desc()); // 최신순: boardId 순으로 내림차순 정렬
+    } else if ("dateContestEnd".equals(sortBy)) {
+      query.orderBy(contestBoard.dateContestEnd.desc()); // 마감순: dateContestEnd 순으로 내림차순 정렬
+    }
+
+    return query.fetch();
   }
 
   private BooleanExpression contestTypeEq(ContestType contestType) {
