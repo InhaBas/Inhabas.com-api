@@ -5,8 +5,7 @@ import com.inhabas.api.auth.domain.error.businessException.BusinessException;
 
 public class OnlyWriterUpdateException extends BusinessException {
 
-    public OnlyWriterUpdateException() {
-        super(ErrorCode.ONLY_WRITER_UPDATE);
-    }
-
+  public OnlyWriterUpdateException() {
+    super(ErrorCode.ONLY_WRITER_UPDATE);
+  }
 }

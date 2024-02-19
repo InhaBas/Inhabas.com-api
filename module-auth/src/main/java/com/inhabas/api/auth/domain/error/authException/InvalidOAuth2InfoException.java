@@ -4,7 +4,7 @@ import com.inhabas.api.auth.domain.error.ErrorCode;
 
 public class InvalidOAuth2InfoException extends CustomAuthException {
 
-    public InvalidOAuth2InfoException() {
-        super(ErrorCode.INVALID_OAUTH2_INFO);
-    }
+  public InvalidOAuth2InfoException() {
+    super(ErrorCode.INVALID_OAUTH2_INFO);
+  }
 }

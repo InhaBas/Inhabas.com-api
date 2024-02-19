@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.budget.repository;
 
-import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
+
 public interface BudgetApplicationRepository
-        extends JpaRepository<BudgetSupportApplication, Integer>, BudgetApplicationRepositoryCustom {
-}
+    extends JpaRepository<BudgetSupportApplication, Integer>, BudgetApplicationRepositoryCustom {}
