@@ -31,6 +31,11 @@ public class NormalBoardDto {
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime datePinExpiration;
+
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateCreated;
 
   @NotNull
@@ -42,11 +47,13 @@ public class NormalBoardDto {
   private Boolean isPinned;
 
   @Builder
-  public NormalBoardDto(Long id, String title, String writerName, LocalDateTime dateCreated, LocalDateTime dateUpdated, Boolean isPinned) {
+  public NormalBoardDto(Long id, String title, Long writerId, String writerName, LocalDateTime datePinExpiration,
+                        LocalDateTime dateCreated, LocalDateTime dateUpdated, Boolean isPinned) {
     this.id = id;
     this.title = title;
     this.writerId = writerId;
     this.writerName = writerName;
+    this.datePinExpiration = datePinExpiration;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;
     this.isPinned = isPinned;

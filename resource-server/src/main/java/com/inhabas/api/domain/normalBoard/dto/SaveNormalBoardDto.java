@@ -18,12 +18,12 @@ public class SaveNormalBoardDto {
 
   private List<MultipartFile> files;
 
-  private Boolean isPinned = false;
+  private Integer pinOption;
 
-  public SaveNormalBoardDto(String title, String content, List<MultipartFile> files, Boolean isPinned) {
+  public SaveNormalBoardDto(String title, String content, List<MultipartFile> files, Integer pinOption) {
     this.title = title;
     this.content = content;
     this.files = files;
-    this.isPinned = isPinned;
+    this.pinOption = pinOption;
   }
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,21 +29,30 @@ public class NormalBoard extends BaseBoard {
   @Column
   private Boolean isPinned = false;
 
+  @Column(columnDefinition = "DATETIME(0)")
+  private LocalDateTime datePinExpiration;
+
   @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
 
   /* constructor */
 
-  public NormalBoard(String title, Menu menu, String content, Boolean isPinned) {
+  public NormalBoard(String title, Menu menu, String content,
+                     Boolean isPinned, LocalDateTime datePinExpiration) {
     super(title, menu);
     this.content = new Content(content);
     this.isPinned = isPinned;
+    this.datePinExpiration = datePinExpiration;
   }
 
   /* getter */
 
   public Boolean getPinned() {
     return isPinned;
+  }
+
+  public LocalDateTime getDatePinExpiration() {
+    return datePinExpiration;
   }
 
   public String getContent() {
@@ -71,6 +81,11 @@ public class NormalBoard extends BaseBoard {
     for (BoardFile file : files) {
       addFile(file);
     }
+  }
+
+  public void updatePinned(Boolean isPinned, LocalDateTime datePinExpiration) {
+    this.isPinned = isPinned;
+    this.datePinExpiration = datePinExpiration;
   }
 
 }

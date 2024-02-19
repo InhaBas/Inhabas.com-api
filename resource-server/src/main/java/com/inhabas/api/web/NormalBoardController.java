@@ -9,6 +9,7 @@ import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.normalBoard.usecase.NormalBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
+import com.inhabas.api.global.dto.PagedPinnedResponseDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
@@ -79,7 +80,7 @@ public class NormalBoardController {
     @PreAuthorize(
             "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)"
     )
-    public ResponseEntity<PagedResponseDto<NormalBoardDto>> getBoardList(
+    public ResponseEntity<PagedPinnedResponseDto<NormalBoardDto>> getBoardList(
             @Parameter(description = "페이지", example = "0")
             @RequestParam(name = "page", defaultValue = "0")
             int page,
@@ -92,14 +93,15 @@ public class NormalBoardController {
             @PathVariable NormalBoardType boardType) {
 
         Pageable pageable = PageRequest.of(page, size);
-        List<NormalBoardDto> allDtos = normalBoardService.getPosts(boardType, search);
-        List<NormalBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+        List<NormalBoardDto> allDtoList = normalBoardService.getPosts(boardType, search);
+        List<NormalBoardDto> pinnedDtoList = normalBoardService.getPinned(boardType);
+        List<NormalBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
         PageImpl<NormalBoardDto> normalBoardDtoPage =
-                new PageImpl<>(pagedDtos, pageable, allDtos.size());
+                new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
         PageInfoDto pageInfoDto = new PageInfoDto(normalBoardDtoPage);
 
-        return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
+        return ResponseEntity.ok(new PagedPinnedResponseDto<>(pageInfoDto, pinnedDtoList, pagedDtoList));
     }
 
       @Operation(summary = "게시글 단일 조회")

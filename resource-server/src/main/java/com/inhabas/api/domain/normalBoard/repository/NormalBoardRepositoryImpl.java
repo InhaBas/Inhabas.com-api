@@ -5,7 +5,6 @@ import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -31,12 +30,14 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
                             normalBoard.title.value,
                             normalBoard.writer.id,
                             normalBoard.writer.name.value,
+                            normalBoard.datePinExpiration,
                             normalBoard.dateCreated,
                             normalBoard.dateUpdated,
                             normalBoard.isPinned))
             .from(normalBoard)
             .where(eqNormalBoardType(boardType)
-                    .and(normalBoard.isPinned.isTrue()))
+                    .and(normalBoard.isPinned.isTrue())
+                    .and(normalBoard.datePinExpiration.after(LocalDateTime.now())))
             .orderBy(normalBoard.dateCreated.desc())
             .fetch();
   }

@@ -25,11 +25,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.*;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.EXECUTIVE;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
+import static com.inhabas.api.domain.normalBoard.domain.PinOption.*;
 
 @Service
 @Slf4j
@@ -44,12 +47,14 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
   private static final Set<NormalBoardType> hasPinnedBoardTypeSet = new HashSet<>(
           Arrays.asList(NOTICE, EXECUTIVE));
-
+  private static final LocalDateTime PERMANENT_DATE =
+          LocalDateTime.of(2200, 1, 1, 0, 0, 0);
+  private static final Integer TEMPORARY_DAYS = 14;
 
   @Override
   public List<NormalBoardDto> getPinned(NormalBoardType boardType) {
     List<NormalBoardDto> normalBoardList = new ArrayList<>();
-    if (boardType.equals(NOTICE) || boardType.equals(NormalBoardType.EXECUTIVE)) {
+    if (boardType.equals(NOTICE) || boardType.equals(EXECUTIVE)) {
       normalBoardList = normalBoardRepository.findAllByTypeAndIsPinned(boardType);
     }
     return normalBoardList;
@@ -93,6 +98,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
             .content(normalBoard.getContent())
             .writerId(normalBoard.getWriter().getId())
             .writerName(normalBoard.getWriter().getName())
+            .datePinExpiration(normalBoard.getDatePinExpiration())
             .dateCreated(normalBoard.getDateCreated())
             .dateUpdated(normalBoard.getDateUpdated())
             .files(fileDownloadDtoList)
@@ -105,26 +111,27 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
     Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     Menu menu = menuRepository.findById(boardType.getMenuId()).orElseThrow(NotFoundException::new);
-    if (!hasPinned(boardType) && saveNormalBoardDto.getIsPinned()) {
-      throw new InvalidInputException();
-    }
-      NormalBoard normalBoard =
-              new NormalBoard(
-                      saveNormalBoardDto.getTitle(),
-                      menu,
-                      saveNormalBoardDto.getContent(),
-                      saveNormalBoardDto.getIsPinned())
-                      .writtenBy(writer, NormalBoard.class);
 
-      return updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
-    }
+    NormalBoard normalBoard = new NormalBoard(
+            saveNormalBoardDto.getTitle(),
+            menu,
+            saveNormalBoardDto.getContent(),
+            false,
+            null
+    ).writtenBy(writer, NormalBoard.class);
+
+    updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
+    return updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
+
+  }
+
 
   @Override
   public void update(Long boardId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
 
     NormalBoard normalBoard =
         normalBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
-
+    updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
     updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
   }
 
@@ -168,6 +175,26 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
     normalBoard.updateFiles(updateFiles);
     return normalBoardRepository.save(normalBoard).getId();
+  }
+
+  private void updateNormalBoardPinned(SaveNormalBoardDto saveNormalBoardDto, NormalBoardType boardType, NormalBoard normalBoard) {
+    boolean isPinned = false;
+    LocalDateTime datePinExpiration = null;
+
+    if (hasPinned(boardType)) {
+      if (saveNormalBoardDto.getPinOption() == null) {
+        throw new InvalidInputException();
+      } else if (saveNormalBoardDto.getPinOption().equals(TEMPORARY.getOption())) {
+        isPinned = true;
+        datePinExpiration = LocalDateTime.now().plusDays(TEMPORARY_DAYS);
+      } else if (saveNormalBoardDto.getPinOption().equals(PERMANENT.getOption())) {
+        isPinned = true;
+        datePinExpiration = PERMANENT_DATE;
+      }
+    }
+
+    normalBoard.updatePinned(isPinned, datePinExpiration);
+
   }
 
   private boolean hasPinned(NormalBoardType boardType) {

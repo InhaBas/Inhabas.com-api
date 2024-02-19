@@ -33,6 +33,11 @@ public class NormalBoardDetailDto {
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Schema(type = "string", example = "2024-11-01T00:00:00")
+    private LocalDateTime datePinExpiration;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @Schema(type = "string", example = "2024-11-01T00:00:00")
     private LocalDateTime dateCreated;
 
     @NotNull
@@ -52,6 +57,7 @@ public class NormalBoardDetailDto {
             String content,
             Long writerId,
             String writerName,
+            LocalDateTime datePinExpiration,
             LocalDateTime dateCreated,
             LocalDateTime dateUpdated,
             List<FileDownloadDto> files,
@@ -61,6 +67,7 @@ public class NormalBoardDetailDto {
         this.content = content;
         this.writerId = writerId;
         this.writerName = writerName;
+        this.datePinExpiration = datePinExpiration;
         this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;
         this.files = files;
