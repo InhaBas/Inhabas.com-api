@@ -14,6 +14,8 @@ public class FileUtil {
     "exe", "bat", "cmd", "sh", "js", "jsp", "php", "asp", "html"
   };
 
+  private static final String[] IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "bmp", "webp"};
+
   public static boolean isValidFileName(String fileName) {
 
     if (fileName == null || fileName.trim().isEmpty()) {
@@ -47,6 +49,16 @@ public class FileUtil {
     }
 
     return true;
+  }
+
+  public static boolean isImageFile(String fileName) {
+    String extension = getExtension(fileName).toLowerCase();
+    for (String imageExtension : IMAGE_EXTENSIONS) {
+      if (extension.equals(imageExtension)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static String getExtension(String fileName) {
