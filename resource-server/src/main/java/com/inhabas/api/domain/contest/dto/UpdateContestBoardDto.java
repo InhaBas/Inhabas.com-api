@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 
 import com.inhabas.api.domain.contest.domain.ContestField;
 import org.hibernate.validator.constraints.Length;
-
 // 공모전 게시판 글 업데이트 - 삭제예정
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

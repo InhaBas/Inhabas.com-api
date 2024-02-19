@@ -55,6 +55,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     }
     return orders;
   }
+
   // 공모전 검색 및 필터링 기능
   public List<ContestBoard> findAllByContestTypeAndFieldLike(
       ContestType contestType, Long contestFieldId, String search) {
@@ -67,7 +68,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                     .or(writerNameLike(search))
                     .or(associationLike(search))
                     .or(topicLike(search)));
-
+    // 정렬 기능 추가
     return queryFactory.selectFrom(contestBoard).where(target).fetch();
   }
 

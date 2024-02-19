@@ -21,12 +21,12 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
-import com.inhabas.api.domain.contest.util.ClassifiedFiles;
-import com.inhabas.api.domain.contest.util.ClassifyFiles;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 
 @Service

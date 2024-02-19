@@ -1,10 +1,11 @@
-package com.inhabas.api.domain.contest.util;
+package com.inhabas.api.global.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 
+// ClassifyFiles 에 의해 분류된 파일들이 ClassifiedFiles 형태로 반환됨.
 public class ClassifiedFiles {
   private FileDownloadDto thumbnail;
   private List<FileDownloadDto> images = new ArrayList<>();
