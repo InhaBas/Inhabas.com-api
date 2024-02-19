@@ -86,15 +86,15 @@ public class ContestBoardController {
       @Parameter(description = "공모전 분야", example = "1")
           @RequestParam(name = "contestFieldId", required = false)
           Long contestFieldId,
+      @Parameter(description = "검색어", example = "")
+          @RequestParam(name = "search", defaultValue = "")
+          String search,
       @Parameter(description = "페이지", example = "1")
           @RequestParam(name = "page", defaultValue = "1")
           int page,
       @Parameter(description = "페이지당 개수", example = "4")
           @RequestParam(name = "size", defaultValue = "4")
           int size,
-      @Parameter(description = "검색어", example = "")
-          @RequestParam(name = "search", defaultValue = "")
-          String search,
       @Parameter(description = "'boardId' 또는 'dateContestEnd' 기준 내림차순 정렬", example = "boardId")
           @RequestParam(name = "sortBy", defaultValue = "dateContestEnd")
           String sortBy) {

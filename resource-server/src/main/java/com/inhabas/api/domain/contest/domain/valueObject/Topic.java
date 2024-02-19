@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 @Embeddable
 public class Topic {
   @Column(name = "TOPIC", length = 100, nullable = false)
@@ -17,7 +19,7 @@ public class Topic {
 
   public Topic(String value) {
     if (validate(value)) this.value = value;
-    else throw new IllegalArgumentException();
+    else throw new InvalidInputException();
   }
 
   private boolean validate(Object value) {

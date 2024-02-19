@@ -106,7 +106,7 @@ public class ContestBoard extends BaseBoard {
 
   // 공모전 정보 수정
   public void updateContest(
-      Long contestField,
+      Long contestFieldId,
       String title,
       String content,
       String association,
@@ -114,7 +114,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
-    this.contestField = new ContestField(contestField);
+    this.contestField = new ContestField(contestFieldId);
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);
