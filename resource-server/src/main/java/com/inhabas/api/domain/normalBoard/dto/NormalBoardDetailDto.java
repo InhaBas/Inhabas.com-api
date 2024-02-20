@@ -45,7 +45,9 @@ public class NormalBoardDetailDto {
     @Schema(type = "string", example = "2024-11-01T00:00:00")
     private LocalDateTime dateUpdated;
 
-    @NotNull private List<FileDownloadDto> files;
+    @NotNull private List<FileDownloadDto> images;
+
+    @NotNull private List<FileDownloadDto> otherFiles;
 
     @NotNull
     private Boolean isPinned;
@@ -60,7 +62,8 @@ public class NormalBoardDetailDto {
             LocalDateTime datePinExpiration,
             LocalDateTime dateCreated,
             LocalDateTime dateUpdated,
-            List<FileDownloadDto> files,
+            List<FileDownloadDto> images,
+            List<FileDownloadDto> otherFiles,
             Boolean isPinned) {
         this.id = id;
         this.title = title;
@@ -70,7 +73,8 @@ public class NormalBoardDetailDto {
         this.datePinExpiration = datePinExpiration;
         this.dateCreated = dateCreated;
         this.dateUpdated = dateUpdated;
-        this.files = files;
+        this.images = images;
+        this.otherFiles = otherFiles;
         this.isPinned = isPinned;
     }
 }

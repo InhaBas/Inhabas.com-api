@@ -8,7 +8,6 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFound
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -18,6 +17,8 @@ import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -78,19 +79,13 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   @Override
   public NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId) {
     NormalBoard normalBoard;
-    List<FileDownloadDto> fileDownloadDtoList = null;
     if (boardType.equals(SUGGEST)) {
       normalBoard = normalBoardRepository.findByMemberIdAndTypeAndId(memberId, boardType, boardId).orElseThrow(NotFoundException::new);
     } else {
       normalBoard = normalBoardRepository.findByTypeAndId(boardType, boardId).orElseThrow(NotFoundException::new);
     }
-    if (!normalBoard.getFiles().isEmpty()) {
-      fileDownloadDtoList =
-              normalBoard.getFiles().stream()
-                      .map(obj -> FileDownloadDto.builder().name(obj.getName()).url(obj.getUrl()).build())
-                      .collect(Collectors.toList());
-    }
 
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(normalBoard.getFiles());
 
     return NormalBoardDetailDto.builder()
             .id(normalBoard.getId())
@@ -101,7 +96,8 @@ public class NormalBoardServiceImpl implements NormalBoardService {
             .datePinExpiration(normalBoard.getDatePinExpiration())
             .dateCreated(normalBoard.getDateCreated())
             .dateUpdated(normalBoard.getDateUpdated())
-            .files(fileDownloadDtoList)
+            .images(classifiedFiles.getImages())
+            .otherFiles(classifiedFiles.getOtherFiles())
             .isPinned(normalBoard.getPinned())
             .build();
   }
@@ -143,7 +139,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
   private Long updateNormalBoardFiles(
           SaveNormalBoardDto saveNormalBoardDto, NormalBoardType boardType, NormalBoard normalBoard) {
-    final String DIR_NAME = "/" + boardType.getBoardType();
+    final String DIR_NAME = boardType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
 

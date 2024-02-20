@@ -41,7 +41,7 @@ class NormalBoardDetailDtoTest {
         // given
         NormalBoardDetailDto normalBoardDetailDto =
                 new NormalBoardDetailDto(1L, "title", "content", 1L, "writer",
-                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
+                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, emptyList, false);
 
         // when
         Set<ConstraintViolation<NormalBoardDetailDto>> violations = validator.validate(normalBoardDetailDto);
@@ -56,7 +56,7 @@ class NormalBoardDetailDtoTest {
         // given
         NormalBoardDetailDto normalBoardDetailDto =
                 new NormalBoardDetailDto(1L, null, "content", 1L, "writer",
-                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, false);
+                        LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), emptyList, emptyList, false);
 
         // when
         Set<ConstraintViolation<NormalBoardDetailDto>> violations = validator.validate(normalBoardDetailDto);

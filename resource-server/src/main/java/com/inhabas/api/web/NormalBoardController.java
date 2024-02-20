@@ -172,8 +172,8 @@ public class NormalBoardController {
           URI location =
                   ServletUriComponentsBuilder.fromCurrentRequest()
                           .replaceQueryParam("pinOption")
-                          .path("/board/{boardType}/{boardId}")
-                          .buildAndExpand(boardType.getBoardType(), newNormalBoardId)
+                          .path("/{boardId}")
+                          .buildAndExpand(newNormalBoardId)
                           .toUri();
 
           return ResponseEntity.created(location).build();

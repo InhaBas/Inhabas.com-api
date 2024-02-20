@@ -100,7 +100,7 @@ public class ClubActivityController {
     Long newClubActivityId = clubActivityService.writeClubActivity(memberId, saveClubActivityDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/club/activity/{boardId}")
+            .path("/{boardId}")
             .buildAndExpand(newClubActivityId)
             .toUri();
 
