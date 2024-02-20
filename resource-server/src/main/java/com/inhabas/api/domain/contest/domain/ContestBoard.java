@@ -12,11 +12,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.inhabas.api.domain.board.domain.NormalBoard;
-import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
+import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
 
 @Entity
 @Table(name = "contest_board")
@@ -53,7 +52,7 @@ public class ContestBoard extends NormalBoard {
       LocalDate deadline) {
 
     this.title = new Title(title);
-    this.content = new Content(contents);
+    //    this.content = new Content(contents);
     this.association = new Association(association);
     this.topic = new Topic(topic);
     this.start = start;

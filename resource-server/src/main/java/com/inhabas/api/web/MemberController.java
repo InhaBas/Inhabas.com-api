@@ -17,7 +17,7 @@ import com.inhabas.api.domain.member.usecase.MemberManageService;
 import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
 import com.inhabas.api.domain.signUp.usecase.AnswerService;
 import com.inhabas.api.global.dto.PageInfoDto;
-import com.inhabas.api.global.dto.PagedMemberResponseDto;
+import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,20 +43,19 @@ public class MemberController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
       })
   @GetMapping("/members/unapproved")
-  public ResponseEntity<PagedMemberResponseDto<NotApprovedMemberManagementDto>>
-      getUnapprovedMembers(
-          @Parameter(description = "페이지", example = "0")
-              @RequestParam(name = "page", defaultValue = "0")
-              int page,
-          @Parameter(description = "페이지당 개수", example = "10")
-              @RequestParam(name = "size", defaultValue = "10")
-              int size,
-          @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
-              @RequestParam(name = "search", defaultValue = "")
-              String search) {
+  public ResponseEntity<PagedResponseDto<NotApprovedMemberManagementDto>> getUnapprovedMembers(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
 
     Pageable pageable = PageRequest.of(page, size);
     List<NotApprovedMemberManagementDto> allDtos =
@@ -67,7 +66,7 @@ public class MemberController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(newMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(
@@ -124,10 +123,10 @@ public class MemberController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
       })
   @GetMapping("/members/graduated")
-  public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getGraduatedMembers(
+  public ResponseEntity<PagedResponseDto<ApprovedMemberManagementDto>> getGraduatedMembers(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -147,7 +146,7 @@ public class MemberController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(graduatedMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(summary = "비활동 이상 졸업자 아닌 멤버 목록 조회", description = "이름, 학번 검색 가능")
@@ -155,10 +154,10 @@ public class MemberController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
       })
   @GetMapping("/members/notGraduated")
-  public ResponseEntity<PagedMemberResponseDto<ApprovedMemberManagementDto>> getNotGraduatedMembers(
+  public ResponseEntity<PagedResponseDto<ApprovedMemberManagementDto>> getNotGraduatedMembers(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -178,7 +177,7 @@ public class MemberController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(

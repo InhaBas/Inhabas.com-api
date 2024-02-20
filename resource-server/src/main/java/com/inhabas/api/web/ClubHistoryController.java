@@ -106,7 +106,7 @@ public class ClubHistoryController {
     Long newClubHistoryId = clubHistoryService.writeClubHistory(memberId, saveClubHistoryDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/club/history/{clubHistoryId}")
+            .path("/{clubHistoryId}")
             .buildAndExpand(newClubHistoryId)
             .toUri();
     return ResponseEntity.created(location).build();

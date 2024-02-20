@@ -116,7 +116,7 @@ public class CommentController {
 
     commentService.create(commentSaveDto, menuId, boardId, memberId);
     URI location =
-        ServletUriComponentsBuilder.fromCurrentRequest()
+        ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/board/{menuId}/{boardId}/comments")
             .buildAndExpand(menuId, boardId)
             .toUri();
