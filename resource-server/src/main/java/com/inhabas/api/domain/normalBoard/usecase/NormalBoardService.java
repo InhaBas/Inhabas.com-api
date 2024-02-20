@@ -1,11 +1,11 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
+import java.util.List;
+
 import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
-
-import java.util.List;
 
 public interface NormalBoardService {
 

@@ -1,21 +1,21 @@
 package com.inhabas.api.domain.normalBoard.domain;
 
-import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.menu.domain.Menu;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.menu.domain.Menu;
+import org.assertj.core.api.Assertions;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 public class NormalBoardTest {
 
-  @Mock
-  private Menu menu;
+  @Mock private Menu menu;
 
   private NormalBoard normalBoard;
 

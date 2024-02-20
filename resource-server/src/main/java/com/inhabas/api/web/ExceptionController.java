@@ -122,5 +122,4 @@ public class ExceptionController {
     final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
     return new ResponseEntity<>(response, BAD_REQUEST);
   }
-
 }

@@ -21,7 +21,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 @Table(name = "ALBUM_BOARD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
- @Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorValue("ALBUM")
 public class AlbumBoard extends BaseBoard {
 

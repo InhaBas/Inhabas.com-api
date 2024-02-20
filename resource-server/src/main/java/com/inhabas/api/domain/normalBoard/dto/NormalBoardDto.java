@@ -1,32 +1,29 @@
 package com.inhabas.api.domain.normalBoard.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.LocalDateTime;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @NoArgsConstructor
 public class NormalBoardDto {
 
-  @NotNull
-  @Positive
-  private Long id;
+  @NotNull @Positive private Long id;
 
-  @NotBlank
-  private String title;
+  @NotBlank private String title;
 
-  @NotNull
-  private Long writerId;
+  @NotNull private Long writerId;
 
-  @NotBlank
-  private String writerName;
+  @NotBlank private String writerName;
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -43,12 +40,18 @@ public class NormalBoardDto {
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateUpdated;
 
-  @NotNull
-  private Boolean isPinned;
+  @NotNull private Boolean isPinned;
 
   @Builder
-  public NormalBoardDto(Long id, String title, Long writerId, String writerName, LocalDateTime datePinExpiration,
-                        LocalDateTime dateCreated, LocalDateTime dateUpdated, Boolean isPinned) {
+  public NormalBoardDto(
+      Long id,
+      String title,
+      Long writerId,
+      String writerName,
+      LocalDateTime datePinExpiration,
+      LocalDateTime dateCreated,
+      LocalDateTime dateUpdated,
+      Boolean isPinned) {
     this.id = id;
     this.title = title;
     this.writerId = writerId;
@@ -58,5 +61,4 @@ public class NormalBoardDto {
     this.dateUpdated = dateUpdated;
     this.isPinned = isPinned;
   }
-
 }

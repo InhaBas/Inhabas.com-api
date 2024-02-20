@@ -7,6 +7,7 @@ public class MenuGroupExampleTest {
   public static MenuGroup getIBASMenuGroup() {
     return new MenuGroup("IBAS");
   }
+
   public static MenuGroup getNormalMenuGroup() {
     return new MenuGroup("게시판");
   }

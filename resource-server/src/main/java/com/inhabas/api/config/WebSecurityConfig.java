@@ -59,9 +59,7 @@ public class WebSecurityConfig {
   private static final String[] AUTH_WHITELIST_CLUB_ACTIVITY = {
     "/club/activity/**", "/club/activities"
   };
-  private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {
-          "/board/count"
-  };
+  private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {"/board/count"};
 
   @Order(1)
   @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
@@ -85,11 +83,11 @@ public class WebSecurityConfig {
     @Override
     public void configure(WebSecurity web) throws Exception {
       web.ignoring()
-              .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
-              .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
-              .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
-              .antMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
-              .antMatchers(AUTH_WHITELIST_SWAGGER)
+          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
+          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
+          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
+          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
+          .antMatchers(AUTH_WHITELIST_SWAGGER)
           .antMatchers(AUTH_WHITELIST_STATIC)
           .antMatchers(AUTH_WHITELIST_PATH);
     }

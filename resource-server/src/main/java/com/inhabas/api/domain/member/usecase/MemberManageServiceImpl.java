@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -217,7 +216,7 @@ public class MemberManageServiceImpl implements MemberManageService {
 
   private boolean hasRoleToChange(Authentication authentication, Role role) {
     return authentication.getAuthorities().stream()
-            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ROLE_PREFIX + role));
+        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ROLE_PREFIX + role));
   }
 
   private boolean checkAllMembersHaveAllowedRoles(List<Member> members, Set<Role> allowedRoles) {

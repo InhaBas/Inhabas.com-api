@@ -46,17 +46,16 @@ public class MemberController {
             content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
       })
   @GetMapping("/members/unapproved")
-  public ResponseEntity<PagedResponseDto<NotApprovedMemberManagementDto>>
-      getUnapprovedMembers(
-          @Parameter(description = "페이지", example = "0")
-              @RequestParam(name = "page", defaultValue = "0")
-              int page,
-          @Parameter(description = "페이지당 개수", example = "10")
-              @RequestParam(name = "size", defaultValue = "10")
-              int size,
-          @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
-              @RequestParam(name = "search", defaultValue = "")
-              String search) {
+  public ResponseEntity<PagedResponseDto<NotApprovedMemberManagementDto>> getUnapprovedMembers(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
 
     Pageable pageable = PageRequest.of(page, size);
     List<NotApprovedMemberManagementDto> allDtos =

@@ -102,9 +102,9 @@ public class SwaggerConfig {
   public GroupedOpenApi getBoardApi() {
 
     return GroupedOpenApi.builder()
-            .group("게시판 관련")
-            .pathsToMatch("/board/**", "/**/**/**/comment/**", "/**/**/**/comments")
-            .build();
+        .group("게시판 관련")
+        .pathsToMatch("/board/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .build();
   }
 
   @Bean

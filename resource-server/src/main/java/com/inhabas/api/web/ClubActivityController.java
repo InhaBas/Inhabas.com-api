@@ -21,7 +21,7 @@ import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.usecase.ClubActivityService;
 import com.inhabas.api.global.dto.PageInfoDto;
- import com.inhabas.api.global.dto.PagedResponseDto;
+import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;

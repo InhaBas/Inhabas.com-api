@@ -61,8 +61,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
       member.setPhone(profileDetailDto.getPhoneNumber());
     if (profileDetailDto.getGrade() != null)
       member.getSchoolInformation().setGrade(profileDetailDto.getGrade());
-    if (profileDetailDto.getType() != null)
-      member.setMemberType(profileDetailDto.getType());
+    if (profileDetailDto.getType() != null) member.setMemberType(profileDetailDto.getType());
   }
 
   @Override
