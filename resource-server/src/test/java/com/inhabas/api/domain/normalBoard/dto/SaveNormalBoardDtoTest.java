@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.normalBoard.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,7 @@ public class SaveNormalBoardDtoTest {
         validator.validate(saveNormalBoardDto);
 
     // then
-    assertTrue(violations.isEmpty());
+    assertThat(violations).isEmpty();
   }
 
   @DisplayName("SaveNormalBoardDto content 필드가 null 이면 validation 실패")
@@ -62,6 +61,6 @@ public class SaveNormalBoardDtoTest {
         validator.validate(saveNormalBoardDto);
 
     // then
-    assertEquals(1, violations.size());
+    assertThat(violations.size()).isEqualTo(1);
   }
 }

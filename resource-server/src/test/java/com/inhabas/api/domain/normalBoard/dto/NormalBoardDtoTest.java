@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.normalBoard.dto;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -51,7 +50,7 @@ class NormalBoardDtoTest {
     Set<ConstraintViolation<NormalBoardDto>> violations = validator.validate(normalBoardDto);
 
     // then
-    assertTrue(violations.isEmpty());
+    assertThat(violations).isEmpty();
   }
 
   @DisplayName("NormalBoardDto title 필드가 null 이면 validation 실패")
@@ -73,6 +72,6 @@ class NormalBoardDtoTest {
     Set<ConstraintViolation<NormalBoardDto>> violations = validator.validate(normalBoardDto);
 
     // then
-    assertEquals(1, violations.size());
+    assertThat(violations.size()).isEqualTo(1);
   }
 }
