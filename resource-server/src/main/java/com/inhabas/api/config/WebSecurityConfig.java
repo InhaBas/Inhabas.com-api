@@ -132,8 +132,10 @@ public class WebSecurityConfig {
           .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
           // 회원 관리
-          .antMatchers("/members/executive", "/members/hof")
+          .antMatchers("/members/executive")
           .hasRole(ANONYMOUS.toString())
+          .antMatchers("/members/hof")
+          .hasRole(DEACTIVATED.toString())
           .antMatchers("/members/approved/role")
           .hasRole(SECRETARY.toString())
           .antMatchers("/members/approved/type")
