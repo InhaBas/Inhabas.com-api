@@ -214,7 +214,8 @@ public class MemberControllerTest {
     // given
     List<HallOfFameDto> dtoList = new ArrayList<>();
     HallOfFameDto dto1 =
-        new HallOfFameDto("홍길동", 1L, "12171707", 1, "컴퓨터공학", null, "자기소개", "email@google.com");
+        new HallOfFameDto(
+            "홍길동", 1L, "12171707", 1, "컴퓨터공학", null, "자기소개", "email@google.com", "010-0101-0101");
     dtoList.add(dto1);
 
     given(memberManageService.getHallOfFame()).willReturn(dtoList);

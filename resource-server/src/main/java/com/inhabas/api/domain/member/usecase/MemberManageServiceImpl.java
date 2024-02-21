@@ -156,7 +156,8 @@ public class MemberManageServiceImpl implements MemberManageService {
                     member.getSchoolInformation().getMajor(),
                     member.getPicture(),
                     member.getIbasInformation().getIntroduce(),
-                    member.getEmail()))
+                    member.getEmail(),
+                    member.getPhone()))
         .collect(Collectors.toList());
   }
 
