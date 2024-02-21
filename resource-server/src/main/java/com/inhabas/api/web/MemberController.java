@@ -198,10 +198,10 @@ public class MemberController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = ExecutiveMemberDto.class))}),
+            content = {@Content(schema = @Schema(implementation = HallOfFameDto.class))}),
       })
   @GetMapping("/members/hof")
-  public ResponseEntity<List<HallOfFameDto>> getHallOfFameDto() {
+  public ResponseEntity<List<HallOfFameDto>> getHallOfFameMembers() {
     return ResponseEntity.ok(memberManageService.getHallOfFame());
   }
 
