@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.domain.NormalBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
@@ -35,7 +35,7 @@ import com.inhabas.api.domain.file.domain.BoardFile;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class ContestBoard extends BaseBoard {
+public class ContestBoard extends NormalBoard {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "CONTEST_TYPE", nullable = false)

@@ -111,30 +111,30 @@ public class ContestBoardServiceTest {
     //        then(contestBoardRepository).should(times(1)).deleteById(any());
   }
 
-  @DisplayName("공모전 게시글을 수정한다.")
-  @Test
-  public void updateContestBoard() {
-    //        //given
-    //        StudentId StudentId = new StudentId("12201863");
-    //        ContestBoard expectedContestBoard =
-    //                new ContestBoard("title", "content", "association", "topic",
-    //                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
-    //                        .writtenBy(StudentId);
-    //
-    //        given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
-    //
-    // given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
-    //
-    //        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목",
-    //                "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1),
-    //                LocalDate.of(2022, 1, 26));
-    //
-    //        // when
-    //        contestBoardService.update(StudentId, updateContestBoardDto);
-    //
-    //        // then
-    //        then(contestBoardRepository).should(times(1)).save(any());
-  }
+  // @DisplayName("공모전 게시글을 수정한다.")
+  // @Test
+  // public void updateContestBoard() {
+  //        //given
+  //        StudentId StudentId = new StudentId("12201863");
+  //        ContestBoard expectedContestBoard =
+  //                new ContestBoard("title", "content", "association", "topic",
+  //                        LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 26))
+  //                        .writtenBy(StudentId);
+  //
+  //        given(contestBoardRepository.save(any())).willReturn(expectedContestBoard);
+  //
+  // given(contestBoardRepository.findById(any())).willReturn(Optional.of(expectedContestBoard));
+  //
+  //        UpdateContestBoardDto updateContestBoardDto = new UpdateContestBoardDto(1, "수정된 제목",
+  //                "수정된 내용", "수정된 협회기관명", "수정된 공모전 주제", LocalDate.of(2022, 1, 1),
+  //                LocalDate.of(2022, 1, 26));
+  //
+  //        // when
+  //        contestBoardService.update(StudentId, updateContestBoardDto);
+  //
+  //        // then
+  //        then(contestBoardRepository).should(times(1)).save(any());
+  // }
 
   @DisplayName("작성자가 아니면 수정할 수 없다.")
   @Test
