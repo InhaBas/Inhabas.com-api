@@ -10,15 +10,18 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PagedMemberResponseDto<T> {
+public class PagedPinnedResponseDto<T> {
 
   @NotNull private PageInfoDto pageInfo;
+
+  private List<T> pinnedData;
 
   @NotNull private List<T> data;
 
   @Builder
-  public PagedMemberResponseDto(PageInfoDto pageInfo, List<T> data) {
+  public PagedPinnedResponseDto(PageInfoDto pageInfo, List<T> pinnedData, List<T> data) {
     this.pageInfo = pageInfo;
+    this.pinnedData = pinnedData;
     this.data = data;
   }
 }

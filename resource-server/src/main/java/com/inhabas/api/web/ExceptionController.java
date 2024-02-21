@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -111,6 +112,13 @@ public class ExceptionController {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   protected ResponseEntity<Object> processValidationError(MethodArgumentNotValidException e) {
     log.error("Validation test failed", e);
+    final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+    return new ResponseEntity<>(response, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MissingServletRequestPartException.class)
+  protected ResponseEntity<Object> processRequestPartError(MissingServletRequestPartException e) {
+    log.error("RequestPart validation failed", e);
     final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
     return new ResponseEntity<>(response, BAD_REQUEST);
   }

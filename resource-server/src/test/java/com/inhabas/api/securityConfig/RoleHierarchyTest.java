@@ -1,19 +1,19 @@
 package com.inhabas.api.securityConfig;
 
-import com.inhabas.api.web.BoardController;
+import com.inhabas.api.web.NormalBoardController;
 import com.inhabas.testAnnotataion.DefaultWebMvcTest;
 
-@DefaultWebMvcTest(BoardController.class)
+@DefaultWebMvcTest(NormalBoardController.class)
 public class RoleHierarchyTest {
 
   //    @Autowired
   //    private MockMvc mockMvc;
   //
   //    @Autowired
-  //    BoardController boardController;
+  //    NormalBoardController boardController;
   //
   //    @MockBean
-  //    BoardService boardService;
+  //    NormalBoardService boardService;
   //
   //    @MockBean
   //    MemberManageService memberService;

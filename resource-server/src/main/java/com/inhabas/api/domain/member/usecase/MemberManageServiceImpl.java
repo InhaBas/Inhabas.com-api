@@ -2,10 +2,7 @@ package com.inhabas.api.domain.member.usecase;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +41,7 @@ public class MemberManageServiceImpl implements MemberManageService {
   private static final String FAIL_STATE = "fail";
   private static final String PASS_EMAIL_SUBJECT = "[IBAS] 축하합니다. 동아리에 입부되셨습니다.";
   private static final String FAIL_EMAIL_SUBJECT = "[IBAS] 입부 신청 결과를 알립니다.";
+  private static final String ROLE_PREFIX = "ROLE_";
   private final MemberRepository memberRepository;
   private final SMTPService amazonSMTPService;
   private final AnswerRepository answerRepository;
@@ -198,8 +196,7 @@ public class MemberManageServiceImpl implements MemberManageService {
     List<Member> members = memberRepository.findAllById(memberIdList);
     boolean allApprovedMembers;
 
-    if (authentication.getAuthorities().contains("ROLE_" + VICE_CHIEF)
-        || authentication.getAuthorities().contains("ROLE_" + CHIEF)) {
+    if (hasRoleToChange(authentication, CHIEF) || hasRoleToChange(authentication, VICE_CHIEF)) {
       if (!CHIEF_CHANGEABLE_ROLES.contains(role)) {
         throw new InvalidInputException();
       }
@@ -215,6 +212,11 @@ public class MemberManageServiceImpl implements MemberManageService {
     if (!allApprovedMembers) {
       throw new InvalidInputException();
     }
+  }
+
+  private boolean hasRoleToChange(Authentication authentication, Role role) {
+    return authentication.getAuthorities().stream()
+        .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ROLE_PREFIX + role));
   }
 
   private boolean checkAllMembersHaveAllowedRoles(List<Member> members, Set<Role> allowedRoles) {

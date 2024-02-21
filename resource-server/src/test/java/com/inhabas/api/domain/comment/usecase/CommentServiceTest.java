@@ -52,9 +52,9 @@ public class CommentServiceTest {
   public void setUpMocking() {
     proxyWriter = MemberTest.getTestBasicMember("12171652");
     ReflectionTestUtils.setField(proxyWriter, "id", 1L);
-    proxyMenuGroup = MenuGroupExampleTest.getMenuGroup1();
+    proxyMenuGroup = MenuGroupExampleTest.getIBASMenuGroup();
     ReflectionTestUtils.setField(proxyMenuGroup, "id", 1);
-    proxyMenu = MenuExampleTest.getMenu1(proxyMenuGroup);
+    proxyMenu = MenuExampleTest.getAlbumMenu(proxyMenuGroup);
     ReflectionTestUtils.setField(proxyMenu, "id", 1);
     proxyBoard = AlbumExampleTest.getAlbumBoard1(proxyMenu);
     ReflectionTestUtils.setField(proxyBoard, "id", 1L);
