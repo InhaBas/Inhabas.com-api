@@ -29,7 +29,7 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
-import com.inhabas.api.global.dto.PagedMemberResponseDto;
+import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +54,7 @@ public class ContestBoardController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedMemberResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
         @ApiResponse(
             responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
@@ -81,7 +81,7 @@ public class ContestBoardController {
   @PreAuthorize(
       // 공모전 게시판 MenuId : 18
       "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
-  public ResponseEntity<PagedMemberResponseDto<ContestBoardDto>> getContestBoard(
+  public ResponseEntity<PagedResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
       @Parameter(description = "공모전 분야", example = "1")
           @RequestParam(name = "contestFieldId", required = false)
@@ -108,7 +108,7 @@ public class ContestBoardController {
         new PageImpl<>(pagedDtos, pageable, allDtos.size());
     PageInfoDto pageInfoDto = new PageInfoDto(ContestBoardDtoPage);
 
-    return ResponseEntity.ok(new PagedMemberResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
   @Operation(summary = "공모전 게시판 글 생성", description = "공모전 게시판 글 생성 (활동회원 이상)")
