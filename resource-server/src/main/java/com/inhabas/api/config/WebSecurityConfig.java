@@ -109,7 +109,7 @@ public class WebSecurityConfig {
           .sessionManagement()
           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
-          // API이므로 CORS 활성화, CSRF 비활성화
+          // API 이므로 CORS 활성화, CSRF 비활성화
           .cors()
           .and()
           .csrf()
@@ -126,12 +126,14 @@ public class WebSecurityConfig {
           // Preflight 방식
           .requestMatchers(CorsUtils::isPreFlightRequest)
           .permitAll()
-          .antMatchers("/myInfo/reqeusts")
+          .antMatchers("/myInfo/requests")
           .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
           .antMatchers("/myInfo/request/**")
           .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
           // 회원 관리
+          .antMatchers("/members/executive", "/members/hof")
+          .hasRole(ANONYMOUS.toString())
           .antMatchers("/members/approved/role")
           .hasRole(SECRETARY.toString())
           .antMatchers("/members/approved/type")
