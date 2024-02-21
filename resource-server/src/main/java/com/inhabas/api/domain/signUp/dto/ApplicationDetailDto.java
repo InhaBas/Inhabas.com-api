@@ -18,6 +18,8 @@ public class ApplicationDetailDto {
 
   @NotNull @Positive private Long memberId;
 
+  @NotBlank private String studentId;
+
   @NotBlank private String name;
 
   @NotNull @Positive private Integer grade;
@@ -39,6 +41,7 @@ public class ApplicationDetailDto {
   @Builder
   public ApplicationDetailDto(
       Long memberId,
+      String studentId,
       String name,
       Integer grade,
       String major,
@@ -47,6 +50,7 @@ public class ApplicationDetailDto {
       LocalDateTime dateJoined,
       List<QuestionAnswerDto> answers) {
     this.memberId = memberId;
+    this.studentId = studentId;
     this.name = name;
     this.grade = grade;
     this.major = major;

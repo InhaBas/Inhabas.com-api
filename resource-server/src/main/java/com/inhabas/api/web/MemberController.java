@@ -58,15 +58,16 @@ public class MemberController {
           String search) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<NotApprovedMemberManagementDto> allDtos =
+    List<NotApprovedMemberManagementDto> allDtoList =
         memberManageService.getNotApprovedMembersBySearchAndRole(search);
-    List<NotApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    List<NotApprovedMemberManagementDto> pagedDtoList =
+        PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<NotApprovedMemberManagementDto> newMemberManagementDtoPage =
-        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(newMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
 
   @Operation(
@@ -138,15 +139,15 @@ public class MemberController {
           String search) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ApprovedMemberManagementDto> allDtos =
+    List<ApprovedMemberManagementDto> allDtoList =
         memberManageService.getGraduatedMembersBySearch(search);
-    List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    List<ApprovedMemberManagementDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<ApprovedMemberManagementDto> graduatedMemberManagementDtoPage =
-        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(graduatedMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
 
   @Operation(summary = "비활동 이상 졸업자 아닌 멤버 목록 조회", description = "이름, 학번 검색 가능")
@@ -169,15 +170,39 @@ public class MemberController {
           String search) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ApprovedMemberManagementDto> allDtos =
+    List<ApprovedMemberManagementDto> allDtoList =
         memberManageService.getApprovedMembersBySearchAndRole(search);
-    List<ApprovedMemberManagementDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    List<ApprovedMemberManagementDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<ApprovedMemberManagementDto> oldMemberManagementDtoPage =
-        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
 
-    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
+  }
+
+  @Operation(summary = "총무 이상 멤버 목록 조회", description = "총무 이상 멤버 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = ExecutiveMemberDto.class))}),
+      })
+  @GetMapping("/members/executive")
+  public ResponseEntity<List<ExecutiveMemberDto>> getExecutiveMembers() {
+    return ResponseEntity.ok(memberManageService.getExecutiveMembers());
+  }
+
+  @Operation(summary = "명예의 전당 조회", description = "명예의 전당 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = HallOfFameDto.class))}),
+      })
+  @GetMapping("/members/hof")
+  public ResponseEntity<List<HallOfFameDto>> getHallOfFameMembers() {
+    return ResponseEntity.ok(memberManageService.getHallOfFame());
   }
 
   @Operation(

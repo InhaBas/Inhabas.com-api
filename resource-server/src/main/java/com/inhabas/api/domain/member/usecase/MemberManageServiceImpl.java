@@ -19,6 +19,8 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ExecutiveMemberDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.HallOfFameDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.service.SMTPService;
@@ -32,16 +34,19 @@ import org.apache.commons.lang3.StringUtils;
 public class MemberManageServiceImpl implements MemberManageService {
 
   private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = NOT_APPROVED;
-  private static final List<Role> OLD_ROLES =
-      Arrays.asList(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
+  private static final Set<Role> OLD_ROLES =
+      Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
   private static final Set<Role> CHIEF_CHANGEABLE_ROLES =
       Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
   private static final Set<Role> SECRETARY_CHANGEABLE_ROLES = Set.of(BASIC, DEACTIVATED);
+  private static final Set<Role> EXECUTIVE_ROLES =
+      Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY);
   private static final String PASS_STATE = "pass";
   private static final String FAIL_STATE = "fail";
   private static final String PASS_EMAIL_SUBJECT = "[IBAS] 축하합니다. 동아리에 입부되셨습니다.";
   private static final String FAIL_EMAIL_SUBJECT = "[IBAS] 입부 신청 결과를 알립니다.";
   private static final String ROLE_PREFIX = "ROLE_";
+  private static final String BLANK = "";
   private final MemberRepository memberRepository;
   private final SMTPService amazonSMTPService;
   private final AnswerRepository answerRepository;
@@ -118,6 +123,45 @@ public class MemberManageServiceImpl implements MemberManageService {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public List<ExecutiveMemberDto> getExecutiveMembers() {
+    final List<Member> members =
+        memberRepository.findAllByRolesInAndNameLike(EXECUTIVE_ROLES, BLANK);
+    return members.stream()
+        .map(
+            member ->
+                new ExecutiveMemberDto(
+                    member.getName(),
+                    member.getId(),
+                    member.getStudentId(),
+                    member.getRole(),
+                    member.getSchoolInformation().getGeneration(),
+                    member.getSchoolInformation().getMajor(),
+                    member.getPicture()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<HallOfFameDto> getHallOfFame() {
+    final List<Member> members = memberRepository.findAllByIbasInformation_IsHOF(true);
+    return members.stream()
+        .map(
+            member ->
+                new HallOfFameDto(
+                    member.getName(),
+                    member.getId(),
+                    member.getStudentId(),
+                    member.getSchoolInformation().getGeneration(),
+                    member.getSchoolInformation().getMajor(),
+                    member.getPicture(),
+                    member.getIbasInformation().getIntroduce(),
+                    member.getEmail(),
+                    member.getPhone()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
   @Transactional
   public void updateUnapprovedMembers(List<Long> memberIdList, String state) {
 
@@ -177,7 +221,9 @@ public class MemberManageServiceImpl implements MemberManageService {
       throw new InvalidInputException();
     }
 
-    for (Member member : members) member.setMemberType(type);
+    for (Member member : members) {
+      member.setMemberType(type);
+    }
 
     memberRepository.saveAll(members);
   }
