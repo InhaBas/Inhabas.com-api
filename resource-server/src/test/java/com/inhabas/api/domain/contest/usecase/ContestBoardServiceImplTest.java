@@ -22,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
@@ -88,11 +89,12 @@ public class ContestBoardServiceImplTest {
     // given
     Member member = MemberTest.chiefMember();
     Menu menu = getContestMenu(getContestMenuGroup());
+    ContestField contestField = ContestField.builder().name("빅데이터").build();
 
     ContestBoard contestBoard =
         ContestBoard.builder()
             .menu(menu)
-            .contestFieldId(1L)
+            .contestField(contestField)
             .title("테스트 제목")
             .content("테스트 내용")
             .association("(주) 아이바스")
@@ -134,11 +136,13 @@ public class ContestBoardServiceImplTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .files(null)
             .build();
+
+    ContestField contestField = ContestField.builder().name("빅데이터").build();
     Menu menu = getContestMenu(getContestMenuGroup());
     ContestBoard contestBoard =
         ContestBoard.builder()
             .menu(menu)
-            .contestFieldId(1L)
+            .contestField(contestField)
             .title("테스트 제목")
             .content("테스트 내용")
             .association("(주) 아이바스")
@@ -165,10 +169,11 @@ public class ContestBoardServiceImplTest {
     // given
     SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto();
     Menu menu = getContestMenu(getContestMenuGroup());
+    ContestField contestField = ContestField.builder().name("빅데이터").build();
     ContestBoard contestBoard =
         ContestBoard.builder()
             .menu(menu)
-            .contestFieldId(1L)
+            .contestField(contestField)
             .title("테스트 제목")
             .content("테스트 내용")
             .association("(주) 아이바스")

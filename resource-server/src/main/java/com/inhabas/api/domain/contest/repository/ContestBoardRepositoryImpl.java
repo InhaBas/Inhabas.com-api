@@ -19,14 +19,16 @@ import com.inhabas.api.global.util.ClassifyFiles;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
 public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom {
 
+  private static final Logger logger = LoggerFactory.getLogger(ContestBoardRepositoryImpl.class);
   private final JPAQueryFactory queryFactory;
-
   private QContestBoard contestBoard = QContestBoard.contestBoard;
 
   // 필드 이름과 정렬 기준을 매핑
@@ -45,6 +47,7 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   // 공모전 검색 및 필터링 기능
   public List<ContestBoardDto> findAllByTypeAndFieldAndSearch(
       ContestType contestType, Long contestFieldId, String search, String sortBy) {
+
     BooleanExpression target =
         eqContestType(contestType)
             .and(eqContestField(contestFieldId))
@@ -54,15 +57,11 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                     .or(writerNameLike(search))
                     .or(associationLike(search))
                     .or(topicLike(search)));
-    JPAQuery<ContestBoard> query = queryFactory.selectFrom(contestBoard).where(target);
 
-    if ("boardId".equals(sortBy)) {
-      query.orderBy(contestBoard.id.desc()); // 최신순: boardId 순으로 내림차순 정렬
-    } else if ("dateContestEnd".equals(sortBy)) {
-      query.orderBy(contestBoard.dateContestEnd.desc()); // 마감순: dateContestEnd 순으로 내림차순 정렬
-    }
+    OrderSpecifier<?> orderBy = getOrderBy(sortBy);
 
-    List<ContestBoard> boards = query.fetch();
+    List<ContestBoard> boards =
+        queryFactory.selectFrom(contestBoard).where(target).orderBy(orderBy).fetch();
 
     return boards.stream()
         .map(
@@ -83,6 +82,17 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         .collect(Collectors.toList());
   }
 
+  private OrderSpecifier<?> getOrderBy(String sortBy) {
+    if ("boardId".equals(sortBy)) {
+      return contestBoard.id.desc();
+    } else if ("dateContestEnd".equals(sortBy)) {
+      return contestBoard.dateContestEnd.desc();
+    } else {
+      // 기본 정렬 로직
+      return contestBoard.dateCreated.desc();
+    }
+  }
+
   @Override
   public Optional<ContestBoard> findByTypeAndId(ContestType contestType, Long boardId) {
     return Optional.ofNullable(
@@ -98,12 +108,12 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   }
 
   private BooleanExpression eqContestType(ContestType contestType) {
-    return contestBoard.contestType.eq(contestType);
+    return contestBoard.menu.id.eq(contestType.getMenuId());
   }
 
   private BooleanExpression eqContestField(Long contestFieldId) {
     if (contestFieldId == null) {
-      return null;
+      return Expressions.asBoolean(true).isTrue();
     }
     return contestBoard.contestField.id.eq(contestFieldId);
   }

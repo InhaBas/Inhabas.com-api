@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,15 +29,17 @@ public class ContestField extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
-  protected Long id;
+  private Long id;
 
+  @Embedded private ContestFieldName name;
+
+  // 테스트 목적으로만 사용
   public ContestField(Long id) {
     this.id = id;
   }
 
-  public Long getId() {
-    return id;
+  @Builder
+  public ContestField(String name) {
+    this.name = new ContestFieldName(name);
   }
-
-  @Embedded private ContestFieldName name;
 }

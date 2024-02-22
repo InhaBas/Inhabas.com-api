@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,7 +24,6 @@ import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
@@ -37,10 +34,6 @@ import com.inhabas.api.domain.menu.domain.Menu;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class ContestBoard extends BaseBoard {
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "CONTEST_TYPE", nullable = false)
-  private ContestType contestType;
 
   @ManyToOne
   @JoinColumn(name = "CONTEST_FIELD_ID", foreignKey = @ForeignKey(name = "FK_CONTEST_FIELD_OF_ID"))
@@ -73,7 +66,7 @@ public class ContestBoard extends BaseBoard {
   @Builder
   public ContestBoard(
       Menu menu,
-      Long contestFieldId,
+      ContestField contestField,
       String title,
       String content,
       String association,
@@ -82,7 +75,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestEnd) {
 
     super(title, menu);
-    this.contestField = new ContestField(contestFieldId);
+    this.contestField = contestField;
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);

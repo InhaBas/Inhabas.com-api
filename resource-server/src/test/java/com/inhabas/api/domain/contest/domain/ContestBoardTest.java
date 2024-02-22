@@ -19,9 +19,9 @@ class ContestBoardTest {
 
   @Mock private Menu menu;
 
-  private ContestBoard contestBoard;
-
   @Mock private ContestField contestField;
+
+  private ContestBoard contestBoard;
 
   @BeforeEach
   void setUp() {
@@ -37,7 +37,7 @@ class ContestBoardTest {
     contestBoard =
         ContestBoard.builder()
             .menu(menu)
-            .contestFieldId(1L)
+            .contestField(contestField)
             .title(title)
             .content(content)
             .association(association)

@@ -18,11 +18,13 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFound
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
+import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
@@ -38,6 +40,7 @@ import com.inhabas.api.global.util.FileUtil;
 public class ContestBoardServiceImpl implements ContestBoardService {
 
   private final ContestBoardRepository contestBoardRepository;
+  private final ContestFieldRepository contestFieldRepository;
   private final MemberRepository memberRepository;
   private final MenuRepository menuRepository;
   private final S3Service s3Service;
@@ -98,10 +101,14 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     Menu menu =
         menuRepository.findById(contestType.getMenuId()).orElseThrow(NotFoundException::new);
 
+    ContestField contestField =
+        contestFieldRepository
+            .findById(saveContestBoardDto.getContestFieldId())
+            .orElseThrow(NotFoundException::new);
     ContestBoard contestBoard =
         ContestBoard.builder()
             .menu(menu)
-            .contestFieldId(saveContestBoardDto.getContestFieldId())
+            .contestField(contestField)
             .title(saveContestBoardDto.getTitle())
             .content(saveContestBoardDto.getContent())
             .association(saveContestBoardDto.getAssociation())
