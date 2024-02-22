@@ -1,10 +1,13 @@
 package com.inhabas.api.domain.contest.usecase;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +17,6 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
-import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
@@ -30,102 +32,55 @@ import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ContestBoardServiceImpl implements ContestBoardService {
 
   private final ContestBoardRepository contestBoardRepository;
-
-  private final BoardSecurityChecker boardSecurityChecker;
-
   private final MemberRepository memberRepository;
-
   private final MenuRepository menuRepository;
-
   private final S3Service s3Service;
-
-  private static final String CONTEST_BOARD_MENU_NAME = "공모전 게시판";
-
-  private static final String DIR_NAME = "contest/";
 
   // 타입별 공모전 게시판 목록 조회
   @Override
-  @Transactional(readOnly = true)
-  public List<ContestBoardDto> getContestBoardsByType(
+  public List<ContestBoardDto> getContestBoards(
       ContestType contestType, Long contestFieldId, String search, String sortBy) {
 
     if (search == null || search.trim().isEmpty()) {
       search = "";
     }
 
-    List<ContestBoard> contestBoardList =
-        contestBoardRepository.findAllByContestTypeAndFieldLike(
-            contestType, contestFieldId, search, sortBy);
+    List<ContestBoardDto> contestBoardList = new ArrayList<>();
 
-    return contestBoardList.stream()
-        .map(
-            contestBoard -> {
-              ClassifiedFiles classifiedFiles =
-                  ClassifyFiles.classifyFiles(new ArrayList<>(contestBoard.getFiles()));
-
-              return ContestBoardDto.builder()
-                  .id(contestBoard.getId())
-                  .contestFieldId(contestBoard.getContestField().getId())
-                  .title(contestBoard.getTitle())
-                  .association(contestBoard.getAssociation())
-                  .topic(contestBoard.getTopic())
-                  .dateContestStart(contestBoard.getDateContestStart())
-                  .dateContestEnd(contestBoard.getDateContestEnd())
-                  .thumbnail(classifiedFiles.getThumbnail())
-                  .build();
-            })
-        .collect(Collectors.toList());
-  }
-
-  // contestType 별로 게시글 작성
-  @Override
-  @Transactional
-  public Long writeContestBoard(
-      Long memberId, SaveContestBoardDto saveContestBoardDto, ContestType contestType) {
-
-    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    Menu menu =
-        menuRepository
-            .findByName_Value(CONTEST_BOARD_MENU_NAME)
-            .orElseThrow(NotFoundException::new);
-
-    ContestBoard contestBoard =
-        ContestBoard.builder()
-            .title(saveContestBoardDto.getTitle())
-            .content(saveContestBoardDto.getContent())
-            .association(saveContestBoardDto.getAssociation())
-            .topic(saveContestBoardDto.getTopic())
-            .dateContestStart(saveContestBoardDto.getDateContestStart())
-            .dateContestEnd(saveContestBoardDto.getDateContestEnd())
-            .contestType(contestType)
-            .contestFieldId(saveContestBoardDto.getContestFieldId())
-            .build()
-            .writtenBy(writer, ContestBoard.class);
-
-    return updateContestBoardFiles(saveContestBoardDto, contestBoard);
+    contestBoardList.addAll(
+        contestBoardRepository.findAllByTypeAndFieldAndSearch(
+            contestType, contestFieldId, search, sortBy));
+    return contestBoardList;
   }
 
   // 공모전 게시판 단일조회
   @Override
-  @Transactional(readOnly = true)
-  public ContestBoardDetailDto getContestBoard(Long boardId) {
-
+  public ContestBoardDetailDto getContestBoard(ContestType contestType, Long boardId) {
     ContestBoard contestBoard =
-        contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+        contestBoardRepository
+            .findByTypeAndId(contestType, boardId)
+            .orElseThrow(NotFoundException::new);
 
-    ClassifiedFiles classifiedFiles =
-        ClassifyFiles.classifyFiles(new ArrayList<>(contestBoard.getFiles()));
+    List<BoardFile> files =
+        Optional.ofNullable(contestBoard.getFiles()).orElse(Collections.emptyList());
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(new ArrayList<>(files));
 
     return ContestBoardDetailDto.builder()
         .id(contestBoard.getId())
+        .contestFieldId(contestBoard.getContestField().getId())
         .title(contestBoard.getTitle())
         .content(contestBoard.getContent())
         .writerName(contestBoard.getWriter().getName())
+        .association(contestBoard.getAssociation())
+        .topic(contestBoard.getTopic())
+        .dateContestStart(contestBoard.getDateContestStart())
+        .dateContestEnd(contestBoard.getDateContestEnd())
         .dateCreated(contestBoard.getDateCreated())
         .dateUpdated(contestBoard.getDateUpdated())
         .thumbnail(classifiedFiles.getThumbnail())
@@ -134,24 +89,49 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         .build();
   }
 
+  // contestType 별로 게시글 작성
   @Override
-  @Transactional
-  public void updateContestBoard(Long boardId, SaveContestBoardDto saveContestBoardDto) {
+  public Long writeContestBoard(
+      Long memberId, ContestType contestType, SaveContestBoardDto saveContestBoardDto) {
+
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    Menu menu =
+        menuRepository.findById(contestType.getMenuId()).orElseThrow(NotFoundException::new);
 
     ContestBoard contestBoard =
-        contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
-    updateContestBoardFiles(saveContestBoardDto, contestBoard);
+        ContestBoard.builder()
+            .menu(menu)
+            .contestFieldId(saveContestBoardDto.getContestFieldId())
+            .title(saveContestBoardDto.getTitle())
+            .content(saveContestBoardDto.getContent())
+            .association(saveContestBoardDto.getAssociation())
+            .topic(saveContestBoardDto.getTopic())
+            .dateContestStart(saveContestBoardDto.getDateContestStart())
+            .dateContestEnd(saveContestBoardDto.getDateContestEnd())
+            .build()
+            .writtenBy(writer, ContestBoard.class);
+
+    return updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
   }
 
   @Override
-  @Transactional
+  public void updateContestBoard(
+      Long boardId, ContestType contestType, SaveContestBoardDto saveContestBoardDto) {
+
+    ContestBoard contestBoard =
+        contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
+  }
+
+  @Override
   public void deleteContestBoard(Long boardId) {
 
     contestBoardRepository.deleteById(boardId);
   }
 
   private Long updateContestBoardFiles(
-      SaveContestBoardDto saveContestBoardDto, ContestBoard contestBoard) {
+      SaveContestBoardDto saveContestBoardDto, ContestType contestType, ContestBoard contestBoard) {
+    final String DIR_NAME = contestType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
 

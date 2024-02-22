@@ -1,8 +1,5 @@
 package com.inhabas.api.domain.contest.dto;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,12 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import org.junit.jupiter.api.*;
+import org.assertj.core.api.Assertions;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class SaveContestBoardDtoTest {
   private static ValidatorFactory validatorFactory;
@@ -45,7 +47,7 @@ public class SaveContestBoardDtoTest {
     List<String> errorMessage = new ArrayList<>();
     violations.forEach(error -> errorMessage.add(error.getMessage()));
 
-    assertThat(errorMessage)
+    Assertions.assertThat(errorMessage)
         .contains(
             "제목을 입력하세요.",
             "본문을 입력하세요.",
@@ -70,7 +72,7 @@ public class SaveContestBoardDtoTest {
     List<String> errorMessage = new ArrayList<>();
     violations.forEach(error -> errorMessage.add(error.getMessage()));
 
-    assertThat(errorMessage)
+    Assertions.assertThat(errorMessage)
         .contains(
             "제목을 입력하세요.",
             "본문을 입력하세요.",
@@ -103,8 +105,8 @@ public class SaveContestBoardDtoTest {
     List<String> errorMessage = new ArrayList<>();
     violations.forEach(error -> errorMessage.add(error.getMessage()));
 
-    assertEquals(3, violations.size());
-    assertThat(errorMessage)
+    Assertions.assertThat(violations).hasSize(3);
+    Assertions.assertThat(errorMessage)
         .containsOnly("제목은 최대 100자입니다.", "100자 이내로 작성해주세요.", "500자 이내로 작성해주세요.");
   }
 
@@ -131,6 +133,6 @@ public class SaveContestBoardDtoTest {
     List<String> errorMessage = new ArrayList<>();
     violations.forEach(error -> errorMessage.add(error.getMessage()));
 
-    assertThat(errorMessage).containsOnly("이미 모집기간이 종료된 공모전은 등록할 수 없습니다.");
+    Assertions.assertThat(errorMessage).containsOnly("이미 모집기간이 종료된 공모전은 등록할 수 없습니다.");
   }
 }

@@ -23,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
+import com.inhabas.api.domain.board.dto.BoardCountDto;
+import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
@@ -48,8 +50,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class ContestBoardController {
 
   private final ContestBoardService contestBoardService;
+  private final BaseBoardRepository baseBoardRepository;
 
-  @Operation(summary = "공모전 게시판 목록 조회", description = "공모전 게시판 목록 조회")
+  @Operation(summary = "게시판 종류 당 글 개수 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = BoardCountDto.class))}),
+      })
+  @GetMapping("/contest/count")
+  @SecurityRequirements(value = {})
+  public ResponseEntity<List<BoardCountDto>> getBoardCount() {
+    return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(2));
+  }
+
+  @Operation(summary = "공모전 게시글 목록 조회", description = "공모전 게시판 목록 조회")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -79,8 +95,7 @@ public class ContestBoardController {
   @SecurityRequirements(value = {})
   @GetMapping("/contest/{contestType}")
   @PreAuthorize(
-      // 공모전 게시판 MenuId : 18
-      "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
+      "@boardSecurityChecker.checkMenuAccess(#contestType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedResponseDto<ContestBoardDto>> getContestBoard(
       @PathVariable("contestType") ContestType contestType,
       @Parameter(description = "공모전 분야", example = "1")
@@ -100,18 +115,55 @@ public class ContestBoardController {
           String sortBy) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ContestBoardDto> allDtos =
-        contestBoardService.getContestBoardsByType(contestType, contestFieldId, search, sortBy);
-    List<ContestBoardDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
+    List<ContestBoardDto> allDtoList =
+        contestBoardService.getContestBoards(contestType, contestFieldId, search, sortBy);
+    List<ContestBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =
-        new PageImpl<>(pagedDtos, pageable, allDtos.size());
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(ContestBoardDtoPage);
 
-    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
 
-  @Operation(summary = "공모전 게시판 글 생성", description = "공모전 게시판 글 생성 (활동회원 이상)")
+  @Operation(summary = "공모전 게시글 단일 조회")
+  @GetMapping("/contest/{contestType}/{boardId}")
+  @PreAuthorize(
+      "@boardSecurityChecker.checkMenuAccess(#contestType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  public ResponseEntity<ContestBoardDetailDto> getContestBoard(
+      @PathVariable Long boardId, @PathVariable ContestType contestType) {
+
+    return ResponseEntity.ok(contestBoardService.getContestBoard(contestType, boardId));
+  }
+
+  @Operation(summary = "공모전 게시글 추가")
+  @PostMapping(path = "/contest/{contestType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PreAuthorize(
+      "@boardSecurityChecker.checkMenuAccess(#contestType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
@@ -136,12 +188,9 @@ public class ContestBoardController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-  @PostMapping(path = "/contest/{contestType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  @PreAuthorize(
-      "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
-      @PathVariable("contestType") ContestType contestType,
+      @PathVariable ContestType contestType,
       @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
@@ -161,10 +210,8 @@ public class ContestBoardController {
             dateContestStart,
             dateContestEnd,
             files);
-
-    // PathVariable인 {contestType}에 따라 공모전 글 작성 페이지가 CONTEST와 EXTERNAL_ACTIVITY로 분류됨
     Long newContestBoardId =
-        contestBoardService.writeContestBoard(memberId, saveContestBoardDto, contestType);
+        contestBoardService.writeContestBoard(memberId, contestType, saveContestBoardDto);
 
     // 뒤에 추가 URI 생성
     URI location =
@@ -176,75 +223,38 @@ public class ContestBoardController {
     return ResponseEntity.created(location).build();
   }
 
-  @Operation(summary = "공모전 게시판 글 단일 조회", description = "공모전 게시판 글 단일 조회")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
-  @SecurityRequirements(value = {})
-  @GetMapping("/contest/{contestType}/{boardId}")
-  @PreAuthorize(
-      "@boardSecurityChecker.checkMenuAccess(18, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
-  public ResponseEntity<ContestBoardDetailDto> findContestBoard(
-      @PathVariable("contestType") ContestType contestType, @PathVariable Long boardId) {
-
-    ContestBoardDetailDto contestBoardDetailDto = contestBoardService.getContestBoard(boardId);
-
-    return ResponseEntity.ok(contestBoardDetailDto);
-  }
-
-  @Operation(summary = "공모전 게시판 글 수정", description = "공모전 게시판 글 수정 (작성자, 회장만)")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(
-            responseCode = "400",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Operation(summary = "공모전 게시글 수정")
   @PostMapping(
       path = "/contest/{contestType}/{boardId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
-  public ResponseEntity<ContestBoardDto> updateContestBoard(
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(
+            responseCode = "400",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
+  public ResponseEntity<Long> updateContestBoard(
       @Authenticated Long memberId,
-      @PathVariable("contestType") ContestType contestType,
+      @PathVariable ContestType contestType,
       @PathVariable Long boardId,
       @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
@@ -265,12 +275,14 @@ public class ContestBoardController {
             dateContestStart,
             dateContestEnd,
             files);
-    contestBoardService.updateContestBoard(boardId, saveContestBoardDto);
+    contestBoardService.updateContestBoard(boardId, contestType, saveContestBoardDto);
 
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "공모전 게시판 글 삭제", description = "공모전 게시판 글 삭제 (작성자, 회장만)")
+  @Operation(summary = "공모전 게시글 삭제")
+  @DeleteMapping("contest/{contestType}/{boardId}")
+  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),
@@ -295,8 +307,6 @@ public class ContestBoardController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-  @DeleteMapping("contest/{contestType}/{boardId}")
-  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<ContestBoardDto> deleteContestBoard(
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,

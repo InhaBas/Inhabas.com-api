@@ -23,7 +23,7 @@ public class ContestBoardDetailDto {
 
   @NotNull @Positive private Long id;
 
-  @NotNull private Long contestField;
+  @NotNull private Long contestFieldId;
 
   @NotBlank private String title;
 
@@ -60,7 +60,7 @@ public class ContestBoardDetailDto {
   @Builder
   public ContestBoardDetailDto(
       Long id,
-      Long contestField,
+      Long contestFieldId,
       String title,
       String content,
       String writerName,
@@ -74,7 +74,7 @@ public class ContestBoardDetailDto {
       List<FileDownloadDto> images,
       List<FileDownloadDto> otherFiles) {
     this.id = id;
-    this.contestField = contestField;
+    this.contestFieldId = contestFieldId;
     this.title = title;
     this.content = content;
     this.writerName = writerName;

@@ -29,6 +29,7 @@ import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
 @Table(name = "CONTEST_BOARD")
@@ -71,7 +72,7 @@ public class ContestBoard extends BaseBoard {
 
   @Builder
   public ContestBoard(
-      ContestType contestType,
+      Menu menu,
       Long contestFieldId,
       String title,
       String content,
@@ -80,7 +81,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
-    this.contestType = contestType;
+    super(title, menu);
     this.contestField = new ContestField(contestFieldId);
     this.title = new Title(title);
     this.content = new Content(content);

@@ -1,15 +1,21 @@
 package com.inhabas.api.domain.contest.repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.QContestBoard;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.dto.ContestBoardDto;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -37,11 +43,11 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
   }
 
   // 공모전 검색 및 필터링 기능
-  public List<ContestBoard> findAllByContestTypeAndFieldLike(
+  public List<ContestBoardDto> findAllByTypeAndFieldAndSearch(
       ContestType contestType, Long contestFieldId, String search, String sortBy) {
     BooleanExpression target =
-        contestTypeEq(contestType)
-            .and(contestFieldEq(contestFieldId))
+        eqContestType(contestType)
+            .and(eqContestField(contestFieldId))
             .and(
                 titleLike(search)
                     .or(contentLike(search))
@@ -56,14 +62,46 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
       query.orderBy(contestBoard.dateContestEnd.desc()); // 마감순: dateContestEnd 순으로 내림차순 정렬
     }
 
-    return query.fetch();
+    List<ContestBoard> boards = query.fetch();
+
+    return boards.stream()
+        .map(
+            board -> {
+              ClassifiedFiles classifiedFiles =
+                  ClassifyFiles.classifyFiles(new ArrayList<>(board.getFiles()));
+              return ContestBoardDto.builder()
+                  .id(board.getId())
+                  .contestFieldId(board.getContestField().getId())
+                  .title(board.getTitle())
+                  .topic(board.getTopic())
+                  .association(board.getAssociation())
+                  .dateContestStart(board.getDateContestStart())
+                  .dateContestEnd(board.getDateContestEnd())
+                  .thumbnail(classifiedFiles.getThumbnail())
+                  .build();
+            })
+        .collect(Collectors.toList());
   }
 
-  private BooleanExpression contestTypeEq(ContestType contestType) {
+  @Override
+  public Optional<ContestBoard> findByTypeAndId(ContestType contestType, Long boardId) {
+    return Optional.ofNullable(
+        queryFactory
+            .selectFrom(contestBoard)
+            .where((eqContestType(contestType)).and(contestBoard.id.eq(boardId)))
+            .orderBy(contestBoard.dateCreated.desc())
+            .fetchOne());
+  }
+
+  private BooleanExpression eqMemberId(Long memberId) {
+    return contestBoard.writer.id.eq(memberId);
+  }
+
+  private BooleanExpression eqContestType(ContestType contestType) {
     return contestBoard.contestType.eq(contestType);
   }
 
-  private BooleanExpression contestFieldEq(Long contestFieldId) {
+  private BooleanExpression eqContestField(Long contestFieldId) {
     if (contestFieldId == null) {
       return null;
     }

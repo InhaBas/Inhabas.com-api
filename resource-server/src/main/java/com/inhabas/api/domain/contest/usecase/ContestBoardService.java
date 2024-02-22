@@ -9,15 +9,17 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 
 public interface ContestBoardService {
 
-  List<ContestBoardDto> getContestBoardsByType(
+  List<ContestBoardDto> getContestBoards(
       ContestType contestType, Long contestFieldId, String search, String sortBy);
 
   Long writeContestBoard(
-      Long memberId, SaveContestBoardDto saveContestBoardDto, ContestType contestType);
+      Long memberId, ContestType contestType, SaveContestBoardDto saveContestBoardDto);
 
-  ContestBoardDetailDto getContestBoard(Long boardId);
+  // 공모전 게시판 단일조회
+  ContestBoardDetailDto getContestBoard(ContestType contestType, Long boardId);
 
-  void updateContestBoard(Long boardId, SaveContestBoardDto saveContestBoardDto);
+  void updateContestBoard(
+      Long boardId, ContestType contestType, SaveContestBoardDto saveContestBoardDto);
 
   void deleteContestBoard(Long boardId);
 }

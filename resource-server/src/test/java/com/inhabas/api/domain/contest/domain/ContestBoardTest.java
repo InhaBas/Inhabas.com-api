@@ -1,14 +1,13 @@
 package com.inhabas.api.domain.contest.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.menu.domain.Menu;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -18,30 +17,27 @@ import org.junit.jupiter.api.Test;
 
 class ContestBoardTest {
 
+  @Mock private Menu menu;
+
+  private ContestBoard contestBoard;
+
   @Mock private ContestField contestField;
 
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    when(contestField.getId()).thenReturn(1L);
-  }
 
-  @Test
-  @DisplayName("올바른 ContestBoard를 생성한다.")
-  void createContestBoardTest() {
-    // Given
+    String title = "테스트 공모전";
+    String content = "테스트 내용";
+    String association = "테스트 협회";
+    String topic = "테스트 주제";
     LocalDate dateContestStart = LocalDate.of(2023, 1, 1);
     LocalDate dateContestEnd = LocalDate.of(2023, 12, 31);
-    var title = "테스트 공모전";
-    var content = "테스트 내용";
-    var association = "테스트 협회";
-    var topic = "테스트 주제";
 
-    // When
-    ContestBoard contestBoard =
+    contestBoard =
         ContestBoard.builder()
-            .contestType(ContestType.CONTEST)
-            .contestFieldId(contestField.getId())
+            .menu(menu)
+            .contestFieldId(1L)
             .title(title)
             .content(content)
             .association(association)
@@ -49,41 +45,24 @@ class ContestBoardTest {
             .dateContestStart(dateContestStart)
             .dateContestEnd(dateContestEnd)
             .build();
-
-    // Then
-    assertThat(contestBoard.getContestType()).isEqualTo(ContestType.CONTEST);
-    assertThat(contestBoard.getContestField().getId()).isEqualTo(contestField.getId());
-    assertThat(contestBoard.getTitle()).isEqualTo(title);
-    assertThat(contestBoard.getContent()).isEqualTo(content);
-    assertThat(contestBoard.getAssociation()).isEqualTo(association);
-    assertThat(contestBoard.getTopic()).isEqualTo(topic);
-    assertThat(contestBoard.getDateContestStart()).isEqualTo(dateContestStart);
-    assertThat(contestBoard.getDateContestEnd()).isEqualTo(dateContestEnd);
   }
 
   @Test
-  @DisplayName("ContestBoard에 첨부 파일을 추가한다.")
-  void addFilesToContestBoardTest() {
-    // Given
-    ContestBoard contestBoard = new ContestBoard();
-    List<BoardFile> files = new ArrayList<>();
-    files.add(new BoardFile("file1.jpg", "url1", contestBoard));
-    files.add(new BoardFile("file2.pdf", "url2", contestBoard));
-
-    // When
-    contestBoard.updateFiles(files);
-
+  @DisplayName("올바른 ContestBoard를 생성한다.")
+  void createContestBoardTest() {
     // Then
-    assertThat(contestBoard.getFiles()).hasSize(2);
-    assertThat(contestBoard.getFiles().get(0).getName()).isEqualTo("file1.jpg");
-    assertThat(contestBoard.getFiles().get(0).getUrl()).isEqualTo("url1");
-    assertThat(contestBoard.getFiles().get(1).getName()).isEqualTo("file2.pdf");
-    assertThat(contestBoard.getFiles().get(1).getUrl()).isEqualTo("url2");
+    assertThat(contestBoard.getContestField().getId()).isEqualTo(1L);
+    assertThat(contestBoard.getTitle()).isEqualTo("테스트 공모전");
+    assertThat(contestBoard.getContent()).isEqualTo("테스트 내용");
+    assertThat(contestBoard.getAssociation()).isEqualTo("테스트 협회");
+    assertThat(contestBoard.getTopic()).isEqualTo("테스트 주제");
+    assertThat(contestBoard.getDateContestStart()).isEqualTo(LocalDate.of(2023, 1, 1));
+    assertThat(contestBoard.getDateContestEnd()).isEqualTo(LocalDate.of(2023, 12, 31));
   }
 
   @Test
   @DisplayName("ContestBoard 정보를 수정한다.")
-  void updateContestBoardInfoTest() {
+  void updateContestBoardTest() {
     // Given
     ContestBoard contestBoard = new ContestBoard();
     Long newContestFieldId = 1L;
@@ -112,5 +91,25 @@ class ContestBoardTest {
     assertThat(contestBoard.getTopic()).isEqualTo(newTopic);
     assertThat(contestBoard.getDateContestStart()).isEqualTo(newDateContestStart);
     assertThat(contestBoard.getDateContestEnd()).isEqualTo(newDateContestEnd);
+  }
+
+  @Test
+  @DisplayName("ContestBoard의 첨부 파일을 수정한다.")
+  void updateFilesTest() {
+    // Given
+
+    List<BoardFile> files = new ArrayList<>();
+    files.add(new BoardFile("file1.jpg", "/url1", contestBoard));
+    files.add(new BoardFile("file2.pdf", "/url2", contestBoard));
+
+    // When
+    contestBoard.updateFiles(files);
+
+    // Then
+    assertThat(contestBoard.getFiles()).hasSize(2);
+    assertThat(contestBoard.getFiles().get(0).getName()).isEqualTo("file1.jpg");
+    assertThat(contestBoard.getFiles().get(0).getUrl()).isEqualTo("/url1");
+    assertThat(contestBoard.getFiles().get(1).getName()).isEqualTo("file2.pdf");
+    assertThat(contestBoard.getFiles().get(1).getUrl()).isEqualTo("/url2");
   }
 }

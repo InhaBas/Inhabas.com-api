@@ -8,23 +8,18 @@ import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import org.hibernate.validator.constraints.Length;
 
 // 공모전 게시판 글 업데이트 및 저장
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 public class SaveContestBoardDto {
-
-  @NotNull(message = "공모전 게시판 타입을 선택해주세요.")
-  private ContestType contestType;
 
   @NotNull(message = "공모전 분야를 선택해주세요.")
   private Long contestFieldId;
