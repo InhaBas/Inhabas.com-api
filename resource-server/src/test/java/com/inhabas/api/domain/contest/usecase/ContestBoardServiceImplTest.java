@@ -28,6 +28,7 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
+import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
@@ -48,6 +49,8 @@ public class ContestBoardServiceImplTest {
   @InjectMocks private ContestBoardServiceImpl contestBoardService;
 
   @Mock private ContestBoardRepository contestBoardRepository;
+
+  @Mock private ContestFieldRepository contestFieldRepository;
 
   @Mock private MemberRepository memberRepository;
 
@@ -125,9 +128,12 @@ public class ContestBoardServiceImplTest {
   void writeContestBoard() {
     // given
     Member member = MemberTest.chiefMember();
+
+    ContestField contestField = ContestField.builder().name("빅데이터").build();
+    ReflectionTestUtils.setField(contestField, "id", 1L);
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
-            .contestFieldId(1L)
+            .contestFieldId(contestField.getId())
             .title("테스트 제목")
             .content("테스트 내용")
             .association("(주) 아이바스")
@@ -137,7 +143,6 @@ public class ContestBoardServiceImplTest {
             .files(null)
             .build();
 
-    ContestField contestField = ContestField.builder().name("빅데이터").build();
     Menu menu = getContestMenu(getContestMenuGroup());
     ContestBoard contestBoard =
         ContestBoard.builder()
@@ -154,6 +159,8 @@ public class ContestBoardServiceImplTest {
 
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     given(contestBoardRepository.save(any())).willReturn(contestBoard);
+    given(contestFieldRepository.findById(contestField.getId()))
+        .willReturn(Optional.of(contestField));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
 
     // when

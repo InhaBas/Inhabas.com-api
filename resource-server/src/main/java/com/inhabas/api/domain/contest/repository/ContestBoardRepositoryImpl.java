@@ -52,11 +52,11 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
         eqContestType(contestType)
             .and(eqContestField(contestFieldId))
             .and(
-                titleLike(search)
-                    .or(contentLike(search))
-                    .or(writerNameLike(search))
-                    .or(associationLike(search))
-                    .or(topicLike(search)));
+                likeTitle(search)
+                    .or(likeContent(search))
+                    .or(likeWriterName(search))
+                    .or(likeAssociation(search))
+                    .or(likeTopic(search)));
 
     OrderSpecifier<?> orderBy = getOrderBy(sortBy);
 
@@ -118,27 +118,23 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
     return contestBoard.contestField.id.eq(contestFieldId);
   }
 
-  private BooleanExpression titleLike(String search) {
-    return hasText(search) ? contestBoard.title.value.containsIgnoreCase(search) : null;
+  private BooleanExpression likeTitle(String search) {
+    return contestBoard.title.value.like("%" + search + "%");
   }
 
-  private BooleanExpression contentLike(String search) {
-    return hasText(search) ? contestBoard.content.value.containsIgnoreCase(search) : null;
+  private BooleanExpression likeContent(String search) {
+    return contestBoard.content.value.like("%" + search + "%");
   }
 
-  private BooleanExpression writerNameLike(String search) {
-    return hasText(search) ? contestBoard.writer.name.value.containsIgnoreCase(search) : null;
+  private BooleanExpression likeWriterName(String search) {
+    return contestBoard.writer.name.value.like("%" + search + "%");
   }
 
-  private BooleanExpression associationLike(String search) {
-    return hasText(search) ? contestBoard.association.value.containsIgnoreCase(search) : null;
+  private BooleanExpression likeAssociation(String search) {
+    return contestBoard.association.value.like("%" + search + "%");
   }
 
-  private BooleanExpression topicLike(String search) {
-    return hasText(search) ? contestBoard.topic.value.containsIgnoreCase(search) : null;
-  }
-
-  private Boolean hasText(String text) {
-    return text != null && !text.trim().isEmpty();
+  private BooleanExpression likeTopic(String search) {
+    return contestBoard.association.value.like("%" + search + "%");
   }
 }
