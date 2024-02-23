@@ -8,38 +8,40 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
-import com.inhabas.api.domain.budget.ApplicationNotFoundException;
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.budget.domain.converter.StatusConverter;
 import com.inhabas.api.domain.budget.domain.valueObject.*;
+import com.inhabas.api.domain.budget.exception.ApplicationCannotModifiableException;
+import com.inhabas.api.domain.budget.exception.ApplicationNotFoundException;
 
 @Entity
-@Table(name = "budget_support_application")
+@Table(name = "BUDGET_SUPPORT_APPLICATION")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BudgetSupportApplication extends BaseEntity {
+public class BudgetSupportApplication extends BudgetBoard {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-
-  private Title title;
-
-  private LocalDateTime dateUsed;
-
-  private Details details;
 
   @AttributeOverride(name = "value", column = @Column(name = "outcome", nullable = false))
   private Price outcome;
 
   private ApplicantAccount applicantAccount;
 
-  @AttributeOverride(name = "id", column = @Column(nullable = false, name = "applicant"))
-  private StudentId applicationWriter;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "USER_WRITER_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICATION_WRITER"))
+  private Member applicationWriter;
 
   @AttributeOverride(name = "id", column = @Column(name = "person_in_charge"))
-  private StudentId personInCharge;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "USER_IN_CHARGE_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICATION_IN_CHARGE"))
+  private Member personInCharge;
 
   @Convert(converter = StatusConverter.class)
   @Column(nullable = false)
@@ -47,7 +49,8 @@ public class BudgetSupportApplication extends BaseEntity {
 
   private RejectReason rejectReason;
 
-  // private List<File> receipts;
+  @Column(name = "DATE_CHECKED")
+  private LocalDateTime dateChecked;
 
   @Builder
   public BudgetSupportApplication(
@@ -56,10 +59,7 @@ public class BudgetSupportApplication extends BaseEntity {
       String details,
       Integer outcome,
       String account,
-      StudentId applicationWriter) {
-    this.title = new Title(title);
-    this.dateUsed = dateUsed;
-    this.details = new Details(details);
+      Member applicationWriter) {
     this.outcome = new Price(outcome);
     this.applicantAccount = new ApplicantAccount(account);
     this.applicationWriter = applicationWriter;
@@ -92,26 +92,26 @@ public class BudgetSupportApplication extends BaseEntity {
     return !this.applicationWriter.equals(currentApplicant);
   }
 
-  public void approve(StudentId personInCharge) {
+  public void approve(Member personInCharge) {
 
     this.status = ApplicationStatus.APPROVED;
     this.personInCharge = personInCharge;
   }
 
-  public void waiting(StudentId personInCharge) {
+  public void waiting(Member personInCharge) {
 
     this.status = ApplicationStatus.WAITING;
     this.personInCharge = personInCharge;
   }
 
-  public void deny(String reason, StudentId personInCharge) {
+  public void deny(String reason, Member personInCharge) {
 
     this.rejectReason = new RejectReason(reason);
     this.status = ApplicationStatus.DENIED;
     this.personInCharge = personInCharge;
   }
 
-  public void process(StudentId personInCharge) {
+  public void process(Member personInCharge) {
 
     if (this.isProcessed())
       throw new ApplicationCannotModifiableException("이미 처리가 완료된 예산지원 내역입니다.");
@@ -132,8 +132,8 @@ public class BudgetSupportApplication extends BaseEntity {
           .title(this.title.getValue())
           .dateUsed(this.dateUsed)
           .details(this.details.getValue())
-          .income(0)
-          .outcome(this.outcome.getValue())
+          .income(new Price(0))
+          .outcome(this.outcome)
           .personInCharge(this.personInCharge)
           .personReceived(this.applicationWriter)
           .build();

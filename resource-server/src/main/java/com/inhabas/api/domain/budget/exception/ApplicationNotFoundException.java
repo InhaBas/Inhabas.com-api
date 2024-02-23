@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.budget;
+package com.inhabas.api.domain.budget.exception;
 
 public class ApplicationNotFoundException extends RuntimeException {
 
