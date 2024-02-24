@@ -25,12 +25,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
+import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
@@ -194,32 +196,36 @@ public class ContestBoardControllerTest {
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
 
-  @DisplayName("게시글 추가 성공 201")
+  @DisplayName("공모전 게시글 추가 성공 201")
   @Test
   void addBoard() throws Exception {
-
     // given
     given(contestBoardService.writeContestBoard(any(), any(), any())).willReturn(1L);
 
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile associationPart =
-        new MockMultipartFile("association", "good association".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile topicPart =
-        new MockMultipartFile("topic", "good topic".getBytes(StandardCharsets.UTF_8));
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("good title")
+            .content("good content")
+            .association("good association")
+            .topic("good topic")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .build();
+
+    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
+    MockMultipartFile formPart =
+        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
+
+    MockMultipartFile filePart =
+        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
+
     // when
     String header =
         mvc.perform(
-                multipart("/contest/contest")
-                    .file(titlePart)
-                    .file(contentPart)
-                    .file(associationPart)
-                    .file(topicPart)
-                    .param("contestFieldId", "1")
-                    .param("dateContestStart", LocalDate.now().toString())
-                    .param("dateContestEnd", LocalDate.now().plusDays(10).toString())
+                multipart("/contest/activity")
+                    .file(formPart)
+                    .file(filePart)
                     .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isCreated())
             .andReturn()
@@ -227,7 +233,7 @@ public class ContestBoardControllerTest {
             .getHeader("Location");
 
     // then
-    assertThat(header).contains("/contest/contest/1");
+    assertThat(header).contains("/contest/activity/1");
   }
 
   @DisplayName("게시글 추가 데이터가 올바르지 않다면 400")
@@ -236,26 +242,30 @@ public class ContestBoardControllerTest {
 
     // given
 
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile associationPart =
-        new MockMultipartFile("association", "good association".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile topicPart =
-        new MockMultipartFile("topic", "good topic".getBytes(StandardCharsets.UTF_8));
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("")
+            .content("good content")
+            .association("good association")
+            .topic("good topic")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .build();
+
+    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
+    MockMultipartFile formPart =
+        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
+
+    MockMultipartFile filePart =
+        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
                 multipart("/contest/contest")
-                    .file(titlePart)
-                    .file(contentPart)
-                    .file(associationPart)
-                    .file(topicPart)
-                    .param("contestFieldId", "1")
-                    .param("dateContestStart", LocalDate.now().toString())
-                    .param("dateContestEnd", LocalDate.now().plusDays(10).toString())
+                    .file(formPart)
+                    .file(filePart)
                     .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isBadRequest())
             .andReturn()
@@ -273,25 +283,29 @@ public class ContestBoardControllerTest {
 
     doNothing().when(contestBoardService).updateContestBoard(any(), any(), any());
 
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile associationPart =
-        new MockMultipartFile("association", "good association".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile topicPart =
-        new MockMultipartFile("topic", "good topic".getBytes(StandardCharsets.UTF_8));
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("good title")
+            .content("good content")
+            .association("good association")
+            .topic("good topic")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .build();
+
+    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
+    MockMultipartFile formPart =
+        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
+
+    MockMultipartFile filePart =
+        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when then
     mvc.perform(
             multipart("/contest/contest/1")
-                .file(titlePart)
-                .file(contentPart)
-                .file(associationPart)
-                .file(topicPart)
-                .param("contestFieldId", "1")
-                .param("dateContestStart", LocalDate.now().toString())
-                .param("dateContestEnd", LocalDate.now().plusDays(10).toString())
+                .file(formPart)
+                .file(filePart)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isNoContent());
   }
@@ -301,28 +315,33 @@ public class ContestBoardControllerTest {
   void updateBoard_Invalid_Input() throws Exception {
     // given
 
-    doNothing().when(contestBoardService).updateContestBoard(any(), any(), any());
+    doThrow(InvalidInputException.class)
+        .when(contestBoardService)
+        .updateContestBoard(any(), any(), any());
 
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile associationPart =
-        new MockMultipartFile("association", "good association".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile topicPart =
-        new MockMultipartFile("topic", "good topic".getBytes(StandardCharsets.UTF_8));
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("")
+            .content("good content")
+            .association("good association")
+            .topic("good topic")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .build();
+
+    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
+    MockMultipartFile formPart =
+        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
+    MockMultipartFile filePart =
+        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
                 multipart("/contest/contest/")
-                    .file(titlePart)
-                    .file(contentPart)
-                    .file(associationPart)
-                    .file(topicPart)
-                    .param("contestFieldId", "1")
-                    .param("dateContestStart", LocalDate.now().toString())
-                    .param("dateContestEnd", LocalDate.now().plusDays(10).toString())
+                    .file(formPart)
+                    .file(filePart)
                     .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isBadRequest())
             .andReturn()
@@ -341,26 +360,30 @@ public class ContestBoardControllerTest {
         .when(contestBoardService)
         .updateContestBoard(any(), any(), any());
 
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile associationPart =
-        new MockMultipartFile("association", "good association".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile topicPart =
-        new MockMultipartFile("topic", "good topic".getBytes(StandardCharsets.UTF_8));
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("good title")
+            .content("good content")
+            .association("good association")
+            .topic("good topic")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .build();
+
+    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
+    MockMultipartFile formPart =
+        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
+
+    MockMultipartFile filePart =
+        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
                 multipart("/contest/contest/1")
-                    .file(titlePart)
-                    .file(contentPart)
-                    .file(associationPart)
-                    .file(topicPart)
-                    .param("contestFieldId", "1")
-                    .param("dateContestStart", LocalDate.now().toString())
-                    .param("dateContestEnd", LocalDate.now().plusDays(10).toString())
+                    .file(formPart)
+                    .file(filePart)
                     .contentType(MediaType.MULTIPART_FORM_DATA))
             .andExpect(status().isNotFound())
             .andReturn()

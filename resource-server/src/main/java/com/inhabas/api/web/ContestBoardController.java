@@ -1,7 +1,6 @@
 package com.inhabas.api.web;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -193,26 +191,18 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
-      @RequestPart("title") String title,
-      @RequestPart("content") String content,
-      @RequestPart("association") String association,
-      @RequestPart("topic") String topic,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files,
-      @RequestParam(value = "contestFieldId", required = false) Long contestFieldId,
-      @RequestParam("dateContestStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate dateContestStart,
-      @RequestParam("dateContestEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate dateContestEnd) {
+      @RequestPart("form") SaveContestBoardDto form,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
-            .contestFieldId(contestFieldId)
-            .title(title)
-            .content(content)
-            .association(association)
-            .topic(topic)
-            .dateContestStart(dateContestStart)
-            .dateContestEnd(dateContestEnd)
+            .contestFieldId(form.getContestFieldId())
+            .title(form.getTitle())
+            .content(form.getContent())
+            .association(form.getAssociation())
+            .topic(form.getTopic())
+            .dateContestStart(form.getDateContestStart())
+            .dateContestEnd(form.getDateContestEnd())
             .files(files)
             .build();
     Long newContestBoardId =
@@ -261,28 +251,21 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
       @PathVariable Long boardId,
-      @RequestPart("title") String title,
-      @RequestPart("content") String content,
-      @RequestPart("topic") String topic,
-      @RequestPart("association") String association,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files,
-      @RequestParam(value = "contestFieldId", required = false) Long contestFieldId,
-      @RequestParam("dateContestStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate dateContestStart,
-      @RequestParam("dateContestEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-          LocalDate dateContestEnd) {
+      @RequestPart SaveContestBoardDto form,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
-            .contestFieldId(contestFieldId)
-            .title(title)
-            .content(content)
-            .association(association)
-            .topic(topic)
-            .dateContestStart(dateContestStart)
-            .dateContestEnd(dateContestEnd)
+            .contestFieldId(form.getContestFieldId())
+            .title(form.getTitle())
+            .content(form.getContent())
+            .association(form.getAssociation())
+            .topic(form.getTopic())
+            .dateContestStart(form.getDateContestStart())
+            .dateContestEnd(form.getDateContestEnd())
             .files(files)
             .build();
+
     contestBoardService.updateContestBoard(boardId, contestType, saveContestBoardDto);
 
     return ResponseEntity.noContent().build();
