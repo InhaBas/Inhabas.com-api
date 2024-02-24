@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.budget.domain;
 
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -15,18 +17,14 @@ import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.budget.domain.valueObject.Account;
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
-import com.inhabas.api.domain.budget.exception.BudgetHistoryNotFoundException;
-import com.inhabas.api.domain.budget.exception.HistoryCannotModifiableException;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "BUDGET_HISTORY")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("HISTORY")
 public class BudgetHistory extends BudgetBoard {
-
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
 
   @AttributeOverride(name = "value", column = @Column(name = "INCOME", nullable = false))
   private Price income;
@@ -38,14 +36,14 @@ public class BudgetHistory extends BudgetBoard {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_IN_CHARGE"))
-  private Member personInCharge;
+  private Member memberInCharge;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
-  private Member personReceived;
+  private Member memberReceived;
 
   public boolean cannotModifiableBy(Member secretary) {
-    return !this.personInCharge.equals(secretary);
+    return !this.memberInCharge.equals(secretary);
   }
 
   @Builder
@@ -57,14 +55,14 @@ public class BudgetHistory extends BudgetBoard {
       Account account,
       Member writer,
       LocalDateTime dateUsed,
-      Member personInCharge,
-      Member personReceived) {
+      Member memberInCharge,
+      Member memberReceived) {
     super(title, details, dateUsed, writer);
     this.income = income;
     this.outcome = outcome;
     this.account = account;
-    this.personInCharge = personInCharge;
-    this.personReceived = personReceived;
+    this.memberInCharge = memberInCharge;
+    this.memberReceived = memberReceived;
   }
 
   public void modify(
@@ -77,12 +75,11 @@ public class BudgetHistory extends BudgetBoard {
       Member personReceived) {
 
     if (this.id == null) {
-      throw new BudgetHistoryNotFoundException(
-          "cannot modify this entity, because not persisted ever!");
+      throw new NotFoundException();
     }
 
     if (this.cannotModifiableBy(secretary)) {
-      throw new HistoryCannotModifiableException();
+      throw new OnlyWriterUpdateException();
     }
 
     this.title = new Title(title);
@@ -90,6 +87,6 @@ public class BudgetHistory extends BudgetBoard {
     this.dateUsed = dateUsed;
     this.income = new Price(income);
     this.outcome = new Price(outcome);
-    this.personReceived = personReceived;
+    this.memberReceived = personReceived;
   }
 }

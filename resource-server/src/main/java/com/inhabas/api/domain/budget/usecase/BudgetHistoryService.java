@@ -1,26 +1,22 @@
 package com.inhabas.api.domain.budget.usecase;
 
-import java.util.List;
-
-import org.springframework.data.domain.Pageable;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
-import com.inhabas.api.domain.budget.dto.BudgetHistoryModifyForm;
+import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface BudgetHistoryService {
 
-  void createNewHistory(BudgetHistoryCreateForm form, StudentId CFO);
+  Long createNewHistory(BudgetHistoryCreateForm form, Long secretaryId);
 
-  void modifyHistory(BudgetHistoryModifyForm historyId, StudentId CFO);
+  void modifyHistory(Long historyId, BudgetHistoryCreateForm form, Long secretaryId);
 
-  void deleteHistory(Integer historyId, StudentId CFO);
+  void deleteHistory(Long historyId, Long secretaryId);
 
   BudgetHistoryListResponse searchHistoryList(Integer year, Pageable pageable);
 
-  BudgetHistoryDetailDto getHistory(Integer id);
+  BudgetHistoryDetailDto getHistory(Long id);
 
   List<Integer> getAllYearOfHistory();
 }

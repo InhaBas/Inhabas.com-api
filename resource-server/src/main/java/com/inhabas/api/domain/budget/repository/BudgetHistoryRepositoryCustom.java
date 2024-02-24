@@ -12,7 +12,7 @@ public interface BudgetHistoryRepositoryCustom {
 
   Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable);
 
-  Optional<BudgetHistoryDetailDto> findDtoById(Integer id);
+  Optional<BudgetHistoryDetailDto> findDtoById(Long id);
 
   List<Integer> findAllYear();
 }

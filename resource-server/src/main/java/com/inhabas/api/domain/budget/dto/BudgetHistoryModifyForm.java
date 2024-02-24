@@ -19,11 +19,12 @@ public class BudgetHistoryModifyForm extends BudgetHistoryCreateForm {
       LocalDateTime dateUsed,
       String title,
       String details,
-      String personReceived,
+      Long memberIdReceived,
+      String memberNameReceived,
       Integer income,
       Integer outcome,
       Integer historyId) {
-    super(dateUsed, title, details, personReceived, income, outcome);
+    super(dateUsed, title, details, memberIdReceived, memberNameReceived, income, outcome);
     this.id = historyId;
   }
 }

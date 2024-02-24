@@ -28,7 +28,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
   }
 
   @Override
-  public Optional<BudgetHistoryDetailDto> findDtoById(Integer id) {
+  public Optional<BudgetHistoryDetailDto> findDtoById(Long id) {
 
     return Optional.ofNullable(getDtoJPAQuery().where(budgetHistory.id.eq(id)).fetchOne());
   }
@@ -79,18 +79,18 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
                 budgetHistory.dateCreated,
                 budgetHistory.dateUpdated,
                 budgetHistory.title.value,
+                budgetHistory.details.value,
                 budgetHistory.income.value,
                 budgetHistory.outcome.value,
-                budgetHistory.details.value,
                 budgetHistory.account.value,
-                budgetHistory.personReceived.id,
+                budgetHistory.memberReceived.id,
                 memberReceived.name.value,
-                budgetHistory.personInCharge.id,
+                budgetHistory.memberInCharge.id,
                 memberInCharge.name.value))
         .from(budgetHistory)
         .innerJoin(memberInCharge)
-        .on(memberInCharge.studentId.id.eq(budgetHistory.personInCharge.id))
+        .on(memberInCharge.id.eq(budgetHistory.memberInCharge.id))
         .innerJoin(memberReceived)
-        .on(memberReceived.studentId.id.eq(budgetHistory.personReceived.id));
+        .on(memberReceived.id.eq(budgetHistory.memberReceived.id));
   }
 }
