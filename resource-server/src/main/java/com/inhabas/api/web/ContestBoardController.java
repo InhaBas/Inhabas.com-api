@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,7 +46,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "공모전 게시판")
+@Slf4j
+@Tag(name = "공모전 게시글 관리")
 @RestController
 @RequiredArgsConstructor
 public class ContestBoardController {
@@ -65,7 +68,7 @@ public class ContestBoardController {
     return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(2));
   }
 
-  @Operation(summary = "공모전 게시글 목록 조회", description = "공모전 게시판 목록 조회")
+  @Operation(summary = "공모전 게시글 목록 조회")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -92,16 +95,15 @@ public class ContestBoardController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-  @SecurityRequirements(value = {})
   @GetMapping("/contest/{contestType}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#contestType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedResponseDto<ContestBoardDto>> getContestBoard(
-      @PathVariable("contestType") ContestType contestType,
+      @PathVariable ContestType contestType,
       @Parameter(description = "공모전 분야", example = "1")
           @RequestParam(name = "contestFieldId", required = false)
           Long contestFieldId,
-      @Parameter(description = "검색어", example = "")
+      @Parameter(description = "검색어 (작성자 이름 or 제목 or 내용)", example = "")
           @RequestParam(name = "search", defaultValue = "")
           String search,
       @Parameter(description = "페이지", example = "1")
@@ -191,25 +193,28 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
-      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("association") String association,
       @RequestPart("topic") String topic,
-      @RequestPart("dateContestStart") LocalDate dateContestStart,
-      @RequestPart("dateContestEnd") LocalDate dateContestEnd,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+      @RequestPart(value = "files", required = false) List<MultipartFile> files,
+      @RequestParam(value = "contestFieldId", required = false) Long contestFieldId,
+      @RequestParam("dateContestStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate dateContestStart,
+      @RequestParam("dateContestEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate dateContestEnd) {
 
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(
-            contestFieldId,
-            title,
-            content,
-            association,
-            topic,
-            dateContestStart,
-            dateContestEnd,
-            files);
+        SaveContestBoardDto.builder()
+            .contestFieldId(contestFieldId)
+            .title(title)
+            .content(content)
+            .association(association)
+            .topic(topic)
+            .dateContestStart(dateContestStart)
+            .dateContestEnd(dateContestEnd)
+            .files(files)
+            .build();
     Long newContestBoardId =
         contestBoardService.writeContestBoard(memberId, contestType, saveContestBoardDto);
 
@@ -256,25 +261,28 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
       @PathVariable Long boardId,
-      @RequestPart("contestFieldId") Long contestFieldId,
       @RequestPart("title") String title,
       @RequestPart("content") String content,
       @RequestPart("topic") String topic,
       @RequestPart("association") String association,
-      @RequestPart("dateContestStart") LocalDate dateContestStart,
-      @RequestPart("dateContestEnd") LocalDate dateContestEnd,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
+      @RequestPart(value = "files", required = false) List<MultipartFile> files,
+      @RequestParam(value = "contestFieldId", required = false) Long contestFieldId,
+      @RequestParam("dateContestStart") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate dateContestStart,
+      @RequestParam("dateContestEnd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+          LocalDate dateContestEnd) {
 
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(
-            contestFieldId,
-            title,
-            content,
-            topic,
-            association,
-            dateContestStart,
-            dateContestEnd,
-            files);
+        SaveContestBoardDto.builder()
+            .contestFieldId(contestFieldId)
+            .title(title)
+            .content(content)
+            .association(association)
+            .topic(topic)
+            .dateContestStart(dateContestStart)
+            .dateContestEnd(dateContestEnd)
+            .files(files)
+            .build();
     contestBoardService.updateContestBoard(boardId, contestType, saveContestBoardDto);
 
     return ResponseEntity.noContent().build();
