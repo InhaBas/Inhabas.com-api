@@ -6,8 +6,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.budget.ApplicationNotFoundException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
@@ -19,33 +21,33 @@ public class BudgetApplicationProcessorImpl implements BudgetApplicationProcesso
 
   private final BudgetApplicationRepository applicationRepository;
   private final BudgetHistoryRepository historyRepository;
+  private final MemberRepository memberRepository;
 
   @PreAuthorize("hasRole('SECRETARY')")
   @Transactional
   @Override
   public void process(
-      Integer applicationId, BudgetApplicationStatusChangeRequest request, StudentId inCharge) {
+      Long applicationId, BudgetApplicationStatusChangeRequest request, Long memberId) {
 
+    Member inCharge = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     BudgetSupportApplication application =
-        applicationRepository
-            .findById(applicationId)
-            .orElseThrow(ApplicationNotFoundException::new);
+        applicationRepository.findById(applicationId).orElseThrow(NotFoundException::new);
 
     switch (request.getStatus()) {
-      case WAITING:
-        application.waiting(inCharge);
+      case PENDING:
+        application.pending(inCharge);
         break;
 
       case APPROVED:
         application.approve(inCharge);
         break;
 
-      case DENIED:
-        application.deny(request.getRejectReason(), inCharge);
+      case REJECTED:
+        application.reject(request.getRejectReason(), inCharge);
         break;
 
-      case PROCESSED:
-        application.process(inCharge);
+      case COMPLETED:
+        application.complete(inCharge);
         historyRepository.save(application.makeHistory()); // application to history
         applicationRepository.save(application);
         break;
