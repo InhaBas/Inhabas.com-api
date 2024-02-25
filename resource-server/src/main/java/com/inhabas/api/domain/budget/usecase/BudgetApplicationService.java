@@ -1,24 +1,21 @@
 package com.inhabas.api.domain.budget.usecase;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
+import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
 
 public interface BudgetApplicationService {
 
-  void registerApplication(BudgetApplicationRegisterForm form, StudentId applicant);
+  Long registerApplication(BudgetApplicationRegisterForm form, Long memberId);
 
-  void updateApplication(BudgetApplicationUpdateForm form, StudentId applicant);
+  void updateApplication(Long applicationId, BudgetApplicationRegisterForm form, Long memberId);
 
-  void deleteApplication(Integer applicationId, StudentId applicant);
+  void deleteApplication(Long applicationId, Long memberId);
 
-  BudgetApplicationDetailDto getApplicationDetails(Integer applicationId);
+  BudgetApplicationDetailDto getApplicationDetails(Long applicationId);
 
-  Page<BudgetApplicationListDto> getApplications(ApplicationStatus status, Pageable pageable);
+  List<BudgetApplicationDto> getApplications(RequestStatus status);
 }

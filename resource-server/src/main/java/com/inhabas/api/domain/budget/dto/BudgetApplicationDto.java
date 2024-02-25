@@ -10,7 +10,7 @@ import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 
 @Getter
 @AllArgsConstructor
-public class BudgetApplicationListDto {
+public class BudgetApplicationDto {
 
   private Integer applicationId;
 

@@ -1,44 +1,62 @@
 package com.inhabas.api.domain.budget.usecase;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
-import com.inhabas.api.domain.budget.ApplicationNotFoundException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationListDto;
+import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
+import com.inhabas.api.domain.budget.exception.ApplicationCannotModifiableException;
+import com.inhabas.api.domain.budget.exception.ApplicationNotFoundException;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BudgetApplicationServiceImpl implements BudgetApplicationService {
 
-  private final BudgetApplicationRepository repository;
+  private final BudgetApplicationRepository budgetApplicationRepository;
+  private final MemberRepository memberRepository;
 
-  @Transactional
   @Override
-  public void registerApplication(BudgetApplicationRegisterForm form, StudentId applicant) {
+  public List<BudgetApplicationDto> getApplications(RequestStatus status) {
+    return budgetApplicationRepository.search(status);
+  }
 
-    BudgetSupportApplication application = form.toEntity(applicant);
-    repository.save(application);
+  @Override
+  public BudgetApplicationDetailDto getApplicationDetails(Long applicationId) {
+
+    return budgetApplicationRepository
+        .findDtoById(applicationId)
+        .orElseThrow(NotFoundException::new);
   }
 
   @Transactional
   @Override
-  public void updateApplication(BudgetApplicationUpdateForm form, StudentId applicant) {
+  public Long registerApplication(BudgetApplicationRegisterForm form, Long memberId) {
+    Member applicant =
+        memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    BudgetSupportApplication application = form.toEntity(applicant);
+    return budgetApplicationRepository.save(application).getId();
+  }
 
+  @Transactional
+  @Override
+  public void updateApplication(
+      Long applicationId, BudgetApplicationRegisterForm form, Long memberId) {
+    Member applicant =
+        memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     BudgetSupportApplication application =
-        repository.findById(form.getApplicationId()).orElseThrow(ApplicationNotFoundException::new);
+        budgetApplicationRepository.findById(applicationId).orElseThrow(NotFoundException::new);
 
     application.modify(
         form.getTitle(),
@@ -48,33 +66,23 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
         form.getAccounts(),
         applicant);
 
-    repository.save(application);
+    budgetApplicationRepository.save(application);
   }
 
   @Transactional
   @Override
-  public void deleteApplication(Integer applicationId, StudentId applicant) {
-
+  public void deleteApplication(Long applicationId, Long memberId) {
+    Member applicant =
+        memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     BudgetSupportApplication application =
-        repository.findById(applicationId).orElseThrow(ApplicationNotFoundException::new);
+        budgetApplicationRepository
+            .findById(applicationId)
+            .orElseThrow(ApplicationNotFoundException::new);
 
     if (application.cannotModifiableBy(applicant)) {
       throw new ApplicationCannotModifiableException();
     }
 
-    repository.deleteById(applicationId);
-  }
-
-  @Override
-  public BudgetApplicationDetailDto getApplicationDetails(Integer applicationId) {
-
-    return repository.findDtoById(applicationId).orElseThrow(ApplicationNotFoundException::new);
-  }
-
-  @Override
-  public Page<BudgetApplicationListDto> getApplications(
-      ApplicationStatus status, Pageable pageable) {
-
-    return repository.search(status, pageable);
+    budgetApplicationRepository.deleteById(applicationId);
   }
 }

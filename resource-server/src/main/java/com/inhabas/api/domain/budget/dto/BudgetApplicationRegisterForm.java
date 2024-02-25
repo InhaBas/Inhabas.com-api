@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 
 @Getter
@@ -41,7 +41,7 @@ public class BudgetApplicationRegisterForm {
     this.accounts = accounts;
   }
 
-  public BudgetSupportApplication toEntity(StudentId applicationWriter) {
+  public BudgetSupportApplication toEntity(Member applicationWriter) {
     return BudgetSupportApplication.builder()
         .title(this.title)
         .dateUsed(this.dateUsed)

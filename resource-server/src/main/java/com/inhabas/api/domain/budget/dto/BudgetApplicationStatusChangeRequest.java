@@ -6,18 +6,18 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BudgetApplicationStatusChangeRequest {
 
-  @NotNull private ApplicationStatus status;
+  @NotNull private RequestStatus status;
 
   private String rejectReason;
 
   public BudgetApplicationStatusChangeRequest(String status, String rejectReason) {
-    this.status = ApplicationStatus.valueOf(status);
+    this.status = RequestStatus.valueOf(status);
     this.rejectReason = rejectReason;
   }
 }
