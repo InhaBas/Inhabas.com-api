@@ -126,6 +126,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     return ApplicationDetailDto.builder()
         .memberId(member.getId())
+        .studentId(member.getStudentId())
         .name(member.getName())
         .grade(member.getSchoolInformation().getGrade())
         .major(member.getSchoolInformation().getMajor())
