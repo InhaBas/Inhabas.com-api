@@ -1,6 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember.member;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.*;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 import java.util.Collection;
@@ -48,6 +49,21 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
           .when(member.ibasInformation.role.eq(DEACTIVATED))
           .then(7)
           .otherwise(8)
+          .asc();
+
+  private static final OrderSpecifier<Integer> ORDER_BY_TYPE =
+      new CaseBuilder()
+          .when(member.schoolInformation.memberType.eq(PROFESSOR))
+          .then(1)
+          .when(member.schoolInformation.memberType.eq(BACHELOR))
+          .then(2)
+          .when(member.schoolInformation.memberType.eq(UNDERGRADUATE))
+          .then(3)
+          .when(member.schoolInformation.memberType.eq(GRADUATED))
+          .then(4)
+          .when(member.schoolInformation.memberType.eq(OTHER))
+          .then(5)
+          .otherwise(6)
           .asc();
 
   @Override
@@ -102,7 +118,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .in(roles)
                 .and(member.studentId.id.like("%" + studentId + "%"))
                 .and(member.schoolInformation.memberType.ne(MemberType.GRADUATED)))
-        .orderBy(ORDER_BY_ROLE, orderByStudentId)
+        .orderBy(ORDER_BY_ROLE, ORDER_BY_TYPE, orderByStudentId)
         .fetch();
   }
 
@@ -120,7 +136,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .in(roles)
                 .and(member.name.value.like("%" + name + "%"))
                 .and(member.schoolInformation.memberType.ne(MemberType.GRADUATED)))
-        .orderBy(ORDER_BY_ROLE, orderByStudentId)
+        .orderBy(ORDER_BY_ROLE, ORDER_BY_TYPE, orderByStudentId)
         .fetch();
   }
 
@@ -139,7 +155,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .in(roles)
                 .and(member.schoolInformation.memberType.eq(MemberType.GRADUATED))
                 .and(member.studentId.id.like("%" + studentId + "%")))
-        .orderBy(ORDER_BY_ROLE, orderByStudentId)
+        .orderBy(ORDER_BY_ROLE, ORDER_BY_TYPE, orderByStudentId)
         .fetch();
   }
 
@@ -157,7 +173,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .in(roles)
                 .and(member.schoolInformation.memberType.eq(MemberType.GRADUATED))
                 .and(member.name.value.like("%" + name + "%")))
-        .orderBy(ORDER_BY_ROLE, orderByStudentId)
+        .orderBy(ORDER_BY_ROLE, ORDER_BY_TYPE, orderByStudentId)
         .fetch();
   }
 
