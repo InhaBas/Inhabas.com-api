@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -33,6 +34,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@DiscriminatorValue("CONTEST")
 public class ContestBoard extends BaseBoard {
 
   @ManyToOne
@@ -100,7 +102,7 @@ public class ContestBoard extends BaseBoard {
 
   // 공모전 정보 수정
   public void updateContest(
-      Long contestFieldId,
+      ContestField contestField,
       String title,
       String content,
       String association,
@@ -108,7 +110,7 @@ public class ContestBoard extends BaseBoard {
       LocalDate dateContestStart,
       LocalDate dateContestEnd) {
 
-    this.contestField = new ContestField(contestFieldId);
+    this.contestField = contestField;
     this.title = new Title(title);
     this.content = new Content(content);
     this.association = new Association(association);

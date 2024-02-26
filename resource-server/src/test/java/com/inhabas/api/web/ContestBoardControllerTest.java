@@ -102,7 +102,7 @@ public class ContestBoardControllerTest {
                     .param("search", "")
                     .param("page", "0")
                     .param("size", "4")
-                    .param("sortBy", "dateContestEnd"))
+                    .param("orderBy", "DATE_CREATED"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()

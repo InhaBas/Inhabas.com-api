@@ -1,13 +1,12 @@
 package com.inhabas.api.domain.contest.usecase;
 
 import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.ACTIVITY;
+import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DATE_CONTEST_END;
 import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getContestMenu;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getContestMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
@@ -76,11 +75,12 @@ public class ContestBoardServiceImplTest {
 
     given(
             contestBoardRepository.findAllByTypeAndFieldAndSearch(
-                any(ContestType.class), anyLong(), anyString(), anyString()))
+                any(ContestType.class), any(), any(), any()))
         .willReturn(List.of(contestBoardDto));
 
     // when
-    List<ContestBoardDto> result = contestBoardService.getContestBoards(ACTIVITY, 1L, "", "title");
+    List<ContestBoardDto> result =
+        contestBoardService.getContestBoards(ACTIVITY, 1L, "", DATE_CONTEST_END);
 
     // then
     Assertions.assertThat(result).hasSize(1);

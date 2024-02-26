@@ -13,7 +13,7 @@ public class Topic {
   @Column(name = "TOPIC", length = 100, nullable = false)
   private String value;
 
-  @Transient private final int MAX_LENGTH = 150;
+  @Transient private final int MAX_LENGTH = 100;
 
   public Topic() {}
 

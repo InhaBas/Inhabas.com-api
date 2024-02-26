@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.mockito.Mock;
@@ -64,6 +66,7 @@ class ContestBoardTest {
   @DisplayName("ContestBoard 정보를 수정한다.")
   void updateContestBoardTest() {
     // Given
+
     ContestBoard contestBoard = new ContestBoard();
     Long newContestFieldId = 1L;
     String newTitle = "새로운 제목";
@@ -73,9 +76,12 @@ class ContestBoardTest {
     LocalDate newDateContestStart = LocalDate.now();
     LocalDate newDateContestEnd = LocalDate.now().plusDays(30);
 
+    ContestField newContestField = new ContestField("새로운 분야");
+    ReflectionTestUtils.setField(newContestField, "id", newContestFieldId);
+
     // When
     contestBoard.updateContest(
-        newContestFieldId,
+        newContestField,
         newTitle,
         newContent,
         newAssociation,

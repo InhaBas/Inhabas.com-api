@@ -13,7 +13,7 @@ public class ContestTypeConverter {
   @Component
   public static class StringToContestTypeConverter implements Converter<String, ContestType> {
 
-    // Enum형 ContestType의 각 요소들 (CONTEST, EXTERNAL_ACTIVITY..)을 소문자 문자열로 변환시켜 url에 매핑시키기 위한 컨버터
+    // Enum형 ContestType의 각 요소들 (CONTEST, ACTIVITY..)을 소문자 문자열로 변환시켜 url에 매핑시키기 위한 컨버터
     @Override
     public ContestType convert(String source) {
       if (!StringUtils.hasText(source)) {

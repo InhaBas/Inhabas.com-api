@@ -1,11 +1,8 @@
 package com.inhabas.api.domain.contest.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -13,40 +10,24 @@ import lombok.RequiredArgsConstructor;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.QContestBoard;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RequiredArgsConstructor
 public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom {
 
-  private static final Logger logger = LoggerFactory.getLogger(ContestBoardRepositoryImpl.class);
   private final JPAQueryFactory queryFactory;
   private QContestBoard contestBoard = QContestBoard.contestBoard;
 
-  // 필드 이름과 정렬 기준을 매핑
-  private OrderSpecifier<?> getSortedColumn(
-      Order order, QContestBoard contestBoard, String fieldName) {
-    Map<String, BiFunction<Order, QContestBoard, OrderSpecifier<?>>> orderSpecifierMap =
-        new HashMap<>();
-    orderSpecifierMap.put("id", (o, cb) -> new OrderSpecifier<>(o, cb.id));
-    orderSpecifierMap.put("dateContestEnd", (o, cb) -> new OrderSpecifier<>(o, cb.dateContestEnd));
-
-    return orderSpecifierMap
-        .getOrDefault(fieldName, (o, cb) -> new OrderSpecifier<>(Order.DESC, cb.dateContestEnd))
-        .apply(order, contestBoard);
-  }
-
   // 공모전 검색 및 필터링 기능
   public List<ContestBoardDto> findAllByTypeAndFieldAndSearch(
-      ContestType contestType, Long contestFieldId, String search, String sortBy) {
+      ContestType contestType, Long contestFieldId, String search, OrderBy orderBy) {
 
     BooleanExpression target =
         eqContestType(contestType)
@@ -58,10 +39,10 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                     .or(likeAssociation(search))
                     .or(likeTopic(search)));
 
-    OrderSpecifier<?> orderBy = getOrderBy(sortBy);
+    OrderSpecifier<?> order = orderBy.getOrderBy(contestBoard);
 
     List<ContestBoard> boards =
-        queryFactory.selectFrom(contestBoard).where(target).orderBy(orderBy).fetch();
+        queryFactory.selectFrom(contestBoard).where(target).orderBy(order).fetch();
 
     return boards.stream()
         .map(
@@ -80,17 +61,6 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                   .build();
             })
         .collect(Collectors.toList());
-  }
-
-  private OrderSpecifier<?> getOrderBy(String sortBy) {
-    if ("boardId".equals(sortBy)) {
-      return contestBoard.id.desc();
-    } else if ("dateContestEnd".equals(sortBy)) {
-      return contestBoard.dateContestEnd.desc();
-    } else {
-      // 기본 정렬 로직
-      return contestBoard.dateCreated.desc();
-    }
   }
 
   @Override

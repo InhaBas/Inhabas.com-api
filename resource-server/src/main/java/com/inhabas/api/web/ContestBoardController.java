@@ -28,6 +28,7 @@ import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
@@ -112,13 +113,15 @@ public class ContestBoardController {
       @Parameter(description = "페이지당 개수", example = "4")
           @RequestParam(name = "size", defaultValue = "4")
           int size,
-      @Parameter(description = "'boardId' 또는 'dateContestEnd' 기준 내림차순 정렬", example = "boardId")
-          @RequestParam(name = "sortBy", defaultValue = "dateContestEnd")
-          String sortBy) {
+      @Parameter(
+              description = "'dateCreated' 또는 'dateContestEnd' 기준 내림차순 정렬",
+              example = "dateCreated")
+          @RequestParam(name = "orderBy", defaultValue = "dateCreatedEnd")
+          OrderBy orderBy) {
 
     Pageable pageable = PageRequest.of(page, size);
     List<ContestBoardDto> allDtoList =
-        contestBoardService.getContestBoards(contestType, contestFieldId, search, sortBy);
+        contestBoardService.getContestBoards(contestType, contestFieldId, search, orderBy);
     List<ContestBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<ContestBoardDto> ContestBoardDtoPage =

@@ -20,6 +20,7 @@ import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
@@ -35,7 +36,6 @@ import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class ContestBoardServiceImpl implements ContestBoardService {
 
@@ -47,8 +47,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
   // 타입별 공모전 게시판 목록 조회
   @Override
+  @Transactional(readOnly = true)
   public List<ContestBoardDto> getContestBoards(
-      ContestType contestType, Long contestFieldId, String search, String sortBy) {
+      ContestType contestType, Long contestFieldId, String search, OrderBy orderBy) {
 
     if (search == null || search.trim().isEmpty()) {
       search = "";
@@ -58,12 +59,13 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     contestBoardList.addAll(
         contestBoardRepository.findAllByTypeAndFieldAndSearch(
-            contestType, contestFieldId, search, sortBy));
+            contestType, contestFieldId, search, orderBy));
     return contestBoardList;
   }
 
   // 공모전 게시판 단일조회
   @Override
+  @Transactional(readOnly = true)
   public ContestBoardDetailDto getContestBoard(ContestType contestType, Long boardId) {
     ContestBoard contestBoard =
         contestBoardRepository
@@ -94,6 +96,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
   // contestType 별로 게시글 작성
   @Override
+  @Transactional
   public Long writeContestBoard(
       Long memberId, ContestType contestType, SaveContestBoardDto saveContestBoardDto) {
 
@@ -122,6 +125,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   }
 
   @Override
+  @Transactional
   public void updateContestBoard(
       Long boardId, ContestType contestType, SaveContestBoardDto saveContestBoardDto) {
 
@@ -141,10 +145,14 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     final String DIR_NAME = contestType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
+    ContestField contestField =
+        contestFieldRepository
+            .findById(saveContestBoardDto.getContestFieldId())
+            .orElseThrow(() -> new NotFoundException());
 
     if (saveContestBoardDto.getFiles() != null) {
       contestBoard.updateContest(
-          saveContestBoardDto.getContestFieldId(),
+          contestField,
           saveContestBoardDto.getTitle(),
           saveContestBoardDto.getContent(),
           saveContestBoardDto.getAssociation(),

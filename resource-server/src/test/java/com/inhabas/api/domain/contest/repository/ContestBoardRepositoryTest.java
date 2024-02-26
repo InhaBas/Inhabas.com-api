@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.contest.repository;
 
 import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.CONTEST;
+import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DATE_CONTEST_END;
 import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,7 +97,7 @@ public class ContestBoardRepositoryTest {
 
     // when
     List<ContestBoardDto> dtoList =
-        contestBoardRepository.findAllByTypeAndFieldAndSearch(CONTEST, null, "", "dateContestEnd");
+        contestBoardRepository.findAllByTypeAndFieldAndSearch(CONTEST, null, "", DATE_CONTEST_END);
 
     // then
     assertThat(dtoList).hasSize(2);
