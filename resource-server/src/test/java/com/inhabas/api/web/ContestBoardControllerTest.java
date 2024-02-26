@@ -439,5 +439,4 @@ public class ContestBoardControllerTest {
     // then
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
-
 }
