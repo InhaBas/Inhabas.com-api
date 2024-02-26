@@ -135,6 +135,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   }
 
   @Override
+  @Transactional
   public void deleteContestBoard(Long boardId) {
 
     contestBoardRepository.deleteById(boardId);
