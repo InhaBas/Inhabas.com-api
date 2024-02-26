@@ -3,6 +3,7 @@ package com.inhabas.api.web;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -191,7 +192,7 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
-      @RequestPart("form") SaveContestBoardDto form,
+      @Valid @RequestPart("form") SaveContestBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
     SaveContestBoardDto saveContestBoardDto =
@@ -251,7 +252,7 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
       @PathVariable Long boardId,
-      @RequestPart SaveContestBoardDto form,
+      @Valid @RequestPart SaveContestBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
     SaveContestBoardDto saveContestBoardDto =
