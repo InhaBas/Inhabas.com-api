@@ -52,11 +52,11 @@ public abstract class BudgetBoard extends BaseEntity {
 
   @Embedded protected Details details;
 
-  @Column(name = "DATE_USED", nullable = false)
+  @Column(nullable = false, columnDefinition = "DATETIME(0)")
   protected LocalDateTime dateUsed;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_BOARD_OF_USER_ID"))
+  @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_BUDGET_BOARD_OF_USER_ID"))
   protected Member writer;
 
   @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -91,11 +91,24 @@ public abstract class BudgetBoard extends BaseEntity {
     ;
   }
 
-  public void addFile(BudgetFile file) {
+  public void addReceipt(BudgetFile receipt) {
     if (this.receipts == null) {
       this.receipts = new ArrayList<>();
     }
 
-    this.receipts.add(file);
+    this.receipts.add(receipt);
+  }
+
+  public void updateReceipts(List<BudgetFile> receipts) {
+
+    if (this.receipts != null) {
+      this.receipts.clear();
+    } else {
+      this.receipts = new ArrayList<>();
+    }
+
+    for (BudgetFile receipt : receipts) {
+      addReceipt(receipt);
+    }
   }
 }

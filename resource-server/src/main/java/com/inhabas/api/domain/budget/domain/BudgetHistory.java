@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.budget.domain;
 
-import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
@@ -12,8 +10,10 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
+import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.budget.domain.valueObject.Account;
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
@@ -35,11 +35,15 @@ public class BudgetHistory extends BudgetBoard {
   @Embedded private Account account;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_IN_CHARGE"))
+  @JoinColumn(
+      name = "USER_ID_IN_CHARGE",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_IN_CHARGE"))
   private Member memberInCharge;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
+  @JoinColumn(
+      name = "USER_ID_RECEIVED",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
   private Member memberReceived;
 
   public boolean cannotModifiableBy(Member secretary) {

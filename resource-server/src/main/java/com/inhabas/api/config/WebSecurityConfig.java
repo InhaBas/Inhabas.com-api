@@ -148,7 +148,7 @@ public class WebSecurityConfig {
               "/budget/histories",
               "/budget/application/**",
               "/budget/applications")
-          .hasRole(SECRETARY.toString())
+          .hasRole(DEACTIVATED.toString())
           // 강의
           .antMatchers("/lecture/**/status")
           .hasRole(EXECUTIVES.toString())

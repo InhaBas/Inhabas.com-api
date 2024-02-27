@@ -1,19 +1,22 @@
 package com.inhabas.api.domain.budget.dto;
 
+import java.time.LocalDateTime;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.PositiveOrZero;
+
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.PositiveOrZero;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,32 +28,31 @@ public class BudgetHistoryCreateForm {
   @Past
   private LocalDateTime dateUsed;
 
-  @NotBlank
-  private String title;
+  @NotBlank private String title;
 
   private String details;
 
-  @NotNull
-  private Long memberIdReceived;
+  @NotNull private String memberStudentIdReceived;
 
-  @NotBlank
-  private String memberNameReceived;
+  @NotBlank private String memberNameReceived;
 
-  @PositiveOrZero
-  @NotNull
-  private Integer income;
+  @PositiveOrZero @NotNull private Integer income;
 
-  @PositiveOrZero
-  @NotNull
-  private Integer outcome;
+  @PositiveOrZero @NotNull private Integer outcome;
 
   @Builder
-  public BudgetHistoryCreateForm(LocalDateTime dateUsed, String title, String details,
-      Long memberIdReceived, String memberNameReceived, Integer income, Integer outcome) {
+  public BudgetHistoryCreateForm(
+      LocalDateTime dateUsed,
+      String title,
+      String details,
+      String memberStudentIdReceived,
+      String memberNameReceived,
+      Integer income,
+      Integer outcome) {
     this.dateUsed = dateUsed;
     this.title = title;
     this.details = details;
-    this.memberIdReceived = memberIdReceived;
+    this.memberStudentIdReceived = memberStudentIdReceived;
     this.memberNameReceived = memberNameReceived;
     this.income = income;
     this.outcome = outcome;
