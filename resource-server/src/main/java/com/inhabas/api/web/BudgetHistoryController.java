@@ -27,6 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.api.global.dto.PageInfoDto;
@@ -90,13 +91,13 @@ public class BudgetHistoryController {
           @RequestParam(name = "size", defaultValue = "10")
           int size) {
     Pageable pageable = PageRequest.of(page, size);
-    List<BudgetHistoryDetailDto> allDtoList = budgetHistoryService.searchHistoryList(year);
-    List<BudgetHistoryDetailDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+    List<BudgetHistoryDto> allDtoList = budgetHistoryService.searchHistoryList(year);
+    List<BudgetHistoryDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
-    PageImpl<BudgetHistoryDetailDto> newBudgetHistoryDetailDtoPage =
+    PageImpl<BudgetHistoryDto> newBudgetHistoryDetailDtoPage =
         new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(newBudgetHistoryDetailDtoPage);
-    PagedResponseDto<BudgetHistoryDetailDto> budgetHistoryDetailDtoPagedResponseDto =
+    PagedResponseDto<BudgetHistoryDto> budgetHistoryDetailDtoPagedResponseDto =
         new PagedResponseDto<>(pageInfoDto, pagedDtoList);
 
     Integer balance = budgetHistoryService.getBalance();
@@ -173,7 +174,7 @@ public class BudgetHistoryController {
     return ResponseEntity.created(location).build();
   }
 
-  @Operation(summary = "회계 내역을 수정한다.")
+  @Operation(summary = "회계 내역 수정 (Swagger 사용 불가. 명세서 참고)")
   @PostMapping("/budget/history/{historyId}")
   @ApiResponses({
     @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
@@ -198,6 +199,7 @@ public class BudgetHistoryController {
                         value =
                             "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
+  @PreAuthorize("hasRole('SECRETARY')")
   public ResponseEntity<?> modifyHistory(
       @Authenticated Long memberId,
       @PathVariable Long historyId,
@@ -209,12 +211,20 @@ public class BudgetHistoryController {
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "회계 내역을 삭제한다.")
+  @Operation(summary = "회계 내역 삭제")
   @DeleteMapping("/budget/history/{historyId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
-    @ApiResponse(responseCode = "400", description = "잘못된 입력, 또는 id가 존재하지 않는 경우"),
-    @ApiResponse(responseCode = "401", description = "총무가 아니면 접근 불가, 다른 총무가 작성한 것 삭제 불가")
+    @ApiResponse(
+        responseCode = "404",
+        description = "데이터가 존재하지 않습니다.",
+        content =
+            @Content(
+                schema = @Schema(implementation = ErrorResponse.class),
+                examples =
+                    @ExampleObject(
+                        value =
+                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
   public ResponseEntity<?> deleteHistory(
       @Authenticated Long memberId, @PathVariable Long historyId) {

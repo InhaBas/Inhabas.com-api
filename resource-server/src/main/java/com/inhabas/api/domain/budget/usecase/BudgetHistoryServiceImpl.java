@@ -19,9 +19,12 @@ import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.file.domain.BudgetFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 
 @Service
@@ -94,15 +97,35 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   }
 
   @Override
-  public List<BudgetHistoryDetailDto> searchHistoryList(Integer year) {
+  public List<BudgetHistoryDto> searchHistoryList(Integer year) {
 
-    List<BudgetHistoryDetailDto> dtoList = budgetHistoryRepository.search(year);
+    List<BudgetHistoryDto> dtoList = budgetHistoryRepository.search(year);
     return dtoList;
   }
 
   @Override
   public BudgetHistoryDetailDto getHistory(Long id) {
-    return budgetHistoryRepository.findDtoById(id).orElseThrow(NotFoundException::new);
+    BudgetHistory history =
+        budgetHistoryRepository.findById(id).orElseThrow(NotFoundException::new);
+
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(history.getReceipts());
+
+    return BudgetHistoryDetailDto.builder()
+        .id(history.getId())
+        .dateUsed(history.getDateUsed())
+        .dateCreated(history.getDateCreated())
+        .dateUpdated(history.getDateUpdated())
+        .title(history.getTitle())
+        .details(history.getDetails())
+        .account(history.getAccount())
+        .income(history.getIncome())
+        .outcome(history.getOutcome())
+        .memberStudentIdInCharge(history.getMemberInCharge().getStudentId())
+        .memberNameInCharge(history.getMemberInCharge().getName())
+        .memberStudentIdReceived(history.getMemberReceived().getStudentId())
+        .memberNameReceived(history.getMemberReceived().getName())
+        .receipts(classifiedFiles.getImages())
+        .build();
   }
 
   @Override
@@ -126,7 +149,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
                 .map(
                     file -> {
                       String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3File(file, path);
+                      String url = s3Service.uploadS3Image(file, path);
                       urlListForDelete.add(url);
                       return BudgetFile.builder()
                           .name(file.getOriginalFilename())

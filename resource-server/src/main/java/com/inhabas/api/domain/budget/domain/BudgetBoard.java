@@ -83,12 +83,15 @@ public abstract class BudgetBoard extends BaseEntity {
     return title.getValue();
   }
 
+  public String getDetails() {
+    return details.getValue();
+  }
+
   public BudgetBoard(String title, String details, LocalDateTime dateUsed, Member writer) {
     this.title = new Title(title);
     this.details = new Details(details);
     this.dateUsed = dateUsed;
     this.writer = writer;
-    ;
   }
 
   public void addReceipt(BudgetFile receipt) {

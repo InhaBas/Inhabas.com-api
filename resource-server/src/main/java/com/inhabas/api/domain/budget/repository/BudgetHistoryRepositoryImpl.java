@@ -3,9 +3,8 @@ package com.inhabas.api.domain.budget.repository;
 import static com.inhabas.api.domain.budget.domain.QBudgetHistory.budgetHistory;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -21,13 +20,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
   }
 
   @Override
-  public Optional<BudgetHistoryDetailDto> findDtoById(Long id) {
-
-    return Optional.ofNullable(getDtoJPAQuery().where(budgetHistory.id.eq(id)).fetchOne());
-  }
-
-  @Override
-  public List<BudgetHistoryDetailDto> search(Integer year) {
+  public List<BudgetHistoryDto> search(Integer year) {
 
     return getDtoJPAQuery().where(createdIn(year)).orderBy(budgetHistory.dateUsed.desc()).fetch();
   }
@@ -53,21 +46,19 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
     return queryFactory.selectFrom(budgetHistory).where(createdIn(year)).fetch().size();
   }
 
-  private JPAQuery<BudgetHistoryDetailDto> getDtoJPAQuery() {
+  private JPAQuery<BudgetHistoryDto> getDtoJPAQuery() {
 
     return queryFactory
         .select(
             Projections.constructor(
-                BudgetHistoryDetailDto.class,
+                BudgetHistoryDto.class,
                 budgetHistory.id,
                 budgetHistory.dateUsed,
                 budgetHistory.dateCreated,
                 budgetHistory.dateUpdated,
                 budgetHistory.title.value,
-                budgetHistory.details.value,
                 budgetHistory.income.value,
                 budgetHistory.outcome.value,
-                budgetHistory.account.value,
                 budgetHistory.memberReceived.studentId.id,
                 budgetHistory.memberReceived.name.value,
                 budgetHistory.memberInCharge.studentId.id,

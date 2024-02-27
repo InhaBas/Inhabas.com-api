@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,12 +12,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @NoArgsConstructor
-public class BudgetHistoryDetailDto {
+public class BudgetHistoryDto {
 
   @NotNull private Long id;
 
@@ -40,13 +38,9 @@ public class BudgetHistoryDetailDto {
 
   @NotBlank private String title;
 
-  @NotBlank private String details;
-
   @NotNull @PositiveOrZero private Integer income;
 
   @NotNull @PositiveOrZero private Integer outcome;
-
-  @NotBlank private String account;
 
   @NotNull private String memberStudentIdReceived;
 
@@ -56,37 +50,29 @@ public class BudgetHistoryDetailDto {
 
   @NotBlank private String memberNameInCharge;
 
-  @NotNull private List<FileDownloadDto> receipts;
-
   @Builder
-  public BudgetHistoryDetailDto(
+  public BudgetHistoryDto(
       Long id,
       LocalDateTime dateUsed,
       LocalDateTime dateCreated,
       LocalDateTime dateUpdated,
       String title,
-      String details,
       Integer income,
       Integer outcome,
-      String account,
       String memberStudentIdReceived,
       String memberNameReceived,
       String memberStudentIdInCharge,
-      String memberNameInCharge,
-      List<FileDownloadDto> receipts) {
+      String memberNameInCharge) {
     this.id = id;
     this.dateUsed = dateUsed;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;
     this.title = title;
-    this.details = details;
     this.income = income;
     this.outcome = outcome;
-    this.account = account;
     this.memberStudentIdReceived = memberStudentIdReceived;
     this.memberNameReceived = memberNameReceived;
     this.memberStudentIdInCharge = memberStudentIdInCharge;
     this.memberNameInCharge = memberNameInCharge;
-    this.receipts = receipts;
   }
 }

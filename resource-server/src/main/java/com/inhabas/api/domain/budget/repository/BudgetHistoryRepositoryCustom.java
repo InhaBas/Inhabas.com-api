@@ -1,15 +1,12 @@
 package com.inhabas.api.domain.budget.repository;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 
 public interface BudgetHistoryRepositoryCustom {
 
-  List<BudgetHistoryDetailDto> search(Integer year);
-
-  Optional<BudgetHistoryDetailDto> findDtoById(Long id);
+  List<BudgetHistoryDto> search(Integer year);
 
   List<Integer> findAllYear();
 }

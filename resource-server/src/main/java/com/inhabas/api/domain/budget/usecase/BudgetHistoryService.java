@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 
 public interface BudgetHistoryService {
 
@@ -16,7 +17,7 @@ public interface BudgetHistoryService {
 
   void deleteHistory(Long historyId, Long secretaryId);
 
-  List<BudgetHistoryDetailDto> searchHistoryList(Integer year);
+  List<BudgetHistoryDto> searchHistoryList(Integer year);
 
   BudgetHistoryDetailDto getHistory(Long id);
 

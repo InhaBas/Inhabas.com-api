@@ -7,11 +7,11 @@ import com.inhabas.api.global.dto.PagedResponseDto;
 @Getter
 public class BudgetHistoryListResponse {
 
-  private PagedResponseDto<BudgetHistoryDetailDto> page;
+  private PagedResponseDto<BudgetHistoryDto> page;
 
   private Integer balance;
 
-  public BudgetHistoryListResponse(PagedResponseDto<BudgetHistoryDetailDto> page, Integer balance) {
+  public BudgetHistoryListResponse(PagedResponseDto<BudgetHistoryDto> page, Integer balance) {
     this.page = page;
     this.balance = balance;
   }

@@ -50,6 +50,26 @@ public class BudgetHistory extends BudgetBoard {
     return !this.memberInCharge.equals(secretary);
   }
 
+  public Integer getIncome() {
+    return income.getValue();
+  }
+
+  public Integer getOutcome() {
+    return outcome.getValue();
+  }
+
+  public String getAccount() {
+    return account == null ? null : account.getValue();
+  }
+
+  public Member getMemberInCharge() {
+    return memberInCharge;
+  }
+
+  public Member getMemberReceived() {
+    return memberReceived;
+  }
+
   @Builder
   public BudgetHistory(
       Price income,
@@ -64,7 +84,7 @@ public class BudgetHistory extends BudgetBoard {
     super(title, details, dateUsed, writer);
     this.income = income;
     this.outcome = outcome;
-    this.account = account;
+    this.account = account == null ? new Account("") : account;
     this.memberInCharge = memberInCharge;
     this.memberReceived = memberReceived;
   }
