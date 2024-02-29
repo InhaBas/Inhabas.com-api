@@ -12,19 +12,34 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
 import com.inhabas.api.domain.budget.domain.valueObject.Account;
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
+import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "BUDGET_HISTORY")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorValue("HISTORY")
-public class BudgetHistory extends BudgetBoard {
+@DiscriminatorValue("BUDGET_HISTORY")
+public class BudgetHistory extends BaseBoard {
+
+  @Embedded private Details details;
+
+  @Column(nullable = false, columnDefinition = "DATETIME(0)")
+  private LocalDateTime dateUsed;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "USER_IN_CHARGE_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_HISTORY"))
+  private Member memberInCharge;
+
+  @Embedded private Account account;
 
   @AttributeOverride(name = "value", column = @Column(name = "INCOME", nullable = false))
   private Price income;
@@ -32,22 +47,14 @@ public class BudgetHistory extends BudgetBoard {
   @AttributeOverride(name = "value", column = @Column(name = "OUTCOME", nullable = false))
   private Price outcome;
 
-  @Embedded private Account account;
-
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(
-      name = "USER_ID_IN_CHARGE",
-      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_IN_CHARGE"))
-  private Member memberInCharge;
-
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
       name = "USER_ID_RECEIVED",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
   private Member memberReceived;
 
-  public boolean cannotModifiableBy(Member secretary) {
-    return !this.memberInCharge.equals(secretary);
+  public String getDetails() {
+    return details.getValue();
   }
 
   public Integer getIncome() {
@@ -70,23 +77,33 @@ public class BudgetHistory extends BudgetBoard {
     return memberReceived;
   }
 
+  public LocalDateTime getDateUsed() {
+    return dateUsed;
+  }
+
   @Builder
   public BudgetHistory(
-      Price income,
-      Price outcome,
       String title,
+      Menu menu,
       String details,
-      Account account,
-      Member writer,
       LocalDateTime dateUsed,
       Member memberInCharge,
+      String account,
+      Integer income,
+      Integer outcome,
       Member memberReceived) {
-    super(title, details, dateUsed, writer);
-    this.income = income;
-    this.outcome = outcome;
-    this.account = account == null ? new Account("") : account;
+    super(title, menu);
+    this.details = new Details(details);
+    this.dateUsed = dateUsed;
     this.memberInCharge = memberInCharge;
+    this.account = new Account(account);
+    this.income = new Price(income);
+    this.outcome = new Price(outcome);
     this.memberReceived = memberReceived;
+  }
+
+  public boolean cannotModifiableBy(Member secretary) {
+    return !this.memberInCharge.equals(secretary);
   }
 
   public void modify(

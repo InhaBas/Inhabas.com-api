@@ -6,15 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
-import com.inhabas.api.domain.budget.domain.BudgetHistory;
-
-/**
- * {@code ApplicantAccount} 와 다르게 Nullable 하다. 예산을 지원하는 경우에는 지원자에게 필수적으로 송금을 해야하는데 반해서, 총무가 예산 내역을
- * 스스로 등록하는 경우에는 송금이 이루어지지 않는 경우가 존재한다. 따라서 {@code BudgetHistory} 에서는 Nullable 한 계좌값을 사용한다.
- *
- * @see ApplicantAccount
- * @see BudgetHistory
- */
 @Embeddable
 public class Account {
 

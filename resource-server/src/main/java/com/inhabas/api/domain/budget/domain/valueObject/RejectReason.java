@@ -8,11 +8,13 @@ import javax.persistence.Transient;
 
 import lombok.Getter;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 @Getter
 @Embeddable
 public class RejectReason {
 
-  @Column(name = "reject_reason", length = 200)
+  @Column(name = "REJECT_REASON", length = 200)
   private String value;
 
   @Transient private final int MAX_LENGTH = 200;
@@ -21,7 +23,7 @@ public class RejectReason {
 
   public RejectReason(String value) {
     if (validate(value)) this.value = value;
-    else throw new IllegalArgumentException();
+    else throw new InvalidInputException();
   }
 
   private boolean validate(Object value) {
