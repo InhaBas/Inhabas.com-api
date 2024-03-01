@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -175,9 +176,9 @@ public class BudgetHistoryController {
   }
 
   @Operation(summary = "회계 내역 수정 (Swagger 사용 불가. 명세서 참고)")
-  @PostMapping("/budget/history/{historyId}")
+  @PutMapping("/budget/history/{historyId}")
   @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
+    @ApiResponse(responseCode = "204"),
     @ApiResponse(
         responseCode = "400 ",
         description = "입력값이 없거나, 타입이 유효하지 않습니다.",
@@ -226,6 +227,7 @@ public class BudgetHistoryController {
                         value =
                             "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
+  @PreAuthorize("hasRole('SECRETARY')")
   public ResponseEntity<?> deleteHistory(
       @Authenticated Long memberId, @PathVariable Long historyId) {
 

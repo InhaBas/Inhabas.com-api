@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
-import com.inhabas.api.domain.budget.domain.valueObject.Price;
+import com.inhabas.api.domain.menu.domain.Menu;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
@@ -62,16 +62,16 @@ public class BudgetHistoryCreateForm {
     }
   }
 
-  public BudgetHistory toEntity(Member secretary, Member memberReceived) {
+  public BudgetHistory toEntity(Menu menu, Member secretary, Member memberReceived) {
     return BudgetHistory.builder()
         .title(this.title)
+        .menu(menu)
         .details(this.details)
         .dateUsed(this.dateUsed)
-        .writer(secretary)
-        .income(new Price(this.income))
-        .outcome(new Price(this.outcome))
-        .account(null)
         .memberInCharge(secretary)
+        .account(null)
+        .income(this.income)
+        .outcome(this.outcome)
         .memberReceived(memberReceived)
         .build();
   }

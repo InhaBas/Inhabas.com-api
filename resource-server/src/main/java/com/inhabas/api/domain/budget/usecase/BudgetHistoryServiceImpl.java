@@ -21,8 +21,10 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.file.domain.BudgetFile;
+import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.menu.domain.Menu;
+import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
@@ -34,7 +36,9 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
 
   private final BudgetHistoryRepository budgetHistoryRepository;
   private final MemberRepository memberRepository;
+  private final MenuRepository menuRepository;
   private final S3Service s3Service;
+  private static final Integer BUDGET_HISTORY_MENU_ID = 15;
   private static final String DIR_NAME = "budget/";
 
   @Override
@@ -49,7 +53,10 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
             .findByStudentId_IdAndName_Value(
                 form.getMemberStudentIdReceived(), form.getMemberNameReceived())
             .orElseThrow(MemberNotFoundException::new);
-    BudgetHistory newHistory = form.toEntity(secretary, memberReceived);
+    Menu menu = menuRepository.findById(BUDGET_HISTORY_MENU_ID).orElseThrow(NotFoundException::new);
+
+    BudgetHistory newHistory =
+        form.toEntity(menu, secretary, memberReceived).writtenBy(secretary, BudgetHistory.class);
 
     return updateBudgetFiles(files, newHistory);
   }
@@ -77,6 +84,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
         form.getTitle(),
         form.getDetails(),
         memberReceived);
+    budgetHistory.writtenBy(secretary, BudgetHistory.class);
 
     updateBudgetFiles(files, budgetHistory);
   }
@@ -108,7 +116,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     BudgetHistory history =
         budgetHistoryRepository.findById(id).orElseThrow(NotFoundException::new);
 
-    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(history.getReceipts());
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(history.getFiles());
 
     return BudgetHistoryDetailDto.builder()
         .id(history.getId())
@@ -139,19 +147,19 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   }
 
   private Long updateBudgetFiles(List<MultipartFile> files, BudgetHistory budgetHistory) {
-    List<BudgetFile> updateReceipts = new ArrayList<>();
+    List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
 
     if (files != null) {
       try {
-        updateReceipts =
+        updateFiles =
             files.stream()
                 .map(
                     file -> {
                       String path = FileUtil.generateFileName(file, DIR_NAME);
                       String url = s3Service.uploadS3Image(file, path);
                       urlListForDelete.add(url);
-                      return BudgetFile.builder()
+                      return BoardFile.builder()
                           .name(file.getOriginalFilename())
                           .url(url)
                           .board(budgetHistory)
@@ -167,7 +175,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
       }
     }
 
-    budgetHistory.updateReceipts(updateReceipts);
+    budgetHistory.updateFiles(updateFiles);
     return budgetHistoryRepository.save(budgetHistory).getId();
   }
 }
