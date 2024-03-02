@@ -4,15 +4,18 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Transient;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import lombok.Getter;
+
+@Getter
 @Embeddable
 public class Account {
 
-  @Column(name = "account", length = 100)
+  @Column(name = "ACCOUNT", length = 100)
   private String value;
 
-  @Transient private final int MAX_LENGTH = 100;
+  private final int MAX_LENGTH = 100;
 
   public Account() {}
 
@@ -22,7 +25,7 @@ public class Account {
    */
   public Account(String value) {
     if (validate(value)) this.value = ((value == null || value.isBlank()) ? null : value);
-    else throw new IllegalArgumentException();
+    else throw new InvalidInputException();
   }
 
   private boolean validate(Object value) {
@@ -34,7 +37,4 @@ public class Account {
     return o.length() < MAX_LENGTH;
   }
 
-  public String getValue() {
-    return value;
-  }
 }

@@ -1,11 +1,13 @@
 package com.inhabas.api.domain.budget.domain;
 
+import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -30,12 +32,14 @@ public class BudgetHistory extends BaseBoard {
 
   @Embedded private Details details;
 
+  @Getter
   @Column(nullable = false, columnDefinition = "DATETIME(0)")
   private LocalDateTime dateUsed;
 
+  @Getter
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
-      name = "USER_IN_CHARGE_ID",
+      name = "IN_CHARGE_USER_ID",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_HISTORY"))
   private Member memberInCharge;
 
@@ -47,9 +51,10 @@ public class BudgetHistory extends BaseBoard {
   @AttributeOverride(name = "value", column = @Column(name = "OUTCOME", nullable = false))
   private Price outcome;
 
+  @Getter
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
-      name = "USER_ID_RECEIVED",
+      name = "RECEIVED_USER_ID",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
   private Member memberReceived;
 
@@ -67,18 +72,6 @@ public class BudgetHistory extends BaseBoard {
 
   public String getAccount() {
     return account == null ? null : account.getValue();
-  }
-
-  public Member getMemberInCharge() {
-    return memberInCharge;
-  }
-
-  public Member getMemberReceived() {
-    return memberReceived;
-  }
-
-  public LocalDateTime getDateUsed() {
-    return dateUsed;
   }
 
   @Builder
@@ -120,7 +113,7 @@ public class BudgetHistory extends BaseBoard {
     }
 
     if (this.cannotModifiableBy(secretary)) {
-      throw new OnlyWriterUpdateException();
+      throw new InvalidAuthorityException();
     }
 
     this.title = new Title(title);

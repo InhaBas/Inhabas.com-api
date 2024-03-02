@@ -2,41 +2,96 @@ package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.PositiveOrZero;
+
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class BudgetApplicationDetailDto {
 
-  private Integer id;
+  @NotNull private Long id;
 
-  private String title;
-
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Past
   private LocalDateTime dateUsed;
 
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateCreated;
 
-  private String details;
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateUpdated;
 
-  private Integer outcome;
+  @NotBlank private String title;
 
-  private String accounts;
+  @NotBlank private String details;
 
-  private Integer applicationWriterId;
+  @NotNull @PositiveOrZero private Integer outcome;
 
-  private String applicationWriterName;
+  @NotBlank private String account;
 
-  private Integer memberIdInCharge;
+  @NotNull private Long applicantId;
+
+  @NotBlank private String applicantStudentId;
+
+  @NotBlank private String applicantName;
+
+  private Long memberIdInCharge;
+
+  private String memberStudentIdInCharge;
 
   private String memberNameInCharge;
 
-  private ApplicationStatus status;
+  @NotNull private RequestStatus status;
 
   private String rejectReason;
+
+  @Builder
+  public BudgetApplicationDetailDto(
+      Long id,
+      LocalDateTime dateUsed,
+      LocalDateTime dateCreated,
+      LocalDateTime dateUpdated,
+      String title,
+      String details,
+      Integer outcome,
+      String account,
+      Member applicant,
+      Member memberInCharge,
+      RequestStatus status,
+      RejectReason rejectReason) {
+    this.id = id;
+    this.dateUsed = dateUsed;
+    this.dateCreated = dateCreated;
+    this.dateUpdated = dateUpdated;
+    this.title = title;
+    this.details = details;
+    this.outcome = outcome;
+    this.account = account;
+    this.applicantId = applicant.getId();
+    this.applicantStudentId = applicant.getStudentId();
+    this.applicantName = applicant.getName();
+    this.memberIdInCharge = memberInCharge == null ? null : memberInCharge.getId();
+    this.memberStudentIdInCharge = memberInCharge == null ? null : memberInCharge.getStudentId();
+    this.memberNameInCharge = memberInCharge == null ? null : memberInCharge.getName();
+    this.status = status;
+    this.rejectReason = rejectReason == null ? null : rejectReason.getValue();
+  }
 }

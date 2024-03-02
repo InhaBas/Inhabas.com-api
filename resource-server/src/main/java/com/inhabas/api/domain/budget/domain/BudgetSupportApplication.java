@@ -16,7 +16,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatu
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.budget.domain.valueObject.*;
-import com.inhabas.api.domain.budget.exception.ApplicationCannotModifiableException;
+import com.inhabas.api.domain.budget.exception.StatusNotFollowProceduresException;
 import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
@@ -34,27 +34,27 @@ public class BudgetSupportApplication extends BaseBoard {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
-      name = "USER_IN_CHARGE_ID",
+      name = "IN_CHARGE_USER_ID",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICATION"))
   private Member memberInCharge;
 
   @Embedded private Account account;
 
-  @AttributeOverride(name = "value", column = @Column(name = "OUTCOME", nullable = false))
-  private Price outcome;
+  @Embedded private Price outcome;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
-      name = "USER_APPLICANT_ID",
+      name = "APPLICANT_USER_ID",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICANT"))
   private Member applicant;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private RequestStatus status;
 
-  private RejectReason rejectReason;
+  @Embedded private RejectReason rejectReason;
 
-  @Column(name = "DATE_CHECKED")
+  @Column(name = "DATE_CHECKED", columnDefinition = "DATETIME(0)")
   private LocalDateTime dateChecked;
 
   @Builder
@@ -88,66 +88,79 @@ public class BudgetSupportApplication extends BaseBoard {
       throw new NotFoundException();
     }
 
-    if (this.cannotModifiableBy(applicant)) throw new ApplicationCannotModifiableException();
+    if (!this.isPending()) throw new StatusNotFollowProceduresException();
 
     this.title = new Title(title);
     this.dateUsed = dateUsed;
     this.details = new Details(details);
     this.outcome = new Price(outcome);
     this.account = new Account(account);
-    this.status = RequestStatus.PENDING;
   }
 
-  public boolean cannotModifiableBy(Member currentApplicant) {
-    return !this.applicant.equals(currentApplicant) || !this.status.equals(RequestStatus.PENDING);
+  private boolean isPending() {
+    return this.status == RequestStatus.PENDING;
   }
 
-  public void approve(Member memberInCharge) {
-
-    this.status = RequestStatus.APPROVED;
-    this.memberInCharge = memberInCharge;
-  }
-
-  public void pending(Member memberInCharge) {
-
-    this.status = RequestStatus.PENDING;
-    this.memberInCharge = memberInCharge;
-  }
-
-  public void reject(String reason, Member memberInCharge) {
-
-    this.rejectReason = new RejectReason(reason);
-    this.status = RequestStatus.REJECTED;
-    this.memberInCharge = memberInCharge;
-  }
-
-  public void complete(Member memberInCharge) {
-
-    if (this.isComplete()) throw new ApplicationCannotModifiableException("이미 처리가 완료된 예산지원 내역입니다.");
-
-    this.status = RequestStatus.COMPLETED;
-    this.memberInCharge = memberInCharge;
+  private boolean isApprovedOrRejected() {
+    return this.status.equals(RequestStatus.APPROVED) || this.status.equals(RequestStatus.REJECTED);
   }
 
   private boolean isComplete() {
-    return this.status == RequestStatus.COMPLETED;
+    return this.status.equals(RequestStatus.COMPLETED);
+  }
+
+  public void pending() {
+    if (!this.isPending()) {
+      throw new StatusNotFollowProceduresException();
+    }
+  }
+
+  public void approve(Member memberInCharge) {
+    if (this.isPending()) {
+      this.status = RequestStatus.APPROVED;
+      this.dateChecked = LocalDateTime.now();
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
+  }
+
+  public void reject(String reason, Member memberInCharge) {
+    if (this.isPending()) {
+      this.rejectReason = new RejectReason(reason);
+      this.status = RequestStatus.REJECTED;
+      this.dateChecked = LocalDateTime.now();
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
+  }
+
+  public void complete(Member memberInCharge) {
+    if (this.isApprovedOrRejected()) {
+      this.status = RequestStatus.COMPLETED;
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
   }
 
   /** 예산지원신청을 완전히 다 처리하고 나면 자동적으로 회계처리내역에 추가되도록 하기 위해서, 회계내역 엔티티로 변환한다. */
-  public BudgetHistory makeHistory() {
-
+  public BudgetHistory makeHistory(Member secretary, Menu menu) {
     if (this.isComplete() && this.memberInCharge != null) {
       return BudgetHistory.builder()
           .title(this.title.getValue())
-          .dateUsed(this.dateUsed)
+          .menu(menu)
           .details(this.details.getValue())
+          .dateUsed(this.dateUsed)
+          .memberInCharge(this.memberInCharge)
+          .account(this.account.getValue())
           .income(0)
           .outcome(this.outcome.getValue())
-          .memberInCharge(this.memberInCharge)
           .memberReceived(this.applicant)
-          .build();
+          .build().writtenBy(secretary, BudgetHistory.class);
     } else {
-      throw new RuntimeException("회계기록 중에 오류가 발생하였습니다!");
+      throw new StatusNotFollowProceduresException();
     }
   }
 }

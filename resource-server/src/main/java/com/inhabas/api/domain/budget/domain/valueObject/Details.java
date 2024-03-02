@@ -5,7 +5,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import lombok.Getter;
 
+@Getter
 @Embeddable
 public class Details {
 
@@ -30,7 +32,4 @@ public class Details {
     return o.length() < MAX_LENGTH;
   }
 
-  public String getValue() {
-    return value;
-  }
 }

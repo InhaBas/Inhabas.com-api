@@ -2,26 +2,48 @@ package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class BudgetApplicationDto {
 
-  private Integer applicationId;
+  @NotNull private Long id;
 
-  private String title;
+  @NotBlank private String title;
 
-  private Integer applicantId;
+  @NotNull private Long applicantId;
 
-  private String applicantName;
+  @NotNull private String applicantStudentId;
 
-  @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @NotBlank private String applicantName;
+
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateCreated;
 
-  private ApplicationStatus status;
+  @NotNull private RequestStatus status;
+
+  @Builder
+  public BudgetApplicationDto(
+      Long id, String title, Member applicant, LocalDateTime dateCreated, RequestStatus status) {
+    this.id = id;
+    this.title = title;
+    this.applicantId = applicant.getId();
+    this.applicantStudentId = applicant.getStudentId();
+    this.applicantName = applicant.getName();
+    this.dateCreated = dateCreated;
+    this.status = status;
+  }
 }

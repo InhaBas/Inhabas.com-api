@@ -35,7 +35,4 @@ public class RejectReason {
     return o.length() < MAX_LENGTH;
   }
 
-  public String getValue() {
-    return value;
-  }
 }

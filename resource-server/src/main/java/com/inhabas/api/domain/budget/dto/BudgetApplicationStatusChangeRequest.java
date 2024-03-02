@@ -16,8 +16,8 @@ public class BudgetApplicationStatusChangeRequest {
 
   private String rejectReason;
 
-  public BudgetApplicationStatusChangeRequest(String status, String rejectReason) {
-    this.status = RequestStatus.valueOf(status);
+  public BudgetApplicationStatusChangeRequest(RequestStatus status, String rejectReason) {
+    this.status = status;
     this.rejectReason = rejectReason;
   }
 }
