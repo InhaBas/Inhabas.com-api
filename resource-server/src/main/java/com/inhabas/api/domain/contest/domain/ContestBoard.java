@@ -2,8 +2,10 @@ package com.inhabas.api.domain.contest.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Embedded;
@@ -12,6 +14,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -24,6 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
+import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.contest.domain.valueObject.Association;
 import com.inhabas.api.domain.contest.domain.valueObject.Topic;
 import com.inhabas.api.domain.file.domain.BoardFile;
@@ -53,18 +57,10 @@ public class ContestBoard extends BaseBoard {
   @Column(name = "DATE_CONTEST_END", nullable = false)
   private LocalDate dateContestEnd;
 
-  public String getAssociation() {
-    return association.getValue();
-  }
+  @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
-  public String getTopic() {
-    return topic.getValue();
-  }
-
-  public String getContent() {
-    return content.getValue();
-  }
-
+  /* constructor */
   @Builder
   public ContestBoard(
       Menu menu,
@@ -85,6 +81,25 @@ public class ContestBoard extends BaseBoard {
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
   }
+
+  /* getter */
+  public String getAssociation() {
+    return association.getValue();
+  }
+
+  public String getTopic() {
+    return topic.getValue();
+  }
+
+  public String getContent() {
+    return content.getValue();
+  }
+
+  public List<BoardFile> getFiles() {
+    return Collections.unmodifiableList(files);
+  }
+
+  /* relation method */
 
   // 첨부파일 수정
   public void updateFiles(List<BoardFile> files) {

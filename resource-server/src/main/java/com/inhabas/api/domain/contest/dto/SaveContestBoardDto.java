@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Future;
@@ -66,6 +65,6 @@ public class SaveContestBoardDto {
     this.topic = topic;
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
-    this.files = (files != null) ? files : new ArrayList<>();
+    this.files = files;
   }
 }
