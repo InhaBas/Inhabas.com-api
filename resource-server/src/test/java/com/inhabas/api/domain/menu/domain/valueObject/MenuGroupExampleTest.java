@@ -12,6 +12,10 @@ public class MenuGroupExampleTest {
     return new MenuGroup("게시판");
   }
 
+  public static MenuGroup getContestMenuGroup() {
+    return new MenuGroup("공모전 게시판");
+  }
+
   public static MenuGroup getMenuGroup2() {
     return new MenuGroup("STUDY");
   }

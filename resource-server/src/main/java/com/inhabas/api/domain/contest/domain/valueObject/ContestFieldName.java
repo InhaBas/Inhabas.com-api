@@ -9,16 +9,16 @@ import javax.persistence.Transient;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 
 @Embeddable
-public class Association {
+public class ContestFieldName {
 
-  @Column(name = "ASSOCIATION", length = 100, nullable = false)
+  @Column(name = "NAME", length = 15, nullable = false)
   private String value;
 
-  @Transient private final int MAX_LENGTH = 100;
+  @Transient private final int MAX_LENGTH = 15;
 
-  public Association() {}
+  public ContestFieldName() {}
 
-  public Association(String value) {
+  public ContestFieldName(String value) {
     if (validate(value)) this.value = value;
     else throw new InvalidInputException();
   }
