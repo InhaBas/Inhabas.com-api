@@ -11,7 +11,7 @@ import lombok.Getter;
 @Embeddable
 public class Details {
 
-  @Column(name = "details", length = 300, nullable = false)
+  @Column(name = "DETAILS", length = 300, nullable = false)
   private String value;
 
   @Transient private final int MAX_LENGTH = 300;
