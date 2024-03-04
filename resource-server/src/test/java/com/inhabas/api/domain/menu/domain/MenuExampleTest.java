@@ -12,6 +12,10 @@ public class MenuExampleTest {
     return new Menu(menuGroup, 1, MenuType.NORMAL_NOTICE, "공지 사항", "공지 사항 설명");
   }
 
+  public static Menu getBudgetHistoryMenu(MenuGroup menuGroup) {
+    return new Menu(menuGroup, 1, MenuType.BUDGET_ACCOUNT, "회계 내역", "회계 내역 설명");
+  }
+
   public static Menu getMenu2(MenuGroup menuGroup) {
     return new Menu(menuGroup, 1, MenuType.STUDY, "강의", "강의 설명");
   }

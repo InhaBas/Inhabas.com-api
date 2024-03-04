@@ -7,7 +7,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import lombok.Getter;
 
+@Getter
 @Embeddable
 public class Title {
 
@@ -32,7 +34,4 @@ public class Title {
     return o.length() < MAX_LENGTH;
   }
 
-  public String getValue() {
-    return value;
-  }
 }

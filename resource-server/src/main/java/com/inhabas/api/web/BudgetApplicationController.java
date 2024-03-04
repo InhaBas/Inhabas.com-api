@@ -31,7 +31,6 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
 import com.inhabas.api.global.dto.PageInfoDto;
@@ -168,7 +167,7 @@ public class BudgetApplicationController {
   public ResponseEntity<?> modifyApplication(
       @Authenticated Long memberId,
       @PathVariable Long applicationId,
-      @Valid @RequestPart BudgetApplicationUpdateForm form,
+      @Valid @RequestPart BudgetApplicationRegisterForm form,
       @RequestPart(value = "files") List<MultipartFile> files) {
     budgetApplicationService.updateApplication(applicationId, form, memberId);
 

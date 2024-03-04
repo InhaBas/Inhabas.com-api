@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import javax.persistence.Transient;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +16,7 @@ public class Account {
   @Column(name = "ACCOUNT", length = 100)
   private String value;
 
-  private final int MAX_LENGTH = 100;
+  @Transient private final int MAX_LENGTH = 100;
 
   public Account() {}
 

@@ -30,7 +30,6 @@ import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BudgetHistoryServiceImpl implements BudgetHistoryService {
 
@@ -105,6 +104,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<BudgetHistoryDto> searchHistoryList(Integer year) {
 
     List<BudgetHistoryDto> dtoList = budgetHistoryRepository.search(year);
@@ -112,6 +112,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public BudgetHistoryDetailDto getHistory(Long id) {
     BudgetHistory history =
         budgetHistoryRepository.findById(id).orElseThrow(NotFoundException::new);
@@ -137,11 +138,13 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<Integer> getAllYearOfHistory() {
     return budgetHistoryRepository.findAllYear();
   }
 
   @Override
+  @Transactional(readOnly = true)
   public Integer getBalance() {
     return budgetHistoryRepository.getBalance();
   }
