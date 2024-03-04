@@ -68,7 +68,7 @@ public class NormalBoardController {
             responseCode = "200",
             content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -77,6 +77,16 @@ public class NormalBoardController {
                         @ExampleObject(
                             value =
                                 "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
   @GetMapping("/board/{boardType}")
   @PreAuthorize(
@@ -147,19 +157,30 @@ public class NormalBoardController {
   @PostMapping(path = "/board/{boardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
-  @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
-    @ApiResponse(
-        responseCode = "400 ",
-        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-  })
+  @ApiResponses(
+      value = {
+        @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
+        @ApiResponse(
+            responseCode = "400",
+            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "데이터가 존재하지 않습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+      })
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
       @PathVariable NormalBoardType boardType,
