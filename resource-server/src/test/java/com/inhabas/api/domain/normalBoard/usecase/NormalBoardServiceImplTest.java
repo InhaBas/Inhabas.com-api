@@ -64,10 +64,10 @@ public class NormalBoardServiceImplTest {
     given(normalBoardRepository.findAllByTypeAndSearch(any(), any())).willReturn(List.of(dto));
 
     // when
-    List<NormalBoardDto> clubActivityDtoList = normalBoardService.getPosts(NOTICE, "");
+    List<NormalBoardDto> normalBoardDtoList = normalBoardService.getPosts(NOTICE, "");
 
     // then
-    assertThat(clubActivityDtoList).hasSize(1);
+    assertThat(normalBoardDtoList).hasSize(1);
   }
 
   @DisplayName("normal board 게시글 단일 조회한다.")

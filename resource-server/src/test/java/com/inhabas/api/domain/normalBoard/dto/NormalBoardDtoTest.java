@@ -72,6 +72,6 @@ class NormalBoardDtoTest {
     Set<ConstraintViolation<NormalBoardDto>> violations = validator.validate(normalBoardDto);
 
     // then
-    assertThat(violations.size()).isEqualTo(1);
+    assertThat(violations).hasSize(1);
   }
 }

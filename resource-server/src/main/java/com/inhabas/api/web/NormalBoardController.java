@@ -3,6 +3,8 @@ package com.inhabas.api.web;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -184,16 +186,18 @@ public class NormalBoardController {
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
       @PathVariable NormalBoardType boardType,
-      @RequestPart("title") String title,
-      @RequestPart("content") String content,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files,
-      @RequestParam(value = "pinOption", required = false) Integer pinOption) {
+      @Valid @RequestPart("form") SaveNormalBoardDto form,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     SaveNormalBoardDto saveNormalBoardDto =
-        new SaveNormalBoardDto(title, content, files, pinOption);
+        SaveNormalBoardDto.builder()
+            .title(form.getTitle())
+            .content(form.getContent())
+            .pinOption(form.getPinOption())
+            .files(files)
+            .build();
     Long newNormalBoardId = normalBoardService.write(memberId, boardType, saveNormalBoardDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
-            .replaceQueryParam("pinOption")
             .path("/{boardId}")
             .buildAndExpand(newNormalBoardId)
             .toUri();
@@ -233,12 +237,15 @@ public class NormalBoardController {
       @Authenticated Long memberId,
       @PathVariable NormalBoardType boardType,
       @PathVariable Long boardId,
-      @RequestPart("title") String title,
-      @RequestPart("content") String content,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files,
-      @RequestParam(value = "pinOption", required = false) Integer pinOption) {
+      @Valid @RequestPart("form") SaveNormalBoardDto form,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     SaveNormalBoardDto saveNormalBoardDto =
-        new SaveNormalBoardDto(title, content, files, pinOption);
+        SaveNormalBoardDto.builder()
+            .title(form.getTitle())
+            .content(form.getContent())
+            .pinOption(form.getPinOption())
+            .files(files)
+            .build();
     normalBoardService.update(boardId, boardType, saveNormalBoardDto);
     return ResponseEntity.noContent().build();
   }

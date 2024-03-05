@@ -85,6 +85,6 @@ class NormalBoardDetailDtoTest {
         validator.validate(normalBoardDetailDto);
 
     // then
-    assertThat(violations.size()).isEqualTo(1);
+    assertThat(violations).hasSize(1);
   }
 }
