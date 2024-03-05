@@ -1,257 +1,203 @@
 package com.inhabas.api.domain.budget.usecase;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.budget.ApplicationNotFoundException;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationUpdateForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.domain.menu.domain.Menu;
+import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuGroup;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.repository.MenuRepository;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetApplicationServiceTest {
 
-  @InjectMocks private BudgetApplicationServiceImpl budgetApplicationService;
+  @InjectMocks
+  private BudgetApplicationServiceImpl budgetApplicationService;
 
-  @Mock private BudgetApplicationRepository repository;
+  @Mock
+  private BudgetApplicationRepository budgetApplicationRepository;
+  @Mock
+  private MemberRepository memberRepository;
+  @Mock
+  private MenuRepository menuRepository;
+  @Mock
+  private S3Service s3Service;
 
-  private StudentId applicantId;
-
-  @BeforeEach
-  public void setUp() {
-    //        applicantId = MemberTest.basicMember1().getId();
-  }
+  private static final String APPLICATION_TITLE = "title";
+  private static final String APPLICATION_DETAILS = "details";
+  private static final String APPLICATION_AFTER_DETAILS = "afterDetails";
+  private static final String ACCOUNT_NUMBER = "123-123-123";
+  private static final Integer APPLICATION_OUTCOME = 10000;
+  private static final RequestStatus INITIAL_REQUEST_STATUS = RequestStatus.PENDING;
 
   @DisplayName("예산 지원 신청서를 제출한다.")
   @Test
-  public void registerBudgetApplicationTest() {
+  public void registerApplicationTest() {
     // given
+    Member applicant = MemberTest.basicMember1();
+    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
+    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetApplicationRegisterForm form =
-        new BudgetApplicationRegisterForm(
-            "스터디 운영비", LocalDateTime.of(2020, 1, 1, 1, 1, 1), "간식비", 10000, "k뱅크 1234556 홍길동");
-
-    given(repository.save(any(BudgetSupportApplication.class))).willReturn(null);
+        new BudgetApplicationRegisterForm(APPLICATION_TITLE, LocalDateTime.now().minusDays(1L),
+            APPLICATION_DETAILS,
+            APPLICATION_OUTCOME, ACCOUNT_NUMBER);
+    BudgetSupportApplication budgetSupportApplication =
+        new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, INITIAL_REQUEST_STATUS);
+    given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
+    given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
+    given(budgetApplicationRepository.save(any(BudgetSupportApplication.class))).willReturn(
+        budgetSupportApplication);
 
     // when
-    budgetApplicationService.registerApplication(form, applicantId);
+    budgetApplicationService.registerApplication(form, null, 1L);
 
     // then
-    then(repository).should(times(1)).save(any(BudgetSupportApplication.class));
+    then(budgetApplicationRepository).should(times(1)).save(any(BudgetSupportApplication.class));
   }
 
-  //    @DisplayName("예산 지원 신청서를 수정한다.")
-  //    @Test
-  //    public void updateBudgetApplicationTest() {
-  //        //given
-  //        BudgetSupportApplication original = BudgetSupportApplication.builder()
-  //                .title("스터디 운영비")
-  //                .details("과자")
-  //                .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-  //                .outcome(10000)
-  //                .account("국민 1234 홍길동")
-  //                .applicationWriter(applicantId)
-  //                .build();
-  //        ReflectionTestUtils.setField(original, "id", 1);
-  //        given(repository.findById(anyInt())).willReturn(Optional.of(original));
-  //
-  //        given(repository.save(any())).willReturn(null);
-  //        BudgetApplicationUpdateForm form = new BudgetApplicationUpdateForm("스터디 운영비",
-  //                LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-  //                "간식비", 10000, "k뱅크 1234556 홍길동", 13);
-  //
-  //        //when
-  //        budgetApplicationService.updateApplication(form, applicantId);
-  //
-  //        //then
-  //        then(repository).should(times(1)).save(any(BudgetSupportApplication.class));
-  //    }
+  @DisplayName("예산 지원 신청서를 수정한다.")
+  @Test
+  public void updateApplicationTest() {
+    //given
+    Member applicant = MemberTest.basicMember1();
+    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
+    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    BudgetSupportApplication application =
+        new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, INITIAL_REQUEST_STATUS);
+    ReflectionTestUtils.setField(application, "id", 1L);
+    BudgetSupportApplication newApplication =
+        new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_AFTER_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, INITIAL_REQUEST_STATUS);
+    BudgetApplicationRegisterForm form =
+        new BudgetApplicationRegisterForm(APPLICATION_TITLE, LocalDateTime.now().minusDays(1L),
+            APPLICATION_AFTER_DETAILS,
+            APPLICATION_OUTCOME, ACCOUNT_NUMBER);
 
-  //    @DisplayName("본인이 작성하지 않은 신청서는 수정할 수 없다.")
-  //    @Test
-  //    public void cannotUpdateOtherApplicationsTest() {
-  //        //given
-  //        BudgetSupportApplication original = BudgetSupportApplication.builder()
-  //                .title("스터디 운영비")
-  //                .details("과자")
-  //                .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-  //                .outcome(10000)
-  //                .account("국민 1234 홍길동")
-  //                .applicationWriter(applicantId)
-  //                .build();
-  //        ReflectionTestUtils.setField(original, "id", 1);
-  //        given(repository.findById(anyInt())).willReturn(Optional.of(original));
-  //
-  //        BudgetApplicationUpdateForm form = new BudgetApplicationUpdateForm("스터디 운영비",
-  //                LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-  //                "간식비", 10000, "k뱅크 1234556 홍길동", 1);
-  //
-  //        //when
-  //        Assertions.assertThrows(ApplicationCannotModifiableException.class,
-  //                () -> budgetApplicationService.updateApplication(form, new StudentId("12")));
-  //
-  //        //then
-  //        then(repository).should(times(1)).findById(anyInt());
-  //        then(repository).should(times(0)).save(any(BudgetSupportApplication.class));
-  //    }
+    given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
+    given(budgetApplicationRepository.findById(any())).willReturn(
+        Optional.of(application));
+    given(budgetApplicationRepository.save(any())).willReturn(newApplication);
+
+    //when
+    budgetApplicationService.updateApplication(1L, form, 1L);
+
+    //then
+    then(budgetApplicationRepository).should(times(1)).save(any(BudgetSupportApplication.class));
+  }
 
   @DisplayName("수정 시 존재하지 않는 신청서 id 이면 NotFoundException 을 발생시킨다.")
   @Test
   public void throwNotFoundExceptionWhenUpdating() {
     // given
-    BudgetApplicationUpdateForm form =
-        new BudgetApplicationUpdateForm(
-            "스터디 운영비", LocalDateTime.of(2020, 1, 1, 1, 1, 1), "간식비", 10000, "k뱅크 1234556 홍길동", 13);
-    given(repository.findById(anyInt())).willReturn(Optional.empty());
-
+    Member applicant = MemberTest.basicMember1();
+    BudgetApplicationRegisterForm form =
+        new BudgetApplicationRegisterForm(APPLICATION_TITLE, LocalDateTime.now().minusDays(1L),
+            APPLICATION_AFTER_DETAILS,
+            APPLICATION_OUTCOME, ACCOUNT_NUMBER);
+    given(budgetApplicationRepository.findById(any())).willReturn(Optional.empty());
+    given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
     // when
-    Assertions.assertThrows(
-        ApplicationNotFoundException.class,
-        () -> budgetApplicationService.updateApplication(form, applicantId));
+    assertThatThrownBy(() -> budgetApplicationService.updateApplication(1L, form, 1L))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage(ErrorCode.NOT_FOUND.getMessage());
 
     // then
-    then(repository).should(times(1)).findById(anyInt());
-    then(repository).should(times(0)).save(any(BudgetSupportApplication.class));
+    then(budgetApplicationRepository).should(times(1)).findById(any());
+    then(budgetApplicationRepository).should(times(0)).save(any(BudgetSupportApplication.class));
   }
 
-  //    @DisplayName("예산 지원 신청서를 삭제한다.")
-  //    @Test
-  //    public void deleteBudgetApplicationTest() {
-  //        //given
-  //        BudgetSupportApplication original = BudgetSupportApplication.builder()
-  //                .title("스터디 운영비")
-  //                .details("과자")
-  //                .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-  //                .outcome(10000)
-  //                .account("국민 1234 홍길동")
-  //                .applicationWriter(applicantId)
-  //                .build();
-  //        ReflectionTestUtils.setField(original, "id", 1);
-  //
-  //        given(repository.findById(anyInt())).willReturn(Optional.of(original));
-  //        doNothing().when(repository).deleteById(anyInt());
-  //
-  //        //when
-  //        budgetApplicationService.deleteApplication(1, applicantId);
-  //
-  //        //then
-  //        then(repository).should(times(1)).deleteById(anyInt());
-  //    }
-
-  //    @DisplayName("본인이 작성하지 않은 신청서는 삭제할 수 없다.")
-  //    @Test
-  //    public void cannotDeleteOtherApplicationsTest() {
-  //        //given
-  //        BudgetSupportApplication original = BudgetSupportApplication.builder()
-  //                .title("스터디 운영비")
-  //                .details("과자")
-  //                .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-  //                .outcome(10000)
-  //                .account("국민 1234 홍길동")
-  //                .applicationWriter(applicantId)
-  //                .build();
-  //        ReflectionTestUtils.setField(original, "id", 1);
-  //        given(repository.findById(anyInt())).willReturn(Optional.of(original));
-  //
-  //        //when
-  //        Assertions.assertThrows(ApplicationCannotModifiableException.class,
-  //                () -> budgetApplicationService.deleteApplication(1, new StudentId("12")));
-  //
-  //        //then
-  //        then(repository).should(times(1)).findById(anyInt());
-  //        then(repository).should(times(0)).deleteById(anyInt());
-  //    }
-
-  @DisplayName("삭제 시 존재하지 않는 신청서 id 이면 NotFoundException 을 발생시킨다.")
+  @DisplayName("예산 지원 신청서를 삭제한다.")
   @Test
-  public void throwNotFoundExceptionWhenDeleting() {
-    // given
-    given(repository.findById(anyInt())).willReturn(Optional.empty());
+  public void deleteBudgetApplicationTest() {
+    //when
+    doNothing().when(budgetApplicationRepository).deleteById(any());
+    budgetApplicationService.deleteApplication(1L, 1L);
 
-    // when
-    Assertions.assertThrows(
-        ApplicationNotFoundException.class,
-        () -> budgetApplicationService.deleteApplication(1, applicantId));
-
-    // then
-    then(repository).should(times(1)).findById(anyInt());
-    then(repository).should(times(0)).deleteById(anyInt());
+    //then
+    then(budgetApplicationRepository).should(times(1)).deleteById(any());
   }
 
   @DisplayName("예산 지원 신청서를 조회한다.")
   @Test
   public void getBudgetApplicationDetailsTest() {
     // given
+    Member applicant = MemberTest.basicMember1();
     BudgetApplicationDetailDto detailDto =
         new BudgetApplicationDetailDto(
-            1,
-            "",
-            LocalDateTime.of(2020, 1, 1, 1, 1, 1),
-            LocalDateTime.of(2020, 6, 3, 2, 1, 1),
-            "",
-            10000,
-            "",
-            12171652,
-            "유동현",
-            12345678,
-            "김민겸",
-            ApplicationStatus.WAITING,
-            "");
-    given(repository.findDtoById(anyInt())).willReturn(Optional.of(detailDto));
+            1L, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), APPLICATION_TITLE,
+            APPLICATION_DETAILS, APPLICATION_OUTCOME, ACCOUNT_NUMBER, applicant, applicant,
+            INITIAL_REQUEST_STATUS, null);
+
+    given(budgetApplicationRepository.findDtoById(any())).willReturn(Optional.of(detailDto));
 
     // when
-    budgetApplicationService.getApplicationDetails(1);
+    budgetApplicationService.getApplicationDetails(1L);
 
     // then
-    then(repository).should(times(1)).findDtoById(anyInt());
+    then(budgetApplicationRepository).should(times(1)).findDtoById(any());
   }
 
   @DisplayName("id 에 해당하는 예산 지원 신청서가 존재하지 않으면 NotFoundException 을 던진다.")
   @Test
   public void throwNotFoundExceptionWhenGetting() {
     // given
-    given(repository.findDtoById(anyInt())).willReturn(Optional.empty());
+    given(budgetApplicationRepository.findDtoById(any())).willReturn(Optional.empty());
 
     // when
-    Assertions.assertThrows(
-        ApplicationNotFoundException.class,
-        () -> budgetApplicationService.getApplicationDetails(1));
-
-    // then
-    then(repository).should(times(1)).findDtoById(anyInt());
+    assertThatThrownBy(() -> budgetApplicationService.getApplicationDetails(1L))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage(ErrorCode.NOT_FOUND.getMessage());
   }
 
   @DisplayName("예산 지원 신청서 목록을 조회한다.")
   @Test
   public void getBudgetApplicationListTest() {
     // given
-    given(repository.search(any(), any(Pageable.class))).willReturn(Page.empty());
+    List<BudgetApplicationDto> dtoList = new ArrayList<>();
+    Member applicant = MemberTest.basicMember1();
+    BudgetApplicationDto budgetApplicationDto = new BudgetApplicationDto(1L, APPLICATION_TITLE,
+        applicant, LocalDateTime.now(), INITIAL_REQUEST_STATUS);
+    dtoList.add(budgetApplicationDto);
+    given(budgetApplicationRepository.search(any())).willReturn(dtoList);
 
     // when
-    budgetApplicationService.getApplications(null, Pageable.ofSize(15));
+    budgetApplicationService.getApplications(null);
 
     // then
-    then(repository).should(times(1)).search(any(), any(Pageable.class));
+    then(budgetApplicationRepository).should(times(1)).search(any());
   }
 }
