@@ -199,7 +199,6 @@ public class ContestBoardServiceImplTest {
     // then
     then(contestBoardRepository).should(times(1)).findById(any());
     then(contestBoardRepository).should(times(1)).save(any());
-
   }
 
   @DisplayName("Contest board 게시글을 삭제한다.")
