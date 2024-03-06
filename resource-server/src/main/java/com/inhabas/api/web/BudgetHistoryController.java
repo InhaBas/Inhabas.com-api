@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -176,7 +175,7 @@ public class BudgetHistoryController {
   }
 
   @Operation(summary = "회계 내역 수정 (Swagger 사용 불가. 명세서 참고)")
-  @PutMapping("/budget/history/{historyId}")
+  @PostMapping("/budget/history/{historyId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
     @ApiResponse(

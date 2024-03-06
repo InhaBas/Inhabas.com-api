@@ -138,7 +138,7 @@ public class BudgetApplicationController {
   }
 
   @Operation(summary = "예산지원신청 글 수정 (Swagger 사용 불가. 명세서 참고)")
-  @PutMapping("/budget/application/{applicationId}")
+  @PostMapping("/budget/application/{applicationId}")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),
@@ -179,16 +179,6 @@ public class BudgetApplicationController {
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
         @ApiResponse(
             responseCode = "404",
             description = "데이터가 존재하지 않습니다.",
@@ -238,7 +228,7 @@ public class BudgetApplicationController {
   public ResponseEntity<?> changeApplicationStatus(
       @Authenticated Long memberId,
       @PathVariable Long applicationId,
-      @RequestBody BudgetApplicationStatusChangeRequest request) {
+      @Valid @RequestBody BudgetApplicationStatusChangeRequest request) {
 
     applicationProcessor.process(applicationId, request, memberId);
 

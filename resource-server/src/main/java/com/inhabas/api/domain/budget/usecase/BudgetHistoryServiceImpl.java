@@ -83,7 +83,6 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
         form.getTitle(),
         form.getDetails(),
         memberReceived);
-    budgetHistory.writtenBy(secretary, BudgetHistory.class);
 
     updateBudgetFiles(files, budgetHistory);
   }
