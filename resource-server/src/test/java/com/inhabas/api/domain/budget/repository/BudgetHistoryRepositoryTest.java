@@ -4,6 +4,14 @@ import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember
 import static com.inhabas.api.domain.member.domain.entity.MemberTest.secretaryMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
@@ -12,23 +20,16 @@ import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @DefaultDataJpaTest
 public class BudgetHistoryRepositoryTest {
 
-  @Autowired
-  private TestEntityManager em;
-  @Autowired
-  private BudgetHistoryRepository budgetHistoryRepository;
+  @Autowired private TestEntityManager em;
+  @Autowired private BudgetHistoryRepository budgetHistoryRepository;
 
   private Member memberInCharge;
   private Member memberReceived;
@@ -51,27 +52,27 @@ public class BudgetHistoryRepositoryTest {
   @DisplayName("예산 내역을 하나 조회한다.")
   @Test
   public void fetchOneBudgetHistoryTest() {
-    //given
-    BudgetHistory history = budgetHistoryRepository.save(
-        BudgetHistory.builder()
-            .title(HISTORY_TITLE)
-            .menu(menu)
-            .details(HISTORY_DETAILS)
-            .dateUsed(HISTORY_DATE_USED)
-            .account(ACCOUNT_NUMBER)
-            .income(0)
-            .outcome(HISTORY_OUTCOME)
-            .memberInCharge(memberInCharge)
-            .memberReceived(memberReceived)
-            .build()
-            .writtenBy(memberInCharge, BudgetHistory.class));
+    // given
+    BudgetHistory history =
+        budgetHistoryRepository.save(
+            BudgetHistory.builder()
+                .title(HISTORY_TITLE)
+                .menu(menu)
+                .details(HISTORY_DETAILS)
+                .dateUsed(HISTORY_DATE_USED)
+                .account(ACCOUNT_NUMBER)
+                .income(0)
+                .outcome(HISTORY_OUTCOME)
+                .memberInCharge(memberInCharge)
+                .memberReceived(memberReceived)
+                .build()
+                .writtenBy(memberInCharge, BudgetHistory.class));
     Long id = (Long) ReflectionTestUtils.getField(history, "id");
 
-    //when
-    BudgetHistory budgetHistory = budgetHistoryRepository.findById(id)
-        .orElseThrow();
+    // when
+    BudgetHistory budgetHistory = budgetHistoryRepository.findById(id).orElseThrow();
 
-    //then
+    // then
     assertThat(getField(budgetHistory, "dateCreated")).isNotNull();
     assertThat(budgetHistory.getTitle()).isEqualTo(HISTORY_TITLE);
     assertThat(budgetHistory.getOutcome()).isEqualTo(HISTORY_OUTCOME);
@@ -79,11 +80,10 @@ public class BudgetHistoryRepositoryTest {
     assertThat(getField(budgetHistory, "memberReceived")).isEqualTo(memberReceived);
   }
 
-
   @DisplayName("모든 년도 예산 내역 조회")
   @Test
   public void fetchBudgetHistoryPageTest() {
-    //given
+    // given
     List<BudgetHistory> histories = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       histories.add(
@@ -102,17 +102,17 @@ public class BudgetHistoryRepositoryTest {
     }
     budgetHistoryRepository.saveAll(histories);
 
-    //when
+    // when
     List<BudgetHistoryDto> dtoList = budgetHistoryRepository.search(null);
 
-    //then
+    // then
     assertThat(dtoList).hasSize(5);
   }
 
   @DisplayName("해당 년도 예산 내역 조회")
   @Test
   public void searchBudgetHistoryByYearTest() {
-    //given
+    // given
     List<BudgetHistory> histories = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       histories.add(
@@ -131,18 +131,17 @@ public class BudgetHistoryRepositoryTest {
     }
     budgetHistoryRepository.saveAll(histories);
 
-    //when
+    // when
     List<BudgetHistoryDto> dtoList = budgetHistoryRepository.search(HISTORY_DATE_USED.getYear());
 
-    //then
+    // then
     assertThat(dtoList).hasSize(5);
   }
-
 
   @DisplayName("회계내역이 있는 년도 조회")
   @Test
   public void getAllYearOfHistory() {
-    //given
+    // given
     List<BudgetHistory> histories = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       histories.add(
@@ -161,10 +160,10 @@ public class BudgetHistoryRepositoryTest {
     }
     budgetHistoryRepository.saveAll(histories);
 
-    //when
+    // when
     List<Integer> allYear = budgetHistoryRepository.findAllYear();
 
-    //then
+    // then
     assertThat(allYear).containsExactly(2024, 2023, 2022, 2021, 2020);
     assertThat(allYear).hasSize(5);
   }
@@ -172,7 +171,7 @@ public class BudgetHistoryRepositoryTest {
   @DisplayName("잔액 조회")
   @Test
   public void getBalanceTest() {
-    //given
+    // given
     budgetHistoryRepository.save(
         BudgetHistory.builder()
             .title(HISTORY_TITLE)
@@ -200,10 +199,10 @@ public class BudgetHistoryRepositoryTest {
             .build()
             .writtenBy(memberInCharge, BudgetHistory.class));
 
-    //when
+    // when
     Integer balance = budgetHistoryRepository.getBalance();
 
-    //then
+    // then
     assertThat(balance).isEqualTo(0);
   }
 

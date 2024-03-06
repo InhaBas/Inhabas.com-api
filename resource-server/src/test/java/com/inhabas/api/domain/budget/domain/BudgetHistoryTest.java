@@ -2,13 +2,16 @@ package com.inhabas.api.domain.budget.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
-import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 public class BudgetHistoryTest {
 
@@ -22,16 +25,17 @@ public class BudgetHistoryTest {
     ReflectionTestUtils.setField(memberReceived, "id", 2L);
 
     // When
-    BudgetHistory budgetHistory = new BudgetHistory(
-        "Title",
-        MenuExampleTest.getBudgetHistoryMenu(MenuGroupExampleTest.getBudgetMenuGroup()),
-        "Details",
-        dateUsed,
-        memberInCharge,
-        "Account info",
-        1000,
-        500,
-        memberReceived);
+    BudgetHistory budgetHistory =
+        new BudgetHistory(
+            "Title",
+            MenuExampleTest.getBudgetHistoryMenu(MenuGroupExampleTest.getBudgetMenuGroup()),
+            "Details",
+            dateUsed,
+            memberInCharge,
+            "Account info",
+            1000,
+            500,
+            memberReceived);
 
     // Then
     assertThat(budgetHistory.getDetails()).isEqualTo("Details");
@@ -63,8 +67,7 @@ public class BudgetHistoryTest {
         newDateUsed,
         newTitle,
         newDetails,
-        newMemberReceived
-    );
+        newMemberReceived);
 
     // then
     assertThat(budgetHistory.getDetails()).isEqualTo(newDetails);
@@ -87,5 +90,4 @@ public class BudgetHistoryTest {
         .memberReceived(memberInCharge)
         .build();
   }
-
 }

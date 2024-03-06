@@ -2,6 +2,14 @@ package com.inhabas.api.domain.budget.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
@@ -13,23 +21,16 @@ import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @DefaultDataJpaTest
 public class BudgetApplicationRepositoryTest {
 
-  @Autowired
-  private BudgetApplicationRepository budgetApplicationRepository;
-  @Autowired
-  private TestEntityManager em;
+  @Autowired private BudgetApplicationRepository budgetApplicationRepository;
+  @Autowired private TestEntityManager em;
   private Member member;
   private Menu menu;
   private MenuGroup menuGroup;
@@ -38,7 +39,6 @@ public class BudgetApplicationRepositoryTest {
   private static final String ACCOUNT_NUMBER = "123-123-123";
   private static final Integer APPLICATION_OUTCOME = 10000;
   private static final RequestStatus INITIAL_REQUEST_STATUS = RequestStatus.PENDING;
-
 
   @BeforeEach
   public void setUp() {
@@ -51,17 +51,17 @@ public class BudgetApplicationRepositoryTest {
   @Test
   public void findDtoByIdTest() {
 
-    //given
-    BudgetSupportApplication application = createSupportApplication(member).writtenBy(member,
-        BudgetSupportApplication.class);
+    // given
+    BudgetSupportApplication application =
+        createSupportApplication(member).writtenBy(member, BudgetSupportApplication.class);
     budgetApplicationRepository.save(application);
     Long id = (Long) ReflectionTestUtils.getField(application, "id");
 
-    //when
-    BudgetApplicationDetailDto detailDto = budgetApplicationRepository.findDtoById(id)
-        .orElseThrow();
+    // when
+    BudgetApplicationDetailDto detailDto =
+        budgetApplicationRepository.findDtoById(id).orElseThrow();
 
-    //then
+    // then
     assertThat(getFieldValueByReflection(detailDto, "id")).isEqualTo(id);
     assertThat(getFieldValueByReflection(detailDto, "title")).isEqualTo(APPLICATION_TITLE);
     assertThat(getFieldValueByReflection(detailDto, "outcome")).isEqualTo(APPLICATION_OUTCOME);
@@ -71,40 +71,38 @@ public class BudgetApplicationRepositoryTest {
   @DisplayName("처리 완료된 것을 제외한 모든 예산지원신청서를 검색한다.")
   @Test
   public void searchAllTest() {
-    //given
+    // given
     List<BudgetSupportApplication> applicationList = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      BudgetSupportApplication application = createSupportApplication(member).writtenBy(member,
-          BudgetSupportApplication.class);
+      BudgetSupportApplication application =
+          createSupportApplication(member).writtenBy(member, BudgetSupportApplication.class);
       applicationList.add(application);
     }
     budgetApplicationRepository.saveAll(applicationList);
 
-    //when
-    List<BudgetApplicationDto> dtoList =
-        budgetApplicationRepository.search(null);
+    // when
+    List<BudgetApplicationDto> dtoList = budgetApplicationRepository.search(null);
 
-    //then
+    // then
     assertThat(dtoList).hasSize(5);
   }
 
   @DisplayName("특정 상태의 예산지원신청서만 검색한다.")
   @Test
   public void searchSpecificApplicationsTest() {
-    //given
+    // given
     List<BudgetSupportApplication> applicationList = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
-      BudgetSupportApplication application = createSupportApplication(member).writtenBy(member,
-          BudgetSupportApplication.class);
+      BudgetSupportApplication application =
+          createSupportApplication(member).writtenBy(member, BudgetSupportApplication.class);
       applicationList.add(application);
     }
     budgetApplicationRepository.saveAll(applicationList);
 
-    //when
-    List<BudgetApplicationDto> dtoList =
-        budgetApplicationRepository.search(INITIAL_REQUEST_STATUS);
+    // when
+    List<BudgetApplicationDto> dtoList = budgetApplicationRepository.search(INITIAL_REQUEST_STATUS);
 
-    //then
+    // then
     assertThat(dtoList).hasSize(5);
   }
 
@@ -113,8 +111,14 @@ public class BudgetApplicationRepositoryTest {
   }
 
   private BudgetSupportApplication createSupportApplication(Member applicant) {
-    return new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
+    return new BudgetSupportApplication(
+        menu,
+        APPLICATION_TITLE,
+        APPLICATION_DETAILS,
         LocalDateTime.now().minusDays(1),
-        ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, INITIAL_REQUEST_STATUS);
+        ACCOUNT_NUMBER,
+        APPLICATION_OUTCOME,
+        applicant,
+        INITIAL_REQUEST_STATUS);
   }
 }

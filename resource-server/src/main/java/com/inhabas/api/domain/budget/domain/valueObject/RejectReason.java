@@ -34,5 +34,4 @@ public class RejectReason {
     if (o.isBlank()) return false;
     return o.length() < MAX_LENGTH;
   }
-
 }

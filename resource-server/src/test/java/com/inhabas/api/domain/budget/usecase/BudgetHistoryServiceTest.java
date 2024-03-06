@@ -9,6 +9,11 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -22,29 +27,22 @@ import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import java.time.LocalDateTime;
-import java.util.Optional;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetHistoryServiceTest {
 
-  @InjectMocks
-  private BudgetHistoryServiceImpl budgetHistoryService;
-  @Mock
-  private BudgetHistoryRepository budgetHistoryRepository;
-  @Mock
-  private MemberRepository memberRepository;
-  @Mock
-  private MenuRepository menuRepository;
-  @Mock
-  private S3Service s3Service;
+  @InjectMocks private BudgetHistoryServiceImpl budgetHistoryService;
+  @Mock private BudgetHistoryRepository budgetHistoryRepository;
+  @Mock private MemberRepository memberRepository;
+  @Mock private MenuRepository menuRepository;
+  @Mock private S3Service s3Service;
 
   private static final String HISTORY_TITLE = "title";
   private static final String HISTORY_DETAILS = "details";
@@ -59,21 +57,22 @@ public class BudgetHistoryServiceTest {
     Member memberReceived = mock(Member.class);
     BudgetHistoryCreateForm form = mock(BudgetHistoryCreateForm.class);
     Menu menu = mock(Menu.class);
-    BudgetHistory budgetHistory = BudgetHistory.builder()
-        .title("title")
-        .menu(menu)
-        .details("details")
-        .dateUsed(LocalDateTime.now())
-        .memberInCharge(secretary)
-        .account(null)
-        .income(1000)
-        .outcome(0)
-        .memberReceived(secretary)
-        .build();
+    BudgetHistory budgetHistory =
+        BudgetHistory.builder()
+            .title("title")
+            .menu(menu)
+            .details("details")
+            .dateUsed(LocalDateTime.now())
+            .memberInCharge(secretary)
+            .account(null)
+            .income(1000)
+            .outcome(0)
+            .memberReceived(secretary)
+            .build();
 
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
-    given(memberRepository.findByStudentId_IdAndName_Value(any(), any())).willReturn(
-        Optional.of(memberReceived));
+    given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
+        .willReturn(Optional.of(memberReceived));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
     given(budgetHistoryRepository.save(any())).willReturn(budgetHistory);
     given(form.toEntity(any(), any(), any())).willReturn(budgetHistory);
@@ -94,31 +93,26 @@ public class BudgetHistoryServiceTest {
     Member memberReceived = MemberTest.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
-    BudgetHistoryCreateForm form = new BudgetHistoryCreateForm(
-        LocalDateTime.now().minusDays(1L),
-        "title",
-        "details",
-        "12171234",
-        "유동현",
-        0,
-        10000
-    );
-    BudgetHistory budgetHistory = BudgetHistory.builder()
-        .title("title")
-        .menu(menu)
-        .details("details")
-        .dateUsed(LocalDateTime.now())
-        .memberInCharge(secretary)
-        .account(null)
-        .income(1000)
-        .outcome(0)
-        .memberReceived(secretary)
-        .build()
-        .writtenBy(secretary, BudgetHistory.class);
+    BudgetHistoryCreateForm form =
+        new BudgetHistoryCreateForm(
+            LocalDateTime.now().minusDays(1L), "title", "details", "12171234", "유동현", 0, 10000);
+    BudgetHistory budgetHistory =
+        BudgetHistory.builder()
+            .title("title")
+            .menu(menu)
+            .details("details")
+            .dateUsed(LocalDateTime.now())
+            .memberInCharge(secretary)
+            .account(null)
+            .income(1000)
+            .outcome(0)
+            .memberReceived(secretary)
+            .build()
+            .writtenBy(secretary, BudgetHistory.class);
     ReflectionTestUtils.setField(budgetHistory, "id", 1L);
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
-    given(memberRepository.findByStudentId_IdAndName_Value(any(), any())).willReturn(
-        Optional.of(memberReceived));
+    given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
+        .willReturn(Optional.of(memberReceived));
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.of(budgetHistory));
     given(budgetHistoryRepository.save(any())).willReturn(budgetHistory);
 
@@ -135,17 +129,18 @@ public class BudgetHistoryServiceTest {
     // given
     Member secretary = mock(Member.class);
     Menu menu = mock(Menu.class);
-    BudgetHistory budgetHistory = BudgetHistory.builder()
-        .title("title")
-        .menu(menu)
-        .details("details")
-        .dateUsed(LocalDateTime.now())
-        .memberInCharge(secretary)
-        .account(null)
-        .income(1000)
-        .outcome(0)
-        .memberReceived(secretary)
-        .build();
+    BudgetHistory budgetHistory =
+        BudgetHistory.builder()
+            .title("title")
+            .menu(menu)
+            .details("details")
+            .dateUsed(LocalDateTime.now())
+            .memberInCharge(secretary)
+            .account(null)
+            .income(1000)
+            .outcome(0)
+            .memberReceived(secretary)
+            .build();
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.of(budgetHistory));
 
@@ -166,8 +161,7 @@ public class BudgetHistoryServiceTest {
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
 
     // when
-    assertThatThrownBy(
-        () -> budgetHistoryService.deleteHistory(1L, 1L))
+    assertThatThrownBy(() -> budgetHistoryService.deleteHistory(1L, 1L))
         .isInstanceOf(NotFoundException.class)
         .hasMessage(NOT_FOUND.getMessage());
 
@@ -224,8 +218,7 @@ public class BudgetHistoryServiceTest {
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.empty());
 
     // when
-    assertThatThrownBy(
-        () -> budgetHistoryService.getHistory(1L))
+    assertThatThrownBy(() -> budgetHistoryService.getHistory(1L))
         .isInstanceOf(NotFoundException.class)
         .hasMessage(NOT_FOUND.getMessage());
 

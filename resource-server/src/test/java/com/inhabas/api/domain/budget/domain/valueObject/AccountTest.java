@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
-import com.inhabas.api.domain.board.domain.valueObject.Content;
-import com.inhabas.api.domain.budget.domain.valueObject.Account;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

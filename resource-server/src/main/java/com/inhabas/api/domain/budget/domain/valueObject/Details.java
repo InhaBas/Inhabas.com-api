@@ -5,6 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+
 import lombok.Getter;
 
 @Getter
@@ -31,5 +32,4 @@ public class Details {
     if (o.isBlank()) return false;
     return o.length() < MAX_LENGTH;
   }
-
 }

@@ -4,10 +4,11 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
+
+import lombok.Getter;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
-import javax.persistence.Transient;
-import lombok.Getter;
 
 @Getter
 @Embeddable
@@ -37,5 +38,4 @@ public class Account {
     if (o.isBlank()) return true;
     return o.length() < MAX_LENGTH;
   }
-
 }

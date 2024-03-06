@@ -158,7 +158,8 @@ public class BudgetSupportApplication extends BaseBoard {
           .income(0)
           .outcome(this.outcome.getValue())
           .memberReceived(this.applicant)
-          .build().writtenBy(secretary, BudgetHistory.class);
+          .build()
+          .writtenBy(secretary, BudgetHistory.class);
     } else {
       throw new StatusNotFollowProceduresException();
     }

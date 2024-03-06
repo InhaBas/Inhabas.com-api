@@ -8,6 +8,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
@@ -25,16 +30,14 @@ import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetApplicationProcessorTest {
@@ -43,10 +46,8 @@ public class BudgetApplicationProcessorTest {
 
   @Mock private BudgetApplicationRepository applicationRepository;
   @Mock private BudgetHistoryRepository historyRepository;
-  @Mock
-  private MemberRepository memberRepository;
-  @Mock
-  private MenuRepository menuRepository;
+  @Mock private MemberRepository memberRepository;
+  @Mock private MenuRepository menuRepository;
 
   private static final String APPLICATION_TITLE = "title";
   private static final String APPLICATION_DETAILS = "details";
@@ -67,9 +68,16 @@ public class BudgetApplicationProcessorTest {
     applicant = MemberTest.basicMember1();
     menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
-    application = new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
             LocalDateTime.now().minusDays(1),
-            ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, INITIAL_REQUEST_STATUS);
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            INITIAL_REQUEST_STATUS);
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
     given(applicationRepository.findById(any())).willReturn(Optional.of(application));
@@ -79,16 +87,15 @@ public class BudgetApplicationProcessorTest {
   @Test
   public void waitingToApproveTest() {
     // given
-    BudgetApplicationStatusChangeRequest request = new BudgetApplicationStatusChangeRequest(
-        RequestStatus.APPROVED, null);
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.APPROVED, null);
 
     // when
     budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
     then(applicationRepository).should(times(1)).findById(any());
-    RequestStatus status =
-        (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
     assertThat(status).isEqualTo(RequestStatus.APPROVED);
   }
 
@@ -96,16 +103,15 @@ public class BudgetApplicationProcessorTest {
   @Test
   public void waitingToDenyTest() {
     // given
-    BudgetApplicationStatusChangeRequest request = new BudgetApplicationStatusChangeRequest(
-        RequestStatus.REJECTED, "reject");
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, "reject");
 
     // when
     budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
     then(applicationRepository).should(times(1)).findById(any());
-    RequestStatus status =
-        (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
     assertThat(status).isEqualTo(RequestStatus.REJECTED);
   }
 
@@ -113,12 +119,11 @@ public class BudgetApplicationProcessorTest {
   @Test
   public void rejectReasonIsNecessaryToDenyTest() {
     // given
-    BudgetApplicationStatusChangeRequest request = new BudgetApplicationStatusChangeRequest(
-        RequestStatus.REJECTED, null);
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, null);
 
     // then
-    assertThatThrownBy(
-            () -> budgetApplicationProcessor.process(1L, request, 1L))
+    assertThatThrownBy(() -> budgetApplicationProcessor.process(1L, request, 1L))
         .isInstanceOf(InvalidInputException.class)
         .hasMessage(ErrorCode.INVALID_INPUT_VALUE.getMessage());
   }
@@ -127,14 +132,19 @@ public class BudgetApplicationProcessorTest {
   @Test
   public void waitingToProcessTest() {
     // given
-    application = new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
-        LocalDateTime.now().minusDays(1),
-        ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, RequestStatus.APPROVED);
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            RequestStatus.APPROVED);
     given(applicationRepository.findById(any())).willReturn(Optional.of(application));
-    BudgetApplicationStatusChangeRequest request = new BudgetApplicationStatusChangeRequest(
-        RequestStatus.COMPLETED, null);
-//    doNothing().when(historyRepository).save(any());
-//    doNothing().when(applicationRepository).save(any());
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.COMPLETED, null);
 
     // when
     budgetApplicationProcessor.process(1L, request, 1L);
@@ -142,8 +152,7 @@ public class BudgetApplicationProcessorTest {
     // then
     then(applicationRepository).should(times(1)).findById(any());
     then(historyRepository).should(times(1)).save(any(BudgetHistory.class));
-    RequestStatus status =
-        (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
     assertThat(status).isEqualTo(RequestStatus.COMPLETED);
   }
 
@@ -151,18 +160,24 @@ public class BudgetApplicationProcessorTest {
   @Test
   public void deniedToProcessTest() {
     // given
-    application = new BudgetSupportApplication(menu, APPLICATION_TITLE, APPLICATION_DETAILS,
-        LocalDateTime.now().minusDays(1),
-        ACCOUNT_NUMBER, APPLICATION_OUTCOME, applicant, RequestStatus.COMPLETED);
-    BudgetApplicationStatusChangeRequest request = new BudgetApplicationStatusChangeRequest(
-        RequestStatus.REJECTED, "reject");
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            RequestStatus.COMPLETED);
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, "reject");
 
     // when
     budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
-    assertThatThrownBy(
-            () -> budgetApplicationProcessor.process(1L, request, 1L))
+    assertThatThrownBy(() -> budgetApplicationProcessor.process(1L, request, 1L))
         .isInstanceOf(StatusNotFollowProceduresException.class)
         .hasMessage(ErrorCode.STATUS_NOT_FOLLOW_PROCEDURES.getMessage());
   }
