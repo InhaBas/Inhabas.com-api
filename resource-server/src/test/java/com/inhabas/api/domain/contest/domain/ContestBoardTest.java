@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.contest.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,12 +30,15 @@ class ContestBoardTest {
   void setUp() {
     MockitoAnnotations.openMocks(this);
 
+    Long contestFieldId = 1L;
     String title = "테스트 공모전";
     String content = "테스트 내용";
     String association = "테스트 협회";
     String topic = "테스트 주제";
     LocalDate dateContestStart = LocalDate.of(2023, 1, 1);
     LocalDate dateContestEnd = LocalDate.of(2023, 12, 31);
+
+    when(contestField.getId()).thenReturn(contestFieldId);
 
     contestBoard =
         ContestBoard.builder()
@@ -68,7 +72,7 @@ class ContestBoardTest {
     // Given
 
     ContestBoard contestBoard = new ContestBoard();
-    Long newContestFieldId = 1L;
+    Long newContestFieldId = 2L;
     String newTitle = "새로운 제목";
     String newContent = "새로운 내용";
     String newAssociation = "새로운 협회";
