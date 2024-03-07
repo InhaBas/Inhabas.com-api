@@ -13,7 +13,7 @@ public class MenuGroupExampleTest {
   }
 
   public static MenuGroup getContestMenuGroup() {
-    return new MenuGroup("공모전 게시판");
+    return new MenuGroup("공모전");
   }
 
   public static MenuGroup getMenuGroup2() {

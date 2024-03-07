@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.contest.usecase;
 
 import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.ACTIVITY;
+import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.CONTEST;
 import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DATE_CONTEST_END;
 import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getContestMenu;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getContestMenuGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -58,6 +60,7 @@ public class ContestBoardServiceImplTest {
   @Mock private S3Service s3Service;
 
   @DisplayName("Contest board 게시글 목록을 조회한다.")
+  @Transactional(readOnly = true)
   @Test
   void getContestBoards() {
     // given
@@ -87,6 +90,7 @@ public class ContestBoardServiceImplTest {
   }
 
   @DisplayName("Contest board 게시글 단일 조회한다.")
+  @Transactional(readOnly = true)
   @Test
   void getContestBoard() {
     // given
@@ -124,6 +128,7 @@ public class ContestBoardServiceImplTest {
   }
 
   @DisplayName("Contest board 게시글을 작성한다.")
+  @Transactional
   @Test
   void writeContestBoard() {
     // given
@@ -171,12 +176,27 @@ public class ContestBoardServiceImplTest {
   }
 
   @DisplayName("Contest board 게시글을 수정한다.")
+  @Transactional
   @Test
   void updateContestBoard() {
     // given
-    SaveContestBoardDto saveContestBoardDto = new SaveContestBoardDto();
-    Menu menu = getContestMenu(getContestMenuGroup());
     ContestField contestField = ContestField.builder().name("빅데이터").build();
+    ReflectionTestUtils.setField(contestField, "id", 1L);
+
+    SaveContestBoardDto saveContestBoardDto =
+        SaveContestBoardDto.builder()
+            .contestFieldId(contestField.getId())
+            .title("테스트 제목")
+            .content("테스트 내용")
+            .association("(주) 아이바스")
+            .topic("테스트 주제")
+            .dateContestStart(LocalDate.now())
+            .dateContestEnd(LocalDate.now().plusDays(10))
+            .files(null)
+            .build();
+
+    Menu menu = getContestMenu(getContestMenuGroup());
+
     ContestBoard contestBoard =
         ContestBoard.builder()
             .menu(menu)
@@ -188,13 +208,15 @@ public class ContestBoardServiceImplTest {
             .dateContestStart(LocalDate.now())
             .dateContestEnd(LocalDate.now().plusDays(10))
             .build();
+
     ReflectionTestUtils.setField(contestBoard, "id", 1L);
 
+    given(contestFieldRepository.findById(any())).willReturn(Optional.of(contestField));
     given(contestBoardRepository.findById(any())).willReturn(Optional.of(contestBoard));
     given(contestBoardRepository.save(any())).willReturn(contestBoard);
 
     // when
-    contestBoardService.updateContestBoard(contestBoard.getId(), ACTIVITY, saveContestBoardDto);
+    contestBoardService.updateContestBoard(contestBoard.getId(), CONTEST, saveContestBoardDto);
 
     // then
     then(contestBoardRepository).should(times(1)).findById(any());
@@ -202,6 +224,7 @@ public class ContestBoardServiceImplTest {
   }
 
   @DisplayName("Contest board 게시글을 삭제한다.")
+  @Transactional
   @Test
   void deleteContestBoard() {
     // given

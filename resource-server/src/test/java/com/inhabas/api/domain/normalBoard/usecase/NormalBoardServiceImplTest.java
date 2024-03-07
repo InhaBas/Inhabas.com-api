@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -47,6 +48,7 @@ public class NormalBoardServiceImplTest {
   @Mock S3Service s3Service;
 
   @DisplayName("normal board 게시글 목록을 조회한다.")
+  @Transactional(readOnly = true)
   @Test
   void getPosts() {
     // given
@@ -71,6 +73,7 @@ public class NormalBoardServiceImplTest {
   }
 
   @DisplayName("normal board 게시글 단일 조회한다.")
+  @Transactional(readOnly = true)
   @Test
   void getPost() {
     // given
@@ -90,6 +93,7 @@ public class NormalBoardServiceImplTest {
   }
 
   @DisplayName("normal board 게시글을 작성한다.")
+  @Transactional
   @Test
   void write() {
     // given
@@ -113,6 +117,7 @@ public class NormalBoardServiceImplTest {
   }
 
   @DisplayName("normal board 게시글을 수정한다.")
+  @Transactional
   @Test
   void update() {
     // given
@@ -133,6 +138,7 @@ public class NormalBoardServiceImplTest {
   }
 
   @DisplayName("normal board 게시글을 삭제한다.")
+  @Transactional
   @Test
   void delete() {
     // given
