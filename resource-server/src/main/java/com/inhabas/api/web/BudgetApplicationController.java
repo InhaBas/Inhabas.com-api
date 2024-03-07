@@ -169,7 +169,7 @@ public class BudgetApplicationController {
       @PathVariable Long applicationId,
       @Valid @RequestPart BudgetApplicationRegisterForm form,
       @RequestPart(value = "files") List<MultipartFile> files) {
-    budgetApplicationService.updateApplication(applicationId, form, memberId);
+    budgetApplicationService.updateApplication(applicationId, form, files, memberId);
 
     return ResponseEntity.noContent().build();
   }
@@ -190,7 +190,7 @@ public class BudgetApplicationController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
+  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#applicationId) or hasRole('SECRETARY')")
   public ResponseEntity<?> deleteApplication(
       @Authenticated Long memberId, @PathVariable Long applicationId) {
 

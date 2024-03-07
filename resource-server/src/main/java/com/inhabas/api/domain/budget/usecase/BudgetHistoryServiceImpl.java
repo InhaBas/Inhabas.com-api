@@ -95,7 +95,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     BudgetHistory budgetHistory =
         budgetHistoryRepository.findById(historyId).orElseThrow(NotFoundException::new);
 
-    if (budgetHistory.cannotModifiableBy(secretary)) {
+    if (!budgetHistory.isWrittenBy(secretary)) {
       throw new OnlyWriterUpdateException();
     }
 

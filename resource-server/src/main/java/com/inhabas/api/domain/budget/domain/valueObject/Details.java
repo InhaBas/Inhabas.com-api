@@ -8,6 +8,8 @@ import javax.persistence.Transient;
 
 import lombok.Getter;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
 @Getter
 @Embeddable
 public class Details {
@@ -21,7 +23,7 @@ public class Details {
 
   public Details(String value) {
     if (validate(value)) this.value = value;
-    else throw new IllegalArgumentException();
+    else throw new InvalidInputException();
   }
 
   private boolean validate(Object value) {

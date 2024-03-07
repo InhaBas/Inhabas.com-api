@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -29,9 +30,11 @@ public class BudgetSupportApplication extends BaseBoard {
 
   @Embedded private Details details;
 
+  @Getter
   @Column(nullable = false, columnDefinition = "DATETIME(0)")
   private LocalDateTime dateUsed;
 
+  @Getter
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(
       name = "IN_CHARGE_USER_ID",
@@ -42,20 +45,34 @@ public class BudgetSupportApplication extends BaseBoard {
 
   @Embedded private Price outcome;
 
+  @Getter
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(
       name = "APPLICANT_USER_ID",
       foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICANT"))
   private Member applicant;
 
+  @Getter
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private RequestStatus status;
 
-  @Embedded private RejectReason rejectReason;
+  @Getter @Embedded private RejectReason rejectReason;
 
   @Column(name = "DATE_CHECKED", columnDefinition = "DATETIME(0)")
   private LocalDateTime dateChecked;
+
+  public String getDetails() {
+    return details.getValue();
+  }
+
+  public Integer getOutcome() {
+    return outcome.getValue();
+  }
+
+  public String getAccount() {
+    return account == null ? null : account.getValue();
+  }
 
   @Builder
   public BudgetSupportApplication(
@@ -77,12 +94,7 @@ public class BudgetSupportApplication extends BaseBoard {
   }
 
   public void modify(
-      String title,
-      LocalDateTime dateUsed,
-      String details,
-      Integer outcome,
-      String account,
-      Member applicant) {
+      String title, LocalDateTime dateUsed, String details, Integer outcome, String account) {
 
     if (this.id == null) {
       throw new NotFoundException();
@@ -97,12 +109,12 @@ public class BudgetSupportApplication extends BaseBoard {
     this.account = new Account(account);
   }
 
-  private boolean isPending() {
+  public boolean isPending() {
     return this.status == RequestStatus.PENDING;
   }
 
-  private boolean isApprovedOrRejected() {
-    return this.status.equals(RequestStatus.APPROVED) || this.status.equals(RequestStatus.REJECTED);
+  private boolean isApproved() {
+    return this.status.equals(RequestStatus.APPROVED);
   }
 
   private boolean isComplete() {
@@ -137,7 +149,7 @@ public class BudgetSupportApplication extends BaseBoard {
   }
 
   public void complete(Member memberInCharge) {
-    if (this.isApprovedOrRejected()) {
+    if (this.isApproved()) {
       this.status = RequestStatus.COMPLETED;
       this.memberInCharge = memberInCharge;
     } else {

@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
+import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
@@ -63,6 +65,8 @@ public class BudgetApplicationDetailDto {
 
   private String rejectReason;
 
+  @NotNull private List<FileDownloadDto> receipts;
+
   @Builder
   public BudgetApplicationDetailDto(
       Long id,
@@ -76,7 +80,8 @@ public class BudgetApplicationDetailDto {
       Member applicant,
       Member memberInCharge,
       RequestStatus status,
-      RejectReason rejectReason) {
+      RejectReason rejectReason,
+      List<FileDownloadDto> receipts) {
     this.id = id;
     this.dateUsed = dateUsed;
     this.dateCreated = dateCreated;
@@ -93,5 +98,6 @@ public class BudgetApplicationDetailDto {
     this.memberNameInCharge = memberInCharge == null ? null : memberInCharge.getName();
     this.status = status;
     this.rejectReason = rejectReason == null ? null : rejectReason.getValue();
+    this.receipts = receipts;
   }
 }

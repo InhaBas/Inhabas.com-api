@@ -106,7 +106,7 @@ public class BudgetHistoryController {
         new BudgetHistoryListResponse(budgetHistoryDetailDtoPagedResponseDto, balance));
   }
 
-  @Operation(summary = "단일 회계 내역 조회")
+  @Operation(summary = "회계 내역 단일 조회")
   @GetMapping("/budget/history/{historyId}")
   @ApiResponses(
       value = {
@@ -226,7 +226,7 @@ public class BudgetHistoryController {
                         value =
                             "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
-  @PreAuthorize("hasRole('SECRETARY')")
+  @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#historyId) and hasRole('SECRETARY')")
   public ResponseEntity<?> deleteHistory(
       @Authenticated Long memberId, @PathVariable Long historyId) {
 

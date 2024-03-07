@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
@@ -94,10 +93,6 @@ public class BudgetHistory extends BaseBoard {
     this.memberReceived = memberReceived;
   }
 
-  public boolean cannotModifiableBy(Member secretary) {
-    return !this.memberInCharge.equals(secretary);
-  }
-
   public void modify(
       Member secretary,
       Integer income,
@@ -111,15 +106,12 @@ public class BudgetHistory extends BaseBoard {
       throw new NotFoundException();
     }
 
-    if (this.cannotModifiableBy(secretary)) {
-      throw new InvalidAuthorityException();
-    }
-
     this.title = new Title(title);
     this.details = new Details(details);
     this.dateUsed = dateUsed;
     this.income = new Price(income);
     this.outcome = new Price(outcome);
+    this.memberInCharge = secretary;
     this.memberReceived = personReceived;
   }
 }

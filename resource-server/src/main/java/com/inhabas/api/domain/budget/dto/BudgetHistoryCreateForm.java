@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
+import com.inhabas.api.domain.budget.exception.InvalidIncomeOrOutcomeException;
 import com.inhabas.api.domain.menu.domain.Menu;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -30,7 +31,7 @@ public class BudgetHistoryCreateForm {
 
   @NotBlank private String title;
 
-  private String details;
+  @NotBlank private String details;
 
   @NotNull private String memberStudentIdReceived;
 
@@ -39,6 +40,8 @@ public class BudgetHistoryCreateForm {
   @PositiveOrZero @NotNull private Integer income;
 
   @PositiveOrZero @NotNull private Integer outcome;
+
+  private static final Integer ZERO = 0;
 
   @Builder
   public BudgetHistoryCreateForm(
@@ -63,6 +66,10 @@ public class BudgetHistoryCreateForm {
   }
 
   public BudgetHistory toEntity(Menu menu, Member secretary, Member memberReceived) {
+    if (!this.income.equals(ZERO) && !this.outcome.equals(ZERO)) {
+      throw new InvalidIncomeOrOutcomeException();
+    }
+
     return BudgetHistory.builder()
         .title(this.title)
         .menu(menu)

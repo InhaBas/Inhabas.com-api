@@ -14,7 +14,11 @@ public interface BudgetApplicationService {
   Long registerApplication(
       BudgetApplicationRegisterForm form, List<MultipartFile> files, Long memberId);
 
-  void updateApplication(Long applicationId, BudgetApplicationRegisterForm form, Long memberId);
+  void updateApplication(
+      Long applicationId,
+      BudgetApplicationRegisterForm form,
+      List<MultipartFile> files,
+      Long memberId);
 
   void deleteApplication(Long applicationId, Long memberId);
 

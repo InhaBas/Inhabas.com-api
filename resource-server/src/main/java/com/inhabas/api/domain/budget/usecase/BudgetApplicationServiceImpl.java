@@ -15,16 +15,20 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.domain.board.exception.OnlyWriterModifiableException;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
+import com.inhabas.api.domain.budget.exception.InProcessModifiableException;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.inhabas.api.global.util.FileUtil;
 
 @Service
@@ -48,9 +52,26 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
   @Override
   public BudgetApplicationDetailDto getApplicationDetails(Long applicationId) {
 
-    return budgetApplicationRepository
-        .findDtoById(applicationId)
-        .orElseThrow(NotFoundException::new);
+    BudgetSupportApplication application =
+        budgetApplicationRepository.findById(applicationId).orElseThrow(NotFoundException::new);
+
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(application.getFiles());
+
+    return BudgetApplicationDetailDto.builder()
+        .id(application.getId())
+        .dateUsed(application.getDateUsed())
+        .dateCreated(application.getDateCreated())
+        .dateUpdated(application.getDateUpdated())
+        .title(application.getTitle())
+        .details(application.getDetails())
+        .outcome(application.getOutcome())
+        .account(application.getAccount())
+        .applicant(application.getApplicant())
+        .memberInCharge(application.getMemberInCharge())
+        .status(application.getStatus())
+        .rejectReason(application.getRejectReason())
+        .receipts(classifiedFiles.getImages())
+        .build();
   }
 
   @Transactional
@@ -70,26 +91,39 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
   @Transactional
   @Override
   public void updateApplication(
-      Long applicationId, BudgetApplicationRegisterForm form, Long memberId) {
+      Long applicationId,
+      BudgetApplicationRegisterForm form,
+      List<MultipartFile> files,
+      Long memberId) {
     Member applicant =
         memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     BudgetSupportApplication application =
         budgetApplicationRepository.findById(applicationId).orElseThrow(NotFoundException::new);
+
+    if (!application.isWrittenBy(applicant)) {
+      throw new OnlyWriterModifiableException();
+    }
 
     application.modify(
         form.getTitle(),
         form.getDateUsed(),
         form.getDetails(),
         form.getOutcome(),
-        form.getAccount(),
-        applicant);
+        form.getAccount());
 
-    budgetApplicationRepository.save(application);
+    updateBudgetFiles(files, application);
   }
 
   @Transactional
   @Override
   public void deleteApplication(Long applicationId, Long memberId) {
+    BudgetSupportApplication application =
+        budgetApplicationRepository.findById(applicationId).orElseThrow(NotFoundException::new);
+
+    if (!application.isPending()) {
+      throw new InProcessModifiableException();
+    }
+
     budgetApplicationRepository.deleteById(applicationId);
   }
 
