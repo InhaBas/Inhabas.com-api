@@ -3,16 +3,13 @@ package com.inhabas.api.domain.budget.repository;
 import static com.inhabas.api.domain.budget.domain.QBudgetSupportApplication.budgetSupportApplication;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class BudgetApplicationRepositoryImpl implements BudgetApplicationRepositoryCustom {
@@ -23,12 +20,6 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
 
   public BudgetApplicationRepositoryImpl(JPAQueryFactory queryFactory) {
     this.queryFactory = queryFactory;
-  }
-
-  @Override
-  public Optional<BudgetApplicationDetailDto> findDtoById(Long applicationId) {
-    return Optional.ofNullable(
-        getDtoJPAQuery().where(budgetSupportApplication.id.eq(applicationId)).fetchOne());
   }
 
   @Override
@@ -64,26 +55,5 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
         .where(sameStatus(status))
         .fetch()
         .size();
-  }
-
-  private JPAQuery<BudgetApplicationDetailDto> getDtoJPAQuery() {
-    return queryFactory
-        .select(
-            Projections.constructor(
-                BudgetApplicationDetailDto.class,
-                budgetSupportApplication.id,
-                budgetSupportApplication.dateUsed,
-                budgetSupportApplication.dateCreated,
-                budgetSupportApplication.dateUpdated,
-                budgetSupportApplication.title.value,
-                budgetSupportApplication.details.value,
-                budgetSupportApplication.outcome.value,
-                budgetSupportApplication.account.value,
-                budgetSupportApplication.applicant,
-                memberInCharge,
-                budgetSupportApplication.status,
-                budgetSupportApplication.rejectReason))
-        .from(budgetSupportApplication)
-        .leftJoin(budgetSupportApplication.memberInCharge, memberInCharge);
   }
 }

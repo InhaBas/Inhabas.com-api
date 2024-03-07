@@ -140,7 +140,8 @@ public class BudgetHistoryServiceTest {
             .income(1000)
             .outcome(0)
             .memberReceived(secretary)
-            .build();
+            .build()
+            .writtenBy(secretary, BudgetHistory.class);
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.of(budgetHistory));
 

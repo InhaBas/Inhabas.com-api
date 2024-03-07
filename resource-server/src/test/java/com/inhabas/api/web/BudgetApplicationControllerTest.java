@@ -165,7 +165,7 @@ public class BudgetApplicationControllerTest {
             .outcome(10000)
             .account("123-123-123")
             .build();
-    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any());
+    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any(), any());
 
     MockMultipartFile mockFormFile =
         new MockMultipartFile(
@@ -186,7 +186,7 @@ public class BudgetApplicationControllerTest {
     String wrongForm =
         "{\"title\":null,\"details\":null,"
             + "\"dateUsed\":\"2024-11-01T00:00:00\",\"outcome\":0,\"account\":\"string\"}";
-    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any());
+    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any(), any());
 
     MockMultipartFile mockFormFile =
         new MockMultipartFile("form", "", MediaType.APPLICATION_JSON_VALUE, wrongForm.getBytes());
@@ -213,7 +213,7 @@ public class BudgetApplicationControllerTest {
             .build();
     doThrow(NotFoundException.class)
         .when(budgetApplicationService)
-        .updateApplication(any(), any(), any());
+        .updateApplication(any(), any(), any(), any());
 
     MockMultipartFile mockFormFile =
         new MockMultipartFile(

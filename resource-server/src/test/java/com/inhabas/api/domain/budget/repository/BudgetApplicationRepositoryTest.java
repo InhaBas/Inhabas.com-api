@@ -13,7 +13,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
@@ -45,27 +44,6 @@ public class BudgetApplicationRepositoryTest {
     member = em.persist(MemberTest.basicMember1());
     menuGroup = em.persist(MenuGroupExampleTest.getBudgetMenuGroup());
     menu = em.persist(MenuExampleTest.getBudgetHistoryMenu(menuGroup));
-  }
-
-  @DisplayName("id가 일치하는 history 상세 정보 dto 조회")
-  @Test
-  public void findDtoByIdTest() {
-
-    // given
-    BudgetSupportApplication application =
-        createSupportApplication(member).writtenBy(member, BudgetSupportApplication.class);
-    budgetApplicationRepository.save(application);
-    Long id = (Long) ReflectionTestUtils.getField(application, "id");
-
-    // when
-    BudgetApplicationDetailDto detailDto =
-        budgetApplicationRepository.findDtoById(id).orElseThrow();
-
-    // then
-    assertThat(getFieldValueByReflection(detailDto, "id")).isEqualTo(id);
-    assertThat(getFieldValueByReflection(detailDto, "title")).isEqualTo(APPLICATION_TITLE);
-    assertThat(getFieldValueByReflection(detailDto, "outcome")).isEqualTo(APPLICATION_OUTCOME);
-    assertThat(getFieldValueByReflection(detailDto, "memberIdInCharge")).isNull();
   }
 
   @DisplayName("처리 완료된 것을 제외한 모든 예산지원신청서를 검색한다.")

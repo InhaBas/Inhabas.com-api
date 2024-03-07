@@ -21,7 +21,6 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
@@ -102,25 +101,27 @@ public class BudgetApplicationServiceTest {
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
         new BudgetSupportApplication(
-            menu,
-            APPLICATION_TITLE,
-            APPLICATION_DETAILS,
-            LocalDateTime.now().minusDays(1),
-            ACCOUNT_NUMBER,
-            APPLICATION_OUTCOME,
-            applicant,
-            INITIAL_REQUEST_STATUS);
+                menu,
+                APPLICATION_TITLE,
+                APPLICATION_DETAILS,
+                LocalDateTime.now().minusDays(1),
+                ACCOUNT_NUMBER,
+                APPLICATION_OUTCOME,
+                applicant,
+                INITIAL_REQUEST_STATUS)
+            .writtenBy(applicant, BudgetSupportApplication.class);
     ReflectionTestUtils.setField(application, "id", 1L);
     BudgetSupportApplication newApplication =
         new BudgetSupportApplication(
-            menu,
-            APPLICATION_TITLE,
-            APPLICATION_AFTER_DETAILS,
-            LocalDateTime.now().minusDays(1),
-            ACCOUNT_NUMBER,
-            APPLICATION_OUTCOME,
-            applicant,
-            INITIAL_REQUEST_STATUS);
+                menu,
+                APPLICATION_TITLE,
+                APPLICATION_AFTER_DETAILS,
+                LocalDateTime.now().minusDays(1),
+                ACCOUNT_NUMBER,
+                APPLICATION_OUTCOME,
+                applicant,
+                INITIAL_REQUEST_STATUS)
+            .writtenBy(applicant, BudgetSupportApplication.class);
     BudgetApplicationRegisterForm form =
         new BudgetApplicationRegisterForm(
             APPLICATION_TITLE,
@@ -134,7 +135,7 @@ public class BudgetApplicationServiceTest {
     given(budgetApplicationRepository.save(any())).willReturn(newApplication);
 
     // when
-    budgetApplicationService.updateApplication(1L, form, 1L);
+    budgetApplicationService.updateApplication(1L, form, null, 1L);
 
     // then
     then(budgetApplicationRepository).should(times(1)).save(any(BudgetSupportApplication.class));
@@ -155,7 +156,7 @@ public class BudgetApplicationServiceTest {
     given(budgetApplicationRepository.findById(any())).willReturn(Optional.empty());
     given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
     // when
-    assertThatThrownBy(() -> budgetApplicationService.updateApplication(1L, form, 1L))
+    assertThatThrownBy(() -> budgetApplicationService.updateApplication(1L, form, null, 1L))
         .isInstanceOf(NotFoundException.class)
         .hasMessage(ErrorCode.NOT_FOUND.getMessage());
 
@@ -168,6 +169,22 @@ public class BudgetApplicationServiceTest {
   @Test
   public void deleteBudgetApplicationTest() {
     // when
+    Member applicant = MemberTest.basicMember1();
+    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
+    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    BudgetSupportApplication application =
+        new BudgetSupportApplication(
+                menu,
+                APPLICATION_TITLE,
+                APPLICATION_DETAILS,
+                LocalDateTime.now().minusDays(1),
+                ACCOUNT_NUMBER,
+                APPLICATION_OUTCOME,
+                applicant,
+                INITIAL_REQUEST_STATUS)
+            .writtenBy(applicant, BudgetSupportApplication.class);
+
+    given(budgetApplicationRepository.findById(any())).willReturn(Optional.ofNullable(application));
     doNothing().when(budgetApplicationRepository).deleteById(any());
     budgetApplicationService.deleteApplication(1L, 1L);
 
@@ -180,35 +197,33 @@ public class BudgetApplicationServiceTest {
   public void getBudgetApplicationDetailsTest() {
     // given
     Member applicant = MemberTest.basicMember1();
-    BudgetApplicationDetailDto detailDto =
-        new BudgetApplicationDetailDto(
-            1L,
-            LocalDateTime.now(),
-            LocalDateTime.now(),
-            LocalDateTime.now(),
+    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
+    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    BudgetSupportApplication application =
+        new BudgetSupportApplication(
+            menu,
             APPLICATION_TITLE,
             APPLICATION_DETAILS,
-            APPLICATION_OUTCOME,
+            LocalDateTime.now().minusDays(1),
             ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
             applicant,
-            applicant,
-            INITIAL_REQUEST_STATUS,
-            null);
+            INITIAL_REQUEST_STATUS);
 
-    given(budgetApplicationRepository.findDtoById(any())).willReturn(Optional.of(detailDto));
+    given(budgetApplicationRepository.findById(any())).willReturn(Optional.of(application));
 
     // when
     budgetApplicationService.getApplicationDetails(1L);
 
     // then
-    then(budgetApplicationRepository).should(times(1)).findDtoById(any());
+    then(budgetApplicationRepository).should(times(1)).findById(any());
   }
 
   @DisplayName("id 에 해당하는 예산 지원 신청서가 존재하지 않으면 NotFoundException 을 던진다.")
   @Test
   public void throwNotFoundExceptionWhenGetting() {
     // given
-    given(budgetApplicationRepository.findDtoById(any())).willReturn(Optional.empty());
+    given(budgetApplicationRepository.findById(any())).willReturn(Optional.empty());
 
     // when
     assertThatThrownBy(() -> budgetApplicationService.getApplicationDetails(1L))
