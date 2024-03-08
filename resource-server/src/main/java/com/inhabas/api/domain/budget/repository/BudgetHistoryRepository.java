@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 
 public interface BudgetHistoryRepository
-    extends JpaRepository<BudgetHistory, Integer>, BudgetHistoryRepositoryCustom {
+    extends JpaRepository<BudgetHistory, Long>, BudgetHistoryRepositoryCustom {
 
   @Query("SELECT sum(e.income.value)-sum(e.outcome.value) from BudgetHistory e")
   Integer getBalance();

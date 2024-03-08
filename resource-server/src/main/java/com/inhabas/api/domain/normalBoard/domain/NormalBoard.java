@@ -72,19 +72,6 @@ public class NormalBoard extends BaseBoard {
     this.content = new Content(content);
   }
 
-  public void updateFiles(List<BoardFile> files) {
-
-    if (this.files != null) {
-      this.files.clear();
-    } else {
-      this.files = new ArrayList<>();
-    }
-
-    for (BoardFile file : files) {
-      addFile(file);
-    }
-  }
-
   public void updatePinned(Boolean isPinned, LocalDateTime datePinExpiration) {
     this.isPinned = isPinned;
     this.datePinExpiration = datePinExpiration;

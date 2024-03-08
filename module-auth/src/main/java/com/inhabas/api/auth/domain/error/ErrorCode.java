@@ -50,7 +50,12 @@ public enum ErrorCode {
   // Board
   WRITER_UNMODIFIABLE(403, "B001", "글 작성자를 변경 할 수 없습니다."),
   ONLY_WRITER_UPDATE(403, "B002", "글 작성자만 수정 가능합니다."),
-  S3_UPLOAD_FAILED(500, "B003", "파일 업로드를 실패했습니다.");
+  S3_UPLOAD_FAILED(500, "B003", "파일 업로드를 실패했습니다."),
+
+  // Budget
+  STATUS_NOT_FOLLOW_PROCEDURES(400, "S001", "이전 진행 상태로 되돌리거나 진행 순서를 건너뛸 수 없습니다."),
+  INVALID_INCOME_OR_OUTCOME(400, "S002", "입금, 출금은 동시에 입력받을 수 없습니다."),
+  IN_PROCESS_UNMODIFIABLE(403, "S003", "처리 진행 중인 지원서는 수정, 삭제할 수 없습니다.");
 
   private final int status;
   private final String code;

@@ -6,19 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
-import com.inhabas.api.domain.budget.domain.BudgetHistory;
+import lombok.Getter;
 
-/**
- * {@code ApplicantAccount} 와 다르게 Nullable 하다. 예산을 지원하는 경우에는 지원자에게 필수적으로 송금을 해야하는데 반해서, 총무가 예산 내역을
- * 스스로 등록하는 경우에는 송금이 이루어지지 않는 경우가 존재한다. 따라서 {@code BudgetHistory} 에서는 Nullable 한 계좌값을 사용한다.
- *
- * @see ApplicantAccount
- * @see BudgetHistory
- */
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+
+@Getter
 @Embeddable
 public class Account {
 
-  @Column(name = "account", length = 100)
+  @Column(name = "ACCOUNT", length = 100)
   private String value;
 
   @Transient private final int MAX_LENGTH = 100;
@@ -31,7 +27,7 @@ public class Account {
    */
   public Account(String value) {
     if (validate(value)) this.value = ((value == null || value.isBlank()) ? null : value);
-    else throw new IllegalArgumentException();
+    else throw new InvalidInputException();
   }
 
   private boolean validate(Object value) {
@@ -41,9 +37,5 @@ public class Account {
     String o = (String) value;
     if (o.isBlank()) return true;
     return o.length() < MAX_LENGTH;
-  }
-
-  public String getValue() {
-    return value;
   }
 }

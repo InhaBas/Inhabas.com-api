@@ -23,7 +23,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 
 @Getter
 @Entity
-@DiscriminatorColumn(name = "TYPE", length = 15)
+@DiscriminatorColumn(name = "TYPE", length = 50)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @EntityListeners(AuditingEntityListener.class)
@@ -81,6 +81,19 @@ public abstract class BaseBoard extends BaseEntity {
     }
 
     this.files.add(file);
+  }
+
+  public void updateFiles(List<BoardFile> files) {
+
+    if (this.files != null) {
+      this.files.clear();
+    } else {
+      this.files = new ArrayList<>();
+    }
+
+    for (BoardFile file : files) {
+      addFile(file);
+    }
   }
 
   public void addComment(Comment newComment) {
