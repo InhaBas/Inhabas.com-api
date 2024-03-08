@@ -16,6 +16,10 @@ public class MenuGroupExampleTest {
     return new MenuGroup("회계 내역");
   }
 
+  public static MenuGroup getContestMenuGroup() {
+    return new MenuGroup("공모전");
+  }
+
   public static MenuGroup getMenuGroup2() {
     return new MenuGroup("STUDY");
   }

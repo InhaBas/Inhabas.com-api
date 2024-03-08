@@ -114,6 +114,15 @@ public class SwaggerConfig {
   }
 
   @Bean
+  public GroupedOpenApi getContestApi() {
+
+    return GroupedOpenApi.builder()
+        .group("공모전 게시판 관련")
+        .pathsToMatch("/contest/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .build();
+  }
+
+  @Bean
   @Profile("local")
   public OpenAPI localOpenAPI() {
     return createOpenAPI(apiInfo(), securityScheme(), securityRequirement());

@@ -1,18 +1,21 @@
 package com.inhabas.api.domain.contest.repository;
 
-import static com.inhabas.api.domain.contest.domain.QContestBoard.contestBoard;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
-import com.querydsl.core.types.Order;
+import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.QContestBoard;
+import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
+import com.inhabas.api.domain.contest.dto.ContestBoardDto;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -20,81 +23,88 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
+  private QContestBoard contestBoard = QContestBoard.contestBoard;
 
-  //    @Override
-  //    public Optional<DetailContestBoardDto> findDtoById(Integer id) {
-  //        return Optional.ofNullable(queryFactory
-  //                .select(Projections.constructor(DetailContestBoardDto.class,
-  //                            Expressions.asNumber(id).as("id"),
-  //                            member.name.value,
-  //                            contestBoard.title.value,
-  //                            contestBoard.content.value,
-  //                            contestBoard.association.value,
-  //                            contestBoard.topic.value,
-  //                            contestBoard.start,
-  //                            contestBoard.deadline,
-  //                            contestBoard.dateCreated,
-  //                            contestBoard.dateUpdated
-  //                        ))
-  //                .from(contestBoard)
-  //                .innerJoin(member).on(contestBoard.writerId.eq(member.studentId))
-  //                .limit(1)
-  //                .fetchOne());
-  //    }
+  // 공모전 검색 및 필터링 기능
+  public List<ContestBoardDto> findAllByTypeAndFieldAndSearch(
+      ContestType contestType, Long contestFieldId, String search, OrderBy orderBy) {
 
-  // 보류
-  @SuppressWarnings({"unchecked"})
-  public static OrderSpecifier<?> getSortedColumn(Order order, Path<?> parent, String fieldName) {
-    Path<Object> fieldPath = Expressions.path(Object.class, parent, fieldName);
-    return new OrderSpecifier(order, fieldPath);
+    BooleanExpression target =
+        eqContestType(contestType)
+            .and(eqContestField(contestFieldId))
+            .and(
+                likeTitle(search)
+                    .or(likeContent(search))
+                    .or(likeWriterName(search))
+                    .or(likeAssociation(search))
+                    .or(likeTopic(search)));
+
+    OrderSpecifier<?> order = orderBy.getOrderBy(contestBoard);
+
+    List<ContestBoard> boards =
+        queryFactory.selectFrom(contestBoard).where(target).orderBy(order).fetch();
+
+    return boards.stream()
+        .map(
+            board -> {
+              ClassifiedFiles classifiedFiles =
+                  ClassifyFiles.classifyFiles(new ArrayList<>(board.getFiles()));
+              return ContestBoardDto.builder()
+                  .id(board.getId())
+                  .contestFieldId(board.getContestField().getId())
+                  .title(board.getTitle())
+                  .topic(board.getTopic())
+                  .association(board.getAssociation())
+                  .dateContestStart(board.getDateContestStart())
+                  .dateContestEnd(board.getDateContestEnd())
+                  .thumbnail(classifiedFiles.getThumbnail())
+                  .build();
+            })
+        .collect(Collectors.toList());
   }
 
-  @SuppressWarnings({"unchecked"})
-  private List<OrderSpecifier> getAllOrderSpecifiers(Pageable pageable) {
-    List<OrderSpecifier> ORDERS = new ArrayList<>();
-    if (pageable.getSort() != null) {
-      for (Sort.Order order : pageable.getSort()) {
-        Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-        switch (order.getProperty()) {
-          case "id":
-            OrderSpecifier<?> orderId = getSortedColumn(direction, contestBoard, "id");
-            ORDERS.add(orderId);
-            break;
-          case "deadline":
-            OrderSpecifier<?> orderDeadline = getSortedColumn(direction, contestBoard, "deadline");
-            ORDERS.add(orderDeadline);
-            break;
-          default:
-            break;
-        }
-      }
-    } else {
-      OrderSpecifier<?> orderDeadline = getSortedColumn(Order.DESC, contestBoard, "deadline");
-      ORDERS.add(orderDeadline);
+  @Override
+  public Optional<ContestBoard> findByTypeAndId(ContestType contestType, Long boardId) {
+    return Optional.ofNullable(
+        queryFactory
+            .selectFrom(contestBoard)
+            .where((eqContestType(contestType)).and(contestBoard.id.eq(boardId)))
+            .orderBy(contestBoard.dateCreated.desc())
+            .fetchOne());
+  }
+
+  private BooleanExpression eqMemberId(Long memberId) {
+    return contestBoard.writer.id.eq(memberId);
+  }
+
+  private BooleanExpression eqContestType(ContestType contestType) {
+    return contestBoard.menu.id.eq(contestType.getMenuId());
+  }
+
+  private BooleanExpression eqContestField(Long contestFieldId) {
+    if (contestFieldId == null) {
+      return Expressions.asBoolean(true).isTrue();
     }
-    return ORDERS;
+    return contestBoard.contestField.id.eq(contestFieldId);
   }
 
-  //    @Override
-  //    public Page<ListContestBoardDto> findAllByMenuId(MenuId menuId, Pageable pageable) {
-  //        List <OrderSpecifier> ORDERS = getAllOrderSpecifiers(pageable);
-  //        List<ListContestBoardDto> results =
-  // queryFactory.select(Projections.constructor(ListContestBoardDto.class,
-  //                        contestBoard.title.value,
-  //                        contestBoard.topic.value,
-  //                        contestBoard.start,
-  //                        contestBoard.deadline))
-  //                .from(contestBoard)
-  //                .where(menuEq(menuId))
-  //                .offset(pageable.getOffset())
-  //                .limit(pageable.getPageSize())
-  //                .orderBy(ORDERS.stream().toArray(OrderSpecifier[]::new))
-  //                .fetch();
-  //        return new PageImpl<>(results, pageable, results.size());
-  //    }
+  private BooleanExpression likeTitle(String search) {
+    return contestBoard.title.value.like("%" + search + "%");
+  }
 
-  //    private BooleanExpression menuEq(MenuId menuId) {
-  //        return contestBoard.menuId.eq(menuId);
-  //    }
+  private BooleanExpression likeContent(String search) {
+    return contestBoard.content.value.like("%" + search + "%");
+  }
 
+  private BooleanExpression likeWriterName(String search) {
+    return contestBoard.writer.name.value.like("%" + search + "%");
+  }
+
+  private BooleanExpression likeAssociation(String search) {
+    return contestBoard.association.value.like("%" + search + "%");
+  }
+
+  private BooleanExpression likeTopic(String search) {
+    return contestBoard.association.value.like("%" + search + "%");
+  }
 }

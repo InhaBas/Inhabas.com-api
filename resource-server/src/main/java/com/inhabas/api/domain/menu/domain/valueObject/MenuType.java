@@ -38,7 +38,7 @@ public enum MenuType {
   BUDGET_ACCOUNT(DEACTIVATED, SECRETARY, DEACTIVATED, ADMIN, ADMIN),
   // 알파테스터, 베타테스터
   TESTER(DEACTIVATED, BASIC, DEACTIVATED, DEACTIVATED, DEACTIVATED),
-  // 공모전
+  // 공모전, 대외활동
   CONTEST(ANONYMOUS, BASIC, ANONYMOUS, DEACTIVATED, BASIC),
 
   // 관리자가 추가, 삭제 가능한 메뉴.(NormalBoard 연관)

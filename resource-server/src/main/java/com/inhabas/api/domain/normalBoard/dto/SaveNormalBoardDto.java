@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +21,7 @@ public class SaveNormalBoardDto {
 
   private Integer pinOption;
 
+  @Builder
   public SaveNormalBoardDto(
       String title, String content, List<MultipartFile> files, Integer pinOption) {
     this.title = title;
