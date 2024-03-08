@@ -127,7 +127,7 @@ public class NormalBoardController {
         responseCode = "200",
         content = {@Content(schema = @Schema(implementation = NormalBoardDto.class))}),
     @ApiResponse(
-        responseCode = "400 ",
+        responseCode = "400",
         description = "입력값이 없거나, 타입이 유효하지 않습니다.",
         content =
             @Content(
@@ -210,9 +210,9 @@ public class NormalBoardController {
       value = "/board/{boardType}/{boardId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ApiResponses({
-    @ApiResponse(responseCode = "200"),
+    @ApiResponse(responseCode = "204"),
     @ApiResponse(
-        responseCode = "400 ",
+        responseCode = "400",
         description = "입력값이 없거나, 타입이 유효하지 않습니다.",
         content =
             @Content(
@@ -255,7 +255,7 @@ public class NormalBoardController {
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
     @ApiResponse(
-        responseCode = "400 ",
+        responseCode = "400",
         description = "입력값이 없거나, 타입이 유효하지 않습니다.",
         content =
             @Content(

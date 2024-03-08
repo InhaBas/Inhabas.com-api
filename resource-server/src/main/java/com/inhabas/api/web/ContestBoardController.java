@@ -230,7 +230,7 @@ public class ContestBoardController {
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "204"),
         @ApiResponse(
             responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
