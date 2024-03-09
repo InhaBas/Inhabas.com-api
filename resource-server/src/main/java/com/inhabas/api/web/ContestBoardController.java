@@ -66,7 +66,7 @@ public class ContestBoardController {
   @GetMapping("/contest/count")
   @SecurityRequirements(value = {})
   public ResponseEntity<List<BoardCountDto>> getBoardCount() {
-    return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(2));
+    return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(6));
   }
 
   @Operation(summary = "공모전 게시글 목록 조회")
