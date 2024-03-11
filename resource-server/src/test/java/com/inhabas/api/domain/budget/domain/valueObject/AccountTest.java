@@ -1,9 +1,9 @@
-package com.inhabas.api.domain.budget.valueObject;
+package com.inhabas.api.domain.budget.domain.valueObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.inhabas.api.domain.budget.domain.valueObject.Account;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,9 @@ public class AccountTest {
     String accountString = "지금이문장은10자임".repeat(10);
 
     // then
-    assertThrows(IllegalArgumentException.class, () -> new Account(accountString));
+    assertThatThrownBy(() -> new Account(accountString))
+        .isInstanceOf(InvalidInputException.class)
+        .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
   }
 
   @DisplayName("계좌정보는 null 이어도 됩니다.")

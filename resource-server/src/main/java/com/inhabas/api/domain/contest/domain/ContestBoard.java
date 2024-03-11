@@ -101,20 +101,6 @@ public class ContestBoard extends BaseBoard {
 
   /* relation method */
 
-  // 첨부파일 수정
-  public void updateFiles(List<BoardFile> files) {
-
-    if (this.files != null) {
-      this.files.clear();
-    } else {
-      this.files = new ArrayList<>();
-    }
-
-    for (BoardFile file : files) {
-      addFile(file);
-    }
-  }
-
   // 공모전 정보 수정
   public void updateContest(
       ContestField contestField,

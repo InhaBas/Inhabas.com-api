@@ -1,10 +1,10 @@
-package com.inhabas.api.domain.budget.valueObject;
+package com.inhabas.api.domain.budget.domain.valueObject;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.inhabas.api.domain.budget.domain.valueObject.Price;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,6 +43,8 @@ public class PriceTest {
     Integer minusPrice = -10000;
 
     // when
-    Assertions.assertThrows(IllegalArgumentException.class, () -> new Price(minusPrice));
+    assertThatThrownBy(() -> new Price(minusPrice))
+        .isInstanceOf(InvalidInputException.class)
+        .hasMessage("입력값이 없거나, 타입이 유효하지 않습니다.");
   }
 }

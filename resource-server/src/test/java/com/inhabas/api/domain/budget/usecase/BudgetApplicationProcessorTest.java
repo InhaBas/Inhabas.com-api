@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.budget.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -12,19 +13,28 @@ import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
+import com.inhabas.api.auth.domain.error.ErrorCode;
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
-import com.inhabas.api.domain.budget.domain.valueObject.ApplicationStatus;
-import com.inhabas.api.domain.budget.domain.valueObject.RejectReason;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
+import com.inhabas.api.domain.budget.exception.StatusNotFollowProceduresException;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
+import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.domain.menu.domain.Menu;
+import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuGroup;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.repository.MenuRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,146 +42,143 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MockitoExtension.class)
 public class BudgetApplicationProcessorTest {
 
-  @InjectMocks private BudgetApplicationProcessorImpl processor;
+  @InjectMocks private BudgetApplicationProcessorImpl budgetApplicationProcessor;
 
   @Mock private BudgetApplicationRepository applicationRepository;
   @Mock private BudgetHistoryRepository historyRepository;
+  @Mock private MemberRepository memberRepository;
+  @Mock private MenuRepository menuRepository;
+
+  private static final String APPLICATION_TITLE = "title";
+  private static final String APPLICATION_DETAILS = "details";
+  private static final String ACCOUNT_NUMBER = "123-123-123";
+  private static final Integer APPLICATION_OUTCOME = 10000;
+  private static final RequestStatus INITIAL_REQUEST_STATUS = RequestStatus.PENDING;
+
+  private Member secretary;
+  private Member applicant;
+  private MenuGroup menuGroup;
+  private Menu menu;
+  private BudgetSupportApplication application;
+
+  @BeforeEach
+  public void setUp() {
+    secretary = MemberTest.secretaryMember();
+    ReflectionTestUtils.setField(secretary, "id", 1L);
+    applicant = MemberTest.basicMember1();
+    menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
+    menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            INITIAL_REQUEST_STATUS);
+    given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
+    given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
+    given(applicationRepository.findById(any())).willReturn(Optional.of(application));
+  }
 
   @DisplayName("대기중인 요청을 승인한다.")
   @Test
   public void waitingToApproveTest() {
     // given
-    BudgetSupportApplication application =
-        BudgetSupportApplication.builder()
-            .title("title")
-            .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-            .details("details")
-            .outcome(10000)
-            .applicationWriter(new StudentId("12171652"))
-            .account("기업 1234 홍길동")
-            .build();
-    given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.APPROVED, null);
 
     // when
-    BudgetApplicationStatusChangeRequest request =
-        new BudgetApplicationStatusChangeRequest("APPROVED", null);
-    processor.process(1, request, new StudentId("18165249"));
+    budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
-    then(applicationRepository).should(times(1)).findById(anyInt());
-    ApplicationStatus status =
-        (ApplicationStatus) ReflectionTestUtils.getField(application, "status");
-    assertThat(status).isEqualTo(ApplicationStatus.APPROVED);
+    then(applicationRepository).should(times(1)).findById(any());
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    assertThat(status).isEqualTo(RequestStatus.APPROVED);
   }
 
   @DisplayName("대기중인 요청을 거절한다.")
   @Test
   public void waitingToDenyTest() {
     // given
-    BudgetSupportApplication application =
-        BudgetSupportApplication.builder()
-            .title("title")
-            .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-            .details("details")
-            .outcome(10000)
-            .applicationWriter(new StudentId("12171652"))
-            .account("기업 1234 홍길동")
-            .build();
-    given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, "reject");
 
     // when
-    BudgetApplicationStatusChangeRequest request =
-        new BudgetApplicationStatusChangeRequest("DENIED", "중복 요청");
-    processor.process(1, request, new StudentId("18165249"));
+    budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
-    then(applicationRepository).should(times(1)).findById(anyInt());
-    ApplicationStatus status =
-        (ApplicationStatus) ReflectionTestUtils.getField(application, "status");
-    assertThat(status).isEqualTo(ApplicationStatus.DENIED);
+    then(applicationRepository).should(times(1)).findById(any());
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    assertThat(status).isEqualTo(RequestStatus.REJECTED);
   }
 
   @DisplayName("대기중인 요청을 거절할 때, 거절 사유는 필수이다.")
   @Test
   public void rejectReasonIsNecessaryToDenyTest() {
     // given
-    BudgetSupportApplication application =
-        BudgetSupportApplication.builder()
-            .title("title")
-            .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-            .details("details")
-            .outcome(10000)
-            .applicationWriter(new StudentId("12171652"))
-            .account("기업 1234 홍길동")
-            .build();
-    given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
-
-    // when
     BudgetApplicationStatusChangeRequest request =
-        new BudgetApplicationStatusChangeRequest("DENIED", null);
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, null);
 
     // then
-    Assertions.assertThrows(
-        IllegalArgumentException.class,
-        () -> processor.process(1, request, new StudentId("18165249")));
-    then(applicationRepository).should(times(1)).findById(anyInt());
+    assertThatThrownBy(() -> budgetApplicationProcessor.process(1L, request, 1L))
+        .isInstanceOf(InvalidInputException.class)
+        .hasMessage(ErrorCode.INVALID_INPUT_VALUE.getMessage());
   }
 
   @DisplayName("대기중인 요청을 완료처리한다.")
   @Test
   public void waitingToProcessTest() {
     // given
-    BudgetSupportApplication application =
-        BudgetSupportApplication.builder()
-            .title("title")
-            .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-            .details("details")
-            .outcome(10000)
-            .applicationWriter(new StudentId("12171652"))
-            .account("기업 1234 홍길동")
-            .build();
-    given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
-    given(historyRepository.save(any(BudgetHistory.class))).willReturn(null);
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            RequestStatus.APPROVED);
+    given(applicationRepository.findById(any())).willReturn(Optional.of(application));
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.COMPLETED, null);
 
     // when
-    BudgetApplicationStatusChangeRequest request =
-        new BudgetApplicationStatusChangeRequest("PROCESSED", null);
-    processor.process(1, request, new StudentId("18165249"));
+    budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
-    then(applicationRepository).should(times(1)).findById(anyInt());
+    then(applicationRepository).should(times(1)).findById(any());
     then(historyRepository).should(times(1)).save(any(BudgetHistory.class));
-    ApplicationStatus status =
-        (ApplicationStatus) ReflectionTestUtils.getField(application, "status");
-    assertThat(status).isEqualTo(ApplicationStatus.PROCESSED);
+    RequestStatus status = (RequestStatus) ReflectionTestUtils.getField(application, "status");
+    assertThat(status).isEqualTo(RequestStatus.COMPLETED);
   }
 
-  @DisplayName("거절했던 신청이 수정된 뒤에 승인한다.")
+  @DisplayName("거절했던 신청은 되돌리지 못한다.")
   @Test
-  public void deniedToApprovedTest() {
+  public void deniedToProcessTest() {
     // given
-    BudgetSupportApplication application =
-        BudgetSupportApplication.builder()
-            .title("title")
-            .dateUsed(LocalDateTime.of(2020, 1, 1, 1, 1, 1))
-            .details("details")
-            .outcome(10000)
-            .applicationWriter(new StudentId("12171652"))
-            .account("기업 1234 홍길동")
-            .build();
-    ReflectionTestUtils.setField(application, "status", ApplicationStatus.DENIED);
-    ReflectionTestUtils.setField(application, "rejectReason", new RejectReason("계좌번호 미기재"));
-    given(applicationRepository.findById(anyInt())).willReturn(Optional.of(application));
+    application =
+        new BudgetSupportApplication(
+            menu,
+            APPLICATION_TITLE,
+            APPLICATION_DETAILS,
+            LocalDateTime.now().minusDays(1),
+            ACCOUNT_NUMBER,
+            APPLICATION_OUTCOME,
+            applicant,
+            RequestStatus.COMPLETED);
+    BudgetApplicationStatusChangeRequest request =
+        new BudgetApplicationStatusChangeRequest(RequestStatus.REJECTED, "reject");
 
     // when
-    BudgetApplicationStatusChangeRequest request =
-        new BudgetApplicationStatusChangeRequest("APPROVED", null);
-    processor.process(1, request, new StudentId("18165249"));
+    budgetApplicationProcessor.process(1L, request, 1L);
 
     // then
-    then(applicationRepository).should(times(1)).findById(anyInt());
-    ApplicationStatus status =
-        (ApplicationStatus) ReflectionTestUtils.getField(application, "status");
-    assertThat(status).isEqualTo(ApplicationStatus.APPROVED);
+    assertThatThrownBy(() -> budgetApplicationProcessor.process(1L, request, 1L))
+        .isInstanceOf(StatusNotFollowProceduresException.class)
+        .hasMessage(ErrorCode.STATUS_NOT_FOLLOW_PROCEDURES.getMessage());
   }
 }

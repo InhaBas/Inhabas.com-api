@@ -6,105 +6,112 @@ import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.budget.BudgetHistoryNotFoundException;
-import com.inhabas.api.domain.budget.HistoryCannotModifiableException;
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.budget.domain.valueObject.Account;
 import com.inhabas.api.domain.budget.domain.valueObject.Details;
 import com.inhabas.api.domain.budget.domain.valueObject.Price;
-import com.inhabas.api.domain.budget.domain.valueObject.Title;
+import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "BUDGET_HISTORY")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "budget_history")
-public class BudgetHistory extends BaseEntity {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("BUDGET_HISTORY")
+public class BudgetHistory extends BaseBoard {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  @Embedded private Details details;
 
-  @AttributeOverride(name = "value", column = @Column(name = "income", nullable = false))
-  private Price income;
-
-  @AttributeOverride(name = "value", column = @Column(name = "outcome", nullable = false))
-  private Price outcome;
-
-  @Column(name = "date_used", nullable = false)
+  @Getter
+  @Column(nullable = false, columnDefinition = "DATETIME(0)")
   private LocalDateTime dateUsed;
 
-  private Title title;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "IN_CHARGE_USER_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_HISTORY"))
+  private Member memberInCharge;
 
-  private Details details;
+  @Embedded private Account account;
 
-  private Account account;
+  @AttributeOverride(name = "value", column = @Column(name = "INCOME", nullable = false))
+  private Price income;
 
-  //    private List<File> receipts;
+  @AttributeOverride(name = "value", column = @Column(name = "OUTCOME", nullable = false))
+  private Price outcome;
 
-  @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "person_in_charge", nullable = false))
-  private StudentId personInCharge;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "RECEIVED_USER_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_RECEIVED"))
+  private Member memberReceived;
 
-  @Embedded
-  @AttributeOverride(name = "id", column = @Column(name = "person_received", nullable = false))
-  private StudentId personReceived;
-
-  public StudentId getPersonReceived() {
-    return personReceived;
+  public String getDetails() {
+    return details.getValue();
   }
 
-  public StudentId getPersonInCharge() {
-    return personInCharge;
+  public Integer getIncome() {
+    return income.getValue();
   }
 
-  public boolean cannotModifiableBy(StudentId CFO) {
-    return !this.personInCharge.equals(CFO);
+  public Integer getOutcome() {
+    return outcome.getValue();
+  }
+
+  public String getAccount() {
+    return account == null ? null : account.getValue();
   }
 
   @Builder
   public BudgetHistory(
+      String title,
+      Menu menu,
+      String details,
+      LocalDateTime dateUsed,
+      Member memberInCharge,
+      String account,
       Integer income,
       Integer outcome,
-      LocalDateTime dateUsed,
-      String title,
-      String details,
-      StudentId personInCharge,
-      StudentId personReceived) {
+      Member memberReceived) {
+    super(title, menu);
+    this.details = new Details(details);
+    this.dateUsed = dateUsed;
+    this.memberInCharge = memberInCharge;
+    this.account = new Account(account);
     this.income = new Price(income);
     this.outcome = new Price(outcome);
-    this.dateUsed = dateUsed;
-    this.title = new Title(title);
-    this.details = new Details(details);
-    this.personInCharge = personInCharge;
-    this.personReceived = personReceived;
+    this.memberReceived = memberReceived;
   }
 
   public void modify(
-      StudentId currentCFO,
+      Member secretary,
       Integer income,
       Integer outcome,
       LocalDateTime dateUsed,
       String title,
       String details,
-      StudentId personReceived) {
+      Member personReceived) {
 
     if (this.id == null) {
-      throw new BudgetHistoryNotFoundException(
-          "cannot modify this entity, because not persisted ever!");
+      throw new NotFoundException();
     }
-
-    if (this.cannotModifiableBy(currentCFO)) throw new HistoryCannotModifiableException();
 
     this.title = new Title(title);
     this.details = new Details(details);
     this.dateUsed = dateUsed;
     this.income = new Price(income);
     this.outcome = new Price(outcome);
-    this.personReceived = personReceived;
+    this.memberInCharge = secretary;
+    this.memberReceived = personReceived;
   }
 }

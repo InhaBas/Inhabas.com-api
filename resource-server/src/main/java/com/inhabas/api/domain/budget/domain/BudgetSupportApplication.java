@@ -6,139 +6,174 @@ import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.StudentId;
-import com.inhabas.api.domain.BaseEntity;
-import com.inhabas.api.domain.budget.ApplicationCannotModifiableException;
-import com.inhabas.api.domain.budget.ApplicationNotFoundException;
-import com.inhabas.api.domain.budget.domain.converter.StatusConverter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.budget.domain.valueObject.*;
+import com.inhabas.api.domain.budget.exception.StatusNotFollowProceduresException;
+import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
-@Table(name = "budget_support_application")
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "BUDGET_SUPPORT_APPLICATION")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BudgetSupportApplication extends BaseEntity {
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorValue("BUDGET_APPLICATION")
+public class BudgetSupportApplication extends BaseBoard {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  @Embedded private Details details;
 
-  private Title title;
-
+  @Getter
+  @Column(nullable = false, columnDefinition = "DATETIME(0)")
   private LocalDateTime dateUsed;
 
-  private Details details;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(
+      name = "IN_CHARGE_USER_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICATION"))
+  private Member memberInCharge;
 
-  @AttributeOverride(name = "value", column = @Column(name = "outcome", nullable = false))
-  private Price outcome;
+  @Embedded private Account account;
 
-  private ApplicantAccount applicantAccount;
+  @Embedded private Price outcome;
 
-  @AttributeOverride(name = "id", column = @Column(nullable = false, name = "applicant"))
-  private StudentId applicationWriter;
+  @Getter
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(
+      name = "APPLICANT_USER_ID",
+      foreignKey = @ForeignKey(name = "FK_MEMBER_OF_BUDGET_APPLICANT"))
+  private Member applicant;
 
-  @AttributeOverride(name = "id", column = @Column(name = "person_in_charge"))
-  private StudentId personInCharge;
-
-  @Convert(converter = StatusConverter.class)
+  @Getter
   @Column(nullable = false)
-  private ApplicationStatus status;
+  @Enumerated(EnumType.STRING)
+  private RequestStatus status;
 
-  private RejectReason rejectReason;
+  @Getter @Embedded private RejectReason rejectReason;
 
-  // private List<File> receipts;
+  @Column(name = "DATE_CHECKED", columnDefinition = "DATETIME(0)")
+  private LocalDateTime dateChecked;
+
+  public String getDetails() {
+    return details.getValue();
+  }
+
+  public Integer getOutcome() {
+    return outcome.getValue();
+  }
+
+  public String getAccount() {
+    return account == null ? null : account.getValue();
+  }
 
   @Builder
   public BudgetSupportApplication(
+      Menu menu,
       String title,
-      LocalDateTime dateUsed,
       String details,
-      Integer outcome,
+      LocalDateTime dateUsed,
       String account,
-      StudentId applicationWriter) {
-    this.title = new Title(title);
-    this.dateUsed = dateUsed;
+      Integer outcome,
+      Member applicant,
+      RequestStatus status) {
+    super(title, menu);
     this.details = new Details(details);
+    this.dateUsed = dateUsed;
+    this.account = new Account(account);
     this.outcome = new Price(outcome);
-    this.applicantAccount = new ApplicantAccount(account);
-    this.applicationWriter = applicationWriter;
-    this.status = ApplicationStatus.WAITING;
+    this.applicant = applicant;
+    this.status = status;
   }
 
   public void modify(
-      String title,
-      LocalDateTime dateUsed,
-      String details,
-      Integer outcome,
-      String account,
-      StudentId currentApplicant) {
+      String title, LocalDateTime dateUsed, String details, Integer outcome, String account) {
 
-    if (this.id == null)
-      throw new ApplicationNotFoundException(
-          "cannot modify this entity, because not persisted ever!");
+    if (this.id == null) {
+      throw new NotFoundException();
+    }
 
-    if (this.cannotModifiableBy(currentApplicant)) throw new ApplicationCannotModifiableException();
+    if (!this.isPending()) throw new StatusNotFollowProceduresException();
 
     this.title = new Title(title);
     this.dateUsed = dateUsed;
     this.details = new Details(details);
     this.outcome = new Price(outcome);
-    this.applicantAccount = new ApplicantAccount(account);
-    this.status = ApplicationStatus.WAITING;
+    this.account = new Account(account);
   }
 
-  public boolean cannotModifiableBy(StudentId currentApplicant) {
-    return !this.applicationWriter.equals(currentApplicant);
+  public boolean isPending() {
+    return this.status == RequestStatus.PENDING;
   }
 
-  public void approve(StudentId personInCharge) {
-
-    this.status = ApplicationStatus.APPROVED;
-    this.personInCharge = personInCharge;
+  private boolean isApproved() {
+    return this.status.equals(RequestStatus.APPROVED);
   }
 
-  public void waiting(StudentId personInCharge) {
-
-    this.status = ApplicationStatus.WAITING;
-    this.personInCharge = personInCharge;
+  private boolean isComplete() {
+    return this.status.equals(RequestStatus.COMPLETED);
   }
 
-  public void deny(String reason, StudentId personInCharge) {
-
-    this.rejectReason = new RejectReason(reason);
-    this.status = ApplicationStatus.DENIED;
-    this.personInCharge = personInCharge;
+  public void pending() {
+    if (!this.isPending()) {
+      throw new StatusNotFollowProceduresException();
+    }
   }
 
-  public void process(StudentId personInCharge) {
-
-    if (this.isProcessed())
-      throw new ApplicationCannotModifiableException("이미 처리가 완료된 예산지원 내역입니다.");
-
-    this.status = ApplicationStatus.PROCESSED;
-    this.personInCharge = personInCharge;
+  public void approve(Member memberInCharge) {
+    if (this.isPending()) {
+      this.status = RequestStatus.APPROVED;
+      this.dateChecked = LocalDateTime.now();
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
   }
 
-  private boolean isProcessed() {
-    return this.status == ApplicationStatus.PROCESSED;
+  public void reject(String reason, Member memberInCharge) {
+    if (this.isPending()) {
+      this.rejectReason = new RejectReason(reason);
+      this.status = RequestStatus.REJECTED;
+      this.dateChecked = LocalDateTime.now();
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
+  }
+
+  public void complete(Member memberInCharge) {
+    if (this.isApproved()) {
+      this.status = RequestStatus.COMPLETED;
+      this.memberInCharge = memberInCharge;
+    } else {
+      throw new StatusNotFollowProceduresException();
+    }
   }
 
   /** 예산지원신청을 완전히 다 처리하고 나면 자동적으로 회계처리내역에 추가되도록 하기 위해서, 회계내역 엔티티로 변환한다. */
-  public BudgetHistory makeHistory() {
-
-    if (this.isProcessed() && this.personInCharge != null) {
+  public BudgetHistory makeHistory(Member secretary, Menu menu) {
+    if (this.isComplete() && this.memberInCharge != null) {
       return BudgetHistory.builder()
           .title(this.title.getValue())
-          .dateUsed(this.dateUsed)
+          .menu(menu)
           .details(this.details.getValue())
+          .dateUsed(this.dateUsed)
+          .memberInCharge(this.memberInCharge)
+          .account(this.account.getValue())
           .income(0)
           .outcome(this.outcome.getValue())
-          .personInCharge(this.personInCharge)
-          .personReceived(this.applicationWriter)
-          .build();
+          .memberReceived(this.applicant)
+          .build()
+          .writtenBy(secretary, BudgetHistory.class);
     } else {
-      throw new RuntimeException("회계기록 중에 오류가 발생하였습니다!");
+      throw new StatusNotFollowProceduresException();
     }
   }
 }
