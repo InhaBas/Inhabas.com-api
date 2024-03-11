@@ -108,15 +108,6 @@ public class SwaggerConfig {
   }
 
   @Bean
-  public GroupedOpenApi getProjectBoardApi() {
-
-    return GroupedOpenApi.builder()
-        .group("프로젝트 게시판 관련")
-        .pathsToMatch("/project/**", "/**/**/**/comment/**", "/**/**/**/comments")
-        .build();
-  }
-
-  @Bean
   public GroupedOpenApi getContestApi() {
 
     return GroupedOpenApi.builder()
