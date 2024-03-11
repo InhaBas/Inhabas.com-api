@@ -6,9 +6,7 @@ public enum NormalBoardType {
   QUESTION("question", 6),
   SUGGEST("suggest", 7),
   STORAGE("storage", 8),
-  EXECUTIVE("executive", 9),
-  ALPHA("alpha", 16),
-  BETA("beta", 17);
+  EXECUTIVE("executive", 9);
 
   private final String boardType;
   private final int menuId;

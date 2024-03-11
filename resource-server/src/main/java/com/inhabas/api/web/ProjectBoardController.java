@@ -21,11 +21,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
-import com.inhabas.api.domain.normalBoard.domain.NormalBoardType;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
-import com.inhabas.api.domain.normalBoard.usecase.NormalBoardService;
+import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.usecase.ProjectBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedPinnedResponseDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
@@ -47,7 +47,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RequiredArgsConstructor
 public class ProjectBoardController {
 
-  private final NormalBoardService normalBoardService;
+  private final ProjectBoardService projectBoardService;
   private final BaseBoardRepository baseBoardRepository;
 
   @Operation(summary = "게시판 종류 당 글 개수 조회")
@@ -90,9 +90,9 @@ public class ProjectBoardController {
                             value =
                                 "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
       })
-  @GetMapping("/project/{boardType}")
+  @GetMapping("/project/{projectBoardType}")
   @PreAuthorize(
-      "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
+      "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
   public ResponseEntity<PagedPinnedResponseDto<NormalBoardDto>> getBoardList(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
@@ -103,11 +103,11 @@ public class ProjectBoardController {
       @Parameter(description = "검색어 (작성자 이름 or 제목 or 내용)", example = "")
           @RequestParam(name = "search", defaultValue = "")
           String search,
-      @PathVariable NormalBoardType boardType) {
+      @PathVariable ProjectBoardType projectBoardType) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<NormalBoardDto> allDtoList = normalBoardService.getPosts(boardType, search);
-    List<NormalBoardDto> pinnedDtoList = normalBoardService.getPinned(boardType);
+    List<NormalBoardDto> allDtoList = projectBoardService.getPosts(projectBoardType, search);
+    List<NormalBoardDto> pinnedDtoList = projectBoardService.getPinned(projectBoardType);
     List<NormalBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<NormalBoardDto> normalBoardDtoPage =
@@ -119,9 +119,9 @@ public class ProjectBoardController {
   }
 
   @Operation(summary = "게시글 단일 조회")
-  @GetMapping("/project/{boardType}/{boardId}")
+  @GetMapping("/project/{projectBoardType}/{boardId}")
   @PreAuthorize(
-      "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
+      "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
   @ApiResponses({
     @ApiResponse(
         responseCode = "200",
@@ -149,16 +149,16 @@ public class ProjectBoardController {
   })
   public ResponseEntity<NormalBoardDetailDto> getBoard(
       @PathVariable Long boardId,
-      @PathVariable NormalBoardType boardType,
+      @PathVariable ProjectBoardType projectBoardType,
       @Authenticated Long memberId) {
 
-    return ResponseEntity.ok(normalBoardService.getPost(memberId, boardType, boardId));
+    return ResponseEntity.ok(projectBoardService.getPost(memberId, projectBoardType, boardId));
   }
 
   @Operation(summary = "게시글 추가")
-  @PostMapping(path = "/project/{boardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(path = "/project/{projectBoardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(
-      "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
+      "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
@@ -185,7 +185,7 @@ public class ProjectBoardController {
       })
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
-      @PathVariable NormalBoardType boardType,
+      @PathVariable ProjectBoardType projectBoardType,
       @Valid @RequestPart("form") SaveNormalBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     SaveNormalBoardDto saveNormalBoardDto =
@@ -195,7 +195,8 @@ public class ProjectBoardController {
             .pinOption(form.getPinOption())
             .files(files)
             .build();
-    Long newNormalBoardId = normalBoardService.write(memberId, boardType, saveNormalBoardDto);
+    Long newNormalBoardId =
+        projectBoardService.write(memberId, projectBoardType, saveNormalBoardDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{boardId}")
@@ -207,7 +208,7 @@ public class ProjectBoardController {
 
   @Operation(summary = "게시글 수정")
   @PostMapping(
-      value = "/project/{boardType}/{boardId}",
+      value = "/project/{projectBoardType}/{boardId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @ApiResponses({
     @ApiResponse(responseCode = "200"),
@@ -235,7 +236,7 @@ public class ProjectBoardController {
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<Long> updateBoard(
       @Authenticated Long memberId,
-      @PathVariable NormalBoardType boardType,
+      @PathVariable ProjectBoardType projectBoardType,
       @PathVariable Long boardId,
       @Valid @RequestPart("form") SaveNormalBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
@@ -246,12 +247,12 @@ public class ProjectBoardController {
             .pinOption(form.getPinOption())
             .files(files)
             .build();
-    normalBoardService.update(boardId, boardType, saveNormalBoardDto);
+    projectBoardService.update(boardId, projectBoardType, saveNormalBoardDto);
     return ResponseEntity.noContent().build();
   }
 
   @Operation(summary = "게시글 삭제")
-  @DeleteMapping("/project/{boardType}/{boardId}")
+  @DeleteMapping("/project/{projectBoardType}/{boardId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
     @ApiResponse(
@@ -278,10 +279,10 @@ public class ProjectBoardController {
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<?> deleteBoard(
       @Authenticated Long memberId,
-      @PathVariable NormalBoardType boardType,
+      @PathVariable ProjectBoardType projectBoardType,
       @PathVariable Long boardId) {
 
-    normalBoardService.delete(boardId);
+    projectBoardService.delete(boardId);
     return ResponseEntity.noContent().build();
   }
 }

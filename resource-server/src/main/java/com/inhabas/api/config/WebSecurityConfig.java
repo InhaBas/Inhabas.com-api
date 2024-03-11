@@ -61,6 +61,8 @@ public class WebSecurityConfig {
   };
   private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {"/board/count"};
 
+  private static final String[] AUTH_WHITELIST_PROJECT_BOARD = {"/proejct/count"};
+
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 
   @Order(1)
@@ -89,6 +91,7 @@ public class WebSecurityConfig {
           .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
           .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
           .antMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
+          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD)
           .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD)
           .antMatchers(AUTH_WHITELIST_SWAGGER)
           .antMatchers(AUTH_WHITELIST_STATIC)
