@@ -61,7 +61,7 @@ public class WebSecurityConfig {
   };
   private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {"/board/count"};
 
-  private static final String[] AUTH_WHITELIST_PROJECT_BOARD = {"/proejct/count"};
+  private static final String[] AUTH_WHITELIST_PROJECT_BOARD = {"/project/count"};
 
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 

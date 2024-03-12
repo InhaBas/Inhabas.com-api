@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.project.usecase;
 
 import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getNormalNoticeMenu;
-import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getNormalMenuGroup;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getProjectMenuGroup;
 import static com.inhabas.api.domain.project.ProjectBoardType.ALPHA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,13 +72,13 @@ public class ProjectBoardServiceImplTest {
     assertThat(normalBoardDtoList).hasSize(1);
   }
 
-  @DisplayName("normal board 게시글 단일 조회한다.")
+  @DisplayName("project board 게시글 단일 조회한다.")
   @Transactional(readOnly = true)
   @Test
   void getPost() {
     // given
     Member member = MemberTest.chiefMember();
-    Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
+    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
     NormalBoard normalBoard =
         new NormalBoard("title", menu, "content", false, LocalDateTime.now())
             .writtenBy(member, NormalBoard.class);
@@ -93,14 +93,14 @@ public class ProjectBoardServiceImplTest {
     assertThat(dto.getTitle()).isEqualTo(normalBoard.getTitle());
   }
 
-  @DisplayName("normal board 게시글을 작성한다.")
+  @DisplayName("project board 게시글을 작성한다.")
   @Transactional
   @Test
   void write() {
     // given
     Member member = MemberTest.chiefMember();
     SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
-    Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
+    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
     NormalBoard normalBoard =
         new NormalBoard("title", menu, "content", false, LocalDateTime.now())
             .writtenBy(member, NormalBoard.class);
@@ -123,7 +123,7 @@ public class ProjectBoardServiceImplTest {
   void update() {
     // given
     SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
-    Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
+    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
     NormalBoard normalBoard = new NormalBoard("title", menu, "content", false, LocalDateTime.now());
     ReflectionTestUtils.setField(normalBoard, "id", 1L);
 
