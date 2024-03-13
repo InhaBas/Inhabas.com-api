@@ -1,9 +1,9 @@
 package com.inhabas.api.domain.project.usecase;
 
-import static com.inhabas.api.domain.normalBoard.domain.PinOption.PERMANENT;
-import static com.inhabas.api.domain.normalBoard.domain.PinOption.TEMPORARY;
-import static com.inhabas.api.domain.project.ProjectBoardType.ALPHA;
-import static com.inhabas.api.domain.project.ProjectBoardType.BETA;
+import static com.inhabas.api.domain.project.domain.PinOption.PERMANENT;
+import static com.inhabas.api.domain.project.domain.PinOption.TEMPORARY;
+import static com.inhabas.api.domain.project.domain.ProjectBoardType.ALPHA;
+import static com.inhabas.api.domain.project.domain.ProjectBoardType.BETA;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
-import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.domain.ProjectBoard;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
+import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
+import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.repository.ProjectBoardRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
@@ -57,72 +57,73 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   private static final Integer TEMPORARY_DAYS = 14;
 
   @Override
-  public List<NormalBoardDto> getPinned(ProjectBoardType projectboardType) {
-    List<NormalBoardDto> normalBoardList = new ArrayList<>();
+  public List<ProjectBoardDto> getPinned(ProjectBoardType projectboardType) {
+    List<ProjectBoardDto> projectBoardList = new ArrayList<>();
     if (projectboardType.equals(ALPHA) || projectboardType.equals(BETA)) {
-      normalBoardList = projectBoardRepository.findAllByTypeAndIsPinned(projectboardType);
+      projectBoardList = projectBoardRepository.findAllByTypeAndIsPinned(projectboardType);
     }
-    return normalBoardList;
+    return projectBoardList;
   }
 
   @Override
-  public List<NormalBoardDto> getPosts(ProjectBoardType projectBoardType, String search) {
-    List<NormalBoardDto> normalBoardList = new ArrayList<>();
-    normalBoardList.addAll(projectBoardRepository.findAllByTypeAndSearch(projectBoardType, search));
-    return normalBoardList;
+  public List<ProjectBoardDto> getPosts(ProjectBoardType projectBoardType, String search) {
+    List<ProjectBoardDto> projectBoardList = new ArrayList<>();
+    projectBoardList.addAll(
+        projectBoardRepository.findAllByTypeAndSearch(projectBoardType, search));
+    return projectBoardList;
   }
 
   @Override
-  public NormalBoardDetailDto getPost(
+  public ProjectBoardDetailDto getPost(
       Long memberId, ProjectBoardType projectBoardType, Long boardId) {
-    NormalBoard normalBoard;
-    normalBoard =
+    ProjectBoard projectBoard;
+    projectBoard =
         projectBoardRepository
             .findByTypeAndId(projectBoardType, boardId)
             .orElseThrow(NotFoundException::new);
 
-    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(normalBoard.getFiles());
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(projectBoard.getFiles());
 
-    return NormalBoardDetailDto.builder()
-        .id(normalBoard.getId())
-        .title(normalBoard.getTitle())
-        .content(normalBoard.getContent())
-        .writerId(normalBoard.getWriter().getId())
-        .writerName(normalBoard.getWriter().getName())
-        .datePinExpiration(normalBoard.getDatePinExpiration())
-        .dateCreated(normalBoard.getDateCreated())
-        .dateUpdated(normalBoard.getDateUpdated())
+    return ProjectBoardDetailDto.builder()
+        .id(projectBoard.getId())
+        .title(projectBoard.getTitle())
+        .content(projectBoard.getContent())
+        .writerId(projectBoard.getWriter().getId())
+        .writerName(projectBoard.getWriter().getName())
+        .datePinExpiration(projectBoard.getDatePinExpiration())
+        .dateCreated(projectBoard.getDateCreated())
+        .dateUpdated(projectBoard.getDateUpdated())
         .images(classifiedFiles.getImages())
         .otherFiles(classifiedFiles.getOtherFiles())
-        .isPinned(normalBoard.getPinned())
+        .isPinned(projectBoard.getPinned())
         .build();
   }
 
   @Override
   public Long write(
-      Long memberId, ProjectBoardType projectBoardType, SaveNormalBoardDto saveNormalBoardDto) {
+      Long memberId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto) {
 
     Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     Menu menu =
         menuRepository.findById(projectBoardType.getMenuId()).orElseThrow(NotFoundException::new);
 
-    NormalBoard normalBoard =
-        new NormalBoard(
-                saveNormalBoardDto.getTitle(), menu, saveNormalBoardDto.getContent(), false, null)
-            .writtenBy(writer, NormalBoard.class);
+    ProjectBoard projectBoard =
+        new ProjectBoard(
+                saveProjectBoardDto.getTitle(), menu, saveProjectBoardDto.getContent(), false, null)
+            .writtenBy(writer, ProjectBoard.class);
 
-    updateProjectBoardPinned(saveNormalBoardDto, projectBoardType, normalBoard);
-    return updateProjectBoardFiles(saveNormalBoardDto, projectBoardType, normalBoard);
+    updateProjectBoardPinned(saveProjectBoardDto, projectBoardType, projectBoard);
+    return updateProjectBoardFiles(saveProjectBoardDto, projectBoardType, projectBoard);
   }
 
   @Override
   public void update(
-      Long boardId, ProjectBoardType projectBoardType, SaveNormalBoardDto saveNormalBoardDto) {
+      Long boardId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto) {
 
-    NormalBoard normalBoard =
+    ProjectBoard projectBoard =
         projectBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
-    updateProjectBoardPinned(saveNormalBoardDto, projectBoardType, normalBoard);
-    updateProjectBoardFiles(saveNormalBoardDto, projectBoardType, normalBoard);
+    updateProjectBoardPinned(saveProjectBoardDto, projectBoardType, projectBoard);
+    updateProjectBoardFiles(saveProjectBoardDto, projectBoardType, projectBoard);
   }
 
   @Override
@@ -131,18 +132,18 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   private Long updateProjectBoardFiles(
-      SaveNormalBoardDto saveNormalBoardDto,
+      SaveProjectBoardDto saveProjectBoardDto,
       ProjectBoardType projectBoardType,
-      NormalBoard normalBoard) {
+      ProjectBoard projectBoard) {
     final String DIR_NAME = projectBoardType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
 
-    if (saveNormalBoardDto.getFiles() != null) {
-      normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
+    if (saveProjectBoardDto.getFiles() != null) {
+      projectBoard.updateText(saveProjectBoardDto.getTitle(), saveProjectBoardDto.getContent());
       try {
         updateFiles =
-            saveNormalBoardDto.getFiles().stream()
+            saveProjectBoardDto.getFiles().stream()
                 .map(
                     file -> {
                       String path = FileUtil.generateFileName(file, DIR_NAME);
@@ -151,7 +152,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
                       return BoardFile.builder()
                           .name(file.getOriginalFilename())
                           .url(url)
-                          .board(normalBoard)
+                          .board(projectBoard)
                           .build();
                     })
                 .collect(Collectors.toList());
@@ -164,30 +165,30 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
       }
     }
 
-    normalBoard.updateFiles(updateFiles);
-    return projectBoardRepository.save(normalBoard).getId();
+    projectBoard.updateFiles(updateFiles);
+    return projectBoardRepository.save(projectBoard).getId();
   }
 
   private void updateProjectBoardPinned(
-      SaveNormalBoardDto saveNormalBoardDto,
+      SaveProjectBoardDto saveProjectBoardDto,
       ProjectBoardType projectBoardType,
-      NormalBoard normalBoard) {
+      ProjectBoard projectBoard) {
     boolean isPinned = false;
     LocalDateTime datePinExpiration = null;
 
     if (hasPinned(projectBoardType)) {
-      if (saveNormalBoardDto.getPinOption() == null) {
+      if (saveProjectBoardDto.getPinOption() == null) {
         throw new InvalidInputException();
-      } else if (saveNormalBoardDto.getPinOption().equals(TEMPORARY.getOption())) {
+      } else if (saveProjectBoardDto.getPinOption().equals(TEMPORARY.getOption())) {
         isPinned = true;
         datePinExpiration = LocalDateTime.now().plusDays(TEMPORARY_DAYS);
-      } else if (saveNormalBoardDto.getPinOption().equals(PERMANENT.getOption())) {
+      } else if (saveProjectBoardDto.getPinOption().equals(PERMANENT.getOption())) {
         isPinned = true;
         datePinExpiration = PERMANENT_DATE;
       }
     }
 
-    normalBoard.updatePinned(isPinned, datePinExpiration);
+    projectBoard.updatePinned(isPinned, datePinExpiration);
   }
 
   private boolean hasPinned(ProjectBoardType projectBoardType) {

@@ -3,21 +3,21 @@ package com.inhabas.api.domain.project.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.domain.ProjectBoard;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
 
 public interface ProjectBoardRepositoryCustom {
 
-  List<NormalBoardDto> findAllByTypeAndIsPinned(ProjectBoardType projectBoardType);
+  List<ProjectBoardDto> findAllByTypeAndIsPinned(ProjectBoardType projectBoardType);
 
-  List<NormalBoardDto> findAllByMemberIdAndTypeAndSearch(
+  List<ProjectBoardDto> findAllByMemberIdAndTypeAndSearch(
       Long memberId, ProjectBoardType projectBoardType, String search);
 
-  List<NormalBoardDto> findAllByTypeAndSearch(ProjectBoardType projectBoardType, String search);
+  List<ProjectBoardDto> findAllByTypeAndSearch(ProjectBoardType projectBoardType, String search);
 
-  Optional<NormalBoard> findByMemberIdAndTypeAndId(
+  Optional<ProjectBoard> findByMemberIdAndTypeAndId(
       Long memberId, ProjectBoardType projectBoardType, Long boardId);
 
-  Optional<NormalBoard> findByTypeAndId(ProjectBoardType projectBoardType, Long boardId);
+  Optional<ProjectBoard> findByTypeAndId(ProjectBoardType projectBoardType, Long boardId);
 }

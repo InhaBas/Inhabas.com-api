@@ -16,6 +16,10 @@ public class MenuExampleTest {
     return new Menu(menuGroup, 1, MenuType.BUDGET_ACCOUNT, "회계 내역", "회계 내역 설명");
   }
 
+  public static Menu getAlphaTesterMenu(MenuGroup menuGroup) {
+    return new Menu(menuGroup, 1, MenuType.PROJECT, "알파 테스터", "알파테스터 설명");
+  }
+
   public static Menu getContestMenu(MenuGroup menuGroup) {
     return new Menu(menuGroup, 1, MenuType.CONTEST, "공모전 게시판", "공모전 게시판 설명");
   }

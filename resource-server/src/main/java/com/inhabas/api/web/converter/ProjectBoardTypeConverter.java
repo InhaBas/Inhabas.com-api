@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
 
 public class ProjectBoardTypeConverter {
 

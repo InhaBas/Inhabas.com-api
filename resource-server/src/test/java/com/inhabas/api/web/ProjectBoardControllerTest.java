@@ -28,9 +28,9 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
+import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.usecase.ProjectBoardService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
@@ -76,8 +76,8 @@ public class ProjectBoardControllerTest {
   void getBoardList_Success() throws Exception {
     // given
     Member writer = MemberTest.chiefMember();
-    NormalBoardDto normalBoardDto =
-        NormalBoardDto.builder()
+    ProjectBoardDto projectBoardDto =
+        ProjectBoardDto.builder()
             .id(1L)
             .title("title")
             .writerName(writer.getName())
@@ -85,7 +85,7 @@ public class ProjectBoardControllerTest {
             .dateUpdated(LocalDateTime.now())
             .isPinned(false)
             .build();
-    List<NormalBoardDto> dtoList = List.of(normalBoardDto);
+    List<ProjectBoardDto> dtoList = List.of(projectBoardDto);
     given(projectBoardService.getPosts(any(), any())).willReturn(dtoList);
 
     // when
@@ -120,8 +120,8 @@ public class ProjectBoardControllerTest {
   void getBoard() throws Exception {
     // given
     Member writer = MemberTest.chiefMember();
-    NormalBoardDetailDto normalBoardDetailDto =
-        NormalBoardDetailDto.builder()
+    ProjectBoardDetailDto projectBoardDetailDto =
+        ProjectBoardDetailDto.builder()
             .id(1L)
             .title("title")
             .content("content")
@@ -132,7 +132,7 @@ public class ProjectBoardControllerTest {
             .dateUpdated(LocalDateTime.now())
             .isPinned(false)
             .build();
-    given(projectBoardService.getPost(any(), any(), any())).willReturn(normalBoardDetailDto);
+    given(projectBoardService.getPost(any(), any(), any())).willReturn(projectBoardDetailDto);
 
     // when
     String response =
@@ -143,7 +143,7 @@ public class ProjectBoardControllerTest {
             .getContentAsString(StandardCharsets.UTF_8);
 
     // then
-    assertThat(response).contains(jsonOf(normalBoardDetailDto));
+    assertThat(response).contains(jsonOf(projectBoardDetailDto));
   }
 
   @DisplayName("게시글 단일 조회 데이터가 올바르지 않다면 400")
@@ -185,16 +185,16 @@ public class ProjectBoardControllerTest {
     // given
     given(projectBoardService.write(any(), any(), any())).willReturn(1L);
 
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder()
             .title("good title")
             .content("good content")
             .pinOption(1)
             .build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
+    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
     MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
+        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
     MockMultipartFile filePart =
         new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
@@ -219,12 +219,12 @@ public class ProjectBoardControllerTest {
   void addBoard_Invalid_Input() throws Exception {
     // given
 
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder().title("").content("good content").pinOption(1).build();
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
+    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
     MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
+        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
     MockMultipartFile filePart =
         new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
@@ -251,16 +251,16 @@ public class ProjectBoardControllerTest {
 
     doNothing().when(projectBoardService).update(any(), any(), any());
 
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder()
             .title("good title")
             .content("good content")
             .pinOption(1)
             .build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
+    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
     MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
+        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
     MockMultipartFile filePart =
         new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
@@ -280,12 +280,12 @@ public class ProjectBoardControllerTest {
 
     doThrow(InvalidInputException.class).when(projectBoardService).update(any(), any(), any());
 
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder().title("").content("good content").pinOption(1).build();
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
+    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
     MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
+        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
     MockMultipartFile filePart =
         new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
@@ -311,16 +311,16 @@ public class ProjectBoardControllerTest {
     // given
     doThrow(NotFoundException.class).when(projectBoardService).update(any(), any(), any());
 
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder()
             .title("good title")
             .content("good content")
             .pinOption(1)
             .build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
+    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
     MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
+        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
     MockMultipartFile filePart =
         new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 

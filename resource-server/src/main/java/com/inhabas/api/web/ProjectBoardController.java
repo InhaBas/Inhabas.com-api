@@ -21,10 +21,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
-import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
+import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
+import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.usecase.ProjectBoardService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedPinnedResponseDto;
@@ -93,7 +93,7 @@ public class ProjectBoardController {
   @GetMapping("/project/{projectBoardType}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD_LIST)")
-  public ResponseEntity<PagedPinnedResponseDto<NormalBoardDto>> getBoardList(
+  public ResponseEntity<PagedPinnedResponseDto<ProjectBoardDto>> getBoardList(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -106,13 +106,13 @@ public class ProjectBoardController {
       @PathVariable ProjectBoardType projectBoardType) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<NormalBoardDto> allDtoList = projectBoardService.getPosts(projectBoardType, search);
-    List<NormalBoardDto> pinnedDtoList = projectBoardService.getPinned(projectBoardType);
-    List<NormalBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+    List<ProjectBoardDto> allDtoList = projectBoardService.getPosts(projectBoardType, search);
+    List<ProjectBoardDto> pinnedDtoList = projectBoardService.getPinned(projectBoardType);
+    List<ProjectBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
-    PageImpl<NormalBoardDto> normalBoardDtoPage =
+    PageImpl<ProjectBoardDto> projectBoardDtoPage =
         new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
-    PageInfoDto pageInfoDto = new PageInfoDto(normalBoardDtoPage);
+    PageInfoDto pageInfoDto = new PageInfoDto(projectBoardDtoPage);
 
     return ResponseEntity.ok(
         new PagedPinnedResponseDto<>(pageInfoDto, pinnedDtoList, pagedDtoList));
@@ -125,7 +125,7 @@ public class ProjectBoardController {
   @ApiResponses({
     @ApiResponse(
         responseCode = "200",
-        content = {@Content(schema = @Schema(implementation = NormalBoardDto.class))}),
+        content = {@Content(schema = @Schema(implementation = ProjectBoardDto.class))}),
     @ApiResponse(
         responseCode = "400",
         description = "입력값이 없거나, 타입이 유효하지 않습니다.",
@@ -147,7 +147,7 @@ public class ProjectBoardController {
                         value =
                             "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
-  public ResponseEntity<NormalBoardDetailDto> getBoard(
+  public ResponseEntity<ProjectBoardDetailDto> getBoard(
       @PathVariable Long boardId,
       @PathVariable ProjectBoardType projectBoardType,
       @Authenticated Long memberId) {
@@ -186,21 +186,21 @@ public class ProjectBoardController {
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
       @PathVariable ProjectBoardType projectBoardType,
-      @Valid @RequestPart("form") SaveNormalBoardDto form,
+      @Valid @RequestPart("form") SaveProjectBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder()
             .title(form.getTitle())
             .content(form.getContent())
             .pinOption(form.getPinOption())
             .files(files)
             .build();
-    Long newNormalBoardId =
-        projectBoardService.write(memberId, projectBoardType, saveNormalBoardDto);
+    Long newProjectBoardId =
+        projectBoardService.write(memberId, projectBoardType, saveProjectBoardDto);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{boardId}")
-            .buildAndExpand(newNormalBoardId)
+            .buildAndExpand(newProjectBoardId)
             .toUri();
 
     return ResponseEntity.created(location).build();
@@ -238,16 +238,16 @@ public class ProjectBoardController {
       @Authenticated Long memberId,
       @PathVariable ProjectBoardType projectBoardType,
       @PathVariable Long boardId,
-      @Valid @RequestPart("form") SaveNormalBoardDto form,
+      @Valid @RequestPart("form") SaveProjectBoardDto form,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
+    SaveProjectBoardDto saveProjectBoardDto =
+        SaveProjectBoardDto.builder()
             .title(form.getTitle())
             .content(form.getContent())
             .pinOption(form.getPinOption())
             .files(files)
             .build();
-    projectBoardService.update(boardId, projectBoardType, saveNormalBoardDto);
+    projectBoardService.update(boardId, projectBoardType, saveProjectBoardDto);
     return ResponseEntity.noContent().build();
   }
 

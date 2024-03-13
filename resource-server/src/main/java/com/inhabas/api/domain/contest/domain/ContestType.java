@@ -1,13 +1,13 @@
-package com.inhabas.api.domain.project;
+package com.inhabas.api.domain.contest.domain;
 
-public enum ProjectBoardType {
-  ALPHA("alpha", 16),
-  BETA("beta", 17);
+public enum ContestType {
+  CONTEST("contest", 18),
+  ACTIVITY("activity", 19);
 
   private final String boardType;
   private final int menuId;
 
-  ProjectBoardType(String boardType, int menuId) {
+  ContestType(String boardType, int menuId) {
     this.boardType = boardType;
     this.menuId = menuId;
   }

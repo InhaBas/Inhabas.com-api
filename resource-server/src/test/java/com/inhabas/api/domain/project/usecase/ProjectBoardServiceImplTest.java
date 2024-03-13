@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.project.usecase;
 
-import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getNormalNoticeMenu;
+import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getAlphaTesterMenu;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getProjectMenuGroup;
-import static com.inhabas.api.domain.project.ProjectBoardType.ALPHA;
+import static com.inhabas.api.domain.project.domain.ProjectBoardType.ALPHA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -24,10 +24,10 @@ import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
+import com.inhabas.api.domain.project.domain.ProjectBoard;
+import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
+import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.repository.ProjectBoardRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -52,8 +52,8 @@ public class ProjectBoardServiceImplTest {
   @Test
   void getPosts() {
     // given
-    NormalBoardDto dto =
-        new NormalBoardDto(
+    ProjectBoardDto dto =
+        new ProjectBoardDto(
             1L,
             "title",
             1L,
@@ -66,10 +66,10 @@ public class ProjectBoardServiceImplTest {
     given(projectBoardRepository.findAllByTypeAndSearch(any(), any())).willReturn(List.of(dto));
 
     // when
-    List<NormalBoardDto> normalBoardDtoList = projectBoardService.getPosts(ALPHA, "");
+    List<ProjectBoardDto> projectBoardDtoList = projectBoardService.getPosts(ALPHA, "");
 
     // then
-    assertThat(normalBoardDtoList).hasSize(1);
+    assertThat(projectBoardDtoList).hasSize(1);
   }
 
   @DisplayName("project board 게시글 단일 조회한다.")
@@ -78,19 +78,19 @@ public class ProjectBoardServiceImplTest {
   void getPost() {
     // given
     Member member = MemberTest.chiefMember();
-    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
-    NormalBoard normalBoard =
-        new NormalBoard("title", menu, "content", false, LocalDateTime.now())
-            .writtenBy(member, NormalBoard.class);
+    Menu menu = getAlphaTesterMenu(getProjectMenuGroup());
+    ProjectBoard projectBoard =
+        new ProjectBoard("title", menu, "content", false, LocalDateTime.now())
+            .writtenBy(member, ProjectBoard.class);
 
     given(projectBoardRepository.findByTypeAndId(any(), any()))
-        .willReturn(Optional.of(normalBoard));
+        .willReturn(Optional.of(projectBoard));
 
     // when
-    NormalBoardDetailDto dto = projectBoardService.getPost(1L, ALPHA, 1L);
+    ProjectBoardDetailDto dto = projectBoardService.getPost(1L, ALPHA, 1L);
 
     // then
-    assertThat(dto.getTitle()).isEqualTo(normalBoard.getTitle());
+    assertThat(dto.getTitle()).isEqualTo(projectBoard.getTitle());
   }
 
   @DisplayName("project board 게시글을 작성한다.")
@@ -99,18 +99,18 @@ public class ProjectBoardServiceImplTest {
   void write() {
     // given
     Member member = MemberTest.chiefMember();
-    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
-    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
-    NormalBoard normalBoard =
-        new NormalBoard("title", menu, "content", false, LocalDateTime.now())
-            .writtenBy(member, NormalBoard.class);
+    SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", "content", null, 2);
+    Menu menu = getAlphaTesterMenu(getProjectMenuGroup());
+    ProjectBoard projectBoard =
+        new ProjectBoard("title", menu, "content", false, LocalDateTime.now())
+            .writtenBy(member, ProjectBoard.class);
 
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
-    given(projectBoardRepository.save(any())).willReturn(normalBoard);
+    given(projectBoardRepository.save(any())).willReturn(projectBoard);
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
 
     // when
-    projectBoardService.write(1L, ALPHA, saveNormalBoardDto);
+    projectBoardService.write(1L, ALPHA, saveProjectBoardDto);
 
     // then
     then(menuRepository).should(times(1)).findById(anyInt());
@@ -122,16 +122,17 @@ public class ProjectBoardServiceImplTest {
   @Test
   void update() {
     // given
-    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
-    Menu menu = getNormalNoticeMenu(getProjectMenuGroup());
-    NormalBoard normalBoard = new NormalBoard("title", menu, "content", false, LocalDateTime.now());
-    ReflectionTestUtils.setField(normalBoard, "id", 1L);
+    SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", "content", null, 2);
+    Menu menu = getAlphaTesterMenu(getProjectMenuGroup());
+    ProjectBoard projectBoard =
+        new ProjectBoard("title", menu, "content", false, LocalDateTime.now());
+    ReflectionTestUtils.setField(projectBoard, "id", 1L);
 
-    given(projectBoardRepository.findById(any())).willReturn(Optional.of(normalBoard));
-    given(projectBoardRepository.save(any())).willReturn(normalBoard);
+    given(projectBoardRepository.findById(any())).willReturn(Optional.of(projectBoard));
+    given(projectBoardRepository.save(any())).willReturn(projectBoard);
 
     // when
-    projectBoardService.update(normalBoard.getId(), ALPHA, saveNormalBoardDto);
+    projectBoardService.update(projectBoard.getId(), ALPHA, saveProjectBoardDto);
 
     // then
     then(projectBoardRepository).should(times(1)).findById(any());

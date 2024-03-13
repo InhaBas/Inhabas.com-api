@@ -2,24 +2,24 @@ package com.inhabas.api.domain.project.usecase;
 
 import java.util.List;
 
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
-import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
-import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
-import com.inhabas.api.domain.project.ProjectBoardType;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
+import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
+import com.inhabas.api.domain.project.dto.ProjectBoardDto;
+import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 
 public interface ProjectBoardService {
 
-  List<NormalBoardDto> getPinned(ProjectBoardType projectBoardType);
+  List<ProjectBoardDto> getPinned(ProjectBoardType projectBoardType);
 
-  List<NormalBoardDto> getPosts(ProjectBoardType projectBoardType, String search);
+  List<ProjectBoardDto> getPosts(ProjectBoardType projectBoardType, String search);
 
-  NormalBoardDetailDto getPost(Long memberId, ProjectBoardType projectBoardType, Long boardId);
+  ProjectBoardDetailDto getPost(Long memberId, ProjectBoardType projectBoardType, Long boardId);
 
   Long write(
-      Long memberId, ProjectBoardType projectBoardType, SaveNormalBoardDto saveNormalBoardDto);
+      Long memberId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto);
 
   void update(
-      Long boardId, ProjectBoardType projectBoardType, SaveNormalBoardDto saveNormalBoardDto);
+      Long boardId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto);
 
   void delete(Long boardId);
 }
