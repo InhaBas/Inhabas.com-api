@@ -55,7 +55,7 @@ public class ProjectBoardControllerTest {
   @Test
   void getBoardCount_Success() throws Exception {
     // given
-    BoardCountDto boardCountDto = new BoardCountDto("알파테스터", 10);
+    BoardCountDto boardCountDto = new BoardCountDto("알파 테스터", 10);
     List<BoardCountDto> dtoList = List.of(boardCountDto);
     given(baseBoardRepository.countRowsGroupByMenuName(any())).willReturn(dtoList);
 
