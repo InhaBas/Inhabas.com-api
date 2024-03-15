@@ -50,7 +50,7 @@ public class ProjectBoardController {
   private final ProjectBoardService projectBoardService;
   private final BaseBoardRepository baseBoardRepository;
 
-  @Operation(summary = "게시판 종류 당 글 개수 조회")
+  @Operation(summary = "프로젝트 게시판 종류 당 글 개수 조회")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -63,7 +63,7 @@ public class ProjectBoardController {
     return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(5));
   }
 
-  @Operation(summary = "게시글 목록 조회")
+  @Operation(summary = "프로젝트 게시글 목록 조회")
   @ApiResponses(
       value = {
         @ApiResponse(
@@ -118,7 +118,7 @@ public class ProjectBoardController {
         new PagedPinnedResponseDto<>(pageInfoDto, pinnedDtoList, pagedDtoList));
   }
 
-  @Operation(summary = "게시글 단일 조회")
+  @Operation(summary = "프로젝트 게시글 단일 조회")
   @GetMapping("/project/{projectBoardType}/{boardId}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
@@ -155,7 +155,7 @@ public class ProjectBoardController {
     return ResponseEntity.ok(projectBoardService.getPost(memberId, projectBoardType, boardId));
   }
 
-  @Operation(summary = "게시글 추가")
+  @Operation(summary = "프로젝트 게시글 추가")
   @PostMapping(path = "/project/{projectBoardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
@@ -206,7 +206,7 @@ public class ProjectBoardController {
     return ResponseEntity.created(location).build();
   }
 
-  @Operation(summary = "게시글 수정")
+  @Operation(summary = "프로젝트 게시글 수정")
   @PostMapping(
       value = "/project/{projectBoardType}/{boardId}",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -251,7 +251,7 @@ public class ProjectBoardController {
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "게시글 삭제")
+  @Operation(summary = "프로젝트 게시글 삭제")
   @DeleteMapping("/project/{projectBoardType}/{boardId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),

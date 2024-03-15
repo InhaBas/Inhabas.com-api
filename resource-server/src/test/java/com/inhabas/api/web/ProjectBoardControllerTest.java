@@ -51,7 +51,7 @@ public class ProjectBoardControllerTest {
     return objectMapper.writeValueAsString(response);
   }
 
-  @DisplayName("프로젝트 게시판 종류 당 글 개수 조회 성공 200")
+  @DisplayName("프로젝트 프로젝트 게시판 종류 당 글 개수 조회 성공 200")
   @Test
   void getBoardCount_Success() throws Exception {
     // given
@@ -71,7 +71,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(jsonOf(dtoList));
   }
 
-  @DisplayName("게시글 목록 조회 성공 200")
+  @DisplayName("프로젝트 게시글 목록 조회 성공 200")
   @Test
   void getBoardList_Success() throws Exception {
     // given
@@ -100,7 +100,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(jsonOf(dtoList));
   }
 
-  @DisplayName("게시글 목록 조회 데이터가 올바르지 않다면 400")
+  @DisplayName("프로젝트 게시글 목록 조회 데이터가 올바르지 않다면 400")
   @Test
   void getBoardList_Invalid_Input() throws Exception {
     // when
@@ -115,7 +115,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("게시글 단일 조회 성공 200")
+  @DisplayName("프로젝트 게시글 단일 조회 성공 200")
   @Test
   void getBoard() throws Exception {
     // given
@@ -146,7 +146,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(jsonOf(projectBoardDetailDto));
   }
 
-  @DisplayName("게시글 단일 조회 데이터가 올바르지 않다면 400")
+  @DisplayName("프로젝트 게시글 단일 조회 데이터가 올바르지 않다면 400")
   @Test
   void getBoard_Invalid_Input() throws Exception {
     // when
@@ -161,7 +161,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("게시글 단일 조회 데이터가 올바르지 않다면 404")
+  @DisplayName("프로젝트 게시글 단일 조회 데이터가 올바르지 않다면 404")
   @Test
   void getBoard_Not_Found() throws Exception {
     // given
@@ -179,7 +179,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
 
-  @DisplayName("게시글 추가 성공 201")
+  @DisplayName("프로젝트 게시글 추가 성공 201")
   @Test
   void addBoard() throws Exception {
     // given
@@ -214,7 +214,7 @@ public class ProjectBoardControllerTest {
     assertThat(header).contains("/project/alpha/1");
   }
 
-  @DisplayName("게시글 추가 데이터가 올바르지 않다면 400")
+  @DisplayName("프로젝트 게시글 추가 데이터가 올바르지 않다면 400")
   @Test
   void addBoard_Invalid_Input() throws Exception {
     // given
@@ -244,7 +244,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("게시글 수정 성공 204")
+  @DisplayName("프로젝트 게시글 수정 성공 204")
   @Test
   void updateBoard() throws Exception {
     // given
@@ -273,7 +273,7 @@ public class ProjectBoardControllerTest {
         .andExpect(status().isNoContent());
   }
 
-  @DisplayName("게시글 수정 데이터가 올바르지 않다면 400")
+  @DisplayName("프로젝트 게시글 수정 데이터가 올바르지 않다면 400")
   @Test
   void updateBoard_Invalid_Input() throws Exception {
     // given
@@ -305,7 +305,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("게시글 수정 데이터가 올바르지 않다면 404")
+  @DisplayName("프로젝트 게시글 수정 데이터가 올바르지 않다면 404")
   @Test
   void updateBoard_Not_Found() throws Exception {
     // given
@@ -340,7 +340,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
 
-  @DisplayName("게시글 삭제 성공 204")
+  @DisplayName("프로젝트 게시글 삭제 성공 204")
   @Test
   void deleteBoard() throws Exception {
     // given
@@ -350,7 +350,7 @@ public class ProjectBoardControllerTest {
     mvc.perform(delete("/project/alpha/1")).andExpect(status().isNoContent());
   }
 
-  @DisplayName("게시글 삭제 데이터가 올바르지 않다면 400")
+  @DisplayName("프로젝트 게시글 삭제 데이터가 올바르지 않다면 400")
   @Test
   void deleteBoard_Invalid_Input() throws Exception {
     // given
@@ -368,7 +368,7 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("게시글 삭제 데이터가 올바르지 않다면 404")
+  @DisplayName("프로젝트 게시글 삭제 데이터가 올바르지 않다면 404")
   @Test
   void deleteBoard_Not_Found() throws Exception {
     // given
