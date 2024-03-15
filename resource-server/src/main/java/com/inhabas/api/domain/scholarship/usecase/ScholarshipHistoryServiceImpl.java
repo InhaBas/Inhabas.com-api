@@ -1,12 +1,10 @@
 package com.inhabas.api.domain.scholarship.usecase;
 
+import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +15,6 @@ import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
-import com.inhabas.api.domain.scholarship.dto.ScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepository;
 
 @Service
@@ -29,13 +26,9 @@ public class ScholarshipHistoryServiceImpl implements ScholarshipHistoryService 
 
   @Transactional(readOnly = true)
   @Override
-  public List<ScholarshipHistoryDto> getScholarshipHistories() {
-    Sort sort = Sort.by(Direction.ASC, "dateHistory");
-    List<ScholarshipHistory> scholarshipHistoryList = scholarshipHistoryRepository.findAll(sort);
+  public List<YearlyData> getScholarshipHistories() {
 
-    return scholarshipHistoryList.stream()
-        .map(ScholarshipHistoryDto::new)
-        .collect(Collectors.toList());
+    return scholarshipHistoryRepository.getYearlyData();
   }
 
   @Transactional

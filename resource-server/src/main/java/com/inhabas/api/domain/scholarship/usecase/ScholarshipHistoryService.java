@@ -1,13 +1,13 @@
 package com.inhabas.api.domain.scholarship.usecase;
 
+import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import java.util.List;
 
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
-import com.inhabas.api.domain.scholarship.dto.ScholarshipHistoryDto;
 
 public interface ScholarshipHistoryService {
 
-  List<ScholarshipHistoryDto> getScholarshipHistories();
+  List<YearlyData> getScholarshipHistories();
 
   Long writeScholarshipHistory(Long memberId, SaveScholarshipHistoryDto saveScholarshipHistoryDto);
 

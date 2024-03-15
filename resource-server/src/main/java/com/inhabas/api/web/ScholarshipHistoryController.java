@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import java.net.URI;
 import java.util.List;
 
@@ -19,7 +20,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
-import com.inhabas.api.domain.scholarship.dto.ScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.usecase.ScholarshipHistoryService;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,14 +45,14 @@ public class ScholarshipHistoryController {
             responseCode = "200",
             content = {
               @Content(
-                  schema = @Schema(implementation = ScholarshipHistoryDto.class, type = "array"))
+                  schema = @Schema(implementation = YearlyData.class, type = "array"))
             }),
       })
   @SecurityRequirements(value = {})
   @GetMapping("/scholarship/histories")
-  public ResponseEntity<List<ScholarshipHistoryDto>> getScholarHistories() {
+  public ResponseEntity<List<YearlyData>> getScholarHistories() {
 
-    List<ScholarshipHistoryDto> dtoList = scholarshipHistoryService.getScholarshipHistories();
+    List<YearlyData> dtoList = scholarshipHistoryService.getScholarshipHistories();
     return ResponseEntity.ok(dtoList);
   }
 

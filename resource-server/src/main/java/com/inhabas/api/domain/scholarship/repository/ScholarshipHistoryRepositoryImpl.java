@@ -1,64 +1,70 @@
 package com.inhabas.api.domain.scholarship.repository;
 
+import static com.inhabas.api.domain.scholarship.domain.QScholarshipHistory.scholarshipHistory;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import com.inhabas.api.domain.scholarship.domain.QScholarshipHistory;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @RequiredArgsConstructor
-public class ScholarshipHistoryRepositoryImpl {
+public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepositoryCustom{
 
   private final JPAQueryFactory queryFactory;
-  private QScholarshipHistory scholarshipHistory = QScholarshipHistory.scholarshipHistory;
 
-  public List<YearlyContents> getYearlyContents() {
-    List<Tuple> results =
-        queryFactory
-            .select(scholarshipHistory.dateHistory, scholarshipHistory.title)
-            .from(scholarshipHistory)
-            .orderBy(
-                scholarshipHistory.dateHistory.year().asc(), scholarshipHistory.dateHistory.asc())
-            .fetch();
+  @Override
+  public List<YearlyData> getYearlyData() {
+
+    List<Tuple> results = queryFactory
+        .select(scholarshipHistory.dateHistory, scholarshipHistory.title)
+        .from(scholarshipHistory)
+        .orderBy(
+            scholarshipHistory.dateHistory.year().asc(), scholarshipHistory.dateHistory.asc())
+        .fetch();
 
     return results.stream()
         .collect(
             Collectors.groupingBy(
-                tuple -> tuple.get(scholarshipHistory.dateHistory).getYear(),
+                tuple -> Objects.requireNonNull(tuple.get(scholarshipHistory.dateHistory)).getYear(),
                 Collectors.mapping(
                     tuple ->
-                        new Content(
-                            tuple.get(scholarshipHistory.dateHistory),
-                            tuple.get(scholarshipHistory.title)),
+                        new Data(
+                            tuple.get(scholarshipHistory.id),
+                            tuple.get(scholarshipHistory.title.value),
+                            tuple.get(scholarshipHistory.dateHistory)),
                     Collectors.toList())))
         .entrySet()
         .stream()
-        .map(entry -> new YearlyContents(entry.getKey(), entry.getValue()))
+        .map(entry -> new YearlyData(entry.getKey(), entry.getValue()))
         .collect(Collectors.toList());
   }
 
   // 연도별 컨텐츠를 담는 클래스
-  public static class YearlyContents {
+  public static class YearlyData {
     public int year;
-    public List<Content> contents;
+    public List<Data> data;
 
-    public YearlyContents(int year, List<Content> contents) {
+    public YearlyData(int year, List<Data> data) {
       this.year = year;
-      this.contents = contents;
+      this.data = data;
     }
   }
 
-  // 날짜와 컨텐츠 정보를 담는 클래스
-  public static class Content {
-    public String date;
-    public String content;
+  public static class Data {
+    public Long id;
+    public String title;
+    public LocalDateTime dateHistory;
 
-    public Content(String date, String content) {
-      this.date = date;
-      this.content = content;
+    public Data(Long id, String title, LocalDateTime dateHistory) {
+      this.id = id;
+      this.title = title;
+      this.dateHistory = dateHistory;
     }
+
   }
 }
