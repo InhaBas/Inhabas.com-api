@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.normalBoard.domain;
+package com.inhabas.api.domain.board.domain;
 
 public enum PinOption {
   DISABLED(0),

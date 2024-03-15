@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.project.usecase;
 
-import static com.inhabas.api.domain.project.domain.PinOption.PERMANENT;
-import static com.inhabas.api.domain.project.domain.PinOption.TEMPORARY;
+import static com.inhabas.api.domain.board.domain.PinOption.PERMANENT;
+import static com.inhabas.api.domain.board.domain.PinOption.TEMPORARY;
 import static com.inhabas.api.domain.project.domain.ProjectBoardType.ALPHA;
 import static com.inhabas.api.domain.project.domain.ProjectBoardType.BETA;
 
@@ -13,12 +13,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
@@ -42,7 +41,6 @@ import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class ProjectBoardServiceImpl implements ProjectBoardService {
 
@@ -57,6 +55,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   private static final Integer TEMPORARY_DAYS = 14;
 
   @Override
+  @Transactional
   public List<ProjectBoardDto> getPinned(ProjectBoardType projectboardType) {
     List<ProjectBoardDto> projectBoardList = new ArrayList<>();
     if (projectboardType.equals(ALPHA) || projectboardType.equals(BETA)) {
@@ -66,6 +65,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<ProjectBoardDto> getPosts(ProjectBoardType projectBoardType, String search) {
     List<ProjectBoardDto> projectBoardList = new ArrayList<>();
     projectBoardList.addAll(
@@ -74,6 +74,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ProjectBoardDetailDto getPost(
       Long memberId, ProjectBoardType projectBoardType, Long boardId) {
     ProjectBoard projectBoard;
@@ -100,6 +101,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   @Override
+  @Transactional
   public Long write(
       Long memberId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto) {
 
@@ -117,6 +119,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   @Override
+  @Transactional
   public void update(
       Long boardId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto) {
 
@@ -127,6 +130,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   }
 
   @Override
+  @Transactional
   public void delete(Long boardId) {
     projectBoardRepository.deleteById(boardId);
   }

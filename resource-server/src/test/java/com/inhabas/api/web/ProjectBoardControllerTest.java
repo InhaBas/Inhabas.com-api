@@ -51,7 +51,7 @@ public class ProjectBoardControllerTest {
     return objectMapper.writeValueAsString(response);
   }
 
-  @DisplayName("게시판 종류 당 글 개수 조회 성공 200")
+  @DisplayName("프로젝트 게시판 종류 당 글 개수 조회 성공 200")
   @Test
   void getBoardCount_Success() throws Exception {
     // given

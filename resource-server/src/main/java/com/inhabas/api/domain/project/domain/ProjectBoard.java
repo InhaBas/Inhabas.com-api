@@ -29,7 +29,7 @@ import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 
 @Entity
-@Table(name = "NORMAL_BOARD")
+@Table(name = "PROJECT_BOARD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
