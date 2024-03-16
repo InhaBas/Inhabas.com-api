@@ -2,11 +2,12 @@ package com.inhabas.api.domain.scholarship.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
-import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ public class ScholarshipHistoryTest {
     ScholarshipHistory scholarshipHistory =
         ScholarshipHistory.builder()
             .writer(writer)
-            .title(new Title("oldTitle"))
+            .title("oldTitle")
             .dateHistory(LocalDateTime.now())
             .build();
 
@@ -33,7 +34,7 @@ public class ScholarshipHistoryTest {
     // then
     assertThat(scholarshipHistory)
         .extracting(
-            ScholarshipHistory -> scholarshipHistory.getTitle().getValue(),
+            ScholarshipHistory -> scholarshipHistory.getTitle(),
             ScholarshipHistory -> scholarshipHistory.getDateHistory())
         .containsExactly(
             saveScholarshipHistoryDto.getTitle(), saveScholarshipHistoryDto.getDateHistory());
