@@ -1,9 +1,9 @@
 package com.inhabas.api.domain.scholarship.usecase;
 
-import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import java.util.List;
 
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
+import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 
 public interface ScholarshipHistoryService {
 

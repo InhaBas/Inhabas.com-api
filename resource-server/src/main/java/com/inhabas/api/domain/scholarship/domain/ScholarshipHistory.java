@@ -28,8 +28,8 @@ import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 
 @Entity
-@Table(name = "SCHOLARSHIP_HISTORY")
 @Getter
+@Table(name = "SCHOLARSHIP_HISTORY")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class ScholarshipHistory extends BaseEntity {
@@ -48,10 +48,14 @@ public class ScholarshipHistory extends BaseEntity {
   private LocalDateTime dateHistory;
 
   @Builder
-  public ScholarshipHistory(Member writer, Title title, LocalDateTime dateHistory) {
+  public ScholarshipHistory(Member writer, String title, LocalDateTime dateHistory) {
     this.writer = writer;
-    this.title = title;
+    this.title = new Title(title);
     this.dateHistory = dateHistory;
+  }
+
+  public String getTitle() {
+    return title.getValue();
   }
 
   public void update(Member writer, SaveScholarshipHistoryDto saveScholarshipHistoryDto) {

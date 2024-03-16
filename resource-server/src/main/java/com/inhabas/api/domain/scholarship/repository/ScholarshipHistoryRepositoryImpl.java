@@ -13,24 +13,26 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @RequiredArgsConstructor
-public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepositoryCustom{
+public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
 
   @Override
   public List<YearlyData> getYearlyData() {
 
-    List<Tuple> results = queryFactory
-        .select(scholarshipHistory.dateHistory, scholarshipHistory.title)
-        .from(scholarshipHistory)
-        .orderBy(
-            scholarshipHistory.dateHistory.year().asc(), scholarshipHistory.dateHistory.asc())
-        .fetch();
+    List<Tuple> results =
+        queryFactory
+            .select(scholarshipHistory.dateHistory, scholarshipHistory.title)
+            .from(scholarshipHistory)
+            .orderBy(
+                scholarshipHistory.dateHistory.year().asc(), scholarshipHistory.dateHistory.asc())
+            .fetch();
 
     return results.stream()
         .collect(
             Collectors.groupingBy(
-                tuple -> Objects.requireNonNull(tuple.get(scholarshipHistory.dateHistory)).getYear(),
+                tuple ->
+                    Objects.requireNonNull(tuple.get(scholarshipHistory.dateHistory)).getYear(),
                 Collectors.mapping(
                     tuple ->
                         new Data(
@@ -65,6 +67,5 @@ public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepos
       this.title = title;
       this.dateHistory = dateHistory;
     }
-
   }
 }

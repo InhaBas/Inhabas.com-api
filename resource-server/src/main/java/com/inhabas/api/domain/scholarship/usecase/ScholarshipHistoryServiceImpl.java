@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.scholarship.usecase;
 
-import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -12,10 +11,10 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepository;
+import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class ScholarshipHistoryServiceImpl implements ScholarshipHistoryService 
     ScholarshipHistory scholarshipHistory =
         ScholarshipHistory.builder()
             .writer(writer)
-            .title(new Title(saveScholarshipHistoryDto.getTitle()))
+            .title(saveScholarshipHistoryDto.getTitle())
             .dateHistory(saveScholarshipHistoryDto.getDateHistory())
             .build();
 
