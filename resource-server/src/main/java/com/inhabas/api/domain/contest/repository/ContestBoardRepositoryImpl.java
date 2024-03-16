@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 import com.inhabas.api.domain.contest.domain.ContestBoard;
+import com.inhabas.api.domain.contest.domain.ContestType;
 import com.inhabas.api.domain.contest.domain.QContestBoard;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.global.util.ClassifiedFiles;

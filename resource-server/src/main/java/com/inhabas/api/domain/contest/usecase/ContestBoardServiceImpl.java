@@ -19,7 +19,7 @@ import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;

@@ -1,4 +1,4 @@
-package com.inhabas.api.domain.contest.domain.valueObject;
+package com.inhabas.api.domain.contest.domain;
 
 public enum ContestType {
   CONTEST("contest", 18),

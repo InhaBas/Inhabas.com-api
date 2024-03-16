@@ -6,21 +6,21 @@ import org.springframework.util.StringUtils;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
-import com.inhabas.api.domain.contest.domain.ContestType;
+import com.inhabas.api.domain.project.domain.ProjectBoardType;
 
-public class ContestTypeConverter {
+public class ProjectBoardTypeConverter {
 
   @Component
-  public static class StringToContestTypeConverter implements Converter<String, ContestType> {
+  public static class StringToProjectBoardTypeConverter
+      implements Converter<String, ProjectBoardType> {
 
-    // Enum형 ContestType의 각 요소들 (CONTEST, ACTIVITY..)을 소문자 문자열로 변환시켜 url에 매핑시키기 위한 컨버터
     @Override
-    public ContestType convert(String source) {
+    public ProjectBoardType convert(String source) {
       if (!StringUtils.hasText(source)) {
         throw new InvalidInputException();
       }
       try {
-        return ContestType.valueOf(source.trim().toUpperCase());
+        return ProjectBoardType.valueOf(source.trim().toUpperCase());
       } catch (IllegalArgumentException e) {
         throw new NotFoundException();
       }
@@ -28,9 +28,10 @@ public class ContestTypeConverter {
   }
 
   @Component
-  public static class ContestTypeToStringConverter implements Converter<ContestType, String> {
+  public static class ProjectBoardTypeToStringConverter
+      implements Converter<ProjectBoardType, String> {
     @Override
-    public String convert(ContestType source) {
+    public String convert(ProjectBoardType source) {
       return source != null ? source.toString().toLowerCase() : null;
     }
   }
