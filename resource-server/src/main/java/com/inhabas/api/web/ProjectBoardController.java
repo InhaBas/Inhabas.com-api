@@ -42,7 +42,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Slf4j
-@Tag(name = "게시글 관리")
+@Tag(name = "프로젝트 게시글 관리")
 @RestController
 @RequiredArgsConstructor
 public class ProjectBoardController {
