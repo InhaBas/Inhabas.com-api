@@ -1,7 +1,5 @@
 package com.inhabas.api.domain.scholarship.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,15 +34,24 @@ public class ScholarshipHistoryRepositoryTest {
     ScholarshipHistory scholarshipHistory =
         new ScholarshipHistory(writer, "title", LocalDateTime.now());
     ReflectionTestUtils.setField(scholarshipHistory, "id", 1L);
-    Data data = new Data(1L, scholarshipHistory.getTitle(), scholarshipHistory.getDateHistory());
-    YearlyData savedData =
-        new YearlyData(scholarshipHistory.getDateHistory().getYear(), List.of(data));
+    ScholarshipHistory savedScholarshipHistory =
+        scholarshipHistoryRepository.save(scholarshipHistory);
+    Data data =
+        new Data(1L, savedScholarshipHistory.getTitle(), savedScholarshipHistory.getDateHistory());
+    List<YearlyData> savedData =
+        List.of(new YearlyData(savedScholarshipHistory.getDateHistory().getYear(), List.of(data)));
 
     // when
     scholarshipHistoryRepository.save(scholarshipHistory);
     List<YearlyData> yearlyData = scholarshipHistoryRepository.getYearlyData();
 
     // then
-    Assertions.assertThat(yearlyData).contains(savedData);
+    Assertions.assertThat(yearlyData.get(0).year).isEqualTo(savedData.get(0).year);
+    Assertions.assertThat(yearlyData.get(0).data.get(0).id)
+        .isEqualTo(savedData.get(0).data.get(0).id);
+    Assertions.assertThat(yearlyData.get(0).data.get(0).dateHistory)
+        .isEqualTo(savedData.get(0).data.get(0).dateHistory);
+    Assertions.assertThat(yearlyData.get(0).data.get(0).title)
+        .isEqualTo(savedData.get(0).data.get(0).title);
   }
 }

@@ -4,12 +4,11 @@ import static com.inhabas.api.domain.scholarship.domain.QScholarshipHistory.scho
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import com.querydsl.core.Tuple;
+import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @RequiredArgsConstructor
@@ -20,25 +19,20 @@ public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepos
   @Override
   public List<YearlyData> getYearlyData() {
 
-    List<Tuple> results =
+    List<ScholarshipHistory> histories =
         queryFactory
-            .select(scholarshipHistory.dateHistory, scholarshipHistory.title)
-            .from(scholarshipHistory)
+            .selectFrom(scholarshipHistory)
             .orderBy(
                 scholarshipHistory.dateHistory.year().asc(), scholarshipHistory.dateHistory.asc())
             .fetch();
 
-    return results.stream()
+    return histories.stream()
         .collect(
             Collectors.groupingBy(
-                tuple ->
-                    Objects.requireNonNull(tuple.get(scholarshipHistory.dateHistory)).getYear(),
+                history -> history.getDateHistory().getYear(),
                 Collectors.mapping(
-                    tuple ->
-                        new Data(
-                            tuple.get(scholarshipHistory.id),
-                            tuple.get(scholarshipHistory.title.value),
-                            tuple.get(scholarshipHistory.dateHistory)),
+                    history ->
+                        new Data(history.getId(), history.getTitle(), history.getDateHistory()),
                     Collectors.toList())))
         .entrySet()
         .stream()
@@ -48,6 +42,7 @@ public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepos
 
   // 연도별 컨텐츠를 담는 클래스
   public static class YearlyData {
+
     public int year;
     public List<Data> data;
 
@@ -58,6 +53,7 @@ public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepos
   }
 
   public static class Data {
+
     public Long id;
     public String title;
     public LocalDateTime dateHistory;
