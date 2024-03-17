@@ -136,6 +136,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
 
     NormalBoard normalBoard =
         normalBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
     updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
     updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
   }
@@ -153,7 +154,6 @@ public class NormalBoardServiceImpl implements NormalBoardService {
     List<String> urlListForDelete = new ArrayList<>();
 
     if (saveNormalBoardDto.getFiles() != null) {
-      normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
       try {
         updateFiles =
             saveNormalBoardDto.getFiles().stream()
