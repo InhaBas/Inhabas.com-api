@@ -131,6 +131,18 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     ContestBoard contestBoard =
         contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    ContestField contestField =
+        contestFieldRepository
+            .findById(saveContestBoardDto.getContestFieldId())
+            .orElseThrow(NotFoundException::new);
+    contestBoard.updateContest(
+        contestField,
+        saveContestBoardDto.getTitle(),
+        saveContestBoardDto.getContent(),
+        saveContestBoardDto.getAssociation(),
+        saveContestBoardDto.getTopic(),
+        saveContestBoardDto.getDateContestStart(),
+        saveContestBoardDto.getDateContestEnd());
     updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
   }
 
@@ -146,20 +158,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     final String DIR_NAME = contestType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
-    ContestField contestField =
-        contestFieldRepository
-            .findById(saveContestBoardDto.getContestFieldId())
-            .orElseThrow(() -> new NotFoundException());
 
     if (saveContestBoardDto.getFiles() != null) {
-      contestBoard.updateContest(
-          contestField,
-          saveContestBoardDto.getTitle(),
-          saveContestBoardDto.getContent(),
-          saveContestBoardDto.getAssociation(),
-          saveContestBoardDto.getTopic(),
-          saveContestBoardDto.getDateContestStart(),
-          saveContestBoardDto.getDateContestEnd());
+
       try {
         updateFiles =
             saveContestBoardDto.getFiles().stream()

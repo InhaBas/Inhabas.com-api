@@ -125,6 +125,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
 
     ProjectBoard projectBoard =
         projectBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    projectBoard.updateText(saveProjectBoardDto.getTitle(), saveProjectBoardDto.getContent());
     updateProjectBoardPinned(saveProjectBoardDto, projectBoardType, projectBoard);
     updateProjectBoardFiles(saveProjectBoardDto, projectBoardType, projectBoard);
   }
@@ -144,7 +145,6 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
     List<String> urlListForDelete = new ArrayList<>();
 
     if (saveProjectBoardDto.getFiles() != null) {
-      projectBoard.updateText(saveProjectBoardDto.getTitle(), saveProjectBoardDto.getContent());
       try {
         updateFiles =
             saveProjectBoardDto.getFiles().stream()
