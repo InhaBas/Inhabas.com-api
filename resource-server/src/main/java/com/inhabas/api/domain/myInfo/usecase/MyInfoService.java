@@ -6,13 +6,9 @@ import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
 import com.inhabas.api.domain.myInfo.dto.MyPostsDto;
 
 public interface MyInfoService {
-  List<MyPostsDto> getNormalBoards();
+  List<MyPostsDto> getMyBoards();
 
-  List<MyPostsDto> getProjectBoards();
-
-  List<MyPostsDto> getContestBoards();
-
-  List<MyCommentsDto> getComments();
+  List<MyCommentsDto> getMyComments();
 
   // List<MyBudgetSupportApplicationDto> getBudgetSupportApplications(Long memberId, Long menuId,
   // Long boardId);

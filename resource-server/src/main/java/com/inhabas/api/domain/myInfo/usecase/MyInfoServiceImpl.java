@@ -22,10 +22,10 @@ public class MyInfoServiceImpl implements MyInfoService {
 
   private final MyInfoRepository myInfoRepository;
 
-  // 현재 로그인한 유저의 모든 NormalBoards를 불러온다.
+  // 현재 로그인한 유저의 모든 게시글을 불러온다.
   @Override
   @Transactional(readOnly = true)
-  public List<MyPostsDto> getNormalBoards() {
+  public List<MyPostsDto> getMyBoards() {
 
     List<MyPostsDto> posts = new ArrayList<>();
 
@@ -34,47 +34,7 @@ public class MyInfoServiceImpl implements MyInfoService {
     }
     Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    posts.addAll(myInfoRepository.findAllNormalBoardsByMemberId(memberId));
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-
-    return posts;
-  }
-
-  // 현재 로그인한 유저의 모든 ProjectBoards를 불러온다.
-  @Override
-  @Transactional(readOnly = true)
-  public List<MyPostsDto> getProjectBoards() {
-
-    List<MyPostsDto> posts = new ArrayList<>();
-
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    posts.addAll(myInfoRepository.findAllProjectBoardsByMemberId(memberId));
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-
-    return posts;
-  }
-
-  // 현재 로그인한 유저의 모든 ContestBoards를 불러온다.
-  @Override
-  @Transactional(readOnly = true)
-  public List<MyPostsDto> getContestBoards() {
-
-    List<MyPostsDto> posts = new ArrayList<>();
-
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-    posts.addAll(myInfoRepository.findAllContestBoardsByMemberId(memberId));
+    posts.addAll(myInfoRepository.findAllBoardsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }
@@ -84,7 +44,7 @@ public class MyInfoServiceImpl implements MyInfoService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<MyCommentsDto> getComments() {
+  public List<MyCommentsDto> getMyComments() {
 
     List<MyCommentsDto> comments = new ArrayList<>();
 
