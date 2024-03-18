@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
+import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
 import com.inhabas.api.domain.myInfo.dto.MyPostsDto;
 import com.inhabas.api.domain.myInfo.repository.MyInfoRepository;
 
@@ -79,5 +80,24 @@ public class MyInfoServiceImpl implements MyInfoService {
     }
 
     return posts;
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<MyCommentsDto> getComments() {
+
+    List<MyCommentsDto> comments = new ArrayList<>();
+
+    if (SecurityContextHolder.getContext() == null) {
+      throw new InvalidAuthorityException();
+    }
+    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    comments.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
+    if (SecurityContextHolder.getContext() == null) {
+      throw new InvalidAuthorityException();
+    }
+
+    return comments;
   }
 }

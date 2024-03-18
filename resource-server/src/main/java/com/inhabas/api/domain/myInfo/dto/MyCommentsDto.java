@@ -14,6 +14,7 @@ public class MyCommentsDto {
   // ParentsBoard의 id
   @NotNull @Positive private Long id;
 
+  // ParentsBoard의 메뉴 이름
   @NotNull private String menuName;
 
   // 댓글의 내용
