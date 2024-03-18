@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
+import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
 import com.inhabas.api.domain.myInfo.dto.MyPostsDto;
 import com.inhabas.api.domain.myInfo.repository.MyInfoRepository;
@@ -27,37 +28,59 @@ public class MyInfoServiceImpl implements MyInfoService {
   @Transactional(readOnly = true)
   public List<MyPostsDto> getMyBoards() {
 
-    List<MyPostsDto> posts = new ArrayList<>();
+    List<MyPostsDto> myPostsDtoList = new ArrayList<>();
 
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }
     Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    posts.addAll(myInfoRepository.findAllBoardsByMemberId(memberId));
+    myPostsDtoList.addAll(myInfoRepository.findAllBoardsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }
 
-    return posts;
+    return myPostsDtoList;
   }
 
+  // 현재 로그인한 유저의 모든 댓글을 불러온다.
   @Override
   @Transactional(readOnly = true)
   public List<MyCommentsDto> getMyComments() {
 
-    List<MyCommentsDto> comments = new ArrayList<>();
+    List<MyCommentsDto> MyCommentsDtoList = new ArrayList<>();
 
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }
     Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    comments.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
+    MyCommentsDtoList.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }
 
-    return comments;
+    return MyCommentsDtoList;
+  }
+
+  // 현재 로그인한 유저의 모든 예산 신청 내역을 불러온다.
+  @Override
+  @Transactional(readOnly = true)
+  public List<MyBudgetSupportApplicationDto> getMyBudgetApplicationSupports() {
+
+    List<MyBudgetSupportApplicationDto> budgetSupportApplicationDtoList = new ArrayList<>();
+
+    if (SecurityContextHolder.getContext() == null) {
+      throw new InvalidAuthorityException();
+    }
+    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    budgetSupportApplicationDtoList.addAll(
+        myInfoRepository.findAllBudgetSupportAllpicationByMemberId(memberId));
+    if (SecurityContextHolder.getContext() == null) {
+      throw new InvalidAuthorityException();
+    }
+
+    return budgetSupportApplicationDtoList;
   }
 }

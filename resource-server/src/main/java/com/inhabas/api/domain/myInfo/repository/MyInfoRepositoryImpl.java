@@ -1,12 +1,14 @@
 package com.inhabas.api.domain.myInfo.repository;
 
 import static com.inhabas.api.domain.board.domain.QBaseBoard.baseBoard;
+import static com.inhabas.api.domain.budget.domain.QBudgetSupportApplication.budgetSupportApplication;
 import static com.inhabas.api.domain.comment.domain.QComment.comment;
 
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
 import com.inhabas.api.domain.myInfo.dto.MyPostsDto;
 import com.querydsl.core.types.Projections;
@@ -46,6 +48,22 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
         .from(comment)
         .where(comment.writer.id.eq(memberId))
         .orderBy(comment.dateCreated.desc())
+        .fetch();
+  }
+
+  @Override
+  public List<MyBudgetSupportApplicationDto> findAllBudgetSupportAllpicationByMemberId(
+      Long memberId) {
+    return queryFactory
+        .select(
+            Projections.constructor(
+                MyBudgetSupportApplicationDto.class,
+                budgetSupportApplication.status,
+                budgetSupportApplication.title.value,
+                budgetSupportApplication.dateCreated))
+        .from(budgetSupportApplication)
+        .where(budgetSupportApplication.applicant.id.eq(memberId))
+        .orderBy(budgetSupportApplication.dateCreated.desc())
         .fetch();
   }
 }
