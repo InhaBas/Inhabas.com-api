@@ -19,7 +19,7 @@ import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
@@ -131,6 +131,18 @@ public class ContestBoardServiceImpl implements ContestBoardService {
 
     ContestBoard contestBoard =
         contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    ContestField contestField =
+        contestFieldRepository
+            .findById(saveContestBoardDto.getContestFieldId())
+            .orElseThrow(NotFoundException::new);
+    contestBoard.updateContest(
+        contestField,
+        saveContestBoardDto.getTitle(),
+        saveContestBoardDto.getContent(),
+        saveContestBoardDto.getAssociation(),
+        saveContestBoardDto.getTopic(),
+        saveContestBoardDto.getDateContestStart(),
+        saveContestBoardDto.getDateContestEnd());
     updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
   }
 
@@ -146,20 +158,9 @@ public class ContestBoardServiceImpl implements ContestBoardService {
     final String DIR_NAME = contestType.getBoardType() + "/";
     List<BoardFile> updateFiles = new ArrayList<>();
     List<String> urlListForDelete = new ArrayList<>();
-    ContestField contestField =
-        contestFieldRepository
-            .findById(saveContestBoardDto.getContestFieldId())
-            .orElseThrow(() -> new NotFoundException());
 
     if (saveContestBoardDto.getFiles() != null) {
-      contestBoard.updateContest(
-          contestField,
-          saveContestBoardDto.getTitle(),
-          saveContestBoardDto.getContent(),
-          saveContestBoardDto.getAssociation(),
-          saveContestBoardDto.getTopic(),
-          saveContestBoardDto.getDateContestStart(),
-          saveContestBoardDto.getDateContestEnd());
+
       try {
         updateFiles =
             saveContestBoardDto.getFiles().stream()

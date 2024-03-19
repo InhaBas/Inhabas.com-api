@@ -36,7 +36,7 @@ public class MemberTest {
     // 회원정보 저장
     member.setStudentId("12171234");
     member.setPhone("010-1111-1111");
-    member.setName("유동현");
+    member.setName("조승현");
     member.setSchoolInformation(new SchoolInformation("컴퓨터공학과", 1, 1, UNDERGRADUATE));
     return member;
   }

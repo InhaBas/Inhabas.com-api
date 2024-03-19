@@ -11,6 +11,7 @@ import com.inhabas.api.web.converter.ContestOrderByConverter;
 import com.inhabas.api.web.converter.ContestTypeConverter;
 import com.inhabas.api.web.converter.MenuIdConverter;
 import com.inhabas.api.web.converter.NormalBoardTypeConverter;
+import com.inhabas.api.web.converter.ProjectBoardTypeConverter;
 import io.swagger.v3.core.jackson.ModelResolver;
 
 @Configuration
@@ -25,6 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addConverter(new ContestTypeConverter.ContestTypeToStringConverter());
     registry.addConverter(new NormalBoardTypeConverter.NormalTypeToStringConverter());
     registry.addConverter(new NormalBoardTypeConverter.StringToNormalTypeConverter());
+    registry.addConverter(new ProjectBoardTypeConverter.ProjectBoardTypeToStringConverter());
+    registry.addConverter(new ProjectBoardTypeConverter.StringToProjectBoardTypeConverter());
     registry.addConverter(new MenuIdConverter.StringToMenuIdConverter());
     registry.addConverter(new MenuIdConverter.MenuIdToStringConverter());
   }

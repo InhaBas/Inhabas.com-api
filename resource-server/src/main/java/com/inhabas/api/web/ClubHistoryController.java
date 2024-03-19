@@ -89,7 +89,7 @@ public class ClubHistoryController {
       value = {
         @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -117,7 +117,7 @@ public class ClubHistoryController {
       value = {
         @ApiResponse(responseCode = "204"),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -152,7 +152,7 @@ public class ClubHistoryController {
       value = {
         @ApiResponse(responseCode = "204"),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(

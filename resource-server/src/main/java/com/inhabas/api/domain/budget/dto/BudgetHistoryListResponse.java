@@ -2,16 +2,16 @@ package com.inhabas.api.domain.budget.dto;
 
 import lombok.Getter;
 
-import org.springframework.data.domain.Page;
+import com.inhabas.api.global.dto.PagedResponseDto;
 
 @Getter
 public class BudgetHistoryListResponse {
 
-  private Page<BudgetHistoryDetailDto> page;
+  private PagedResponseDto<BudgetHistoryDto> page;
 
   private Integer balance;
 
-  public BudgetHistoryListResponse(Page<BudgetHistoryDetailDto> page, Integer balance) {
+  public BudgetHistoryListResponse(PagedResponseDto<BudgetHistoryDto> page, Integer balance) {
     this.page = page;
     this.balance = balance;
   }

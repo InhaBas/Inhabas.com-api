@@ -27,7 +27,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.ContestType;
 import com.inhabas.api.domain.contest.domain.valueObject.OrderBy;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
@@ -66,7 +66,7 @@ public class ContestBoardController {
   @GetMapping("/contest/count")
   @SecurityRequirements(value = {})
   public ResponseEntity<List<BoardCountDto>> getBoardCount() {
-    return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(2));
+    return ResponseEntity.ok(baseBoardRepository.countRowsGroupByMenuName(6));
   }
 
   @Operation(summary = "공모전 게시글 목록 조회")
@@ -230,7 +230,7 @@ public class ContestBoardController {
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "204"),
         @ApiResponse(
             responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",

@@ -3,14 +3,8 @@ package com.inhabas.api.domain.budget.repository;
 import static com.inhabas.api.domain.budget.domain.QBudgetHistory.budgetHistory;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.QMember;
-import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
+import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -20,31 +14,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
-  private final QMember memberInCharge = new QMember("inCharge");
-  private final QMember memberReceived = new QMember("received");
 
   public BudgetHistoryRepositoryImpl(JPAQueryFactory queryFactory) {
     this.queryFactory = queryFactory;
   }
 
   @Override
-  public Optional<BudgetHistoryDetailDto> findDtoById(Integer id) {
+  public List<BudgetHistoryDto> search(Integer year) {
 
-    return Optional.ofNullable(getDtoJPAQuery().where(budgetHistory.id.eq(id)).fetchOne());
-  }
-
-  @Override
-  public Page<BudgetHistoryDetailDto> search(Integer year, Pageable pageable) {
-
-    List<BudgetHistoryDetailDto> result =
-        getDtoJPAQuery()
-            .where(createdIn(year))
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .orderBy(budgetHistory.dateUsed.desc())
-            .fetch();
-
-    return new PageImpl<>(result, pageable, getCount(year));
+    return getDtoJPAQuery().where(createdIn(year)).orderBy(budgetHistory.dateUsed.desc()).fetch();
   }
 
   @Override
@@ -68,12 +46,12 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
     return queryFactory.selectFrom(budgetHistory).where(createdIn(year)).fetch().size();
   }
 
-  private JPAQuery<BudgetHistoryDetailDto> getDtoJPAQuery() {
+  private JPAQuery<BudgetHistoryDto> getDtoJPAQuery() {
 
     return queryFactory
         .select(
             Projections.constructor(
-                BudgetHistoryDetailDto.class,
+                BudgetHistoryDto.class,
                 budgetHistory.id,
                 budgetHistory.dateUsed,
                 budgetHistory.dateCreated,
@@ -81,16 +59,10 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
                 budgetHistory.title.value,
                 budgetHistory.income.value,
                 budgetHistory.outcome.value,
-                budgetHistory.details.value,
-                budgetHistory.account.value,
-                budgetHistory.personReceived.id,
-                memberReceived.name.value,
-                budgetHistory.personInCharge.id,
-                memberInCharge.name.value))
-        .from(budgetHistory)
-        .innerJoin(memberInCharge)
-        .on(memberInCharge.studentId.id.eq(budgetHistory.personInCharge.id))
-        .innerJoin(memberReceived)
-        .on(memberReceived.studentId.id.eq(budgetHistory.personReceived.id));
+                budgetHistory.memberReceived.studentId.id,
+                budgetHistory.memberReceived.name.value,
+                budgetHistory.memberInCharge.studentId.id,
+                budgetHistory.memberInCharge.name.value))
+        .from(budgetHistory);
   }
 }

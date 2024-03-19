@@ -89,6 +89,7 @@ public class S3ServiceImpl implements S3Service {
     contentTypeMap.put("xls", "application/vnd.ms-excel");
     contentTypeMap.put("gif", "image/gif");
     contentTypeMap.put("jpeg", "image/jpeg");
+    contentTypeMap.put("jpg", "image/jpg");
     contentTypeMap.put("png", "image/png");
     contentTypeMap.put("doc", "application/msword");
     contentTypeMap.put(
@@ -113,7 +114,12 @@ public class S3ServiceImpl implements S3Service {
 
     contentTypeMap.put("gif", "image/gif");
     contentTypeMap.put("jpeg", "image/jpeg");
+    contentTypeMap.put("jpg", "image/jpg");
     contentTypeMap.put("png", "image/png");
+    contentTypeMap.put("bmp", "image/bmp");
+    contentTypeMap.put("svg", "image/svg+xml");
+    contentTypeMap.put("webp", "image/webp");
+    contentTypeMap.put("ico", "image/x-icon");
 
     if (!contentTypeMap.containsKey(ext)) {
       throw new IOException();

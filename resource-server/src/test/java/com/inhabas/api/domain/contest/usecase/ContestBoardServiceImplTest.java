@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.contest.usecase;
 
-import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.ACTIVITY;
-import static com.inhabas.api.domain.contest.domain.valueObject.ContestType.CONTEST;
+import static com.inhabas.api.domain.contest.domain.ContestType.ACTIVITY;
+import static com.inhabas.api.domain.contest.domain.ContestType.CONTEST;
 import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DATE_CONTEST_END;
 import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getContestMenu;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getContestMenuGroup;
@@ -24,7 +24,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
-import com.inhabas.api.domain.contest.domain.valueObject.ContestType;
+import com.inhabas.api.domain.contest.domain.ContestType;
 import com.inhabas.api.domain.contest.dto.ContestBoardDetailDto;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;

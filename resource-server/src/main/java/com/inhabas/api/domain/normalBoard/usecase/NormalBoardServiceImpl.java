@@ -1,21 +1,20 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
+import static com.inhabas.api.domain.board.domain.PinOption.*;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.*;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.EXECUTIVE;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
-import static com.inhabas.api.domain.normalBoard.domain.PinOption.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
@@ -40,7 +39,6 @@ import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class NormalBoardServiceImpl implements NormalBoardService {
 
@@ -55,6 +53,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   private static final Integer TEMPORARY_DAYS = 14;
 
   @Override
+  @Transactional(readOnly = true)
   public List<NormalBoardDto> getPinned(NormalBoardType boardType) {
     List<NormalBoardDto> normalBoardList = new ArrayList<>();
     if (boardType.equals(NOTICE) || boardType.equals(EXECUTIVE)) {
@@ -64,6 +63,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<NormalBoardDto> getPosts(NormalBoardType boardType, String search) {
     List<NormalBoardDto> normalBoardList = new ArrayList<>();
     if (boardType.equals(SUGGEST)) {
@@ -80,6 +80,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId) {
     NormalBoard normalBoard;
     if (boardType.equals(SUGGEST)) {
@@ -112,6 +113,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   }
 
   @Override
+  @Transactional
   public Long write(
       Long memberId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
 
@@ -128,16 +130,19 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   }
 
   @Override
+  @Transactional
   public void update(
       Long boardId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
 
     NormalBoard normalBoard =
         normalBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
     updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
     updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
   }
 
   @Override
+  @Transactional
   public void delete(Long boardId) {
     normalBoardRepository.deleteById(boardId);
   }
@@ -149,7 +154,6 @@ public class NormalBoardServiceImpl implements NormalBoardService {
     List<String> urlListForDelete = new ArrayList<>();
 
     if (saveNormalBoardDto.getFiles() != null) {
-      normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
       try {
         updateFiles =
             saveNormalBoardDto.getFiles().stream()
