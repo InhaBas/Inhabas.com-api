@@ -62,6 +62,9 @@ public class BudgetSupportApplication extends BaseBoard {
   @Column(name = "DATE_CHECKED", columnDefinition = "DATETIME(0)")
   private LocalDateTime dateChecked;
 
+  @Column(name = "DATE_DEPOSITED", columnDefinition = "DATETIME(0)")
+  private LocalDateTime dateDeposited;
+
   public String getDetails() {
     return details.getValue();
   }
@@ -151,6 +154,7 @@ public class BudgetSupportApplication extends BaseBoard {
   public void complete(Member memberInCharge) {
     if (this.isApproved()) {
       this.status = RequestStatus.COMPLETED;
+      this.dateDeposited = LocalDateTime.now();
       this.memberInCharge = memberInCharge;
     } else {
       throw new StatusNotFollowProceduresException();

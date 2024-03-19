@@ -26,6 +26,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
             Projections.constructor(
                 MyPostsDto.class,
                 baseBoard.id,
+                baseBoard.menu.id,
                 baseBoard.menu.name.value,
                 baseBoard.title.value,
                 baseBoard.dateCreated))
@@ -42,6 +43,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
             Projections.constructor(
                 MyCommentsDto.class,
                 comment.parentBoard.id,
+                comment.parentBoard.menu.id,
                 comment.parentBoard.menu.name.value,
                 comment.content.value,
                 comment.dateCreated))
@@ -60,7 +62,8 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 MyBudgetSupportApplicationDto.class,
                 budgetSupportApplication.status,
                 budgetSupportApplication.title.value,
-                budgetSupportApplication.dateCreated))
+                budgetSupportApplication.dateCreated,
+                budgetSupportApplication.dateChecked))
         .from(budgetSupportApplication)
         .where(budgetSupportApplication.applicant.id.eq(memberId))
         .orderBy(budgetSupportApplication.dateCreated.desc())
