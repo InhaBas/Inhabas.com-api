@@ -230,8 +230,6 @@ public class MyProfileController {
     return ResponseEntity.noContent().build();
   }
 
-  // [모임, 글, 댓글, 예산신청 조회] 추후 개발 예정
-
   @Operation(summary = "내가 쓴 게시글 목록 조회")
   @ApiResponses(
       value = {
@@ -310,4 +308,6 @@ public class MyProfileController {
 
     return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
+
+  // [모임, 강의 조회] 추후 개발 예정
 }

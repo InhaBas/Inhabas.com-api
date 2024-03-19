@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.myInfo.dto;
 
+import java.time.LocalDateTime;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -18,6 +20,8 @@ public class MyBoardsDto {
   // 게시글 id
   @NotNull @Positive private Long id;
 
+  @NotNull private Integer menuId;
+
   @NotNull private String menuName;
 
   @NotBlank private String title;
@@ -25,11 +29,12 @@ public class MyBoardsDto {
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   @Schema(type = "string", example = "2024-11-01T00:00:00")
-  String dateCreated;
+  private LocalDateTime dateCreated;
 
   @Builder
-  MyBoardsDto(Long id, String menuName, String title, String dateCreated) {
+  MyBoardsDto(Long id, Integer menuId, String menuName, String title, LocalDateTime dateCreated) {
     this.id = id;
+    this.menuId = menuId;
     this.menuName = menuName;
     this.title = title;
     this.dateCreated = dateCreated;
