@@ -8,9 +8,9 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
-import com.inhabas.api.domain.myInfo.dto.MyPostsDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -20,11 +20,11 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public List<MyPostsDto> findAllBoardsByMemberId(Long memberId) {
+  public List<MyBoardsDto> findAllBoardsByMemberId(Long memberId) {
     return queryFactory
         .select(
             Projections.constructor(
-                MyPostsDto.class,
+                MyBoardsDto.class,
                 baseBoard.id,
                 baseBoard.menu.id,
                 baseBoard.menu.name.value,
@@ -60,6 +60,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
         .select(
             Projections.constructor(
                 MyBudgetSupportApplicationDto.class,
+                budgetSupportApplication.id,
                 budgetSupportApplication.status,
                 budgetSupportApplication.title.value,
                 budgetSupportApplication.dateCreated,
