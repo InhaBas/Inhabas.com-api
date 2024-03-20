@@ -14,7 +14,7 @@ public interface ClubActivityService {
 
   ClubActivityDetailDto getClubActivity(Long boardId);
 
-  void updateClubActivity(Long boardId, SaveClubActivityDto saveClubActivityDto);
+  void updateClubActivity(Long boardId, SaveClubActivityDto saveClubActivityDto, Long memberId);
 
   void deleteClubActivity(Long boardId);
 }

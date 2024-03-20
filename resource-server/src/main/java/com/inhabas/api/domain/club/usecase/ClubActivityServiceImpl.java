@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.club.usecase;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,18 +13,15 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
-import com.inhabas.api.domain.board.exception.S3UploadFailedException;
-import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.repository.ClubActivityRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
-import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -33,17 +29,13 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
   private final ClubActivityRepository clubActivityRepository;
 
-  private final BoardSecurityChecker boardSecurityChecker;
+  private final BoardFileRepository boardFileRepository;
 
   private final MemberRepository memberRepository;
 
   private final MenuRepository menuRepository;
 
-  private final S3Service s3Service;
-
   private static final String CLUB_ACTIVITY_MENU_NAME = "동아리 활동";
-
-  private static final String DIR_NAME = "clubActivity/";
 
   @Override
   @Transactional(readOnly = true)
@@ -51,6 +43,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     List<AlbumBoard> clubActivityList = clubActivityRepository.findAll();
 
+    // 코드 수정 필요
     return clubActivityList.stream()
         .map(
             obj -> {
@@ -62,7 +55,13 @@ public class ClubActivityServiceImpl implements ClubActivityService {
                   .writerName(obj.getWriter().getName())
                   .dateCreated(obj.getDateCreated())
                   .dateUpdated(obj.getDateUpdated())
-                  .thumbnail(new FileDownloadDto(fileName, fileUrl))
+                  .thumbnail(
+                      new FileDownloadDto(
+                          obj.getFiles().get(0).getId(),
+                          fileName,
+                          fileUrl,
+                          obj.getFiles().get(0).getSize(),
+                          obj.getFiles().get(0).getType()))
                   .build();
             })
         .collect(Collectors.toList());
@@ -86,7 +85,15 @@ public class ClubActivityServiceImpl implements ClubActivityService {
             .build()
             .writtenBy(writer, AlbumBoard.class);
 
-    return updateClubActivityFiles(saveClubActivityDto, clubActivity);
+    List<String> fileIdList = saveClubActivityDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    clubActivity.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(clubActivity);
+    }
+
+    return clubActivityRepository.save(clubActivity).getId();
   }
 
   @Override
@@ -116,11 +123,19 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
   @Override
   @Transactional
-  public void updateClubActivity(Long boardId, SaveClubActivityDto saveClubActivityDto) {
-
+  public void updateClubActivity(
+      Long boardId, SaveClubActivityDto saveClubActivityDto, Long memberId) {
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     AlbumBoard clubActivity =
         clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
-    updateClubActivityFiles(saveClubActivityDto, clubActivity);
+
+    List<String> fileIdList = saveClubActivityDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    clubActivity.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(clubActivity);
+    }
   }
 
   @Override
@@ -128,40 +143,5 @@ public class ClubActivityServiceImpl implements ClubActivityService {
   public void deleteClubActivity(Long boardId) {
 
     clubActivityRepository.deleteById(boardId);
-  }
-
-  private Long updateClubActivityFiles(
-      SaveClubActivityDto saveClubActivityDto, AlbumBoard clubActivity) {
-    List<BoardFile> updateFiles = new ArrayList<>();
-    List<String> urlListForDelete = new ArrayList<>();
-
-    if (saveClubActivityDto.getFiles() != null) {
-      clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
-      try {
-        updateFiles =
-            saveClubActivityDto.getFiles().stream()
-                .map(
-                    file -> {
-                      String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3File(file, path);
-                      urlListForDelete.add(url);
-                      return BoardFile.builder()
-                          .name(file.getOriginalFilename())
-                          .url(url)
-                          .board(clubActivity)
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
-      } catch (RuntimeException e) {
-        for (String url : urlListForDelete) {
-          s3Service.deleteS3File(url);
-        }
-        throw new S3UploadFailedException();
-      }
-    }
-
-    clubActivity.updateFiles(updateFiles);
-    return clubActivityRepository.save(clubActivity).getId();
   }
 }
