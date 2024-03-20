@@ -21,13 +21,15 @@ import com.inhabas.api.domain.file.domain.valueObject.FileUrl;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseFile {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  protected Long id;
+  @Id protected String id;
 
   @Embedded protected FileName name;
 
   @Embedded protected FileUrl url;
+
+  protected Long size;
+
+  protected String type;
 
   @CreatedDate
   @Column(
@@ -37,9 +39,12 @@ public class BaseFile {
       columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
   protected LocalDateTime dateCreated;
 
-  public BaseFile(String name, String url) {
+  public BaseFile(String id, String name, String url, Long size, String type) {
+    this.id = id;
     this.name = new FileName(name);
     this.url = new FileUrl(url);
+    this.size = size;
+    this.type = type;
     this.dateCreated = LocalDateTime.now();
   }
 

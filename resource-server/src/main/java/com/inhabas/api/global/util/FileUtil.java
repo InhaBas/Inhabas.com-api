@@ -74,7 +74,16 @@ public class FileUtil {
     return fileName.substring(0, fileName.lastIndexOf("."));
   }
 
+  public static String generateUUID() {
+    return UUID.randomUUID().toString();
+  }
+
   public static String generateFileName(MultipartFile multipartFile, String dirName) {
     return dirName + UUID.randomUUID() + "_" + multipartFile.getOriginalFilename();
+  }
+
+  public static String generateFilePathWithUUID(
+      MultipartFile multipartFile, String UUID, String dirName) {
+    return dirName + UUID + "_" + multipartFile.getOriginalFilename();
   }
 }
