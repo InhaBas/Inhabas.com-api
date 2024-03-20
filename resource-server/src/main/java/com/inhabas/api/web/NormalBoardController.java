@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -156,7 +154,7 @@ public class NormalBoardController {
   }
 
   @Operation(summary = "게시글 추가")
-  @PostMapping(path = "/board/{boardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping("/board/{boardType}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#boardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   @ApiResponses(
@@ -186,16 +184,8 @@ public class NormalBoardController {
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
       @PathVariable NormalBoardType boardType,
-      @Valid @RequestPart("form") SaveNormalBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
-            .title(form.getTitle())
-            .content(form.getContent())
-            .pinOption(form.getPinOption())
-            .files(files)
-            .build();
-    Long newNormalBoardId = normalBoardService.write(memberId, boardType, saveNormalBoardDto);
+      @Valid @RequestBody SaveNormalBoardDto form) {
+    Long newNormalBoardId = normalBoardService.write(memberId, boardType, form);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{boardId}")
@@ -206,9 +196,7 @@ public class NormalBoardController {
   }
 
   @Operation(summary = "게시글 수정")
-  @PostMapping(
-      value = "/board/{boardType}/{boardId}",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/board/{boardType}/{boardId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
     @ApiResponse(
@@ -237,16 +225,8 @@ public class NormalBoardController {
       @Authenticated Long memberId,
       @PathVariable NormalBoardType boardType,
       @PathVariable Long boardId,
-      @Valid @RequestPart("form") SaveNormalBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
-            .title(form.getTitle())
-            .content(form.getContent())
-            .pinOption(form.getPinOption())
-            .files(files)
-            .build();
-    normalBoardService.update(boardId, boardType, saveNormalBoardDto);
+      @Valid @RequestBody SaveNormalBoardDto form) {
+    normalBoardService.update(boardId, boardType, form, memberId);
     return ResponseEntity.noContent().build();
   }
 

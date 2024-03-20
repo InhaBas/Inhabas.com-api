@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.normalBoard.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
@@ -8,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.web.multipart.MultipartFile;
-
 @Getter
 @NoArgsConstructor
 public class SaveNormalBoardDto {
@@ -17,16 +16,15 @@ public class SaveNormalBoardDto {
 
   @NotBlank private String content;
 
-  private List<MultipartFile> files;
+  private List<String> files = new ArrayList<>();
 
   private Integer pinOption;
 
   @Builder
-  public SaveNormalBoardDto(
-      String title, String content, List<MultipartFile> files, Integer pinOption) {
+  public SaveNormalBoardDto(String title, String content, List<String> files, Integer pinOption) {
     this.title = title;
     this.content = content;
-    this.files = files;
+    this.files = files == null ? new ArrayList<>() : files;
     this.pinOption = pinOption;
   }
 }

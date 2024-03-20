@@ -7,7 +7,6 @@ import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +21,8 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
@@ -35,7 +33,6 @@ import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
-import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
@@ -45,7 +42,7 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   private final NormalBoardRepository normalBoardRepository;
   private final MenuRepository menuRepository;
   private final MemberRepository memberRepository;
-  private final S3Service s3Service;
+  private final BoardFileRepository boardFileRepository;
 
   private static final Set<NormalBoardType> hasPinnedBoardTypeSet =
       new HashSet<>(Arrays.asList(NOTICE, EXECUTIVE));
@@ -126,60 +123,43 @@ public class NormalBoardServiceImpl implements NormalBoardService {
             .writtenBy(writer, NormalBoard.class);
 
     updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
-    return updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
+    List<String> fileIdList = saveNormalBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    normalBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(normalBoard);
+    }
+
+    return normalBoardRepository.save(normalBoard).getId();
   }
 
   @Override
   @Transactional
   public void update(
-      Long boardId, NormalBoardType boardType, SaveNormalBoardDto saveNormalBoardDto) {
-
+      Long boardId,
+      NormalBoardType boardType,
+      SaveNormalBoardDto saveNormalBoardDto,
+      Long memberId) {
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     NormalBoard normalBoard =
         normalBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
     normalBoard.updateText(saveNormalBoardDto.getTitle(), saveNormalBoardDto.getContent());
     updateNormalBoardPinned(saveNormalBoardDto, boardType, normalBoard);
-    updateNormalBoardFiles(saveNormalBoardDto, boardType, normalBoard);
+
+    List<String> fileIdList = saveNormalBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    normalBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(normalBoard);
+    }
   }
 
   @Override
   @Transactional
   public void delete(Long boardId) {
     normalBoardRepository.deleteById(boardId);
-  }
-
-  private Long updateNormalBoardFiles(
-      SaveNormalBoardDto saveNormalBoardDto, NormalBoardType boardType, NormalBoard normalBoard) {
-    final String DIR_NAME = boardType.getBoardType() + "/";
-    List<BoardFile> updateFiles = new ArrayList<>();
-    List<String> urlListForDelete = new ArrayList<>();
-
-    if (saveNormalBoardDto.getFiles() != null) {
-      try {
-        updateFiles =
-            saveNormalBoardDto.getFiles().stream()
-                .map(
-                    file -> {
-                      String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3File(file, path);
-                      urlListForDelete.add(url);
-                      return BoardFile.builder()
-                          .name(file.getOriginalFilename())
-                          .url(url)
-                          .board(normalBoard)
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
-      } catch (RuntimeException e) {
-        for (String url : urlListForDelete) {
-          s3Service.deleteS3File(url);
-        }
-        throw new S3UploadFailedException();
-      }
-    }
-
-    normalBoard.updateFiles(updateFiles);
-    return normalBoardRepository.save(normalBoard).getId();
   }
 
   private void updateNormalBoardPinned(
