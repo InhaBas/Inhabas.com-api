@@ -36,7 +36,7 @@ public class FileController {
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "200",
+            responseCode = "201",
             content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
         @ApiResponse(
             responseCode = "400",

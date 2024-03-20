@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -56,6 +57,8 @@ public class ScholarshipHistoryRepositoryImpl implements ScholarshipHistoryRepos
 
     public Long id;
     public String title;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     public LocalDateTime dateHistory;
 
     public Data(Long id, String title, LocalDateTime dateHistory) {
