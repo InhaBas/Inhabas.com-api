@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -156,7 +154,7 @@ public class ProjectBoardController {
   }
 
   @Operation(summary = "프로젝트 게시글 추가")
-  @PostMapping(path = "/project/{projectBoardType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping("/project/{projectBoardType}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#projectBoardType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   @ApiResponses(
@@ -186,17 +184,8 @@ public class ProjectBoardController {
   public ResponseEntity<Long> addBoard(
       @Authenticated Long memberId,
       @PathVariable ProjectBoardType projectBoardType,
-      @Valid @RequestPart("form") SaveProjectBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder()
-            .title(form.getTitle())
-            .content(form.getContent())
-            .pinOption(form.getPinOption())
-            .files(files)
-            .build();
-    Long newProjectBoardId =
-        projectBoardService.write(memberId, projectBoardType, saveProjectBoardDto);
+      @Valid @RequestBody SaveProjectBoardDto form) {
+    Long newProjectBoardId = projectBoardService.write(memberId, projectBoardType, form);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{boardId}")
@@ -207,9 +196,7 @@ public class ProjectBoardController {
   }
 
   @Operation(summary = "프로젝트 게시글 수정")
-  @PostMapping(
-      value = "/project/{projectBoardType}/{boardId}",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(value = "/project/{projectBoardType}/{boardId}")
   @ApiResponses({
     @ApiResponse(responseCode = "200"),
     @ApiResponse(
@@ -238,16 +225,8 @@ public class ProjectBoardController {
       @Authenticated Long memberId,
       @PathVariable ProjectBoardType projectBoardType,
       @PathVariable Long boardId,
-      @Valid @RequestPart("form") SaveProjectBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder()
-            .title(form.getTitle())
-            .content(form.getContent())
-            .pinOption(form.getPinOption())
-            .files(files)
-            .build();
-    projectBoardService.update(boardId, projectBoardType, saveProjectBoardDto);
+      @Valid @RequestBody SaveProjectBoardDto form) {
+    projectBoardService.update(boardId, projectBoardType, form, memberId);
     return ResponseEntity.noContent().build();
   }
 
