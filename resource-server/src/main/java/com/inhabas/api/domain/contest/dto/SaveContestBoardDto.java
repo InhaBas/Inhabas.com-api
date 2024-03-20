@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Future;
@@ -10,8 +11,6 @@ import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -45,7 +44,7 @@ public class SaveContestBoardDto {
   @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
   private LocalDate dateContestEnd;
 
-  private List<MultipartFile> files;
+  private List<String> files = new ArrayList<>();
 
   @Builder
   public SaveContestBoardDto(
@@ -56,7 +55,7 @@ public class SaveContestBoardDto {
       String topic,
       LocalDate dateContestStart,
       LocalDate dateContestEnd,
-      List<MultipartFile> files) {
+      List<String> files) {
 
     this.contestFieldId = contestFieldId;
     this.title = title;
@@ -65,6 +64,6 @@ public class SaveContestBoardDto {
     this.topic = topic;
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
-    this.files = files;
+    this.files = files == null ? new ArrayList<>() : files;
   }
 }

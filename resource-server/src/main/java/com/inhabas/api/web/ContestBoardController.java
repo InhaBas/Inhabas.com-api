@@ -11,17 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -107,8 +105,8 @@ public class ContestBoardController {
       @Parameter(description = "검색어 (작성자 이름 or 제목 or 내용)", example = "")
           @RequestParam(name = "search", defaultValue = "")
           String search,
-      @Parameter(description = "페이지", example = "1")
-          @RequestParam(name = "page", defaultValue = "1")
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
           int page,
       @Parameter(description = "페이지당 개수", example = "4")
           @RequestParam(name = "size", defaultValue = "4")
@@ -166,7 +164,7 @@ public class ContestBoardController {
   }
 
   @Operation(summary = "공모전 게시글 추가")
-  @PostMapping(path = "/contest/{contestType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping("/contest/{contestType}")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(#contestType.menuId, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   @ApiResponses(
@@ -196,22 +194,8 @@ public class ContestBoardController {
   public ResponseEntity<Void> writeContestBoard(
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
-      @Valid @RequestPart("form") SaveContestBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-
-    SaveContestBoardDto saveContestBoardDto =
-        SaveContestBoardDto.builder()
-            .contestFieldId(form.getContestFieldId())
-            .title(form.getTitle())
-            .content(form.getContent())
-            .association(form.getAssociation())
-            .topic(form.getTopic())
-            .dateContestStart(form.getDateContestStart())
-            .dateContestEnd(form.getDateContestEnd())
-            .files(files)
-            .build();
-    Long newContestBoardId =
-        contestBoardService.writeContestBoard(memberId, contestType, saveContestBoardDto);
+      @Valid @RequestBody SaveContestBoardDto form) {
+    Long newContestBoardId = contestBoardService.writeContestBoard(memberId, contestType, form);
 
     // 뒤에 추가 URI 생성
     URI location =
@@ -224,9 +208,7 @@ public class ContestBoardController {
   }
 
   @Operation(summary = "공모전 게시글 수정")
-  @PostMapping(
-      path = "/contest/{contestType}/{boardId}",
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  @PostMapping(path = "/contest/{contestType}/{boardId}")
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   @ApiResponses(
       value = {
@@ -256,22 +238,8 @@ public class ContestBoardController {
       @Authenticated Long memberId,
       @PathVariable ContestType contestType,
       @PathVariable Long boardId,
-      @Valid @RequestPart SaveContestBoardDto form,
-      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-
-    SaveContestBoardDto saveContestBoardDto =
-        SaveContestBoardDto.builder()
-            .contestFieldId(form.getContestFieldId())
-            .title(form.getTitle())
-            .content(form.getContent())
-            .association(form.getAssociation())
-            .topic(form.getTopic())
-            .dateContestStart(form.getDateContestStart())
-            .dateContestEnd(form.getDateContestEnd())
-            .files(files)
-            .build();
-
-    contestBoardService.updateContestBoard(boardId, contestType, saveContestBoardDto);
+      @Valid @RequestBody SaveContestBoardDto form) {
+    contestBoardService.updateContestBoard(boardId, contestType, form, memberId);
 
     return ResponseEntity.noContent().build();
   }
