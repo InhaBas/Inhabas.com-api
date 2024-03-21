@@ -18,10 +18,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -143,7 +142,7 @@ public class BudgetHistoryController {
     return ResponseEntity.ok(history);
   }
 
-  @Operation(summary = "회계 내역 추가 (Swagger 사용 불가. 명세서 참고)")
+  @Operation(summary = "회계 내역 추가")
   @PostMapping("/budget/history")
   @ApiResponses({
     @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
@@ -160,11 +159,9 @@ public class BudgetHistoryController {
   })
   @PreAuthorize("hasRole('SECRETARY')")
   public ResponseEntity<?> createNewHistory(
-      @Authenticated Long memberId,
-      @Valid @RequestPart(value = "form") BudgetHistoryCreateForm form,
-      @RequestPart(value = "files") List<MultipartFile> files) {
+      @Authenticated Long memberId, @Valid @RequestBody BudgetHistoryCreateForm form) {
 
-    Long newHistory = budgetHistoryService.createHistory(form, files, memberId);
+    Long newHistory = budgetHistoryService.createHistory(form, memberId);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{historyId}")
@@ -174,7 +171,7 @@ public class BudgetHistoryController {
     return ResponseEntity.created(location).build();
   }
 
-  @Operation(summary = "회계 내역 수정 (Swagger 사용 불가. 명세서 참고)")
+  @Operation(summary = "회계 내역 수정")
   @PostMapping("/budget/history/{historyId}")
   @ApiResponses({
     @ApiResponse(responseCode = "204"),
@@ -203,10 +200,9 @@ public class BudgetHistoryController {
   public ResponseEntity<?> modifyHistory(
       @Authenticated Long memberId,
       @PathVariable Long historyId,
-      @Valid @RequestPart(value = "form") BudgetHistoryCreateForm form,
-      @RequestPart(value = "files") List<MultipartFile> files) {
+      @Valid @RequestBody BudgetHistoryCreateForm form) {
 
-    budgetHistoryService.modifyHistory(historyId, form, files, memberId);
+    budgetHistoryService.modifyHistory(historyId, form, memberId);
 
     return ResponseEntity.noContent().build();
   }
