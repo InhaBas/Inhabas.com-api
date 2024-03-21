@@ -1,5 +1,6 @@
 package com.inhabas.api.config;
 
+import com.inhabas.api.web.converter.ScholarshipBoardConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -26,6 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
     registry.addConverter(new ContestTypeConverter.ContestTypeToStringConverter());
     registry.addConverter(new NormalBoardTypeConverter.NormalTypeToStringConverter());
     registry.addConverter(new NormalBoardTypeConverter.StringToNormalTypeConverter());
+    registry.addConverter(new ScholarshipBoardConverter.ScholarshipBoardTypeToStringConverter());
+    registry.addConverter(new ScholarshipBoardConverter.StringToScholarshipTypeConverter());
     registry.addConverter(new ProjectBoardTypeConverter.ProjectBoardTypeToStringConverter());
     registry.addConverter(new ProjectBoardTypeConverter.StringToProjectBoardTypeConverter());
     registry.addConverter(new MenuIdConverter.StringToMenuIdConverter());

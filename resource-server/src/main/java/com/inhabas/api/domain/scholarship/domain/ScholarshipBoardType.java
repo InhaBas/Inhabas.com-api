@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.scholarship.domain;
 
 public enum ScholarshipBoardType {
-  SPONSOR("sponsor", 19),
-  USAGE("usage", 20);
+  SPONSOR("sponsor", 20),
+  USAGE("usage", 21);
 
   private final String boardType;
   private final int menuId;
