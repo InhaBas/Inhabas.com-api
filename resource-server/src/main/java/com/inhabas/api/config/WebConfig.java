@@ -1,6 +1,5 @@
 package com.inhabas.api.config;
 
-import com.inhabas.api.web.converter.ScholarshipBoardConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -13,6 +12,7 @@ import com.inhabas.api.web.converter.ContestTypeConverter;
 import com.inhabas.api.web.converter.MenuIdConverter;
 import com.inhabas.api.web.converter.NormalBoardTypeConverter;
 import com.inhabas.api.web.converter.ProjectBoardTypeConverter;
+import com.inhabas.api.web.converter.ScholarshipBoardConverter;
 import io.swagger.v3.core.jackson.ModelResolver;
 
 @Configuration
