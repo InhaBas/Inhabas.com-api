@@ -94,7 +94,7 @@ public class SwaggerConfig {
 
     return GroupedOpenApi.builder()
         .group("IBAS 관련")
-        .pathsToMatch("/club/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .pathsToMatch("/club/**", "/**/**/**/comment/**", "/**/**/**/comments", "/file/upload/**")
         .build();
   }
 
@@ -103,14 +103,17 @@ public class SwaggerConfig {
 
     return GroupedOpenApi.builder()
         .group("게시판 관련")
-        .pathsToMatch("/board/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .pathsToMatch("/board/**", "/**/**/**/comment/**", "/**/**/**/comments", "/file/upload/**")
         .build();
   }
 
   @Bean
   public GroupedOpenApi getBudgetApi() {
 
-    return GroupedOpenApi.builder().group("회계 관련").pathsToMatch("/budget/**").build();
+    return GroupedOpenApi.builder()
+        .group("회계 관련")
+        .pathsToMatch("/budget/**", "/file/upload/**")
+        .build();
   }
 
   @Bean
@@ -118,7 +121,8 @@ public class SwaggerConfig {
 
     return GroupedOpenApi.builder()
         .group("프로젝트 게시판 관련")
-        .pathsToMatch("/project/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .pathsToMatch(
+            "/project/**", "/**/**/**/comment/**", "/**/**/**/comments", "/file/upload/**")
         .build();
   }
 
@@ -127,7 +131,18 @@ public class SwaggerConfig {
 
     return GroupedOpenApi.builder()
         .group("공모전 게시판 관련")
-        .pathsToMatch("/contest/**", "/**/**/**/comment/**", "/**/**/**/comments")
+        .pathsToMatch(
+            "/contest/**", "/**/**/**/comment/**", "/**/**/**/comments", "/file/upload/**")
+        .build();
+  }
+
+  @Bean
+  public GroupedOpenApi getScholarshipApi() {
+
+    return GroupedOpenApi.builder()
+        .group("장학회 관련")
+        .pathsToMatch(
+            "/scholarship/**", "/**/**/**/comment/**", "/**/**/**/comments", "/file/upload/**")
         .build();
   }
 

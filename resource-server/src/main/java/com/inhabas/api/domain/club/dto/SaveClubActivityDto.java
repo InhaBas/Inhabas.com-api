@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.web.multipart.MultipartFile;
-
 @Getter
 @NoArgsConstructor
 public class SaveClubActivityDto {
@@ -19,10 +17,10 @@ public class SaveClubActivityDto {
 
   @NotBlank private String content;
 
-  private List<MultipartFile> files;
+  private List<String> files = new ArrayList<>();
 
   @Builder
-  public SaveClubActivityDto(String title, String content, List<MultipartFile> files) {
+  public SaveClubActivityDto(String title, String content, List<String> files) {
     this.title = title;
     this.content = content;
     this.files = (files != null) ? files : new ArrayList<>();

@@ -20,7 +20,10 @@ public interface ContestBoardService {
   ContestBoardDetailDto getContestBoard(ContestType contestType, Long boardId);
 
   void updateContestBoard(
-      Long boardId, ContestType contestType, SaveContestBoardDto saveContestBoardDto);
+      Long boardId,
+      ContestType contestType,
+      SaveContestBoardDto saveContestBoardDto,
+      Long memberId);
 
   void deleteContestBoard(Long boardId);
 }

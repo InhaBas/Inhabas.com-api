@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 
 @Entity
@@ -20,24 +22,29 @@ import com.inhabas.api.domain.board.domain.BaseBoard;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardFile extends BaseFile {
 
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "BOARD_ID", foreignKey = @ForeignKey(name = "FK_FILE_OF_BOARD"))
   private BaseBoard board;
 
-  // boardFile 과 baseBoard 의 연관관계 편의 메소드
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(name = "FK_MEMBER_OF_FILE"))
+  private Member uploader;
 
   @Builder
-  public BoardFile(String name, String url, BaseBoard board) {
-    super(name, url);
-    this.board = board;
+  public BoardFile(String id, String name, String url, Member uploader, Long size, String type) {
+    super(id, name, url, size, type);
+    this.uploader = uploader;
+    this.size = size;
+    this.type = type;
   }
 
+  // boardFile 과 baseBoard 의 연관관계 편의 메소드
   public <T extends BaseBoard> void toBoard(T newParentBoard) {
-    // 기존의 file-board 연관관계를 끊는다.
-    if (Objects.nonNull(this.board)) {
-      this.board.getFiles().remove(this);
+    if (Objects.isNull(this.board)) {
+      this.board = newParentBoard;
+    } else if (!this.board.getId().equals(newParentBoard.getId())) {
+      throw new InvalidInputException();
     }
-    this.board = newParentBoard;
   }
 
   @Override
