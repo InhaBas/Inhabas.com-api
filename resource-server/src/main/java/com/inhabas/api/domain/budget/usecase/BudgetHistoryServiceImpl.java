@@ -1,33 +1,28 @@
 package com.inhabas.api.domain.budget.usecase;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.OnlyWriterUpdateException;
-import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
-import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +31,12 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   private final BudgetHistoryRepository budgetHistoryRepository;
   private final MemberRepository memberRepository;
   private final MenuRepository menuRepository;
-  private final S3Service s3Service;
+  private final BoardFileRepository boardFileRepository;
   private static final Integer BUDGET_HISTORY_MENU_ID = 15;
-  private static final String DIR_NAME = "budget/";
 
   @Override
   @Transactional
-  public Long createHistory(
-      BudgetHistoryCreateForm form, List<MultipartFile> files, Long secretaryId) {
+  public Long createHistory(BudgetHistoryCreateForm form, Long secretaryId) {
 
     Member secretary =
         memberRepository.findById(secretaryId).orElseThrow(MemberNotFoundException::new);
@@ -57,13 +50,20 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     BudgetHistory newHistory =
         form.toEntity(menu, secretary, memberReceived).writtenBy(secretary, BudgetHistory.class);
 
-    return updateBudgetFiles(files, newHistory);
+    List<String> fileIdList = form.getFiles();
+    List<BoardFile> boardFileList =
+        boardFileRepository.getAllByIdInAndUploader(fileIdList, secretary);
+    newHistory.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(newHistory);
+    }
+    return budgetHistoryRepository.save(newHistory).getId();
   }
 
   @Override
   @Transactional
-  public void modifyHistory(
-      Long historyId, BudgetHistoryCreateForm form, List<MultipartFile> files, Long secretaryId) {
+  public void modifyHistory(Long historyId, BudgetHistoryCreateForm form, Long secretaryId) {
     Member secretary =
         memberRepository.findById(secretaryId).orElseThrow(MemberNotFoundException::new);
     Member memberReceived =
@@ -84,7 +84,14 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
         form.getDetails(),
         memberReceived);
 
-    updateBudgetFiles(files, budgetHistory);
+    List<String> fileIdList = form.getFiles();
+    List<BoardFile> boardFileList =
+        boardFileRepository.getAllByIdInAndUploader(fileIdList, secretary);
+    budgetHistory.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(budgetHistory);
+    }
   }
 
   @Override
@@ -146,38 +153,5 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   @Transactional(readOnly = true)
   public Integer getBalance() {
     return budgetHistoryRepository.getBalance();
-  }
-
-  private Long updateBudgetFiles(List<MultipartFile> files, BudgetHistory budgetHistory) {
-    List<BoardFile> updateFiles = new ArrayList<>();
-    List<String> urlListForDelete = new ArrayList<>();
-
-    if (files != null) {
-      try {
-        updateFiles =
-            files.stream()
-                .map(
-                    file -> {
-                      String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3Image(file, path);
-                      urlListForDelete.add(url);
-                      return BoardFile.builder()
-                          .name(file.getOriginalFilename())
-                          .url(url)
-                          .board(budgetHistory)
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
-      } catch (RuntimeException e) {
-        for (String url : urlListForDelete) {
-          s3Service.deleteS3File(url);
-        }
-        throw new S3UploadFailedException();
-      }
-    }
-
-    budgetHistory.updateFiles(updateFiles);
-    return budgetHistoryRepository.save(budgetHistory).getId();
   }
 }

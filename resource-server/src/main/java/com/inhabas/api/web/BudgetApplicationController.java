@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -104,7 +102,7 @@ public class BudgetApplicationController {
     return ResponseEntity.ok(details);
   }
 
-  @Operation(summary = "예산지원신청 글 추가 (Swagger 사용 불가. 명세서 참고)")
+  @Operation(summary = "예산지원신청 글 추가")
   @PostMapping("/budget/application")
   @ApiResponses(
       value = {
@@ -123,11 +121,9 @@ public class BudgetApplicationController {
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(14, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   public ResponseEntity<?> createApplication(
-      @Authenticated Long memberId,
-      @Valid @RequestPart BudgetApplicationRegisterForm form,
-      @RequestPart(value = "files") List<MultipartFile> files) {
+      @Authenticated Long memberId, @Valid @RequestBody BudgetApplicationRegisterForm form) {
 
-    Long newApplicationId = budgetApplicationService.registerApplication(form, files, memberId);
+    Long newApplicationId = budgetApplicationService.registerApplication(form, memberId);
 
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -137,7 +133,7 @@ public class BudgetApplicationController {
     return ResponseEntity.created(location).build();
   }
 
-  @Operation(summary = "예산지원신청 글 수정 (Swagger 사용 불가. 명세서 참고)")
+  @Operation(summary = "예산지원신청 글 수정")
   @PostMapping("/budget/application/{applicationId}")
   @ApiResponses(
       value = {
@@ -167,9 +163,8 @@ public class BudgetApplicationController {
   public ResponseEntity<?> modifyApplication(
       @Authenticated Long memberId,
       @PathVariable Long applicationId,
-      @Valid @RequestPart BudgetApplicationRegisterForm form,
-      @RequestPart(value = "files") List<MultipartFile> files) {
-    budgetApplicationService.updateApplication(applicationId, form, files, memberId);
+      @Valid @RequestBody BudgetApplicationRegisterForm form) {
+    budgetApplicationService.updateApplication(applicationId, form, memberId);
 
     return ResponseEntity.noContent().build();
   }

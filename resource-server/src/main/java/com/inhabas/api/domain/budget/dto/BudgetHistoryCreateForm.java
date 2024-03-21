@@ -1,6 +1,8 @@
 package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,13 +35,15 @@ public class BudgetHistoryCreateForm {
 
   @NotBlank private String details;
 
-  @NotNull private String memberStudentIdReceived;
+  private String memberStudentIdReceived;
 
-  @NotBlank private String memberNameReceived;
+  private String memberNameReceived;
 
-  @PositiveOrZero @NotNull private Integer income;
+  @PositiveOrZero private Integer income;
 
-  @PositiveOrZero @NotNull private Integer outcome;
+  @PositiveOrZero private Integer outcome;
+
+  @NotNull private List<String> files = new ArrayList<>();
 
   private static final Integer ZERO = 0;
 
@@ -51,7 +55,8 @@ public class BudgetHistoryCreateForm {
       String memberStudentIdReceived,
       String memberNameReceived,
       Integer income,
-      Integer outcome) {
+      Integer outcome,
+      List<String> files) {
     this.dateUsed = dateUsed;
     this.title = title;
     this.details = details;
@@ -59,7 +64,7 @@ public class BudgetHistoryCreateForm {
     this.memberNameReceived = memberNameReceived;
     this.income = income;
     this.outcome = outcome;
-
+    this.files = files == null ? new ArrayList<>() : files;
     if (this.details.isBlank()) {
       this.details = this.title;
     }
