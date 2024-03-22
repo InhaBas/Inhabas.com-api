@@ -1,6 +1,8 @@
 package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,14 +39,22 @@ public class BudgetApplicationRegisterForm {
 
   @NotBlank private String account;
 
+  private List<String> files = new ArrayList<>();
+
   @Builder
   public BudgetApplicationRegisterForm(
-      String title, LocalDateTime dateUsed, String details, Integer outcome, String account) {
+      String title,
+      LocalDateTime dateUsed,
+      String details,
+      Integer outcome,
+      String account,
+      List<String> files) {
     this.title = title;
     this.dateUsed = dateUsed;
     this.details = details;
     this.outcome = outcome;
     this.account = account;
+    this.files = files == null ? new ArrayList<>() : files;
   }
 
   public BudgetSupportApplication toEntity(Menu menu, Member applicant) {

@@ -12,7 +12,9 @@ public class ClassifyFiles {
     ClassifiedFiles result = new ClassifiedFiles();
 
     for (BaseFile file : files) {
-      FileDownloadDto fileDto = new FileDownloadDto(file.getName(), file.getUrl());
+      FileDownloadDto fileDto =
+          new FileDownloadDto(
+              file.getId(), file.getName(), file.getUrl(), file.getSize(), file.getType());
       if (FileUtil.isImageFile(file.getName())) {
         result.addImage(fileDto);
         if (result.getThumbnail() == null) {

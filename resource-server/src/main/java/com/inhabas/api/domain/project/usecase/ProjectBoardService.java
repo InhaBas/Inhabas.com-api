@@ -19,7 +19,10 @@ public interface ProjectBoardService {
       Long memberId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto);
 
   void update(
-      Long boardId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto);
+      Long boardId,
+      ProjectBoardType projectBoardType,
+      SaveProjectBoardDto saveProjectBoardDto,
+      Long memberId);
 
   void delete(Long boardId);
 }

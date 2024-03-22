@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,8 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.domain.project.domain.ProjectBoard;
@@ -37,7 +35,6 @@ import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.repository.ProjectBoardRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
-import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
@@ -47,7 +44,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   private final ProjectBoardRepository projectBoardRepository;
   private final MenuRepository menuRepository;
   private final MemberRepository memberRepository;
-  private final S3Service s3Service;
+  private final BoardFileRepository boardFileRepository;
 
   private static final Set<ProjectBoardType> hasPinnedBoardTypeSet =
       new HashSet<>(Arrays.asList(ALPHA, BETA));
@@ -115,62 +112,44 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
             .writtenBy(writer, ProjectBoard.class);
 
     updateProjectBoardPinned(saveProjectBoardDto, projectBoardType, projectBoard);
-    return updateProjectBoardFiles(saveProjectBoardDto, projectBoardType, projectBoard);
+
+    List<String> fileIdList = saveProjectBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    projectBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(projectBoard);
+    }
+
+    return projectBoardRepository.save(projectBoard).getId();
   }
 
   @Override
   @Transactional
   public void update(
-      Long boardId, ProjectBoardType projectBoardType, SaveProjectBoardDto saveProjectBoardDto) {
-
+      Long boardId,
+      ProjectBoardType projectBoardType,
+      SaveProjectBoardDto saveProjectBoardDto,
+      Long memberId) {
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     ProjectBoard projectBoard =
         projectBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
     projectBoard.updateText(saveProjectBoardDto.getTitle(), saveProjectBoardDto.getContent());
     updateProjectBoardPinned(saveProjectBoardDto, projectBoardType, projectBoard);
-    updateProjectBoardFiles(saveProjectBoardDto, projectBoardType, projectBoard);
+
+    List<String> fileIdList = saveProjectBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    projectBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(projectBoard);
+    }
   }
 
   @Override
   @Transactional
   public void delete(Long boardId) {
     projectBoardRepository.deleteById(boardId);
-  }
-
-  private Long updateProjectBoardFiles(
-      SaveProjectBoardDto saveProjectBoardDto,
-      ProjectBoardType projectBoardType,
-      ProjectBoard projectBoard) {
-    final String DIR_NAME = projectBoardType.getBoardType() + "/";
-    List<BoardFile> updateFiles = new ArrayList<>();
-    List<String> urlListForDelete = new ArrayList<>();
-
-    if (saveProjectBoardDto.getFiles() != null) {
-      try {
-        updateFiles =
-            saveProjectBoardDto.getFiles().stream()
-                .map(
-                    file -> {
-                      String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3File(file, path);
-                      urlListForDelete.add(url);
-                      return BoardFile.builder()
-                          .name(file.getOriginalFilename())
-                          .url(url)
-                          .board(projectBoard)
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
-      } catch (RuntimeException e) {
-        for (String url : urlListForDelete) {
-          s3Service.deleteS3File(url);
-        }
-        throw new S3UploadFailedException();
-      }
-    }
-
-    projectBoard.updateFiles(updateFiles);
-    return projectBoardRepository.save(projectBoard).getId();
   }
 
   private void updateProjectBoardPinned(

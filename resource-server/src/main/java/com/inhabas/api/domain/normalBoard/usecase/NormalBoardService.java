@@ -17,7 +17,11 @@ public interface NormalBoardService {
 
   Long write(Long memberId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto);
 
-  void update(Long boardId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto);
+  void update(
+      Long boardId,
+      NormalBoardType boardType,
+      SaveNormalBoardDto saveNormalBoardDto,
+      Long memberId);
 
   void delete(Long boardId);
 }

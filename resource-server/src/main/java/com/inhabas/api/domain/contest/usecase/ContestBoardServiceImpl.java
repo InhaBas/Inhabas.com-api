@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.domain.ContestType;
@@ -27,12 +25,11 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.global.util.ClassifiedFiles;
 import com.inhabas.api.global.util.ClassifyFiles;
-import com.inhabas.api.global.util.FileUtil;
 
 @Service
 @Slf4j
@@ -43,7 +40,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   private final ContestFieldRepository contestFieldRepository;
   private final MemberRepository memberRepository;
   private final MenuRepository menuRepository;
-  private final S3Service s3Service;
+  private final BoardFileRepository boardFileRepository;
 
   // 타입별 공모전 게시판 목록 조회
   @Override
@@ -121,14 +118,24 @@ public class ContestBoardServiceImpl implements ContestBoardService {
             .build()
             .writtenBy(writer, ContestBoard.class);
 
-    return updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
+    List<String> fileIdList = saveContestBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    contestBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(contestBoard);
+    }
+    return contestBoardRepository.save(contestBoard).getId();
   }
 
   @Override
   @Transactional
   public void updateContestBoard(
-      Long boardId, ContestType contestType, SaveContestBoardDto saveContestBoardDto) {
-
+      Long boardId,
+      ContestType contestType,
+      SaveContestBoardDto saveContestBoardDto,
+      Long memberId) {
+    Member writer = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     ContestBoard contestBoard =
         contestBoardRepository.findById(boardId).orElseThrow(NotFoundException::new);
     ContestField contestField =
@@ -143,7 +150,14 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         saveContestBoardDto.getTopic(),
         saveContestBoardDto.getDateContestStart(),
         saveContestBoardDto.getDateContestEnd());
-    updateContestBoardFiles(saveContestBoardDto, contestType, contestBoard);
+
+    List<String> fileIdList = saveContestBoardDto.getFiles();
+    List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
+    contestBoard.updateFiles(boardFileList);
+
+    for (BoardFile file : boardFileList) {
+      file.toBoard(contestBoard);
+    }
   }
 
   @Override
@@ -151,41 +165,5 @@ public class ContestBoardServiceImpl implements ContestBoardService {
   public void deleteContestBoard(Long boardId) {
 
     contestBoardRepository.deleteById(boardId);
-  }
-
-  private Long updateContestBoardFiles(
-      SaveContestBoardDto saveContestBoardDto, ContestType contestType, ContestBoard contestBoard) {
-    final String DIR_NAME = contestType.getBoardType() + "/";
-    List<BoardFile> updateFiles = new ArrayList<>();
-    List<String> urlListForDelete = new ArrayList<>();
-
-    if (saveContestBoardDto.getFiles() != null) {
-
-      try {
-        updateFiles =
-            saveContestBoardDto.getFiles().stream()
-                .map(
-                    file -> {
-                      String path = FileUtil.generateFileName(file, DIR_NAME);
-                      String url = s3Service.uploadS3File(file, path);
-                      urlListForDelete.add(url);
-                      return BoardFile.builder()
-                          .name(file.getOriginalFilename())
-                          .url(url)
-                          .board(contestBoard)
-                          .build();
-                    })
-                .collect(Collectors.toList());
-
-      } catch (RuntimeException e) {
-        for (String url : urlListForDelete) {
-          s3Service.deleteS3File(url);
-        }
-        throw new S3UploadFailedException();
-      }
-    }
-
-    contestBoard.updateFiles(updateFiles);
-    return contestBoardRepository.save(contestBoard).getId();
   }
 }
