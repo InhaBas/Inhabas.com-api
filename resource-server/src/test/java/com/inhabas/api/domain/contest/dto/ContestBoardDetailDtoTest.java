@@ -52,7 +52,8 @@ class ContestBoardDetailDtoTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
-            .thumbnail(new FileDownloadDto("thumbnail.jpg", "thumbnailUrl"))
+            .thumbnail(
+                new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .images(new ArrayList<>())
             .otherFiles(new ArrayList<>())
             .build();
@@ -82,7 +83,8 @@ class ContestBoardDetailDtoTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
-            .thumbnail(new FileDownloadDto("thumbnail.jpg", "thumbnailUrl"))
+            .thumbnail(
+                new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .images(new ArrayList<>())
             .otherFiles(new ArrayList<>())
             .build();

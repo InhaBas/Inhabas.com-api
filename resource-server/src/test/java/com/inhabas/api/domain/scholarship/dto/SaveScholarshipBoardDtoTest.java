@@ -35,7 +35,7 @@ public class SaveScholarshipBoardDtoTest {
   public void SaveProjectBoardDto_is_OK() {
     // given
     SaveScholarshipBoardDto saveScholarshipBoardDto =
-        new SaveScholarshipBoardDto("title", "content", LocalDateTime.now(), null);
+        new SaveScholarshipBoardDto("title", "content", LocalDateTime.now().minusDays(1L), null);
 
     // when
     Set<ConstraintViolation<SaveScholarshipBoardDto>> violations =

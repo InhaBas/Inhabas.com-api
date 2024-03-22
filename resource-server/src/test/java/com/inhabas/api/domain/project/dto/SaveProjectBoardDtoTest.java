@@ -39,8 +39,7 @@ public class SaveProjectBoardDtoTest {
   @Test
   public void SaveProjectBoardDto_is_OK() {
     // given
-    SaveProjectBoardDto saveProjectBoardDto =
-        new SaveProjectBoardDto("title", "content", emptyList, 2);
+    SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", "content", null, 2);
 
     // when
     Set<ConstraintViolation<SaveProjectBoardDto>> violations =
@@ -54,7 +53,7 @@ public class SaveProjectBoardDtoTest {
   @Test
   public void Content_is_null() {
     // given
-    SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", null, emptyList, 2);
+    SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", null, null, 2);
 
     // when
     Set<ConstraintViolation<SaveProjectBoardDto>> violations =

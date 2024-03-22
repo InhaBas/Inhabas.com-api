@@ -17,7 +17,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -192,19 +191,12 @@ public class ProjectBoardControllerTest {
             .pinOption(1)
             .build();
 
-    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String header =
         mvc.perform(
                 multipart("/project/alpha")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveProjectBoardDto)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -218,23 +210,15 @@ public class ProjectBoardControllerTest {
   @Test
   void addBoard_Invalid_Input() throws Exception {
     // given
-
     SaveProjectBoardDto saveProjectBoardDto =
         SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
-
-    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
-                multipart("/project/alpha")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/project/alpha")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveProjectBoardDto)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -248,8 +232,7 @@ public class ProjectBoardControllerTest {
   @Test
   void updateBoard() throws Exception {
     // given
-
-    doNothing().when(projectBoardService).update(any(), any(), any());
+    doNothing().when(projectBoardService).update(any(), any(), any(), any());
 
     SaveProjectBoardDto saveProjectBoardDto =
         SaveProjectBoardDto.builder()
@@ -258,18 +241,11 @@ public class ProjectBoardControllerTest {
             .pinOption(1)
             .build();
 
-    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when then
     mvc.perform(
             multipart("/project/alpha/1")
-                .file(formPart)
-                .file(filePart)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonOf(saveProjectBoardDto)))
         .andExpect(status().isNoContent());
   }
 
@@ -277,25 +253,19 @@ public class ProjectBoardControllerTest {
   @Test
   void updateBoard_Invalid_Input() throws Exception {
     // given
-
-    doThrow(InvalidInputException.class).when(projectBoardService).update(any(), any(), any());
+    doThrow(InvalidInputException.class)
+        .when(projectBoardService)
+        .update(any(), any(), any(), any());
 
     SaveProjectBoardDto saveProjectBoardDto =
         SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
-
-    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
                 multipart("/project/alpha")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveProjectBoardDto)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -309,7 +279,7 @@ public class ProjectBoardControllerTest {
   @Test
   void updateBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(projectBoardService).update(any(), any(), any());
+    doThrow(NotFoundException.class).when(projectBoardService).update(any(), any(), any(), any());
 
     SaveProjectBoardDto saveProjectBoardDto =
         SaveProjectBoardDto.builder()
@@ -318,19 +288,12 @@ public class ProjectBoardControllerTest {
             .pinOption(1)
             .build();
 
-    String saveProjectBoardDtoJson = objectMapper.writeValueAsString(saveProjectBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveProjectBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String response =
         mvc.perform(
                 multipart("/project/alpha/1")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveProjectBoardDto)))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()

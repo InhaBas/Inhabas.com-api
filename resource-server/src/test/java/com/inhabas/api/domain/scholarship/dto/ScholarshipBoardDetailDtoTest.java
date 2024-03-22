@@ -77,6 +77,6 @@ public class ScholarshipBoardDetailDtoTest {
         validator.validate(scholarshipBoardDetailDto);
 
     // then
-    assertThat(violations).hasSize(9);
+    assertThat(violations).hasSize(8);
   }
 }
