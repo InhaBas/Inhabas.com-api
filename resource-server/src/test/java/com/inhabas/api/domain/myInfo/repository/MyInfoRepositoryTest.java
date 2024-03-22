@@ -42,7 +42,6 @@ public class MyInfoRepositoryTest {
 
   private Member writer;
 
-  // 댓글 기능 null 오류 발생하고 있음.
   @Transactional
   @BeforeEach
   public void setUp() {
