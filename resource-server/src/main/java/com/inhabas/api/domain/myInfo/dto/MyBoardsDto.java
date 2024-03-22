@@ -32,7 +32,8 @@ public class MyBoardsDto {
   private LocalDateTime dateCreated;
 
   @Builder
-  MyBoardsDto(Long id, Integer menuId, String menuName, String title, LocalDateTime dateCreated) {
+  public MyBoardsDto(
+      Long id, Integer menuId, String menuName, String title, LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;
     this.menuName = menuName;

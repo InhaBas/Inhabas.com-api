@@ -76,7 +76,7 @@ public class MyInfoServiceImpl implements MyInfoService {
     Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     budgetSupportApplicationDtoList.addAll(
-        myInfoRepository.findAllBudgetSupportAllpicationByMemberId(memberId));
+        myInfoRepository.findAllBudgetSupportApplicationsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
       throw new InvalidAuthorityException();
     }

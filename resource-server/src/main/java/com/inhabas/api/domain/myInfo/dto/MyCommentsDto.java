@@ -7,10 +7,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@NoArgsConstructor
+@Getter
 public class MyCommentsDto {
 
   // ParentsBoard의 게시판 id
@@ -31,7 +35,7 @@ public class MyCommentsDto {
   private LocalDateTime dateCreated;
 
   @Builder
-  MyCommentsDto(
+  public MyCommentsDto(
       Long id, Integer menuId, String menuName, String content, LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;

@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.persistence.*;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -51,7 +52,7 @@ public class Comment extends BaseEntity {
   private Boolean isDeleted = false;
 
   /* constructor */
-
+  @Builder
   public Comment(String content, Member writer, BaseBoard parentBoard) {
     this.content = new Content(content);
     this.writtenBy(writer);

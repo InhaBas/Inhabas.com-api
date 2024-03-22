@@ -12,5 +12,5 @@ public interface MyInfoRepositoryCustom {
 
   List<MyCommentsDto> findAllCommentsByMemberId(Long memberId);
 
-  List<MyBudgetSupportApplicationDto> findAllBudgetSupportAllpicationByMemberId(Long memberId);
+  List<MyBudgetSupportApplicationDto> findAllBudgetSupportApplicationsByMemberId(Long memberId);
 }

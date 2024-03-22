@@ -37,7 +37,7 @@ public class MyBudgetSupportApplicationDto {
   private LocalDateTime dateDeposited;
 
   @Builder
-  MyBudgetSupportApplicationDto(
+  public MyBudgetSupportApplicationDto(
       Long id,
       RequestStatus status,
       String title,

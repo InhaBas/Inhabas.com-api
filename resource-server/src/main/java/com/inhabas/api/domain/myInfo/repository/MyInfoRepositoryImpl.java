@@ -5,9 +5,12 @@ import static com.inhabas.api.domain.budget.domain.QBudgetSupportApplication.bud
 import static com.inhabas.api.domain.comment.domain.QComment.comment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
+import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
@@ -31,30 +34,40 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 baseBoard.title.value,
                 baseBoard.dateCreated))
         .from(baseBoard)
-        .where(baseBoard.writer.id.eq(memberId))
+        .where(
+            baseBoard
+                .writer
+                .id
+                .eq(memberId)
+                // budgetSupportApplication은 예산신청 조회가 따로 있으므로, 게시판 조회 범주에서 제외
+                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not()))
         .orderBy(baseBoard.dateCreated.desc())
         .fetch();
   }
 
   @Override
   public List<MyCommentsDto> findAllCommentsByMemberId(Long memberId) {
-    return queryFactory
-        .select(
-            Projections.constructor(
-                MyCommentsDto.class,
-                comment.parentBoard.id,
-                comment.parentBoard.menu.id,
-                comment.parentBoard.menu.name.value,
-                comment.content.value,
-                comment.dateCreated))
-        .from(comment)
-        .where(comment.writer.id.eq(memberId))
-        .orderBy(comment.dateCreated.desc())
-        .fetch();
+    List<Comment> comments =
+        queryFactory
+            .selectFrom(comment)
+            .where(comment.writer.id.eq(memberId))
+            .orderBy(comment.dateCreated.desc())
+            .fetch();
+
+    return comments.stream()
+        .map(
+            comment ->
+                new MyCommentsDto(
+                    comment.getParentBoard().getId(),
+                    comment.getParentBoard().getMenu().getId(),
+                    comment.getParentBoard().getMenu().getName(),
+                    comment.getContent(),
+                    comment.getDateCreated()))
+        .collect(Collectors.toList());
   }
 
   @Override
-  public List<MyBudgetSupportApplicationDto> findAllBudgetSupportAllpicationByMemberId(
+  public List<MyBudgetSupportApplicationDto> findAllBudgetSupportApplicationsByMemberId(
       Long memberId) {
     return queryFactory
         .select(
@@ -64,7 +77,8 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 budgetSupportApplication.status,
                 budgetSupportApplication.title.value,
                 budgetSupportApplication.dateCreated,
-                budgetSupportApplication.dateChecked))
+                budgetSupportApplication.dateChecked,
+                budgetSupportApplication.dateDeposited))
         .from(budgetSupportApplication)
         .where(budgetSupportApplication.applicant.id.eq(memberId))
         .orderBy(budgetSupportApplication.dateCreated.desc())
