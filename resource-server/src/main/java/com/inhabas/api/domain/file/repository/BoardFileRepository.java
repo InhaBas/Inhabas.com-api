@@ -8,7 +8,5 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.file.domain.BoardFile;
 
 public interface BoardFileRepository extends JpaRepository<BoardFile, Long> {
-  List<BoardFile> findAllByIdInAndUploader(List<String> fileIdList, Member uploader);
-
   List<BoardFile> getAllByIdInAndUploader(List<String> fileIdList, Member uploader);
 }

@@ -8,7 +8,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +18,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -195,20 +194,17 @@ public class BudgetHistoryControllerTest {
             .outcome(10000)
             .memberStudentIdReceived("123123123")
             .memberNameReceived("김짱구")
+            .files(List.of("random"))
             .build();
 
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
-
-    given(budgetHistoryService.createHistory(any(), any(), any())).willReturn(1L);
+    given(budgetHistoryService.createHistory(any(), any())).willReturn(1L);
 
     // when
     String header =
         mvc.perform(
-                multipart("/budget/history")
-                    .file(mockFormFile)
-                    .file(new MockMultipartFile("files", new byte[0])))
+                post("/budget/history")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -226,16 +222,10 @@ public class BudgetHistoryControllerTest {
         "{\"dateUsed\":null,\"title\":null,\"details\":null,"
             + "\"memberStudentIdReceived\":null,\"memberNameReceived\":null,\"income\":0,\"outcome\":0}";
 
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile("form", "", MediaType.APPLICATION_JSON_VALUE, wrongForm.getBytes());
-
-    given(budgetHistoryService.createHistory(any(), any(), any())).willReturn(1L);
+    given(budgetHistoryService.createHistory(any(), any())).willReturn(1L);
 
     // when then
-    mvc.perform(
-            multipart("/budget/history")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+    mvc.perform(post("/budget/history").contentType(MediaType.APPLICATION_JSON).content(wrongForm))
         .andExpect(status().isBadRequest());
   }
 
@@ -252,18 +242,13 @@ public class BudgetHistoryControllerTest {
             .outcome(10000)
             .memberStudentIdReceived("123123123")
             .memberNameReceived("김짱구")
+            .files(List.of("random"))
             .build();
-    doNothing().when(budgetHistoryService).modifyHistory(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
+    doNothing().when(budgetHistoryService).modifyHistory(any(), any(), any());
 
     // when then
     mvc.perform(
-            multipart("/budget/history/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+            post("/budget/history/1").contentType(MediaType.APPLICATION_JSON).content(jsonOf(form)))
         .andExpect(status().isNoContent());
   }
 
@@ -274,16 +259,11 @@ public class BudgetHistoryControllerTest {
     String wrongForm =
         "{\"dateUsed\":null,\"title\":null,\"details\":null,"
             + "\"memberStudentIdReceived\":null,\"memberNameReceived\":null,\"income\":0,\"outcome\":0}";
-    doNothing().when(budgetHistoryService).modifyHistory(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile("form", "", MediaType.APPLICATION_JSON_VALUE, wrongForm.getBytes());
+    doNothing().when(budgetHistoryService).modifyHistory(any(), any(), any());
 
     // when then
     mvc.perform(
-            multipart("/budget/history/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+            post("/budget/history/1").contentType(MediaType.APPLICATION_JSON).content(wrongForm))
         .andExpect(status().isBadRequest());
   }
 
@@ -300,20 +280,13 @@ public class BudgetHistoryControllerTest {
             .outcome(10000)
             .memberStudentIdReceived("123123123")
             .memberNameReceived("김짱구")
+            .files(List.of("random"))
             .build();
-    doThrow(NotFoundException.class)
-        .when(budgetHistoryService)
-        .modifyHistory(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
+    doThrow(NotFoundException.class).when(budgetHistoryService).modifyHistory(any(), any(), any());
 
     // when then
     mvc.perform(
-            multipart("/budget/history/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+            post("/budget/history/1").contentType(MediaType.APPLICATION_JSON).content(jsonOf(form)))
         .andExpect(status().isNotFound());
   }
 

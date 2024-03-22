@@ -1,13 +1,13 @@
 package com.inhabas.api.domain.budget.dto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -43,7 +43,9 @@ public class BudgetHistoryCreateForm {
 
   @PositiveOrZero private Integer outcome;
 
-  @NotNull private List<String> files = new ArrayList<>();
+  @NotNull
+  @Size(min = 1)
+  private List<String> files;
 
   private static final Integer ZERO = 0;
 
@@ -64,10 +66,24 @@ public class BudgetHistoryCreateForm {
     this.memberNameReceived = memberNameReceived;
     this.income = income;
     this.outcome = outcome;
-    this.files = files == null ? new ArrayList<>() : files;
+    this.files = files;
     if (this.details.isBlank()) {
       this.details = this.title;
     }
+  }
+
+  public boolean isIncome() {
+    return this.income > ZERO
+        && this.outcome == 0
+        && this.memberNameReceived == null
+        && this.memberStudentIdReceived == null;
+  }
+
+  public boolean isOutcome() {
+    return this.outcome > ZERO
+        && this.income == 0
+        && this.memberNameReceived != null
+        && this.memberStudentIdReceived != null;
   }
 
   public BudgetHistory toEntity(Menu menu, Member secretary, Member memberReceived) {
