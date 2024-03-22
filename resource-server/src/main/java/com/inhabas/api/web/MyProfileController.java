@@ -286,7 +286,14 @@ public class MyProfileController {
     return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
 
-  @GetMapping("/myInfo/budgetSupportApplications")
+  @Operation(summary = "내가 쓴 예산지원신청 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
+      })
+  @GetMapping("/myInfo/supports")
   public ResponseEntity<PagedResponseDto<MyBudgetSupportApplicationDto>>
       getBudgetSupportApplicationsList(
           @Parameter(description = "페이지", example = "0")

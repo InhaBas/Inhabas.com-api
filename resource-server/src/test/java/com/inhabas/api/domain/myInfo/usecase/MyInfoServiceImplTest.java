@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
@@ -32,6 +33,7 @@ public class MyInfoServiceImplTest {
 
   @InjectMocks private MyInfoServiceImpl myInfoService;
 
+  @Transactional
   @BeforeEach
   void setUp() {
     SecurityContext securityContext = mock(SecurityContext.class);
@@ -43,8 +45,9 @@ public class MyInfoServiceImplTest {
     SecurityContextHolder.setContext(securityContext);
   }
 
-  @Test
   @DisplayName("내가 쓴 게시글 목록을 조회한다.")
+  @Transactional(readOnly = true)
+  @Test
   void getMyBoards() {
     given(myInfoRepository.findAllBoardsByMemberId(1L))
         .willReturn(Collections.singletonList(new MyBoardsDto()));
@@ -55,8 +58,9 @@ public class MyInfoServiceImplTest {
     verify(myInfoRepository).findAllBoardsByMemberId(1L);
   }
 
-  @Test
   @DisplayName("내가 쓴 댓글 목록을 조회한다.")
+  @Transactional(readOnly = true)
+  @Test
   void getMyComments() {
     given(myInfoRepository.findAllCommentsByMemberId(1L))
         .willReturn(Collections.singletonList(new MyCommentsDto()));
@@ -67,8 +71,9 @@ public class MyInfoServiceImplTest {
     verify(myInfoRepository).findAllCommentsByMemberId(1L);
   }
 
-  @Test
   @DisplayName("내가 쓴 예산지원 신청 목록을 조회한다.")
+  @Transactional(readOnly = true)
+  @Test
   void getMyBudgetSupportApplications() {
     given(myInfoRepository.findAllBudgetSupportApplicationsByMemberId(1L))
         .willReturn(Collections.singletonList(new MyBudgetSupportApplicationDto()));

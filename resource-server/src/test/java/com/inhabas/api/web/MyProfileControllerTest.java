@@ -28,6 +28,10 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
+import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.usecase.MyInfoService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +42,7 @@ class MyProfileControllerTest {
 
   @Autowired private MockMvc mvc;
   @MockBean private MemberProfileService memberProfileService;
+  @MockBean private MyInfoService myInfoService;
   @Autowired private ObjectMapper objectMapper;
 
   private String jsonOf(Object o) throws JsonProcessingException {
@@ -239,5 +244,88 @@ class MyProfileControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonOf(handleNameRequestDto)))
         .andExpect(status().isNoContent());
+  }
+
+  @DisplayName("내가 작성한 게시글 목록을 조회 성공 200")
+  @Test
+  public void getMyBoardsTest() throws Exception {
+    // given
+    Member member = MemberTest.basicMember1();
+    MyBoardsDto myBoardsDto =
+        MyBoardsDto.builder()
+            .id(1L)
+            .menuId(4)
+            .menuName("공지사항")
+            .title("이건 공지")
+            .dateCreated(LocalDateTime.now())
+            .build();
+    given(myInfoService.getMyBoards()).willReturn(List.of(myBoardsDto));
+
+    // when
+    String response =
+        mvc.perform(get("/myInfo/boards"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+
+    // then
+    assertThat(response).isEqualTo(jsonOf(List.of(myBoardsDto)));
+  }
+
+  @DisplayName("내가 작성한 댓글 목록을 조회 성공 200")
+  @Test
+  public void getMyCommentsTest() throws Exception {
+    // given
+    Member member = MemberTest.basicMember1();
+    MyCommentsDto myCommentsDto =
+        MyCommentsDto.builder()
+            .id(1L)
+            .menuId(1)
+            .menuName("자유게시판")
+            .content("댓글댓글")
+            .dateCreated(LocalDateTime.now())
+            .build();
+    given(myInfoService.getMyComments()).willReturn(List.of(myCommentsDto));
+
+    // when
+    String response =
+        mvc.perform(get("/myInfo/comments"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+
+    // then
+    assertThat(response).contains(jsonOf(List.of(myCommentsDto)));
+  }
+
+  @DisplayName("내가 작성한 예산지원신청 목록을 조회 성공 200.")
+  @Test
+  public void getMyBudgetSupportApplicationsTest() throws Exception {
+    // given
+    Member member = MemberTest.basicMember1();
+    MyBudgetSupportApplicationDto myBudgetSupportApplicationDto =
+        MyBudgetSupportApplicationDto.builder()
+            .id(1L)
+            .status(RequestStatus.COMPLETED)
+            .title("1월 ec2 서버비용")
+            .dateCreated(LocalDateTime.now())
+            .dateChecked(LocalDateTime.now())
+            .dateDeposited(LocalDateTime.now())
+            .build();
+    given(myInfoService.getMyBudgetSupportApplications())
+        .willReturn(List.of(myBudgetSupportApplicationDto));
+
+    // when
+    String response =
+        mvc.perform(get("/myInfo/supports"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+
+    // then
+    assertThat(response).contains(jsonOf(List.of(myBudgetSupportApplicationDto)));
   }
 }
