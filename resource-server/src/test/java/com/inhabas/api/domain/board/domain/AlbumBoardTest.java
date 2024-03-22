@@ -60,7 +60,7 @@ class AlbumBoardTest {
   public void updateFilesTest() {
     // given
     List<BoardFile> files = new ArrayList<>();
-    BoardFile file = new BoardFile("fileName", "/hello", albumBoard);
+    BoardFile file = new BoardFile("random", "fileName", "/hello", writer, 10L, "image/jpeg");
     files.add(file);
 
     // when

@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.club.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Set;
 
@@ -43,7 +42,8 @@ public class ClubActivityDetailDtoTest {
             .writerName("")
             .dateCreated(null)
             .dateUpdated(null)
-            .files(null)
+            .images(null)
+            .otherFiles(null)
             .build();
 
     // when
@@ -51,7 +51,7 @@ public class ClubActivityDetailDtoTest {
         validator.validate(clubActivityDetailDto);
 
     // then
-    final int allField = 7;
+    final int allField = 8;
     assertThat(violations).hasSize(allField);
   }
 }

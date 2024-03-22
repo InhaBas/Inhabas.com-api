@@ -27,4 +27,8 @@ public class MenuGroupExampleTest {
   public static MenuGroup getMenuGroup2() {
     return new MenuGroup("STUDY");
   }
+
+  public static MenuGroup getScholarshipMenuGroup() {
+    return new MenuGroup("장학회");
+  }
 }

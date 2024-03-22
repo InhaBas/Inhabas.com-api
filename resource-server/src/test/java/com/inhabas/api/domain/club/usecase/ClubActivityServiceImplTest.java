@@ -1,18 +1,17 @@
 package com.inhabas.api.domain.club.usecase;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -22,7 +21,7 @@ import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.repository.ClubActivityRepository;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -42,7 +41,7 @@ public class ClubActivityServiceImplTest {
   @InjectMocks private ClubActivityServiceImpl clubActivityService;
   @Mock private ClubActivityRepository clubActivityRepository;
   @Mock private MemberRepository memberRepository;
-  @Mock private S3Service s3Service;
+  @Mock private BoardFileRepository boardFileRepository;
   @Mock private BoardSecurityChecker boardSecurityChecker;
   @Mock private MenuRepository menuRepository;
 
@@ -131,42 +130,20 @@ public class ClubActivityServiceImplTest {
             .menu(mock(Menu.class))
             .build()
             .writtenBy(member, AlbumBoard.class);
-    ReflectionTestUtils.setField(clubActivity, "id", 1L);
+    //    ReflectionTestUtils.setField(clubActivity, "id", 1L);
     SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto("title", "content", null);
-    given(clubActivityRepository.findById(any())).willReturn(Optional.ofNullable(clubActivity));
-    given(clubActivityRepository.save(any())).willReturn(clubActivity);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
+    given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
+    given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
     // when
-    clubActivityService.updateClubActivity(1L, saveClubActivityDto);
+    clubActivityService.updateClubActivity(1L, saveClubActivityDto, 1L);
 
     // then
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
     then(clubActivityRepository).should(times(1)).findById(any());
-    then(clubActivityRepository).should(times(1)).save(any());
-  }
-
-  @DisplayName("동아리 활동 수정 실패 (file storage)")
-  @Test
-  public void updateClubActivityTest_FileStorage_Failed() {
-    // given
-    Member member = MemberTest.chiefMember();
-    AlbumBoard clubActivity =
-        AlbumBoard.builder()
-            .title("title")
-            .content("content")
-            .menu(mock(Menu.class))
-            .build()
-            .writtenBy(member, AlbumBoard.class);
-    MultipartFile file = mock(MultipartFile.class);
-
-    SaveClubActivityDto saveClubActivityDto =
-        new SaveClubActivityDto("title", "content", List.of(file));
-    given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
-    given(s3Service.uploadS3File(any(), any())).willThrow(RuntimeException.class);
-
-    // when, then
-    assertThatThrownBy(() -> clubActivityService.updateClubActivity(1L, saveClubActivityDto))
-        .isInstanceOf(RuntimeException.class)
-        .hasMessage("파일 업로드를 실패했습니다.");
+    then(memberRepository).should(times(1)).findById(any());
   }
 
   @DisplayName("동아리 활동 삭제 성공")

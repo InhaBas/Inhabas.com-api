@@ -37,7 +37,9 @@ public class ClubActivityDetailDto {
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateUpdated;
 
-  @NotNull private List<FileDownloadDto> files;
+  @NotNull List<FileDownloadDto> images;
+
+  @NotNull List<FileDownloadDto> otherFiles;
 
   @Builder
   public ClubActivityDetailDto(
@@ -47,13 +49,15 @@ public class ClubActivityDetailDto {
       String writerName,
       LocalDateTime dateCreated,
       LocalDateTime dateUpdated,
-      List<FileDownloadDto> files) {
+      List<FileDownloadDto> images,
+      List<FileDownloadDto> otherFiles) {
     this.id = id;
     this.title = title;
     this.content = content;
     this.writerName = writerName;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;
-    this.files = files;
+    this.images = images;
+    this.otherFiles = otherFiles;
   }
 }
