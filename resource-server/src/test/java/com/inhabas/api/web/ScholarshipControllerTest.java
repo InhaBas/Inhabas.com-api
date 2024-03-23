@@ -7,7 +7,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
@@ -24,72 +26,48 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.board.dto.BoardCountDto;
-import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
-import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
-import com.inhabas.api.domain.project.dto.ProjectBoardDto;
-import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
-import com.inhabas.api.domain.project.usecase.ProjectBoardService;
+import com.inhabas.api.domain.scholarship.dto.SaveScholarshipBoardDto;
+import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDetailDto;
+import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDto;
+import com.inhabas.api.domain.scholarship.usecase.ScholarshipBoardService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@NoSecureWebMvcTest(ProjectBoardController.class)
-public class ProjectBoardControllerTest {
+@NoSecureWebMvcTest(ScholarshipController.class)
+public class ScholarshipControllerTest {
 
   @Autowired private MockMvc mvc;
 
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private ProjectBoardService projectBoardService;
-  @MockBean private BaseBoardRepository baseBoardRepository;
+  @MockBean private ScholarshipBoardService scholarshipBoardService;
 
   private String jsonOf(Object response) throws JsonProcessingException {
     return objectMapper.writeValueAsString(response);
   }
 
-  @DisplayName("프로젝트 프로젝트 게시판 종류 당 글 개수 조회 성공 200")
-  @Test
-  void getBoardCount_Success() throws Exception {
-    // given
-    BoardCountDto boardCountDto = new BoardCountDto("알파 테스터", 10);
-    List<BoardCountDto> dtoList = List.of(boardCountDto);
-    given(baseBoardRepository.countRowsGroupByMenuName(any())).willReturn(dtoList);
-
-    // when
-    String response =
-        mvc.perform(get("/project/count"))
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString(StandardCharsets.UTF_8);
-
-    // then
-    assertThat(response).contains(jsonOf(dtoList));
-  }
-
-  @DisplayName("프로젝트 게시글 목록 조회 성공 200")
+  @DisplayName("장학회 게시글 목록 조회 성공 200")
   @Test
   void getBoardList_Success() throws Exception {
     // given
     Member writer = MemberTest.chiefMember();
-    ProjectBoardDto projectBoardDto =
-        ProjectBoardDto.builder()
+    ScholarshipBoardDto scholarshipBoardDto =
+        ScholarshipBoardDto.builder()
             .id(1L)
             .title("title")
-            .writerName(writer.getName())
+            .writer(writer)
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
-            .isPinned(false)
             .build();
-    List<ProjectBoardDto> dtoList = List.of(projectBoardDto);
-    given(projectBoardService.getPosts(any(), any())).willReturn(dtoList);
+    List<ScholarshipBoardDto> dtoList = List.of(scholarshipBoardDto);
+    given(scholarshipBoardService.getPosts(any(), any())).willReturn(dtoList);
 
     // when
     String response =
-        mvc.perform(get("/project/alpha"))
+        mvc.perform(get("/scholarship/sponsor"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
@@ -99,12 +77,12 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(jsonOf(dtoList));
   }
 
-  @DisplayName("프로젝트 게시글 목록 조회 데이터가 올바르지 않다면 400")
+  @DisplayName("장학회 게시글 목록 조회 데이터가 올바르지 않다면 400")
   @Test
   void getBoardList_Invalid_Input() throws Exception {
     // when
     String response =
-        mvc.perform(get("/project/invalid"))
+        mvc.perform(get("/scholarship/invalid"))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -114,43 +92,44 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 단일 조회 성공 200")
+  @DisplayName("장학회 게시글 단일 조회 성공 200")
   @Test
   void getBoard() throws Exception {
     // given
     Member writer = MemberTest.chiefMember();
-    ProjectBoardDetailDto projectBoardDetailDto =
-        ProjectBoardDetailDto.builder()
+    ScholarshipBoardDetailDto scholarshipBoardDetailDto =
+        ScholarshipBoardDetailDto.builder()
             .id(1L)
             .title("title")
             .content("content")
-            .writerName(writer.getName())
+            .writer(writer)
             .images(null)
             .otherFiles(null)
+            .dateHistory(LocalDateTime.now())
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
-            .isPinned(false)
             .build();
-    given(projectBoardService.getPost(any(), any(), any())).willReturn(projectBoardDetailDto);
+    given(scholarshipBoardService.getPost(any(), any(), any()))
+        .willReturn(scholarshipBoardDetailDto);
 
     // when
     String response =
-        mvc.perform(get("/project/alpha/1"))
+        mvc.perform(get("/scholarship/sponsor/1"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsString(StandardCharsets.UTF_8);
 
     // then
-    assertThat(response).contains(jsonOf(projectBoardDetailDto));
+    assertThat(response).contains(jsonOf(scholarshipBoardDetailDto));
   }
 
-  @DisplayName("프로젝트 게시글 단일 조회 데이터가 올바르지 않다면 400")
+  @DisplayName("장학회 게시글 단일 조회 데이터가 올바르지 않다면 400")
   @Test
   void getBoard_Invalid_Input() throws Exception {
     // when
     String response =
-        mvc.perform(get("/project/alpha/invalid"))
+        mvc.perform(get("/scholarship/sponsor/invalid"))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -160,15 +139,15 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 단일 조회 데이터가 올바르지 않다면 404")
+  @DisplayName("장학회 게시글 단일 조회 데이터가 올바르지 않다면 404")
   @Test
   void getBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(projectBoardService).getPost(any(), any(), any());
+    doThrow(NotFoundException.class).when(scholarshipBoardService).getPost(any(), any(), any());
 
     // when
     String response =
-        mvc.perform(get("/project/alpha/1"))
+        mvc.perform(get("/scholarship/sponsor/1"))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
@@ -178,47 +157,51 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 추가 성공 201")
+  @DisplayName("장학회 게시글 추가 성공 201")
   @Test
   void addBoard() throws Exception {
     // given
-    given(projectBoardService.write(any(), any(), any())).willReturn(1L);
+    given(scholarshipBoardService.write(any(), any(), any())).willReturn(1L);
 
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder()
+    SaveScholarshipBoardDto form =
+        SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .pinOption(1)
+            .dateHistory(LocalDateTime.now())
             .build();
 
     // when
     String header =
         mvc.perform(
-                multipart("/project/alpha")
+                post("/scholarship/sponsor")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonOf(saveProjectBoardDto)))
+                    .content(jsonOf(form)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
             .getHeader("Location");
 
     // then
-    assertThat(header).contains("/project/alpha/1");
+    assertThat(header).contains("/scholarship/sponsor/1");
   }
 
-  @DisplayName("프로젝트 게시글 추가 데이터가 올바르지 않다면 400")
+  @DisplayName("장학회 게시글 추가 데이터가 올바르지 않다면 400")
   @Test
   void addBoard_Invalid_Input() throws Exception {
     // given
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
+    SaveScholarshipBoardDto form =
+        SaveScholarshipBoardDto.builder()
+            .title("")
+            .content("good content")
+            .dateHistory(LocalDateTime.now())
+            .build();
 
     // when
     String response =
         mvc.perform(
-                post("/project/alpha")
+                post("/scholarship/sponsor")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonOf(saveProjectBoardDto)))
+                    .content(jsonOf(form)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -228,44 +211,48 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 수정 성공 204")
+  @DisplayName("장학회 게시글 수정 성공 204")
   @Test
   void updateBoard() throws Exception {
     // given
-    doNothing().when(projectBoardService).update(any(), any(), any(), any());
+    doNothing().when(scholarshipBoardService).update(any(), any(), any(), any());
 
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder()
+    SaveScholarshipBoardDto form =
+        SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .pinOption(1)
+            .dateHistory(LocalDateTime.now())
             .build();
 
     // when then
     mvc.perform(
-            multipart("/project/alpha/1")
+            post("/scholarship/sponsor/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonOf(saveProjectBoardDto)))
+                .content(jsonOf(form)))
         .andExpect(status().isNoContent());
   }
 
-  @DisplayName("프로젝트 게시글 수정 데이터가 올바르지 않다면 400")
+  @DisplayName("장학회 게시글 수정 데이터가 올바르지 않다면 400")
   @Test
   void updateBoard_Invalid_Input() throws Exception {
     // given
     doThrow(InvalidInputException.class)
-        .when(projectBoardService)
+        .when(scholarshipBoardService)
         .update(any(), any(), any(), any());
 
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder().title("").content("good content").pinOption(1).build();
+    SaveScholarshipBoardDto form =
+        SaveScholarshipBoardDto.builder()
+            .title("")
+            .content("good content")
+            .dateHistory(LocalDateTime.now())
+            .build();
 
     // when
     String response =
         mvc.perform(
-                multipart("/project/alpha")
+                post("/scholarship/sponsor")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonOf(saveProjectBoardDto)))
+                    .content(jsonOf(form)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -275,25 +262,27 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 수정 데이터가 올바르지 않다면 404")
+  @DisplayName("장학회 게시글 수정 데이터가 올바르지 않다면 404")
   @Test
   void updateBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(projectBoardService).update(any(), any(), any(), any());
+    doThrow(NotFoundException.class)
+        .when(scholarshipBoardService)
+        .update(any(), any(), any(), any());
 
-    SaveProjectBoardDto saveProjectBoardDto =
-        SaveProjectBoardDto.builder()
+    SaveScholarshipBoardDto form =
+        SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .pinOption(1)
+            .dateHistory(LocalDateTime.now())
             .build();
 
     // when
     String response =
         mvc.perform(
-                multipart("/project/alpha/1")
+                post("/scholarship/sponsor/1")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonOf(saveProjectBoardDto)))
+                    .content(jsonOf(form)))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
@@ -303,25 +292,25 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(NOT_FOUND.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 삭제 성공 204")
+  @DisplayName("장학회 게시글 삭제 성공 204")
   @Test
   void deleteBoard() throws Exception {
     // given
-    doNothing().when(projectBoardService).delete(any());
+    doNothing().when(scholarshipBoardService).delete(any(), any());
 
     // when then
-    mvc.perform(delete("/project/alpha/1")).andExpect(status().isNoContent());
+    mvc.perform(delete("/scholarship/sponsor/1")).andExpect(status().isNoContent());
   }
 
-  @DisplayName("프로젝트 게시글 삭제 데이터가 올바르지 않다면 400")
+  @DisplayName("장학회 게시글 삭제 데이터가 올바르지 않다면 400")
   @Test
   void deleteBoard_Invalid_Input() throws Exception {
     // given
-    doNothing().when(projectBoardService).delete(any());
+    doNothing().when(scholarshipBoardService).delete(any(), any());
 
     // when
     String response =
-        mvc.perform(delete("/project/invalid/invalid"))
+        mvc.perform(delete("/scholarship/sponsor/invalid"))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -331,15 +320,15 @@ public class ProjectBoardControllerTest {
     assertThat(response).contains(INVALID_INPUT_VALUE.getMessage());
   }
 
-  @DisplayName("프로젝트 게시글 삭제 데이터가 올바르지 않다면 404")
+  @DisplayName("장학회 게시글 삭제 데이터가 올바르지 않다면 404")
   @Test
   void deleteBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(projectBoardService).delete(any());
+    doThrow(NotFoundException.class).when(scholarshipBoardService).delete(any(), any());
 
     // when
     String response =
-        mvc.perform(delete("/project/alpha/1"))
+        mvc.perform(delete("/scholarship/sponsor/1"))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()

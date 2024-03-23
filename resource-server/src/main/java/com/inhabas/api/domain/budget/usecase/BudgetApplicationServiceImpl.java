@@ -35,7 +35,6 @@ public class BudgetApplicationServiceImpl implements BudgetApplicationService {
   private final MenuRepository menuRepository;
   private final BoardFileRepository boardFileRepository;
   private static final Integer BUDGET_APPLICATION_MENU_ID = 14;
-  private static final String DIR_NAME = "budget/";
 
   @Transactional(readOnly = true)
   @Override

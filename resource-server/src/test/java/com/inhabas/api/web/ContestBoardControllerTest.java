@@ -10,6 +10,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
@@ -20,7 +21,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,7 +89,8 @@ public class ContestBoardControllerTest {
             .association("테스트 협회")
             .dateContestStart(LocalDate.of(2024, 1, 1))
             .dateContestEnd(LocalDate.of(2024, 3, 1))
-            .thumbnail(new FileDownloadDto("thumbnail.jpg", "thumbnailUrl"))
+            .thumbnail(
+                new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .build();
     List<ContestBoardDto> dtoList = List.of(contestBoardDto);
     given(contestBoardService.getContestBoards(any(), any(), any(), any())).willReturn(dtoList);
@@ -145,7 +146,8 @@ public class ContestBoardControllerTest {
             .dateContestEnd(LocalDate.of(2024, 3, 1))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
-            .thumbnail(new FileDownloadDto("thumbnail.jpg", "thumbnailUrl"))
+            .thumbnail(
+                new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .images(null)
             .otherFiles(null)
             .build();
@@ -213,20 +215,12 @@ public class ContestBoardControllerTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .build();
 
-    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
-
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String header =
         mvc.perform(
                 multipart("/contest/activity")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveContestBoardDto)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -254,19 +248,13 @@ public class ContestBoardControllerTest {
             .build();
 
     String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
-
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
 
     // when
     String response =
         mvc.perform(
-                multipart("/contest/contest")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/contest/contest")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveContestBoardDtoJson)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -281,7 +269,7 @@ public class ContestBoardControllerTest {
   void updateBoard() throws Exception {
     // given
 
-    doNothing().when(contestBoardService).updateContestBoard(any(), any(), any());
+    doNothing().when(contestBoardService).updateContestBoard(any(), any(), any(), any());
 
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
@@ -294,19 +282,11 @@ public class ContestBoardControllerTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .build();
 
-    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
-
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when then
     mvc.perform(
-            multipart("/contest/contest/1")
-                .file(formPart)
-                .file(filePart)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+            post("/contest/contest/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonOf(saveContestBoardDto)))
         .andExpect(status().isNoContent());
   }
 
@@ -317,7 +297,7 @@ public class ContestBoardControllerTest {
 
     doThrow(InvalidInputException.class)
         .when(contestBoardService)
-        .updateContestBoard(any(), any(), any());
+        .updateContestBoard(any(), any(), any(), any());
 
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
@@ -330,19 +310,12 @@ public class ContestBoardControllerTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .build();
 
-    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String response =
         mvc.perform(
-                multipart("/contest/contest/")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/contest/contest/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveContestBoardDto)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -358,7 +331,7 @@ public class ContestBoardControllerTest {
     // given
     doThrow(NotFoundException.class)
         .when(contestBoardService)
-        .updateContestBoard(any(), any(), any());
+        .updateContestBoard(any(), any(), any(), any());
 
     SaveContestBoardDto saveContestBoardDto =
         SaveContestBoardDto.builder()
@@ -371,20 +344,12 @@ public class ContestBoardControllerTest {
             .dateContestEnd(LocalDate.now().plusDays(10))
             .build();
 
-    String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveContestBoardDtoJson.getBytes());
-
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String response =
         mvc.perform(
-                multipart("/contest/contest/1")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/contest/contest/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveContestBoardDto)))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()

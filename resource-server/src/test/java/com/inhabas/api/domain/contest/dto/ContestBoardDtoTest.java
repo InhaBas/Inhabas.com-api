@@ -23,7 +23,8 @@ public class ContestBoardDtoTest {
     String association = "테스트 협회";
     LocalDate dateContestStart = LocalDate.of(2024, 1, 1);
     LocalDate dateContestEnd = LocalDate.of(2024, 3, 1);
-    FileDownloadDto thumbnail = new FileDownloadDto("thumbnail.jpg", "thumbnailUrl");
+    FileDownloadDto thumbnail =
+        new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg");
 
     // when
     ContestBoardDto contestBoardDto =

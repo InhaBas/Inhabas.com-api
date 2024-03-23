@@ -28,9 +28,7 @@ public class ScholarshipHistoryRepositoryTest {
   @Test
   void getYearlyData() {
     // given
-    Member writer = MemberTest.chiefMember();
-    ReflectionTestUtils.setField(writer, "id", 1L);
-    memberRepository.save(writer);
+    Member writer = memberRepository.save(MemberTest.chiefMember());
     ScholarshipHistory scholarshipHistory =
         new ScholarshipHistory(writer, "title", LocalDateTime.now());
     ReflectionTestUtils.setField(scholarshipHistory, "id", 1L);

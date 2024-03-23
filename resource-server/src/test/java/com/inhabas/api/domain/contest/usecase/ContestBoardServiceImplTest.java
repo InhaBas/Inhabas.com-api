@@ -8,12 +8,14 @@ import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTes
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +33,7 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -57,7 +59,7 @@ public class ContestBoardServiceImplTest {
 
   @Mock private MenuRepository menuRepository;
 
-  @Mock private S3Service s3Service;
+  @Mock private BoardFileRepository boardFileRepository;
 
   @DisplayName("Contest board 게시글 목록을 조회한다.")
   @Transactional(readOnly = true)
@@ -73,7 +75,8 @@ public class ContestBoardServiceImplTest {
             .topic("테스트 주제")
             .dateContestStart(LocalDate.now())
             .dateContestEnd(LocalDate.now().plusDays(10))
-            .thumbnail(new FileDownloadDto("thumbnail.jpg", "thumbnailUrl"))
+            .thumbnail(
+                new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .build();
 
     given(
@@ -211,16 +214,22 @@ public class ContestBoardServiceImplTest {
 
     ReflectionTestUtils.setField(contestBoard, "id", 1L);
 
+    Member writer = MemberTest.chiefMember();
+
+    given(memberRepository.findById(any())).willReturn(Optional.of(writer));
     given(contestFieldRepository.findById(any())).willReturn(Optional.of(contestField));
     given(contestBoardRepository.findById(any())).willReturn(Optional.of(contestBoard));
-    given(contestBoardRepository.save(any())).willReturn(contestBoard);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
 
     // when
-    contestBoardService.updateContestBoard(contestBoard.getId(), CONTEST, saveContestBoardDto);
+    contestBoardService.updateContestBoard(contestBoard.getId(), CONTEST, saveContestBoardDto, 1L);
 
     // then
+    then(memberRepository).should(times(1)).findById(any());
     then(contestBoardRepository).should(times(1)).findById(any());
-    then(contestBoardRepository).should(times(1)).save(any());
+    then(contestBoardRepository).should(times(1)).findById(any());
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
   }
 
   @DisplayName("Contest board 게시글을 삭제한다.")

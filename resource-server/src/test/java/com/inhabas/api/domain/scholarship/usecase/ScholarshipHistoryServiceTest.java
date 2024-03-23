@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(MockitoExtension.class)
-public class ScholarshipHistoryServiceImplTest {
+public class ScholarshipHistoryServiceTest {
 
   @InjectMocks ScholarshipHistoryServiceImpl scholarshipHistoryService;
   @Mock ScholarshipHistoryRepository scholarshipHistoryRepository;

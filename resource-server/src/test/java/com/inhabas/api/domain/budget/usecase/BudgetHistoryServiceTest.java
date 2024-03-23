@@ -4,12 +4,14 @@ import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -20,7 +22,8 @@ import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.domain.BoardFile;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
@@ -42,7 +45,7 @@ public class BudgetHistoryServiceTest {
   @Mock private BudgetHistoryRepository budgetHistoryRepository;
   @Mock private MemberRepository memberRepository;
   @Mock private MenuRepository menuRepository;
-  @Mock private S3Service s3Service;
+  @Mock private BoardFileRepository boardFileRepository;
 
   private static final String HISTORY_TITLE = "title";
   private static final String HISTORY_DETAILS = "details";
@@ -50,13 +53,21 @@ public class BudgetHistoryServiceTest {
   private static final String ACCOUNT_NUMBER = "123-123-123";
   private static final LocalDateTime HISTORY_DATE_USED = LocalDateTime.now().minusDays(1L);
 
-  @DisplayName("총무가 회계내역을 추가한다.")
+  @DisplayName("총무가 회계내역을 추가한다. (입금)")
   @Test
-  public void createHistoryTest() {
+  public void createIncomeHistoryTest() {
     Member secretary = mock(Member.class);
-    Member memberReceived = mock(Member.class);
-    BudgetHistoryCreateForm form = mock(BudgetHistoryCreateForm.class);
+    BoardFile file = new BoardFile("random", "name", "url", secretary, 100L, "image/jpeg");
     Menu menu = mock(Menu.class);
+    BudgetHistoryCreateForm form =
+        BudgetHistoryCreateForm.builder()
+            .dateUsed(LocalDateTime.now())
+            .title("title")
+            .details("details")
+            .income(10000)
+            .outcome(0)
+            .files(List.of("random"))
+            .build();
     BudgetHistory budgetHistory =
         BudgetHistory.builder()
             .title("title")
@@ -71,14 +82,57 @@ public class BudgetHistoryServiceTest {
             .build();
 
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
+    given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any())).willReturn(List.of(file));
+    given(budgetHistoryRepository.save(any())).willReturn(budgetHistory);
+
+    // when
+    budgetHistoryService.createHistory(form, 1L);
+
+    // then
+    then(budgetHistoryRepository).should(times(1)).save(any());
+  }
+
+  @DisplayName("총무가 회계내역을 추가한다. (출금)")
+  @Test
+  public void createOutcomeHistoryTest() {
+    Member secretary = mock(Member.class);
+    Member memberReceived = mock(Member.class);
+    BoardFile file = new BoardFile("random", "name", "url", secretary, 100L, "image/jpeg");
+    Menu menu = mock(Menu.class);
+    BudgetHistoryCreateForm form =
+        BudgetHistoryCreateForm.builder()
+            .dateUsed(LocalDateTime.now())
+            .title("title")
+            .details("details")
+            .memberStudentIdReceived("12171707")
+            .memberNameReceived("조승현")
+            .income(0)
+            .outcome(10000)
+            .files(List.of("random"))
+            .build();
+    BudgetHistory budgetHistory =
+        BudgetHistory.builder()
+            .title("title")
+            .menu(menu)
+            .details("details")
+            .dateUsed(LocalDateTime.now())
+            .memberInCharge(secretary)
+            .account(null)
+            .income(1000)
+            .outcome(0)
+            .memberReceived(memberReceived)
+            .build();
+
+    given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
     given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
         .willReturn(Optional.of(memberReceived));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any())).willReturn(List.of(file));
     given(budgetHistoryRepository.save(any())).willReturn(budgetHistory);
-    given(form.toEntity(any(), any(), any())).willReturn(budgetHistory);
 
     // when
-    budgetHistoryService.createHistory(form, null, 1L);
+    budgetHistoryService.createHistory(form, 1L);
 
     // then
     then(budgetHistoryRepository).should(times(1)).save(any());
@@ -93,9 +147,17 @@ public class BudgetHistoryServiceTest {
     Member memberReceived = MemberTest.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    BoardFile file = new BoardFile("random", "name", "url", secretary, 100L, "image/jpeg");
     BudgetHistoryCreateForm form =
         new BudgetHistoryCreateForm(
-            LocalDateTime.now().minusDays(1L), "title", "details", "12171234", "유동현", 0, 10000);
+            LocalDateTime.now().minusDays(1L),
+            "title",
+            "details",
+            "12171234",
+            "유동현",
+            0,
+            10000,
+            List.of("random"));
     BudgetHistory budgetHistory =
         BudgetHistory.builder()
             .title("title")
@@ -114,13 +176,13 @@ public class BudgetHistoryServiceTest {
     given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
         .willReturn(Optional.of(memberReceived));
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.of(budgetHistory));
-    given(budgetHistoryRepository.save(any())).willReturn(budgetHistory);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any())).willReturn(List.of(file));
 
     // when
-    budgetHistoryService.modifyHistory(1L, form, null, 1L);
+    budgetHistoryService.modifyHistory(1L, form, 1L);
 
     // then
-    then(budgetHistoryRepository).should(times(1)).save(any(BudgetHistory.class));
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
   }
 
   @DisplayName("총무가 회계 내역을 삭제한다.")

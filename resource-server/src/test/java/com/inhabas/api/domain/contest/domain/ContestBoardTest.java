@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.mockito.Mock;
@@ -21,7 +22,7 @@ import org.junit.jupiter.api.Test;
 class ContestBoardTest {
 
   @Mock private Menu menu;
-
+  @Mock private Member writer;
   @Mock private ContestField contestField;
 
   private ContestBoard contestBoard;
@@ -109,8 +110,8 @@ class ContestBoardTest {
     // Given
 
     List<BoardFile> files = new ArrayList<>();
-    files.add(new BoardFile("file1.jpg", "/url1", contestBoard));
-    files.add(new BoardFile("file2.pdf", "/url2", contestBoard));
+    files.add(new BoardFile("random", "file1.jpg", "/url1", writer, 10L, "image/jpeg"));
+    files.add(new BoardFile("random", "file2.pdf", "/url2", writer, 10L, "image/jpeg"));
 
     // When
     contestBoard.updateFiles(files);

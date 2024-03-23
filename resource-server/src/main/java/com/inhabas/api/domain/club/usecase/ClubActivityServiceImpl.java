@@ -18,10 +18,11 @@ import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.repository.ClubActivityRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
+import com.inhabas.api.global.util.ClassifiedFiles;
+import com.inhabas.api.global.util.ClassifyFiles;
 
 @Service
 @RequiredArgsConstructor
@@ -43,25 +44,17 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     List<AlbumBoard> clubActivityList = clubActivityRepository.findAll();
 
-    // 코드 수정 필요
     return clubActivityList.stream()
         .map(
-            obj -> {
-              String fileName = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getName();
-              String fileUrl = obj.getFiles().isEmpty() ? null : obj.getFiles().get(0).getUrl();
+            board -> {
+              ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(board.getFiles());
               return ClubActivityDto.builder()
-                  .id(obj.getId())
-                  .title(obj.getTitle())
-                  .writerName(obj.getWriter().getName())
-                  .dateCreated(obj.getDateCreated())
-                  .dateUpdated(obj.getDateUpdated())
-                  .thumbnail(
-                      new FileDownloadDto(
-                          obj.getFiles().get(0).getId(),
-                          fileName,
-                          fileUrl,
-                          obj.getFiles().get(0).getSize(),
-                          obj.getFiles().get(0).getType()))
+                  .id(board.getId())
+                  .title(board.getTitle())
+                  .writerName(board.getWriter().getName())
+                  .dateCreated(board.getDateCreated())
+                  .dateUpdated(board.getDateUpdated())
+                  .thumbnail(classifiedFiles.getThumbnail())
                   .build();
             })
         .collect(Collectors.toList());
@@ -102,13 +95,8 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
     AlbumBoard clubActivity =
         clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
-    List<FileDownloadDto> fileDownloadDtoList = null;
-    if (!clubActivity.getFiles().isEmpty()) {
-      fileDownloadDtoList =
-          clubActivity.getFiles().stream()
-              .map(obj -> FileDownloadDto.builder().name(obj.getName()).url(obj.getUrl()).build())
-              .collect(Collectors.toList());
-    }
+
+    ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(clubActivity.getFiles());
 
     return ClubActivityDetailDto.builder()
         .id(clubActivity.getId())
@@ -117,7 +105,8 @@ public class ClubActivityServiceImpl implements ClubActivityService {
         .writerName(clubActivity.getWriter().getName())
         .dateCreated(clubActivity.getDateCreated())
         .dateUpdated(clubActivity.getDateUpdated())
-        .files(fileDownloadDtoList)
+        .images(classifiedFiles.getImages())
+        .otherFiles(classifiedFiles.getOtherFiles())
         .build();
   }
 

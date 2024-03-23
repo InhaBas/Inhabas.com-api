@@ -99,17 +99,17 @@ public class ScholarshipController {
   @ApiResponses({
     @ApiResponse(
         responseCode = "200",
-        content = {@Content(schema = @Schema(implementation = ScholarshipBoardDto.class))}),
+        content = {@Content(schema = @Schema(implementation = ScholarshipBoardDetailDto.class))}),
     @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
+        responseCode = "400",
+        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
         content =
             @Content(
                 schema = @Schema(implementation = ErrorResponse.class),
                 examples =
                     @ExampleObject(
                         value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
   })
   public ResponseEntity<ScholarshipBoardDetailDto> getBoard(
       @PathVariable Long boardId,

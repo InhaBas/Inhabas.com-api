@@ -3,6 +3,7 @@ package com.inhabas.api.domain.normalBoard.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.assertj.core.api.Assertions;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 public class NormalBoardTest {
 
   @Mock private Menu menu;
+  @Mock private Member writer;
 
   private NormalBoard normalBoard;
 
@@ -57,7 +59,8 @@ public class NormalBoardTest {
   public void updateFilesTest() {
     // given
     List<BoardFile> files = new ArrayList<>();
-    BoardFile file = new BoardFile("fileName", "/hello", normalBoard);
+    BoardFile file =
+        new BoardFile("random", "thumbnail.jpg", "/thumbnailUrl", writer, 10L, "image/jpeg");
     files.add(file);
 
     // when

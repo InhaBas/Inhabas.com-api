@@ -6,12 +6,14 @@ import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -45,7 +47,7 @@ public class NormalBoardServiceImplTest {
   @Mock MemberRepository memberRepository;
   @Mock NormalBoardRepository normalBoardRepository;
   @Mock MenuRepository menuRepository;
-  @Mock S3Service s3Service;
+  @Mock BoardFileRepository boardFileRepository;
 
   @DisplayName("normal board 게시글 목록을 조회한다.")
   @Transactional(readOnly = true)
@@ -125,16 +127,20 @@ public class NormalBoardServiceImplTest {
     Menu menu = getNormalNoticeMenu(getNormalMenuGroup());
     NormalBoard normalBoard = new NormalBoard("title", menu, "content", false, LocalDateTime.now());
     ReflectionTestUtils.setField(normalBoard, "id", 1L);
+    Member writer = MemberTest.chiefMember();
 
+    given(memberRepository.findById(any())).willReturn(Optional.of(writer));
     given(normalBoardRepository.findById(any())).willReturn(Optional.of(normalBoard));
-    given(normalBoardRepository.save(any())).willReturn(normalBoard);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
 
     // when
-    normalBoardService.update(normalBoard.getId(), NOTICE, saveNormalBoardDto);
+    normalBoardService.update(normalBoard.getId(), NOTICE, saveNormalBoardDto, 1L);
 
     // then
+    then(memberRepository).should(times(1)).findById(any());
     then(normalBoardRepository).should(times(1)).findById(any());
-    then(normalBoardRepository).should(times(1)).save(any());
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
   }
 
   @DisplayName("normal board 게시글을 삭제한다.")

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,7 +20,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -111,18 +111,14 @@ public class BudgetApplicationControllerTest {
             .account("123-123-123")
             .build();
 
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
-
-    given(budgetApplicationService.registerApplication(any(), any(), any())).willReturn(1L);
+    given(budgetApplicationService.registerApplication(any(), any())).willReturn(1L);
 
     // when
     String header =
         mvc.perform(
-                multipart("/budget/application")
-                    .file(mockFormFile)
-                    .file(new MockMultipartFile("files", new byte[0])))
+                post("/budget/application")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -140,16 +136,11 @@ public class BudgetApplicationControllerTest {
         "{\"title\":null,\"details\":null,"
             + "\"dateUsed\":\"2024-11-01T00:00:00\",\"outcome\":0,\"account\":\"string\"}";
 
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile("form", "", MediaType.APPLICATION_JSON_VALUE, wrongForm.getBytes());
-
-    given(budgetApplicationService.registerApplication(any(), any(), any())).willReturn(1L);
+    given(budgetApplicationService.registerApplication(any(), any())).willReturn(1L);
 
     // when then
     mvc.perform(
-            multipart("/budget/application")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+            post("/budget/application").contentType(MediaType.APPLICATION_JSON).content(wrongForm))
         .andExpect(status().isBadRequest());
   }
 
@@ -165,17 +156,13 @@ public class BudgetApplicationControllerTest {
             .outcome(10000)
             .account("123-123-123")
             .build();
-    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
+    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any());
 
     // when then
     mvc.perform(
-            multipart("/budget/application/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+            post("/budget/application/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonOf(form)))
         .andExpect(status().isNoContent());
   }
 
@@ -186,16 +173,13 @@ public class BudgetApplicationControllerTest {
     String wrongForm =
         "{\"title\":null,\"details\":null,"
             + "\"dateUsed\":\"2024-11-01T00:00:00\",\"outcome\":0,\"account\":\"string\"}";
-    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile("form", "", MediaType.APPLICATION_JSON_VALUE, wrongForm.getBytes());
+    doNothing().when(budgetApplicationService).updateApplication(any(), any(), any());
 
     // when then
     mvc.perform(
             multipart("/budget/application/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(wrongForm))
         .andExpect(status().isBadRequest());
   }
 
@@ -213,17 +197,13 @@ public class BudgetApplicationControllerTest {
             .build();
     doThrow(NotFoundException.class)
         .when(budgetApplicationService)
-        .updateApplication(any(), any(), any(), any());
-
-    MockMultipartFile mockFormFile =
-        new MockMultipartFile(
-            "form", "", MediaType.APPLICATION_JSON_VALUE, jsonOf(form).getBytes());
+        .updateApplication(any(), any(), any());
 
     // when then
     mvc.perform(
             multipart("/budget/application/1")
-                .file(mockFormFile)
-                .file(new MockMultipartFile("files", new byte[0])))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonOf(form)))
         .andExpect(status().isNotFound());
   }
 
