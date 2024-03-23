@@ -2,15 +2,15 @@ package com.inhabas.api.domain.myInfo.repository;
 
 import java.util.List;
 
-import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
-import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 
 public interface MyInfoRepositoryCustom {
 
-  List<MyBoardsDto> findAllBoardsByMemberId(Long memberId);
+  List<MyBoardDto> findAllBoardsByMemberId(Long memberId);
 
-  List<MyCommentsDto> findAllCommentsByMemberId(Long memberId);
+  List<MyCommentDto> findAllCommentsByMemberId(Long memberId);
 
   List<MyBudgetSupportApplicationDto> findAllBudgetSupportApplicationsByMemberId(Long memberId);
 }

@@ -13,9 +13,9 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
-import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.myInfo.repository.MyInfoRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -50,9 +50,9 @@ public class MyInfoServiceImplTest {
   @Test
   void getMyBoards() {
     given(myInfoRepository.findAllBoardsByMemberId(1L))
-        .willReturn(Collections.singletonList(new MyBoardsDto()));
+        .willReturn(Collections.singletonList(new MyBoardDto()));
 
-    List<MyBoardsDto> result = myInfoService.getMyBoards();
+    List<MyBoardDto> result = myInfoService.getMyBoards();
 
     assertThat(result).isNotEmpty();
     verify(myInfoRepository).findAllBoardsByMemberId(1L);
@@ -63,9 +63,9 @@ public class MyInfoServiceImplTest {
   @Test
   void getMyComments() {
     given(myInfoRepository.findAllCommentsByMemberId(1L))
-        .willReturn(Collections.singletonList(new MyCommentsDto()));
+        .willReturn(Collections.singletonList(new MyCommentDto()));
 
-    List<MyCommentsDto> result = myInfoService.getMyComments();
+    List<MyCommentDto> result = myInfoService.getMyComments();
 
     assertThat(result).isNotEmpty();
     verify(myInfoRepository).findAllCommentsByMemberId(1L);

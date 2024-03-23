@@ -19,9 +19,9 @@ import com.inhabas.api.domain.comment.repository.CommentRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
-import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
-import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleTest;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
@@ -107,7 +107,7 @@ public class MyInfoRepositoryTest {
   @Transactional(readOnly = true)
   @Test
   public void findAllBoardsByMemberId() {
-    List<MyBoardsDto> myBoards = myInfoRepository.findAllBoardsByMemberId(writer.getId());
+    List<MyBoardDto> myBoards = myInfoRepository.findAllBoardsByMemberId(writer.getId());
 
     assertThat(myBoards).hasSize(2);
     assertThat(myBoards.get(0).getTitle()).isEqualTo("이건 공지1");
@@ -118,7 +118,7 @@ public class MyInfoRepositoryTest {
   @Transactional(readOnly = true)
   @Test
   public void findAllCommentsByMemberId() {
-    List<MyCommentsDto> myComments = myInfoRepository.findAllCommentsByMemberId(writer.getId());
+    List<MyCommentDto> myComments = myInfoRepository.findAllCommentsByMemberId(writer.getId());
 
     assertThat(myComments).hasSize(2);
     // 이 부분은 실제 내용으로 교체 필요

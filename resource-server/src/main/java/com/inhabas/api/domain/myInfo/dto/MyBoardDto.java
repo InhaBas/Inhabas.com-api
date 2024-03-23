@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @NoArgsConstructor
 @Getter
-public class MyBoardsDto {
+public class MyBoardDto {
 
   // 게시글 id
   @NotNull @Positive private Long id;
@@ -32,7 +32,7 @@ public class MyBoardsDto {
   private LocalDateTime dateCreated;
 
   @Builder
-  public MyBoardsDto(
+  public MyBoardDto(
       Long id, Integer menuId, String menuName, String title, LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;

@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.comment.domain.Comment;
-import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
-import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -23,11 +23,11 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public List<MyBoardsDto> findAllBoardsByMemberId(Long memberId) {
+  public List<MyBoardDto> findAllBoardsByMemberId(Long memberId) {
     return queryFactory
         .select(
             Projections.constructor(
-                MyBoardsDto.class,
+                MyBoardDto.class,
                 baseBoard.id,
                 baseBoard.menu.id,
                 baseBoard.menu.name.value,
@@ -46,7 +46,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
   }
 
   @Override
-  public List<MyCommentsDto> findAllCommentsByMemberId(Long memberId) {
+  public List<MyCommentDto> findAllCommentsByMemberId(Long memberId) {
     List<Comment> comments =
         queryFactory
             .selectFrom(comment)
@@ -57,7 +57,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
     return comments.stream()
         .map(
             comment ->
-                new MyCommentsDto(
+                new MyCommentDto(
                     comment.getParentBoard().getId(),
                     comment.getParentBoard().getMenu().getId(),
                     comment.getParentBoard().getMenu().getName(),

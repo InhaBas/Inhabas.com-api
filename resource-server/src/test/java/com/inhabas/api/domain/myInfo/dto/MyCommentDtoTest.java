@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class MyBoardsDtoTest {
+public class MyCommentDtoTest {
 
   private static ValidatorFactory validatorFactory;
   private static Validator validator;
@@ -31,41 +31,41 @@ public class MyBoardsDtoTest {
     validatorFactory.close();
   }
 
-  @DisplayName("MyBoardsDto 객체를 정상적으로 생성한다.")
+  @DisplayName("MyCommentDto 객체를 정상적으로 생성한다.")
   @Test
-  public void MyBoardsDto_is_OK() {
+  public void MyCommentsDto_is_OK() {
     // given
-    MyBoardsDto myBoardsDto =
-        MyBoardsDto.builder()
+    MyCommentDto myCommentDto =
+        MyCommentDto.builder()
             .id(1L)
             .menuId(16)
             .menuName("알파 테스터")
-            .title("title")
+            .content("댓글 내용")
             .dateCreated(LocalDateTime.now())
             .build();
 
     // when
-    Set<ConstraintViolation<MyBoardsDto>> violations = validator.validate(myBoardsDto);
+    Set<ConstraintViolation<MyCommentDto>> violations = validator.validate(myCommentDto);
 
     // then
     assertThat(violations).isEmpty();
   }
 
-  @DisplayName("MyBoardsDto menuName 필드가 null 이면 validation 실패")
+  @DisplayName("MyCommentDto content 필드가 blank 이면 validation 실패")
   @Test
-  public void MenuName_is_null() {
+  public void Content_is_blank() {
     // given
-    MyBoardsDto myBoardsDto =
-        MyBoardsDto.builder()
+    MyCommentDto myCommentDto =
+        MyCommentDto.builder()
             .id(1L)
             .menuId(16)
-            .menuName(null)
-            .title("title")
+            .menuName("알파 테스터")
+            .content("")
             .dateCreated(LocalDateTime.now())
             .build();
 
     // when
-    Set<ConstraintViolation<MyBoardsDto>> violations = validator.validate(myBoardsDto);
+    Set<ConstraintViolation<MyCommentDto>> violations = validator.validate(myCommentDto);
 
     // then
     assertThat(violations).hasSize(1);

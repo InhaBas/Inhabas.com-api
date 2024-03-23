@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @NoArgsConstructor
 @Getter
-public class MyCommentsDto {
+public class MyCommentDto {
 
   // ParentsBoard의 게시판 id
   @NotNull @Positive private Long id;
@@ -35,7 +35,7 @@ public class MyCommentsDto {
   private LocalDateTime dateCreated;
 
   @Builder
-  public MyCommentsDto(
+  public MyCommentDto(
       Long id, Integer menuId, String menuName, String content, LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;

@@ -18,9 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
-import com.inhabas.api.domain.myInfo.dto.MyBoardsDto;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
-import com.inhabas.api.domain.myInfo.dto.MyCommentsDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.myInfo.usecase.MyInfoService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
@@ -39,7 +39,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "내 정보 관리", description = "마이 페이지 기능")
 @RequiredArgsConstructor
-public class MyProfileController {
+public class MyInfoController {
 
   private final MemberProfileService memberProfileService;
   private final MyInfoService myInfoService;
@@ -238,7 +238,7 @@ public class MyProfileController {
             content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
       })
   @GetMapping("/myInfo/boards")
-  public ResponseEntity<PagedResponseDto<MyBoardsDto>> getBoardList(
+  public ResponseEntity<PagedResponseDto<MyBoardDto>> getBoardList(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -248,10 +248,10 @@ public class MyProfileController {
       @Authenticated Long memberId) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<MyBoardsDto> allDtoList = myInfoService.getMyBoards();
-    List<MyBoardsDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+    List<MyBoardDto> allDtoList = myInfoService.getMyBoards();
+    List<MyBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
-    PageImpl<MyBoardsDto> myBoardsDtoPage =
+    PageImpl<MyBoardDto> myBoardsDtoPage =
         new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(myBoardsDtoPage);
 
@@ -266,7 +266,7 @@ public class MyProfileController {
             content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
       })
   @GetMapping("/myInfo/comments")
-  public ResponseEntity<PagedResponseDto<MyCommentsDto>> getCommentsList(
+  public ResponseEntity<PagedResponseDto<MyCommentDto>> getCommentsList(
       @Parameter(description = "페이지", example = "0")
           @RequestParam(name = "page", defaultValue = "0")
           int page,
@@ -276,10 +276,10 @@ public class MyProfileController {
       @Authenticated Long memberId) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<MyCommentsDto> allDtoList = myInfoService.getMyComments();
-    List<MyCommentsDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+    List<MyCommentDto> allDtoList = myInfoService.getMyComments();
+    List<MyCommentDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
-    PageImpl<MyCommentsDto> myCommentsDtoPage =
+    PageImpl<MyCommentDto> myCommentsDtoPage =
         new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
     PageInfoDto pageInfoDto = new PageInfoDto(myCommentsDtoPage);
 
