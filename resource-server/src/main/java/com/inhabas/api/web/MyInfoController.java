@@ -235,7 +235,7 @@ public class MyInfoController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
+            content = {@Content(schema = @Schema(implementation = MyBoardDto.class))}),
       })
   @GetMapping("/myInfo/boards")
   public ResponseEntity<PagedResponseDto<MyBoardDto>> getBoardList(
@@ -263,7 +263,7 @@ public class MyInfoController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
+            content = {@Content(schema = @Schema(implementation = MyCommentDto.class))}),
       })
   @GetMapping("/myInfo/comments")
   public ResponseEntity<PagedResponseDto<MyCommentDto>> getCommentsList(
@@ -291,7 +291,9 @@ public class MyInfoController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = UpdateNameRequestDto.class))}),
+            content = {
+              @Content(schema = @Schema(implementation = MyBudgetSupportApplicationDto.class))
+            }),
       })
   @GetMapping("/myInfo/supports")
   public ResponseEntity<PagedResponseDto<MyBudgetSupportApplicationDto>>
