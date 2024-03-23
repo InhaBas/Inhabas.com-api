@@ -33,7 +33,6 @@ import com.inhabas.api.global.util.ClassifyFiles;
 public class ScholarshipBoardServiceImpl implements ScholarshipBoardService {
 
   private final BoardFileRepository boardFileRepository;
-
   private final ScholarshipBoardRepository scholarshipBoardRepository;
   private final MenuRepository menuRepository;
   private final MemberRepository memberRepository;

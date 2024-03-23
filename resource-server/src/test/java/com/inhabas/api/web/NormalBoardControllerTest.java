@@ -17,7 +17,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -192,19 +191,12 @@ public class NormalBoardControllerTest {
             .pinOption(1)
             .build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String header =
         mvc.perform(
-                multipart("/board/notice")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/board/notice")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveNormalBoardDto)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -222,19 +214,12 @@ public class NormalBoardControllerTest {
     SaveNormalBoardDto saveNormalBoardDto =
         SaveNormalBoardDto.builder().title("").content("good content").pinOption(1).build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String response =
         mvc.perform(
-                multipart("/board/notice")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/board/notice")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveNormalBoardDto)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -249,7 +234,7 @@ public class NormalBoardControllerTest {
   void updateBoard() throws Exception {
     // given
 
-    doNothing().when(normalBoardService).update(any(), any(), any());
+    doNothing().when(normalBoardService).update(any(), any(), any(), any());
 
     SaveNormalBoardDto saveNormalBoardDto =
         SaveNormalBoardDto.builder()
@@ -258,18 +243,11 @@ public class NormalBoardControllerTest {
             .pinOption(1)
             .build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when then
     mvc.perform(
-            multipart("/board/notice/1")
-                .file(formPart)
-                .file(filePart)
-                .contentType(MediaType.MULTIPART_FORM_DATA))
+            post("/board/notice/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonOf(saveNormalBoardDto)))
         .andExpect(status().isNoContent());
   }
 
@@ -277,25 +255,19 @@ public class NormalBoardControllerTest {
   @Test
   void updateBoard_Invalid_Input() throws Exception {
     // given
-
-    doThrow(InvalidInputException.class).when(normalBoardService).update(any(), any(), any());
+    doThrow(InvalidInputException.class)
+        .when(normalBoardService)
+        .update(any(), any(), any(), any());
 
     SaveNormalBoardDto saveNormalBoardDto =
         SaveNormalBoardDto.builder().title("").content("good content").pinOption(1).build();
 
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
-
     // when
     String response =
         mvc.perform(
-                multipart("/board/notice")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/board/notice")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveNormalBoardDto)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -309,28 +281,17 @@ public class NormalBoardControllerTest {
   @Test
   void updateBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(normalBoardService).update(any(), any(), any());
+    doThrow(NotFoundException.class).when(normalBoardService).update(any(), any(), any(), any());
 
     SaveNormalBoardDto saveNormalBoardDto =
-        SaveNormalBoardDto.builder()
-            .title("good title")
-            .content("good content")
-            .pinOption(1)
-            .build();
-
-    String saveNormalBoardDtoJson = objectMapper.writeValueAsString(saveNormalBoardDto);
-    MockMultipartFile formPart =
-        new MockMultipartFile("form", "", "application/json", saveNormalBoardDtoJson.getBytes());
-    MockMultipartFile filePart =
-        new MockMultipartFile("files", "filename.txt", "text/plain", "file content".getBytes());
+        SaveNormalBoardDto.builder().title("title").content("good content").pinOption(1).build();
 
     // when
     String response =
         mvc.perform(
-                multipart("/board/notice/1")
-                    .file(formPart)
-                    .file(filePart)
-                    .contentType(MediaType.MULTIPART_FORM_DATA))
+                post("/board/notice/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(saveNormalBoardDto)))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()

@@ -3,6 +3,7 @@ package com.inhabas.api.domain.budget.usecase;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
@@ -24,7 +25,7 @@ import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
@@ -47,7 +48,7 @@ public class BudgetApplicationServiceTest {
   @Mock private BudgetApplicationRepository budgetApplicationRepository;
   @Mock private MemberRepository memberRepository;
   @Mock private MenuRepository menuRepository;
-  @Mock private S3Service s3Service;
+  @Mock private BoardFileRepository boardFileRepository;
 
   private static final String APPLICATION_TITLE = "title";
   private static final String APPLICATION_DETAILS = "details";
@@ -69,7 +70,8 @@ public class BudgetApplicationServiceTest {
             LocalDateTime.now().minusDays(1L),
             APPLICATION_DETAILS,
             APPLICATION_OUTCOME,
-            ACCOUNT_NUMBER);
+            ACCOUNT_NUMBER,
+            null);
     BudgetSupportApplication budgetSupportApplication =
         new BudgetSupportApplication(
             menu,
@@ -82,13 +84,18 @@ public class BudgetApplicationServiceTest {
             INITIAL_REQUEST_STATUS);
     given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
     given(budgetApplicationRepository.save(any(BudgetSupportApplication.class)))
         .willReturn(budgetSupportApplication);
 
     // when
-    budgetApplicationService.registerApplication(form, null, 1L);
+    budgetApplicationService.registerApplication(form, 1L);
 
     // then
+    then(memberRepository).should(times(1)).findById(any());
+    then(menuRepository).should(times(1)).findById(anyInt());
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
     then(budgetApplicationRepository).should(times(1)).save(any(BudgetSupportApplication.class));
   }
 
@@ -111,34 +118,27 @@ public class BudgetApplicationServiceTest {
                 INITIAL_REQUEST_STATUS)
             .writtenBy(applicant, BudgetSupportApplication.class);
     ReflectionTestUtils.setField(application, "id", 1L);
-    BudgetSupportApplication newApplication =
-        new BudgetSupportApplication(
-                menu,
-                APPLICATION_TITLE,
-                APPLICATION_AFTER_DETAILS,
-                LocalDateTime.now().minusDays(1),
-                ACCOUNT_NUMBER,
-                APPLICATION_OUTCOME,
-                applicant,
-                INITIAL_REQUEST_STATUS)
-            .writtenBy(applicant, BudgetSupportApplication.class);
     BudgetApplicationRegisterForm form =
         new BudgetApplicationRegisterForm(
             APPLICATION_TITLE,
             LocalDateTime.now().minusDays(1L),
             APPLICATION_AFTER_DETAILS,
             APPLICATION_OUTCOME,
-            ACCOUNT_NUMBER);
+            ACCOUNT_NUMBER,
+            null);
 
     given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
     given(budgetApplicationRepository.findById(any())).willReturn(Optional.of(application));
-    given(budgetApplicationRepository.save(any())).willReturn(newApplication);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
 
     // when
-    budgetApplicationService.updateApplication(1L, form, null, 1L);
+    budgetApplicationService.updateApplication(1L, form, 1L);
 
     // then
-    then(budgetApplicationRepository).should(times(1)).save(any(BudgetSupportApplication.class));
+    then(memberRepository).should(times(1)).findById(any());
+    then(budgetApplicationRepository).should(times(1)).findById(any());
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
   }
 
   @DisplayName("수정 시 존재하지 않는 신청서 id 이면 NotFoundException 을 발생시킨다.")
@@ -152,17 +152,17 @@ public class BudgetApplicationServiceTest {
             LocalDateTime.now().minusDays(1L),
             APPLICATION_AFTER_DETAILS,
             APPLICATION_OUTCOME,
-            ACCOUNT_NUMBER);
+            ACCOUNT_NUMBER,
+            null);
     given(budgetApplicationRepository.findById(any())).willReturn(Optional.empty());
     given(memberRepository.findById(any())).willReturn(Optional.of(applicant));
     // when
-    assertThatThrownBy(() -> budgetApplicationService.updateApplication(1L, form, null, 1L))
+    assertThatThrownBy(() -> budgetApplicationService.updateApplication(1L, form, 1L))
         .isInstanceOf(NotFoundException.class)
         .hasMessage(ErrorCode.NOT_FOUND.getMessage());
 
     // then
     then(budgetApplicationRepository).should(times(1)).findById(any());
-    then(budgetApplicationRepository).should(times(0)).save(any(BudgetSupportApplication.class));
   }
 
   @DisplayName("예산 지원 신청서를 삭제한다.")

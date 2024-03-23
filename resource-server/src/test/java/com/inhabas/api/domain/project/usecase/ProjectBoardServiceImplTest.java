@@ -6,12 +6,14 @@ import static com.inhabas.api.domain.project.domain.ProjectBoardType.ALPHA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.file.usecase.S3Service;
+import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
@@ -45,7 +47,7 @@ public class ProjectBoardServiceImplTest {
   @Mock MemberRepository memberRepository;
   @Mock ProjectBoardRepository projectBoardRepository;
   @Mock MenuRepository menuRepository;
-  @Mock S3Service s3Service;
+  @Mock BoardFileRepository boardFileRepository;
 
   @DisplayName("project board 게시글 목록을 조회한다.")
   @Transactional(readOnly = true)
@@ -127,16 +129,20 @@ public class ProjectBoardServiceImplTest {
     ProjectBoard projectBoard =
         new ProjectBoard("title", menu, "content", false, LocalDateTime.now());
     ReflectionTestUtils.setField(projectBoard, "id", 1L);
+    Member writer = MemberTest.chiefMember();
 
+    given(memberRepository.findById(any())).willReturn(Optional.of(writer));
     given(projectBoardRepository.findById(any())).willReturn(Optional.of(projectBoard));
-    given(projectBoardRepository.save(any())).willReturn(projectBoard);
+    given(boardFileRepository.getAllByIdInAndUploader(anyList(), any()))
+        .willReturn(new ArrayList<>());
 
     // when
-    projectBoardService.update(projectBoard.getId(), ALPHA, saveProjectBoardDto);
+    projectBoardService.update(projectBoard.getId(), ALPHA, saveProjectBoardDto, 1L);
 
     // then
+    then(memberRepository).should(times(1)).findById(any());
     then(projectBoardRepository).should(times(1)).findById(any());
-    then(projectBoardRepository).should(times(1)).save(any());
+    then(boardFileRepository).should(times(1)).getAllByIdInAndUploader(anyList(), any());
   }
 
   @DisplayName("project board 게시글을 삭제한다.")

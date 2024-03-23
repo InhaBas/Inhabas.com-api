@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +27,7 @@ import com.inhabas.api.auth.domain.error.businessException.InvalidInputException
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
+import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.usecase.ClubActivityService;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
@@ -83,7 +84,8 @@ public class ClubActivityControllerTest {
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .writerName("jsh")
-            .files(null)
+            .images(null)
+            .otherFiles(null)
             .build();
     given(clubActivityService.getClubActivity(any())).willReturn(clubActivityDetailDto);
 
@@ -111,7 +113,8 @@ public class ClubActivityControllerTest {
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .writerName("jsh")
-            .files(null)
+            .images(null)
+            .otherFiles(null)
             .build();
     given(clubActivityService.getClubActivity(any())).willReturn(clubActivityDetailDto);
 
@@ -149,16 +152,15 @@ public class ClubActivityControllerTest {
   @Test
   void writeClubActivity() throws Exception {
     // given
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-
+    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
     given(clubActivityService.writeClubActivity(any(), any())).willReturn(1L);
 
     // when
     String header =
-        mvc.perform(multipart("/club/activity").file(titlePart).file(contentPart))
+        mvc.perform(
+                post("/club/activity")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isCreated())
             .andReturn()
             .getResponse()
@@ -173,16 +175,15 @@ public class ClubActivityControllerTest {
   @Test
   void writeClubActivity_Invalid_Input() throws Exception {
     // given
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-
+    SaveClubActivityDto form = new SaveClubActivityDto("", "", null);
     doThrow(InvalidInputException.class).when(clubActivityService).writeClubActivity(any(), any());
 
     // when
     String response =
-        mvc.perform(multipart("/club/activity").file(titlePart).file(contentPart))
+        mvc.perform(
+                post("/club/activity")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -196,15 +197,12 @@ public class ClubActivityControllerTest {
   @Test
   void updateClubActivity() throws Exception {
     // given
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
-
-    doNothing().when(clubActivityService).updateClubActivity(any(), any());
+    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
+    doNothing().when(clubActivityService).updateClubActivity(any(), any(), any());
 
     // when then
-    mvc.perform(multipart("/club/activity/{boardId}", 1).file(titlePart).file(contentPart))
+    mvc.perform(
+            post("/club/activity/1").contentType(MediaType.APPLICATION_JSON).content(jsonOf(form)))
         .andExpect(status().isNoContent());
   }
 
@@ -212,16 +210,18 @@ public class ClubActivityControllerTest {
   @Test
   void updateClubActivity_Invalid_Input() throws Exception {
     // given
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
+    SaveClubActivityDto form = new SaveClubActivityDto("", "", null);
 
-    doThrow(InvalidInputException.class).when(clubActivityService).updateClubActivity(any(), any());
+    doThrow(InvalidInputException.class)
+        .when(clubActivityService)
+        .updateClubActivity(any(), any(), any());
 
     // when
     String response =
-        mvc.perform(multipart("/club/activity/{boardId}", 1).file(titlePart).file(contentPart))
+        mvc.perform(
+                post("/club/activity/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isBadRequest())
             .andReturn()
             .getResponse()
@@ -235,16 +235,18 @@ public class ClubActivityControllerTest {
   @Test
   void updateClubActivity_Not_Found() throws Exception {
     // given
-    MockMultipartFile titlePart =
-        new MockMultipartFile("title", "good title".getBytes(StandardCharsets.UTF_8));
-    MockMultipartFile contentPart =
-        new MockMultipartFile("content", "good content".getBytes(StandardCharsets.UTF_8));
+    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
 
-    doThrow(NotFoundException.class).when(clubActivityService).updateClubActivity(any(), any());
+    doThrow(NotFoundException.class)
+        .when(clubActivityService)
+        .updateClubActivity(any(), any(), any());
 
     // when
     String response =
-        mvc.perform(multipart("/club/activity/{boardId}", 1).file(titlePart).file(contentPart))
+        mvc.perform(
+                post("/club/activity/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(form)))
             .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()

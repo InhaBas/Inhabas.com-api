@@ -35,7 +35,13 @@ public class FileDownloadDtoTest {
   public void validationTest() {
     // given
     FileDownloadDto fileDownloadDto =
-        FileDownloadDto.builder().name("fileName").url("http://localhost/upload").build();
+        FileDownloadDto.builder()
+            .id("random")
+            .name("fileName")
+            .url("http://localhost/upload")
+            .size(10L)
+            .type("image/jpeg")
+            .build();
 
     // when
     Set<ConstraintViolation<FileDownloadDto>> violations = validator.validate(fileDownloadDto);

@@ -27,4 +27,8 @@ public class MenuExampleTest {
   public static Menu getMenu2(MenuGroup menuGroup) {
     return new Menu(menuGroup, 1, MenuType.STUDY, "강의", "강의 설명");
   }
+
+  public static Menu getScholarshipMenu(MenuGroup menuGroup) {
+    return new Menu(menuGroup, 1, MenuType.SPONSOR, "후원 내용", "후원 내용 설명");
+  }
 }

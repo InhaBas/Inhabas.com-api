@@ -39,8 +39,7 @@ public class SaveNormalBoardDtoTest {
   @Test
   public void SaveNormalBoardDto_is_OK() {
     // given
-    SaveNormalBoardDto saveNormalBoardDto =
-        new SaveNormalBoardDto("title", "content", emptyList, 2);
+    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", "content", null, 2);
 
     // when
     Set<ConstraintViolation<SaveNormalBoardDto>> violations =
@@ -54,7 +53,7 @@ public class SaveNormalBoardDtoTest {
   @Test
   public void Content_is_null() {
     // given
-    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", null, emptyList, 2);
+    SaveNormalBoardDto saveNormalBoardDto = new SaveNormalBoardDto("title", null, null, 2);
 
     // when
     Set<ConstraintViolation<SaveNormalBoardDto>> violations =

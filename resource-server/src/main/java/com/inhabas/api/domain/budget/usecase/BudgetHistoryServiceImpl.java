@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
@@ -37,15 +38,21 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   @Override
   @Transactional
   public Long createHistory(BudgetHistoryCreateForm form, Long secretaryId) {
-
     Member secretary =
         memberRepository.findById(secretaryId).orElseThrow(MemberNotFoundException::new);
-    Member memberReceived =
-        memberRepository
-            .findByStudentId_IdAndName_Value(
-                form.getMemberStudentIdReceived(), form.getMemberNameReceived())
-            .orElseThrow(MemberNotFoundException::new);
     Menu menu = menuRepository.findById(BUDGET_HISTORY_MENU_ID).orElseThrow(NotFoundException::new);
+    Member memberReceived;
+    if (form.isIncome()) {
+      memberReceived = secretary;
+    } else if (form.isOutcome()) {
+      memberReceived =
+          memberRepository
+              .findByStudentId_IdAndName_Value(
+                  form.getMemberStudentIdReceived(), form.getMemberNameReceived())
+              .orElseThrow(MemberNotFoundException::new);
+    } else {
+      throw new InvalidInputException();
+    }
 
     BudgetHistory newHistory =
         form.toEntity(menu, secretary, memberReceived).writtenBy(secretary, BudgetHistory.class);
@@ -66,12 +73,18 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
   public void modifyHistory(Long historyId, BudgetHistoryCreateForm form, Long secretaryId) {
     Member secretary =
         memberRepository.findById(secretaryId).orElseThrow(MemberNotFoundException::new);
-    Member memberReceived =
-        memberRepository
-            .findByStudentId_IdAndName_Value(
-                form.getMemberStudentIdReceived(), form.getMemberNameReceived())
-            .orElseThrow(MemberNotFoundException::new);
-
+    Member memberReceived;
+    if (form.isIncome()) {
+      memberReceived = secretary;
+    } else if (form.isOutcome()) {
+      memberReceived =
+          memberRepository
+              .findByStudentId_IdAndName_Value(
+                  form.getMemberStudentIdReceived(), form.getMemberNameReceived())
+              .orElseThrow(MemberNotFoundException::new);
+    } else {
+      throw new InvalidInputException();
+    }
     BudgetHistory budgetHistory =
         budgetHistoryRepository.findById(historyId).orElseThrow(NotFoundException::new);
 
