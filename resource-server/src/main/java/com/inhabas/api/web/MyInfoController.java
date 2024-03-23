@@ -248,7 +248,7 @@ public class MyInfoController {
       @Authenticated Long memberId) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<MyBoardDto> allDtoList = myInfoService.getMyBoards();
+    List<MyBoardDto> allDtoList = myInfoService.getMyBoards(memberId);
     List<MyBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<MyBoardDto> myBoardsDtoPage =
@@ -276,7 +276,7 @@ public class MyInfoController {
       @Authenticated Long memberId) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<MyCommentDto> allDtoList = myInfoService.getMyComments();
+    List<MyCommentDto> allDtoList = myInfoService.getMyComments(memberId);
     List<MyCommentDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
 
     PageImpl<MyCommentDto> myCommentsDtoPage =
@@ -307,7 +307,8 @@ public class MyInfoController {
           @Authenticated Long memberId) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<MyBudgetSupportApplicationDto> allDtoList = myInfoService.getMyBudgetSupportApplications();
+    List<MyBudgetSupportApplicationDto> allDtoList =
+        myInfoService.getMyBudgetSupportApplications(memberId);
     List<MyBudgetSupportApplicationDto> pagedDtoList =
         PageUtil.getPagedDtoList(pageable, allDtoList);
 

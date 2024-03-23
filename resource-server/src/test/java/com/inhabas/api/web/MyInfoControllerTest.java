@@ -250,6 +250,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyBoardsTest() throws Exception {
     // given
+    Member writer = MemberTest.basicMember1();
     MyBoardDto myBoardDto =
         MyBoardDto.builder()
             .id(1L)
@@ -258,7 +259,7 @@ class MyInfoControllerTest {
             .title("이건 공지")
             .dateCreated(LocalDateTime.now())
             .build();
-    given(myInfoService.getMyBoards()).willReturn(List.of(myBoardDto));
+    given(myInfoService.getMyBoards(writer.getId())).willReturn(List.of(myBoardDto));
 
     // when
     String response =
@@ -276,6 +277,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyCommentsTest() throws Exception {
     // given
+    Member writer = MemberTest.basicMember1();
     MyCommentDto myCommentDto =
         MyCommentDto.builder()
             .id(1L)
@@ -284,7 +286,7 @@ class MyInfoControllerTest {
             .content("댓글댓글")
             .dateCreated(LocalDateTime.now())
             .build();
-    given(myInfoService.getMyComments()).willReturn(List.of(myCommentDto));
+    given(myInfoService.getMyComments(writer.getId())).willReturn(List.of(myCommentDto));
 
     // when
     String response =
@@ -302,6 +304,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyBudgetSupportApplicationsTest() throws Exception {
     // given
+    Member writer = MemberTest.basicMember1();
     MyBudgetSupportApplicationDto myBudgetSupportApplicationDto =
         MyBudgetSupportApplicationDto.builder()
             .id(1L)
@@ -311,7 +314,7 @@ class MyInfoControllerTest {
             .dateChecked(LocalDateTime.now())
             .dateDeposited(LocalDateTime.now())
             .build();
-    given(myInfoService.getMyBudgetSupportApplications())
+    given(myInfoService.getMyBudgetSupportApplications(writer.getId()))
         .willReturn(List.of(myBudgetSupportApplicationDto));
 
     // when

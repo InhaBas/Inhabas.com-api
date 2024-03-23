@@ -26,14 +26,9 @@ public class MyInfoServiceImpl implements MyInfoService {
   // 현재 로그인한 유저의 모든 게시글을 불러온다.
   @Override
   @Transactional(readOnly = true)
-  public List<MyBoardDto> getMyBoards() {
+  public List<MyBoardDto> getMyBoards(Long memberId) {
 
     List<MyBoardDto> myBoardDtoList = new ArrayList<>();
-
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     myBoardDtoList.addAll(myInfoRepository.findAllBoardsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
@@ -46,14 +41,9 @@ public class MyInfoServiceImpl implements MyInfoService {
   // 현재 로그인한 유저의 모든 댓글을 불러온다.
   @Override
   @Transactional(readOnly = true)
-  public List<MyCommentDto> getMyComments() {
+  public List<MyCommentDto> getMyComments(Long memberId) {
 
     List<MyCommentDto> myCommentDtoList = new ArrayList<>();
-
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     myCommentDtoList.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
     if (SecurityContextHolder.getContext() == null) {
@@ -66,14 +56,9 @@ public class MyInfoServiceImpl implements MyInfoService {
   // 현재 로그인한 유저의 모든 예산 신청 내역을 불러온다.
   @Override
   @Transactional(readOnly = true)
-  public List<MyBudgetSupportApplicationDto> getMyBudgetSupportApplications() {
+  public List<MyBudgetSupportApplicationDto> getMyBudgetSupportApplications(Long memberId) {
 
     List<MyBudgetSupportApplicationDto> budgetSupportApplicationDtoList = new ArrayList<>();
-
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
-    Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     budgetSupportApplicationDtoList.addAll(
         myInfoRepository.findAllBudgetSupportApplicationsByMemberId(memberId));
