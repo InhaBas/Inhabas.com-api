@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
+import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
+import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
+import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
+import com.inhabas.api.domain.myInfo.usecase.MyInfoService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.global.util.PageUtil;
@@ -35,9 +39,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "내 정보 관리", description = "마이 페이지 기능")
 @RequiredArgsConstructor
-public class MyProfileController {
+public class MyInfoController {
 
   private final MemberProfileService memberProfileService;
+  private final MyInfoService myInfoService;
 
   @Operation(summary = "내 정보 조회", description = "사용자 자신의 정보만 조회 가능")
   @ApiResponses(
@@ -225,6 +230,94 @@ public class MyProfileController {
     return ResponseEntity.noContent().build();
   }
 
-  // [모임, 글, 댓글, 예산신청 조회] 추후 개발 예정
+  @Operation(summary = "내가 쓴 게시글 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = MyBoardDto.class))}),
+      })
+  @GetMapping("/myInfo/boards")
+  public ResponseEntity<PagedResponseDto<MyBoardDto>> getBoardList(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Authenticated Long memberId) {
 
+    Pageable pageable = PageRequest.of(page, size);
+    List<MyBoardDto> allDtoList = myInfoService.getMyBoards(memberId);
+    List<MyBoardDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+
+    PageImpl<MyBoardDto> myBoardsDtoPage =
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(myBoardsDtoPage);
+
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
+  }
+
+  @Operation(summary = "내가 쓴 댓글 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = MyCommentDto.class))}),
+      })
+  @GetMapping("/myInfo/comments")
+  public ResponseEntity<PagedResponseDto<MyCommentDto>> getCommentsList(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Authenticated Long memberId) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    List<MyCommentDto> allDtoList = myInfoService.getMyComments(memberId);
+    List<MyCommentDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+
+    PageImpl<MyCommentDto> myCommentsDtoPage =
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(myCommentsDtoPage);
+
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
+  }
+
+  @Operation(summary = "내가 쓴 예산지원신청 목록 조회")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {
+              @Content(schema = @Schema(implementation = MyBudgetSupportApplicationDto.class))
+            }),
+      })
+  @GetMapping("/myInfo/supports")
+  public ResponseEntity<PagedResponseDto<MyBudgetSupportApplicationDto>>
+      getBudgetSupportApplicationsList(
+          @Parameter(description = "페이지", example = "0")
+              @RequestParam(name = "page", defaultValue = "0")
+              int page,
+          @Parameter(description = "페이지당 개수", example = "10")
+              @RequestParam(name = "size", defaultValue = "10")
+              int size,
+          @Authenticated Long memberId) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    List<MyBudgetSupportApplicationDto> allDtoList =
+        myInfoService.getMyBudgetSupportApplications(memberId);
+    List<MyBudgetSupportApplicationDto> pagedDtoList =
+        PageUtil.getPagedDtoList(pageable, allDtoList);
+
+    PageImpl<MyBudgetSupportApplicationDto> myBudgetSupportApplicationDtoPage =
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(myBudgetSupportApplicationDtoPage);
+
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
+  }
+
+  // [모임, 강의 조회] 추후 개발 예정
 }
