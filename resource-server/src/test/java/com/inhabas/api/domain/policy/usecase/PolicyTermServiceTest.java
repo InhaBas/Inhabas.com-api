@@ -46,8 +46,8 @@ public class PolicyTermServiceTest {
     // then
     verify(policyTermRepository).findById(policyTermId);
     assertThat(result.getTitle())
-        .isEqualTo(Objects.requireNonNull(policyTerm).getPolicyType().getTitle().getValue());
-    assertThat(result.getContent()).isEqualTo(policyTerm.getContent().getValue());
+        .isEqualTo(Objects.requireNonNull(policyTerm).getPolicyType().getTitle());
+    assertThat(result.getContent()).isEqualTo(policyTerm.getContent());
   }
 
   @DisplayName("존재하지 않는 policyTermId 조회 시 NotFoundException")

@@ -32,6 +32,6 @@ class PolicyTermTest {
     PolicyTerm policyTerm = new PolicyTerm(policyType, goodContent);
 
     // then
-    Assertions.assertThat(policyTerm.getContent().getValue()).isEqualTo(goodContent);
+    Assertions.assertThat(policyTerm.getContent()).isEqualTo(goodContent);
   }
 }

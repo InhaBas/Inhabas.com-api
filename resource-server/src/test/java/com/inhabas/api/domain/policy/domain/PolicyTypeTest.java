@@ -32,6 +32,6 @@ class PolicyTypeTest {
     PolicyType policyType = new PolicyType(goodTitle);
 
     // then
-    Assertions.assertThat(policyType.getTitle().getValue()).isEqualTo(goodTitle);
+    Assertions.assertThat(policyType.getTitle()).isEqualTo(goodTitle);
   }
 }
