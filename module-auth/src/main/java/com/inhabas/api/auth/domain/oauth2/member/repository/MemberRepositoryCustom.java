@@ -20,7 +20,13 @@ public interface MemberRepositoryCustom {
 
   List<Member> findAllByRolesInAndStudentIdLike(Collection<Role> roles, String studentId);
 
+  List<Member> findAllByRolesInAndNameLikeIncludingGraduated(
+      Collection<Role> roles, String studentId);
+
   List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name);
+
+  List<Member> findAllByRolesInAndStudentIdLikeIncludingGraduated(
+      Collection<Role> roles, String name);
 
   List<Member> findAllGraduatedByRolesInAndStudentLike(Collection<Role> roles, String studentId);
 
