@@ -6,11 +6,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
@@ -31,9 +29,6 @@ public class MyInfoServiceImpl implements MyInfoService {
     List<MyBoardDto> myBoardDtoList = new ArrayList<>();
 
     myBoardDtoList.addAll(myInfoRepository.findAllBoardsByMemberId(memberId));
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
 
     return myBoardDtoList;
   }
@@ -46,9 +41,6 @@ public class MyInfoServiceImpl implements MyInfoService {
     List<MyCommentDto> myCommentDtoList = new ArrayList<>();
 
     myCommentDtoList.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
 
     return myCommentDtoList;
   }
@@ -62,9 +54,6 @@ public class MyInfoServiceImpl implements MyInfoService {
 
     budgetSupportApplicationDtoList.addAll(
         myInfoRepository.findAllBudgetSupportApplicationsByMemberId(memberId));
-    if (SecurityContextHolder.getContext() == null) {
-      throw new InvalidAuthorityException();
-    }
 
     return budgetSupportApplicationDtoList;
   }
