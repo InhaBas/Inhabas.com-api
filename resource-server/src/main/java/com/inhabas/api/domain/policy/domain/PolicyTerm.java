@@ -33,6 +33,10 @@ public class PolicyTerm extends BaseEntity {
     this.content = new Content(content);
   }
 
+  public String getContent() {
+    return content.getValue();
+  }
+
   public void updatePolicyTerm(SavePolicyTernDto savePolicyTernDto) {
     this.content = new Content(savePolicyTernDto.getContent());
   }

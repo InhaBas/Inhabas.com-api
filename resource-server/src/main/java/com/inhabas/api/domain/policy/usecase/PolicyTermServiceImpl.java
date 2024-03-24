@@ -1,5 +1,8 @@
 package com.inhabas.api.domain.policy.usecase;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -17,6 +20,23 @@ public class PolicyTermServiceImpl implements PolicyTermService {
 
   private final PolicyTermRepository policyTermRepository;
 
+  @Transactional(readOnly = true)
+  @Override
+  public List<PolicyTermDto> getAllPolicyTerm() {
+    List<PolicyTerm> policyTermList = policyTermRepository.findAll();
+
+    return policyTermList.stream()
+        .map(
+            policyTerm ->
+                PolicyTermDto.builder()
+                    .id(policyTerm.getId())
+                    .policyTypeId(policyTerm.getPolicyType().getId())
+                    .title(policyTerm.getPolicyType().getTitle())
+                    .content(policyTerm.getContent())
+                    .build())
+        .collect(Collectors.toList());
+  }
+
   @Override
   @Transactional(readOnly = true)
   public PolicyTermDto findPolicyTerm(Long policyTermId) {
@@ -25,8 +45,10 @@ public class PolicyTermServiceImpl implements PolicyTermService {
         policyTermRepository.findById(policyTermId).orElseThrow(NotFoundException::new);
 
     return PolicyTermDto.builder()
-        .title(policyTerm.getPolicyType().getTitle().getValue())
-        .content(policyTerm.getContent().getValue())
+        .id(policyTerm.getId())
+        .policyTypeId(policyTerm.getPolicyType().getId())
+        .title(policyTerm.getPolicyType().getTitle())
+        .content(policyTerm.getContent())
         .build();
   }
 
