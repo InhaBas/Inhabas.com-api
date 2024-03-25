@@ -18,6 +18,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberSummaryDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ExecutiveMemberDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.HallOfFameDto;
@@ -96,6 +97,27 @@ public class MemberManageServiceImpl implements MemberManageService {
                     member.getRole(),
                     member.getSchoolInformation().getGeneration(),
                     member.getSchoolInformation().getMajor()))
+        .collect(Collectors.toList());
+  }
+
+  @Transactional(readOnly = true)
+  @Override
+  public List<ApprovedMemberSummaryDto> getAllApprovedMembersBySearchAndRole(String search) {
+    final List<Member> members =
+        StringUtils.isNumeric(search)
+            ? memberRepository.findAllByRolesInAndStudentIdLikeIncludingGraduated(OLD_ROLES, search)
+            : memberRepository.findAllByRolesInAndNameLikeIncludingGraduated(OLD_ROLES, search);
+
+    return members.stream()
+        .map(
+            member ->
+                ApprovedMemberSummaryDto.builder()
+                    .name(member.getName())
+                    .studentId(member.getStudentId())
+                    .memberType(member.getSchoolInformation().getMemberType())
+                    .generation(member.getSchoolInformation().getGeneration())
+                    .major(member.getSchoolInformation().getMajor())
+                    .build())
         .collect(Collectors.toList());
   }
 

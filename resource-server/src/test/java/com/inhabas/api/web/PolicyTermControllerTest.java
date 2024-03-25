@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -43,11 +44,33 @@ public class PolicyTermControllerTest {
     return objectMapper.writeValueAsString(response);
   }
 
+  @DisplayName("정책 전체 조회 성공 200")
+  @Test
+  void getAllPolicyTerm() throws Exception {
+    // given
+    PolicyTermDto policyTermDto =
+        PolicyTermDto.builder().id(1L).policyTypeId(1L).title("title").content("content").build();
+    List<PolicyTermDto> dtoList = List.of(policyTermDto);
+    given(policyTermService.getAllPolicyTerm()).willReturn(dtoList);
+
+    // when
+    String response =
+        mvc.perform(get("/policies"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+
+    // then
+    assertThat(response).isEqualTo(jsonOf(dtoList));
+  }
+
   @DisplayName("정책 단일 조회 성공 200")
   @Test
   void findPolicyTerm() throws Exception {
     // given
-    PolicyTermDto policyTermDto = PolicyTermDto.builder().title("title").content("content").build();
+    PolicyTermDto policyTermDto =
+        PolicyTermDto.builder().id(1L).policyTypeId(1L).title("title").content("content").build();
     given(policyTermService.findPolicyTerm(any())).willReturn(policyTermDto);
 
     // when

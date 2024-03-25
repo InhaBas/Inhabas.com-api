@@ -27,6 +27,7 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
 import com.inhabas.api.domain.project.dto.ProjectBoardDto;
 import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
@@ -54,7 +55,7 @@ public class ProjectBoardControllerTest {
   @Test
   void getBoardCount_Success() throws Exception {
     // given
-    BoardCountDto boardCountDto = new BoardCountDto("알파 테스터", 10);
+    BoardCountDto boardCountDto = new BoardCountDto(1, 1, MenuType.ALPHA, "알파 테스터", 10);
     List<BoardCountDto> dtoList = List.of(boardCountDto);
     given(baseBoardRepository.countRowsGroupByMenuName(any())).willReturn(dtoList);
 

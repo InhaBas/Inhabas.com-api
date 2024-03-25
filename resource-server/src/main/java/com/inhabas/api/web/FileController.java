@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.BoardFileService;
-import com.inhabas.api.global.dto.PagedResponseDto;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,7 +36,17 @@ public class FileController {
       value = {
         @ApiResponse(
             responseCode = "201",
-            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
+            content = {@Content(schema = @Schema(implementation = FileDownloadDto.class))}),
+        @ApiResponse(
+            responseCode = "400",
+            description = "유효하지 않은 파일 확장자입니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\": 400, \"code\": \"F002\", \"message\": \"유효하지 않은 파일 확장자입니다.\"}"))),
         @ApiResponse(
             responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
@@ -57,7 +66,17 @@ public class FileController {
                     examples =
                         @ExampleObject(
                             value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
+                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}"))),
+        @ApiResponse(
+            responseCode = "413",
+            description = "파일 크기가 최대 허용 한도를 초과했습니다.",
+            content =
+                @Content(
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples =
+                        @ExampleObject(
+                            value =
+                                "{\"status\":413,\"code\":\"F003\",\"message\":\"파일 크기가 최대 허용 한도를 초과했습니다.\"}")))
       })
   @PostMapping(value = "/file/upload/{menuId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize(

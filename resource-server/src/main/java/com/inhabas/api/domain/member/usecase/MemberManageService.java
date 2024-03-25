@@ -5,6 +5,7 @@ import java.util.List;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto;
+import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberSummaryDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ExecutiveMemberDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.HallOfFameDto;
@@ -17,6 +18,8 @@ public interface MemberManageService {
   List<ApprovedMemberManagementDto> getApprovedMembersBySearchAndRole(String search);
 
   List<ApprovedMemberManagementDto> getGraduatedMembersBySearch(String search);
+
+  List<ApprovedMemberSummaryDto> getAllApprovedMembersBySearchAndRole(String search);
 
   List<ExecutiveMemberDto> getExecutiveMembers();
 

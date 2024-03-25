@@ -50,7 +50,11 @@ public enum ErrorCode {
   // Board
   WRITER_UNMODIFIABLE(403, "B001", "글 작성자를 변경 할 수 없습니다."),
   ONLY_WRITER_UPDATE(403, "B002", "글 작성자만 수정 가능합니다."),
-  S3_UPLOAD_FAILED(500, "B003", "파일 업로드를 실패했습니다."),
+
+  // File
+  S3_UPLOAD_FAILED(500, "F001", "파일 업로드를 실패했습니다."),
+  INVALID_FILE_EXTENSION(400, "F002", "유효하지 않은 파일 확장자입니다."),
+  INVALID_FILE_SIZE(413, "F003", "파일 크기가 최대 허용 한도를 초과했습니다."),
 
   // Budget
   STATUS_NOT_FOLLOW_PROCEDURES(400, "S001", "이전 진행 상태로 되돌리거나 진행 순서를 건너뛸 수 없습니다."),

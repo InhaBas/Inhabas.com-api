@@ -9,7 +9,7 @@ public class MenuExampleTest {
   }
 
   public static Menu getNormalNoticeMenu(MenuGroup menuGroup) {
-    return new Menu(menuGroup, 1, MenuType.NORMAL_NOTICE, "공지 사항", "공지 사항 설명");
+    return new Menu(menuGroup, 1, MenuType.NOTICE, "공지 사항", "공지 사항 설명");
   }
 
   public static Menu getBudgetHistoryMenu(MenuGroup menuGroup) {
@@ -17,7 +17,7 @@ public class MenuExampleTest {
   }
 
   public static Menu getAlphaTesterMenu(MenuGroup menuGroup) {
-    return new Menu(menuGroup, 1, MenuType.PROJECT, "알파 테스터", "알파테스터 설명");
+    return new Menu(menuGroup, 1, MenuType.ALPHA, "알파 테스터", "알파테스터 설명");
   }
 
   public static Menu getContestMenu(MenuGroup menuGroup) {

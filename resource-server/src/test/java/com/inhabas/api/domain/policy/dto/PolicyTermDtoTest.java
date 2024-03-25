@@ -34,12 +34,13 @@ class PolicyTermDtoTest {
   @Test
   void NotNull_Test() {
     // given
-    PolicyTermDto policyTermDto = PolicyTermDto.builder().title(null).content(null).build();
+    PolicyTermDto policyTermDto =
+        PolicyTermDto.builder().id(null).policyTypeId(null).title(null).content(null).build();
 
     // when
     Set<ConstraintViolation<PolicyTermDto>> violations = validator.validate(policyTermDto);
 
     // then
-    assertThat(violations).hasSize(2);
+    assertThat(violations).hasSize(4);
   }
 }

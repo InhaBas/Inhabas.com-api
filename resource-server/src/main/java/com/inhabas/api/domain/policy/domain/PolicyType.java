@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class PolicyType {
 
   @Id
@@ -22,5 +22,9 @@ public class PolicyType {
 
   public PolicyType(String title) {
     this.title = new Title(title);
+  }
+
+  public String getTitle() {
+    return title.getValue();
   }
 }

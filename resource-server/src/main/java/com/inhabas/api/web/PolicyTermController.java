@@ -1,5 +1,7 @@
 package com.inhabas.api.web;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PolicyTermController {
 
   private final PolicyTermService policyTermService;
+
+  @GetMapping("/policies")
+  @SecurityRequirements(value = {})
+  @Operation(summary = "모든 정책을 조회한다.")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        content = @Content(schema = @Schema(implementation = PolicyTermDto.class)))
+  })
+  public ResponseEntity<List<PolicyTermDto>> getAllPolicyTerm() {
+
+    List<PolicyTermDto> policyTermDto = policyTermService.getAllPolicyTerm();
+    return ResponseEntity.ok(policyTermDto);
+  }
 
   @GetMapping("/policy/{policyTermId}")
   @SecurityRequirements(value = {})

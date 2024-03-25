@@ -39,7 +39,7 @@ public class BudgetHistoryRepositoryTest {
   private static final String HISTORY_DETAILS = "details";
   private static final Integer HISTORY_OUTCOME = 10000;
   private static final String ACCOUNT_NUMBER = "123-123-123";
-  private static final LocalDateTime HISTORY_DATE_USED = LocalDateTime.now().minusDays(1L);
+  private static final LocalDateTime HISTORY_DATE_USED = LocalDateTime.now().minusDays(10L);
 
   @BeforeEach
   public void setUp() {
@@ -88,10 +88,10 @@ public class BudgetHistoryRepositoryTest {
     for (int i = 0; i < 5; i++) {
       histories.add(
           BudgetHistory.builder()
-              .title(HISTORY_TITLE)
+              .title(HISTORY_TITLE + i)
               .menu(menu)
               .details(HISTORY_DETAILS)
-              .dateUsed(HISTORY_DATE_USED)
+              .dateUsed(HISTORY_DATE_USED.plusDays(i))
               .account(ACCOUNT_NUMBER)
               .income(0)
               .outcome(HISTORY_OUTCOME)
@@ -107,6 +107,11 @@ public class BudgetHistoryRepositoryTest {
 
     // then
     assertThat(dtoList).hasSize(5);
+    assertThat(dtoList.get(0).getTitle()).isEqualTo(HISTORY_TITLE + 4);
+    assertThat(dtoList.get(1).getTitle()).isEqualTo(HISTORY_TITLE + 3);
+    assertThat(dtoList.get(2).getTitle()).isEqualTo(HISTORY_TITLE + 2);
+    assertThat(dtoList.get(3).getTitle()).isEqualTo(HISTORY_TITLE + 1);
+    assertThat(dtoList.get(4).getTitle()).isEqualTo(HISTORY_TITLE + 0);
   }
 
   @DisplayName("해당 년도 예산 내역 조회")

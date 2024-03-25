@@ -46,7 +46,7 @@ public class ProjectBoardRepositoryTest {
             Menu.builder()
                 .menuGroup(boardMenuGroup)
                 .priority(1)
-                .type(MenuType.PROJECT)
+                .type(MenuType.ALPHA)
                 .name("알파테스터")
                 .description("IBAS 내부 컨테스트, 알파테스터 관련 게시판입니다.")
                 .build());

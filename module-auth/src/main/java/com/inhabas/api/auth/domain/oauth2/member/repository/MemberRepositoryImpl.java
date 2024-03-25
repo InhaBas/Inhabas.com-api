@@ -123,6 +123,23 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   }
 
   @Override
+  public List<Member> findAllByRolesInAndStudentIdLikeIncludingGraduated(
+      Collection<Role> roles, String studentId) {
+    OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
+    return queryFactory
+        .selectFrom(member)
+        .where(
+            member
+                .ibasInformation
+                .role
+                .in(roles)
+                .and(member.studentId.id.like("%" + studentId + "%")))
+        .orderBy(orderByStudentId)
+        .fetch();
+  }
+
+  @Override
   public List<Member> findAllByRolesInAndNameLike(Collection<Role> roles, String name) {
 
     OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
@@ -137,6 +154,18 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .and(member.name.value.like("%" + name + "%"))
                 .and(member.schoolInformation.memberType.ne(MemberType.GRADUATED)))
         .orderBy(ORDER_BY_ROLE, ORDER_BY_TYPE, orderByStudentId)
+        .fetch();
+  }
+
+  @Override
+  public List<Member> findAllByRolesInAndNameLikeIncludingGraduated(
+      Collection<Role> roles, String name) {
+    OrderSpecifier<String> orderByStudentId = member.studentId.id.asc();
+
+    return queryFactory
+        .selectFrom(member)
+        .where(member.ibasInformation.role.in(roles).and(member.name.value.like("%" + name + "%")))
+        .orderBy(orderByStudentId)
         .fetch();
   }
 

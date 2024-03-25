@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 
@@ -23,22 +24,18 @@ public class S3ServiceImpl implements S3Service {
   private final AmazonS3Client s3Client;
 
   @Override
-  public String uploadS3File(MultipartFile multipartFile, String fileName) {
+  public String uploadS3File(MultipartFile multipartFile, String fileName)
+      throws SdkClientException, IOException {
 
-    try {
-      String contentType = getContentType(fileName);
+    String contentType = getContentType(fileName);
 
-      ObjectMetadata metadata = new ObjectMetadata();
-      metadata.setContentType(contentType);
-      metadata.setContentLength(multipartFile.getSize());
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentType(contentType);
+    metadata.setContentLength(multipartFile.getSize());
 
-      s3Client.putObject(
-          new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
-              .withCannedAcl(CannedAccessControlList.PublicRead));
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException();
-    }
+    s3Client.putObject(
+        new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+            .withCannedAcl(CannedAccessControlList.PublicRead));
 
     printS3ObjectSummaries();
 
@@ -46,22 +43,18 @@ public class S3ServiceImpl implements S3Service {
   }
 
   @Override
-  public String uploadS3Image(MultipartFile multipartFile, String fileName) {
+  public String uploadS3Image(MultipartFile multipartFile, String fileName)
+      throws SdkClientException, IOException {
 
-    try {
-      String contentType = getOnlyImageContentType(fileName);
+    String contentType = getOnlyImageContentType(fileName);
 
-      ObjectMetadata metadata = new ObjectMetadata();
-      metadata.setContentType(contentType);
-      metadata.setContentLength(multipartFile.getSize());
+    ObjectMetadata metadata = new ObjectMetadata();
+    metadata.setContentType(contentType);
+    metadata.setContentLength(multipartFile.getSize());
 
-      s3Client.putObject(
-          new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
-              .withCannedAcl(CannedAccessControlList.PublicRead));
-    } catch (IOException e) {
-      e.printStackTrace();
-      throw new RuntimeException();
-    }
+    s3Client.putObject(
+        new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+            .withCannedAcl(CannedAccessControlList.PublicRead));
 
     printS3ObjectSummaries();
 
@@ -91,11 +84,17 @@ public class S3ServiceImpl implements S3Service {
     contentTypeMap.put("jpeg", "image/jpeg");
     contentTypeMap.put("jpg", "image/jpg");
     contentTypeMap.put("png", "image/png");
+    contentTypeMap.put("bmp", "image/bmp");
+    contentTypeMap.put("svg", "image/svg+xml");
+    contentTypeMap.put("webp", "image/webp");
+    contentTypeMap.put("ico", "image/x-icon");
     contentTypeMap.put("doc", "application/msword");
     contentTypeMap.put(
         "docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+    contentTypeMap.put("ppt", "application/vnd.ms-powerpoint");
     contentTypeMap.put(
-        "ppt", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+        "pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+    contentTypeMap.put("hwp", "application/x-hwp");
     contentTypeMap.put("txt", "text/plain");
     contentTypeMap.put("pdf", "application/pdf");
     contentTypeMap.put("zip", "application/zip");

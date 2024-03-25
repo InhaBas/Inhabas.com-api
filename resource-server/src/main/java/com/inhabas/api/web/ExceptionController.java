@@ -1,8 +1,12 @@
 package com.inhabas.api.web;
 
-import static com.inhabas.api.auth.domain.error.ErrorCode.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_FILE_SIZE;
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
+import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_WRITE_ANSWERS;
+import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_WRITE_PROFILE;
+import static com.inhabas.api.auth.domain.error.ErrorCode.SIGNUP_NOT_AVAILABLE;
+import static org.springframework.http.HttpStatus.*;
 
 import javax.validation.ConstraintViolationException;
 
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
@@ -26,6 +29,7 @@ import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.exception.SignUpNotAvailableException;
+import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 
 @Slf4j
 @RestControllerAdvice
@@ -110,16 +114,18 @@ public class ExceptionController {
 
   // 400
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  protected ResponseEntity<Object> processValidationError(MethodArgumentNotValidException e) {
+  protected ResponseEntity<ErrorResponse> processValidationError(
+      MethodArgumentNotValidException e) {
     log.error("Validation test failed", e);
     final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
     return new ResponseEntity<>(response, BAD_REQUEST);
   }
 
-  @ExceptionHandler(MissingServletRequestPartException.class)
-  protected ResponseEntity<Object> processRequestPartError(MissingServletRequestPartException e) {
-    log.error("RequestPart validation failed", e);
-    final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
-    return new ResponseEntity<>(response, BAD_REQUEST);
+  @ExceptionHandler(SizeLimitExceededException.class)
+  public ResponseEntity<ErrorResponse> handleSizeLimitExceededException(
+      SizeLimitExceededException e) {
+    log.error("Invalid file size", e);
+    final ErrorResponse response = ErrorResponse.of(INVALID_FILE_SIZE);
+    return new ResponseEntity<>(response, PAYLOAD_TOO_LARGE);
   }
 }
