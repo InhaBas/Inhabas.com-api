@@ -163,6 +163,28 @@ public class MemberControllerTest {
         .andExpect(jsonPath("$.data[0].major").value(equalTo("컴퓨터공학과")));
   }
 
+  @DisplayName("비활동 이상 모든 멤버 목록 간단 조회 성공 200")
+  @Test
+  public void getAllNotGraduatedMembers() throws Exception {
+
+    // given
+    List<ApprovedMemberSummaryDto> dtoList = new ArrayList<>();
+    ApprovedMemberSummaryDto dto1 =
+        new ApprovedMemberSummaryDto("홍길동", "12171707", UNDERGRADUATE, 1, "컴퓨터공학과");
+    dtoList.add(dto1);
+
+    given(memberManageService.getAllApprovedMembersBySearchAndRole(any())).willReturn(dtoList);
+
+    // then
+    mvc.perform(get("/members/notGraduated/all"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.data[0].name").value(equalTo("홍길동")))
+        .andExpect(jsonPath("$.data[0].studentId").value(equalTo("12171707")))
+        .andExpect(jsonPath("$.data[0].memberType").value(equalTo(UNDERGRADUATE.toString())))
+        .andExpect(jsonPath("$.data[0].generation").value(equalTo(1)))
+        .andExpect(jsonPath("$.data[0].major").value(equalTo("컴퓨터공학과")));
+  }
+
   @DisplayName("졸업자 멤버 목록 조회 성공 200")
   @Test
   public void getGraduatedMembers() throws Exception {

@@ -36,6 +36,7 @@ import com.inhabas.api.domain.contest.dto.SaveContestBoardDto;
 import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +60,7 @@ public class ContestBoardControllerTest {
   @Test
   void getBoardCount_Success() throws Exception {
     // given
-    BoardCountDto boardCountDto = new BoardCountDto("대외활동", 10);
+    BoardCountDto boardCountDto = new BoardCountDto(1, 1, MenuType.NOTICE, "대외활동", 10);
     List<BoardCountDto> dtoList = List.of(boardCountDto);
     given(baseBoardRepository.countRowsGroupByMenuName(any())).willReturn(dtoList);
 

@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.scholarship.domain;
 
 public enum ScholarshipBoardType {
+  SCHOLARSHIP("scholarship", 22),
   SPONSOR("sponsor", 20),
   USAGE("usage", 21);
 

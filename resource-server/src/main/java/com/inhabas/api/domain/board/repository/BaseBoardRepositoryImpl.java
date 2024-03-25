@@ -21,12 +21,18 @@ public class BaseBoardRepositoryImpl implements BaseBoardRepositoryCustom {
     return queryFactory
         .select(
             Projections.constructor(
-                BoardCountDto.class, menu.name.value, baseBoard.id.count().intValue()))
+                BoardCountDto.class,
+                menu.id,
+                menu.priority,
+                menu.type,
+                menu.name.value,
+                baseBoard.id.count().intValue()))
         .from(menu)
         .leftJoin(baseBoard)
         .on(menu.id.eq(baseBoard.menu.id))
         .where(menu.menuGroup.id.eq(menuGroupId))
         .groupBy(menu.name)
+        .orderBy(menu.priority.asc())
         .fetch();
   }
 }

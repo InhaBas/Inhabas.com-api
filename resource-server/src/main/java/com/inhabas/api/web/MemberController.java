@@ -181,6 +181,37 @@ public class MemberController {
     return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
   }
 
+  @Operation(summary = "비활동 이상 모든 멤버 목록 조회 (회계내역)", description = "이름, 학번 검색 가능")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
+      })
+  @GetMapping("/members/notGraduated/all")
+  public ResponseEntity<PagedResponseDto<ApprovedMemberSummaryDto>> getAllNotGraduatedMembers(
+      @Parameter(description = "페이지", example = "0")
+          @RequestParam(name = "page", defaultValue = "0")
+          int page,
+      @Parameter(description = "페이지당 개수", example = "10")
+          @RequestParam(name = "size", defaultValue = "10")
+          int size,
+      @Parameter(description = "검색어 (학번 or 이름)", example = "홍길동")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
+
+    Pageable pageable = PageRequest.of(page, size);
+    List<ApprovedMemberSummaryDto> allDtoList =
+        memberManageService.getAllApprovedMembersBySearchAndRole(search);
+    List<ApprovedMemberSummaryDto> pagedDtoList = PageUtil.getPagedDtoList(pageable, allDtoList);
+
+    PageImpl<ApprovedMemberSummaryDto> oldMemberManagementDtoPage =
+        new PageImpl<>(pagedDtoList, pageable, allDtoList.size());
+    PageInfoDto pageInfoDto = new PageInfoDto(oldMemberManagementDtoPage);
+
+    return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtoList));
+  }
+
   @Operation(summary = "총무 이상 멤버 목록 조회", description = "총무 이상 멤버 목록 조회")
   @ApiResponses(
       value = {
