@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.member.usecase;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.SdkClientException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
@@ -16,6 +18,8 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFound
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
+import com.inhabas.api.domain.board.exception.InvalidFileExtensionException;
+import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.global.util.FileUtil;
 
@@ -83,7 +87,14 @@ public class MemberProfileServiceImpl implements MemberProfileService {
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
     String path = FileUtil.generateFileName(file, DIR_NAME);
-    String url = s3Service.uploadS3Image(file, path);
+    String url = null;
+    try {
+      url = s3Service.uploadS3Image(file, path);
+    } catch (IOException e) {
+      throw new InvalidFileExtensionException();
+    } catch (SdkClientException e) {
+      throw new S3UploadFailedException();
+    }
     member.setPicture(url);
 
     memberRepository.save(member);
