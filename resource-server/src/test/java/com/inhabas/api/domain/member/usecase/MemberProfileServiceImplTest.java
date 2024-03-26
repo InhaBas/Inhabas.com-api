@@ -135,7 +135,6 @@ public class MemberProfileServiceImplTest {
         "https://inhabas-bucket.s3.ap-northeast-2.amazonaws.com/uploaded-image.png";
 
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
-    given(file.isEmpty()).willReturn(false);
     given(s3Service.uploadS3Image(any(), any())).willReturn(expectedUrl);
 
     // when
