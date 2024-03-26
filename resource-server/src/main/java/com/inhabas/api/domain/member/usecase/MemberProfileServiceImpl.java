@@ -31,7 +31,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
   private final UpdateNameRequestRepository updateNameRequestRepository;
   private final S3Service s3Service;
   private static final String DIR_NAME = "myInfo/";
-  private static final String DEFAULT_PROFILE_URL =
+  protected static final String DEFAULT_PROFILE_URL =
       "https://inhabas-bucket.s3.ap-northeast-2.amazonaws.com/public/default-profile.png";
 
   @Override

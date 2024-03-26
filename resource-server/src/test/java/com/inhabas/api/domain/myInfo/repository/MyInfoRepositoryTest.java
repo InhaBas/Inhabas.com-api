@@ -53,7 +53,7 @@ public class MyInfoRepositoryTest {
             Menu.builder()
                 .menuGroup(normalBoardMenuGroup)
                 .priority(1)
-                .type(MenuType.NORMAL_NOTICE)
+                .type(MenuType.NOTICE)
                 .name("공지사항")
                 .description("부원이 알아야 할 내용을 게시합니다.")
                 .build());
