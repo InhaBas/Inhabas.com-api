@@ -31,6 +31,8 @@ public class MemberProfileServiceImpl implements MemberProfileService {
   private final UpdateNameRequestRepository updateNameRequestRepository;
   private final S3Service s3Service;
   private static final String DIR_NAME = "myInfo/";
+  protected static final String DEFAULT_PROFILE_URL =
+      "https://inhabas-bucket.s3.ap-northeast-2.amazonaws.com/public/default-profile.png";
 
   @Override
   @Transactional(readOnly = true)
@@ -86,16 +88,21 @@ public class MemberProfileServiceImpl implements MemberProfileService {
 
     Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
-    String path = FileUtil.generateFileName(file, DIR_NAME);
-    String url = null;
-    try {
-      url = s3Service.uploadS3Image(file, path);
-    } catch (IOException e) {
-      throw new InvalidFileExtensionException();
-    } catch (SdkClientException e) {
-      throw new S3UploadFailedException();
+    // file이 null이거나 비어있을 경우 기본 프로필 이미지 URL을 사용
+    if (file == null || file.isEmpty()) {
+      member.setPicture(DEFAULT_PROFILE_URL);
+    } else {
+      String path = FileUtil.generateFileName(file, DIR_NAME);
+      String url = null;
+      try {
+        url = s3Service.uploadS3Image(file, path);
+      } catch (IOException e) {
+        throw new InvalidFileExtensionException();
+      } catch (SdkClientException e) {
+        throw new S3UploadFailedException();
+      }
+      member.setPicture(url);
     }
-    member.setPicture(url);
 
     memberRepository.save(member);
   }

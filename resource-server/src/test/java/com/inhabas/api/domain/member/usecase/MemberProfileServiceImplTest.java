@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 
 import java.util.Optional;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
@@ -15,7 +18,10 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileNameDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
+import com.inhabas.api.domain.file.usecase.S3Service;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +36,8 @@ public class MemberProfileServiceImplTest {
   @InjectMocks MemberProfileServiceImpl memberProfileService;
   @Mock MemberRepository memberRepository;
   @Mock UpdateNameRequestRepository updateNameRequestRepository;
+  @Mock S3Service s3Service;
+  @Captor private ArgumentCaptor<Member> memberArgumentCaptor;
 
   @DisplayName("내 정보를 조회한다.")
   @Test
@@ -98,5 +106,44 @@ public class MemberProfileServiceImplTest {
 
     // then
     then(updateNameRequestRepository).should(times(1)).save(any());
+  }
+
+  @DisplayName("내 정보 [프로필 사진] 수정시 null이 주어지면 기본 프로필 사진으로 업데이트한다.")
+  @Test
+  void updateMyProfileImageWithNullTest() {
+    // given
+    Member member = MemberTest.basicMember1();
+    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
+    // when
+    memberProfileService.updateMyProfileImage(member.getId(), null);
+
+    // then
+    then(memberRepository).should(times(1)).save(memberArgumentCaptor.capture());
+    Member updatedMember = memberArgumentCaptor.getValue();
+
+    assertThat(updatedMember.getPicture()).isEqualTo(MemberProfileServiceImpl.DEFAULT_PROFILE_URL);
+  }
+
+  @DisplayName("내 정보 [프로필 사진]을 수정한다.")
+  @Test
+  void updateMyProfileImageTest() throws Exception {
+    // given
+    Member member = MemberTest.basicMember1();
+    MultipartFile file = mock(MultipartFile.class);
+    String expectedUrl =
+        "https://inhabas-bucket.s3.ap-northeast-2.amazonaws.com/uploaded-image.png";
+
+    given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+    given(s3Service.uploadS3Image(any(), any())).willReturn(expectedUrl);
+
+    // when
+    memberProfileService.updateMyProfileImage(member.getId(), file);
+
+    // then
+    then(memberRepository).should(times(1)).save(memberArgumentCaptor.capture());
+    Member updatedMember = memberArgumentCaptor.getValue();
+
+    assertThat(updatedMember.getPicture()).isEqualTo(expectedUrl);
   }
 }

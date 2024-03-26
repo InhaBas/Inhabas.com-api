@@ -117,7 +117,8 @@ public class MyInfoController {
       })
   @PostMapping(value = "/myInfo/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> updateMyProfileImage(
-      @Authenticated Long memberId, @RequestParam(value = "picture") MultipartFile file) {
+      @Authenticated Long memberId,
+      @RequestParam(value = "picture", required = false) MultipartFile file) {
     memberProfileService.updateMyProfileImage(memberId, file);
     return ResponseEntity.noContent().build();
   }
