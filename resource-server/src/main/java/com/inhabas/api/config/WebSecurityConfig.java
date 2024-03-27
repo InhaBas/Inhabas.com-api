@@ -179,17 +179,9 @@ public class WebSecurityConfig {
           .antMatchers(HttpMethod.PUT, "/policy/**")
           .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
-          // 장학회 연혁 생성, 수정, 삭제
+          // 장학회 연혁 수정
           .antMatchers("/scholarship/history/**")
           .hasRole(SECRETARY.toString())
-
-          // 장학회 사용, 후원 생성, 수정, 삭제
-          .antMatchers(HttpMethod.POST, "/scholarship/{scholarshipBoardType}")
-          .hasRole(SECRETARY.toString()) // 생성
-          .antMatchers(HttpMethod.POST, "/scholarship/{scholarshipBoardType}/{boardId}")
-          .hasRole(SECRETARY.toString()) // 수정
-          .antMatchers(HttpMethod.DELETE, "/scholarship/{scholarshipBoardType}/{boardId}")
-          .hasRole(SECRETARY.toString()) // 삭제
 
           // 그 외
           .anyRequest()
