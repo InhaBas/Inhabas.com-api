@@ -119,15 +119,6 @@ public class MemberProfileServiceImpl implements MemberProfileService {
     updateNameRequestRepository.save(updateNameRequest);
   }
 
-  // (회장이 이름 변경 요청을 승인한 경우 <- controller에 구현) 이름 수정
-  @Override
-  @Transactional
-  public void updateMyProfileName(Long memberId, ProfileNameDto profileNameDto) {
-    Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
-    member.setName(profileNameDto.getName());
-    memberRepository.save(member);
-  }
-
   @Override
   public List<UpdateNameRequestDto> getMyInfoMyRequests(Long memberId) {
     List<UpdateNameRequest> updateNameRequestList =

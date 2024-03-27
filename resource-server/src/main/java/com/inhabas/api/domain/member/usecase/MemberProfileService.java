@@ -18,8 +18,6 @@ public interface MemberProfileService {
 
   void requestMyProfileName(Long memberId, ProfileNameDto profileNameDto);
 
-  void updateMyProfileName(Long memberId, ProfileNameDto profileNameDto);
-
   List<UpdateNameRequestDto> getMyInfoMyRequests(Long memberId);
 
   List<UpdateNameRequestDto> getMyInfoRequests();
