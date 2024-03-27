@@ -28,7 +28,7 @@ import com.inhabas.api.global.util.ClassifyFiles;
 
 @Service
 @Slf4j
-@javax.transaction.Transactional
+@Transactional
 @RequiredArgsConstructor
 public class ScholarshipBoardServiceImpl implements ScholarshipBoardService {
 
