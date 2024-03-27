@@ -179,6 +179,10 @@ public class WebSecurityConfig {
           .antMatchers(HttpMethod.PUT, "/policy/**")
           .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
 
+          // 장학회 연혁 수정
+          .antMatchers("/scholarship/history/**")
+          .hasRole(SECRETARY.toString())
+
           // 그 외
           .anyRequest()
           .hasRole(ANONYMOUS.toString());
