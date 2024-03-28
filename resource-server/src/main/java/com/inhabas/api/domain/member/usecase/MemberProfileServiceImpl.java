@@ -182,7 +182,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
 
     if (updateNameRequest.getRequestStatus() == RequestStatus.APPROVED) {
       Member member = updateNameRequest.getMember();
-      member.setName(updateNameRequest.getName().toString());
+      member.setName(updateNameRequest.getName().getValue());
       memberRepository.save(member);
     }
   }
