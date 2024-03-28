@@ -133,7 +133,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
                     .studentId(request.getMember().getStudentId())
                     .major(request.getMember().getSchoolInformation().getMajor())
                     .role(request.getMember().getRole())
-                    .beforeName(request.getMember().getName())
+                    .beforeName(request.getBeforeName())
                     .afterName(request.getName().getValue())
                     .dateRequested(request.getDateRequested())
                     .status(request.getRequestStatus())
