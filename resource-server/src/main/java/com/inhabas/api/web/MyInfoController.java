@@ -123,7 +123,7 @@ public class MyInfoController {
     return ResponseEntity.noContent().build();
   }
 
-  @Operation(summary = "내 정보 이름 수정", description = "이름 수정, 회장의 승인 필요")
+  @Operation(summary = "내 정보 이름 수정 요청", description = "이름 수정, 회장의 승인 필요")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),
@@ -199,7 +199,7 @@ public class MyInfoController {
     return ResponseEntity.ok(new PagedResponseDto<>(pageInfoDto, pagedDtos));
   }
 
-  @Operation(summary = "이름 수정 요청 처리", description = "이름 수정 요청 처리")
+  @Operation(summary = "이름 수정 요청 처리", description = "이름 수정이 승인되면 이름 변경, 거절되면 사유 작성")
   @ApiResponses(
       value = {
         @ApiResponse(responseCode = "204"),

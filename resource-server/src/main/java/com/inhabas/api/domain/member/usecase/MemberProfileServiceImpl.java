@@ -15,6 +15,7 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
+import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
@@ -132,7 +133,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
                     .studentId(request.getMember().getStudentId())
                     .major(request.getMember().getSchoolInformation().getMajor())
                     .role(request.getMember().getRole())
-                    .beforeName(request.getMember().getName())
+                    .beforeName(request.getBeforeName())
                     .afterName(request.getName().getValue())
                     .dateRequested(request.getDateRequested())
                     .status(request.getRequestStatus())
@@ -166,6 +167,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
   }
 
   @Override
+  @Transactional
   public void handleMyInfoRequest(HandleNameRequestDto handleNameRequestDto) {
 
     UpdateNameRequest updateNameRequest =
@@ -177,5 +179,11 @@ public class MemberProfileServiceImpl implements MemberProfileService {
         handleNameRequestDto.getStatus(), handleNameRequestDto.getRejectReason());
 
     updateNameRequestRepository.save(updateNameRequest);
+
+    if (updateNameRequest.getRequestStatus() == RequestStatus.APPROVED) {
+      Member member = updateNameRequest.getMember();
+      member.setName(updateNameRequest.getName().getValue());
+      memberRepository.save(member);
+    }
   }
 }

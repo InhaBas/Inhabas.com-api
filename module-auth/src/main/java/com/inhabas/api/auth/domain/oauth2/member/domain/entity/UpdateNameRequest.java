@@ -34,6 +34,9 @@ public class UpdateNameRequest {
 
   @Embedded private Name name;
 
+  @Column(name = "BEFORE_NAME", nullable = false, length = 50)
+  private String beforeName;
+
   @CreatedDate
   @Column(
       name = "DATE_REQUESTED",
@@ -55,6 +58,7 @@ public class UpdateNameRequest {
   public UpdateNameRequest(Member member, String name) {
     this.member = member;
     this.name = new Name(name);
+    this.beforeName = member.getName();
     this.dateRequested = LocalDateTime.now();
     this.requestStatus = PENDING;
   }

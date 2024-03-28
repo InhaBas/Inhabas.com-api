@@ -12,6 +12,8 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
+import com.inhabas.api.auth.domain.oauth2.member.dto.HandleNameRequestDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileDetailDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileIntroDto;
@@ -106,6 +108,32 @@ public class MemberProfileServiceImplTest {
 
     // then
     then(updateNameRequestRepository).should(times(1)).save(any());
+  }
+
+  @DisplayName("회장이 내 정보 [이름] 변경 요청을 승인하면, 회원의 이름이 업데이트된다.")
+  @Test
+  void approveNameChangeRequestUpdatesMemberNameTest() {
+    // given
+    Long requestId = 1L;
+    String newName = "송민석";
+    Member member = MemberTest.basicMember1();
+
+    UpdateNameRequest updateNameRequest = new UpdateNameRequest(member, newName);
+    updateNameRequest.handleRequest("pass", null);
+
+    given(updateNameRequestRepository.findById(any())).willReturn(Optional.of(updateNameRequest));
+    given(memberRepository.save(any())).willAnswer(invocation -> invocation.getArgument(0));
+
+    HandleNameRequestDto handleNameRequestDto = new HandleNameRequestDto(requestId, "pass", null);
+
+    // when
+    memberProfileService.handleMyInfoRequest(handleNameRequestDto);
+
+    // then
+    then(memberRepository).should(times(1)).save(memberArgumentCaptor.capture());
+    Member updatedMember = memberArgumentCaptor.getValue();
+
+    assertThat(updatedMember.getName()).as("이름 변경사항이 일치하지 않습니다.").isEqualTo(newName);
   }
 
   @DisplayName("내 정보 [프로필 사진] 수정시 null이 주어지면 기본 프로필 사진으로 업데이트한다.")
