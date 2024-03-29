@@ -1,5 +1,6 @@
 package com.inhabas.api.domain.myInfo.dto;
 
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuType.ALPHA;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class MyBoardDtoTest {
         MyBoardDto.builder()
             .id(1L)
             .menuId(16)
+            .menuType(ALPHA)
             .menuName("알파 테스터")
             .title("title")
             .dateCreated(LocalDateTime.now())
@@ -59,6 +61,7 @@ public class MyBoardDtoTest {
         MyBoardDto.builder()
             .id(1L)
             .menuId(16)
+            .menuType(ALPHA)
             .menuName(null)
             .title("title")
             .dateCreated(LocalDateTime.now())

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
@@ -30,6 +31,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 MyBoardDto.class,
                 baseBoard.id,
                 baseBoard.menu.id,
+                baseBoard.menu.type,
                 baseBoard.menu.name.value,
                 baseBoard.title.value,
                 baseBoard.dateCreated))
@@ -39,8 +41,9 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 .writer
                 .id
                 .eq(memberId)
-                // budgetSupportApplication은 예산신청 조회가 따로 있으므로, 게시판 조회 범주에서 제외
-                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not()))
+                // budgetSupportApplication, budgetHistory은 게시판 조회 범주에서 제외
+                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not())
+                .and(baseBoard.instanceOf(BudgetHistory.class).not()))
         .orderBy(baseBoard.dateCreated.desc())
         .fetch();
   }
@@ -60,6 +63,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 new MyCommentDto(
                     comment.getParentBoard().getId(),
                     comment.getParentBoard().getMenu().getId(),
+                    comment.getParentBoard().getMenu().getType(),
                     comment.getParentBoard().getMenu().getName(),
                     comment.getContent(),
                     comment.getDateCreated()))

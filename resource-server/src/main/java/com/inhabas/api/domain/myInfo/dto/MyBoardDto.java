@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @NoArgsConstructor
@@ -21,6 +22,8 @@ public class MyBoardDto {
   @NotNull @Positive private Long id;
 
   @NotNull private Integer menuId;
+
+  @NotNull private MenuType menuType;
 
   @NotNull private String menuName;
 
@@ -33,9 +36,15 @@ public class MyBoardDto {
 
   @Builder
   public MyBoardDto(
-      Long id, Integer menuId, String menuName, String title, LocalDateTime dateCreated) {
+      Long id,
+      Integer menuId,
+      MenuType menuType,
+      String menuName,
+      String title,
+      LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;
+    this.menuType = menuType;
     this.menuName = menuName;
     this.title = title;
     this.dateCreated = dateCreated;
