@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
@@ -40,8 +41,9 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 .writer
                 .id
                 .eq(memberId)
-                // budgetSupportApplication은 예산신청 조회가 따로 있으므로, 게시판 조회 범주에서 제외
-                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not()))
+                // budgetSupportApplication, budgetHistory은 게시판 조회 범주에서 제외
+                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not())
+                .and(baseBoard.instanceOf(BudgetHistory.class).not()))
         .orderBy(baseBoard.dateCreated.desc())
         .fetch();
   }
