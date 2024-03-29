@@ -30,6 +30,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 MyBoardDto.class,
                 baseBoard.id,
                 baseBoard.menu.id,
+                baseBoard.menu.type,
                 baseBoard.menu.name.value,
                 baseBoard.title.value,
                 baseBoard.dateCreated))
@@ -60,6 +61,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 new MyCommentDto(
                     comment.getParentBoard().getId(),
                     comment.getParentBoard().getMenu().getId(),
+                    comment.getParentBoard().getMenu().getType(),
                     comment.getParentBoard().getMenu().getName(),
                     comment.getContent(),
                     comment.getDateCreated()))

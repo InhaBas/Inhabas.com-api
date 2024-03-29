@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @NoArgsConstructor
@@ -22,6 +23,9 @@ public class MyCommentDto {
 
   // ParentsBoard의 menuId
   @NotNull private Integer menuId;
+
+  // ParentsBoard의 menuType
+  @NotNull private MenuType menuType;
 
   // ParentsBoard의 메뉴 이름
   @NotNull private String menuName;
@@ -36,9 +40,15 @@ public class MyCommentDto {
 
   @Builder
   public MyCommentDto(
-      Long id, Integer menuId, String menuName, String content, LocalDateTime dateCreated) {
+      Long id,
+      Integer menuId,
+      MenuType menuType,
+      String menuName,
+      String content,
+      LocalDateTime dateCreated) {
     this.id = id;
     this.menuId = menuId;
+    this.menuType = menuType;
     this.menuName = menuName;
     this.content = content;
     this.dateCreated = dateCreated;

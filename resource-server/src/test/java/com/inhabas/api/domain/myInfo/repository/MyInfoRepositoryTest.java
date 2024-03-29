@@ -1,6 +1,8 @@
 package com.inhabas.api.domain.myInfo.repository;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus.PENDING;
 import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuType.NOTICE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -11,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.comment.domain.Comment;
@@ -53,7 +54,7 @@ public class MyInfoRepositoryTest {
             Menu.builder()
                 .menuGroup(normalBoardMenuGroup)
                 .priority(1)
-                .type(MenuType.NOTICE)
+                .type(NOTICE)
                 .name("공지사항")
                 .description("부원이 알아야 할 내용을 게시합니다.")
                 .build());
@@ -97,7 +98,7 @@ public class MyInfoRepositoryTest {
             .details("details")
             .menu(budgetMenu)
             .outcome(10000)
-            .status(RequestStatus.PENDING)
+            .status(PENDING)
             .build()
             .writtenBy(writer, BudgetSupportApplication.class);
     budgetApplicationRepository.save(application);
