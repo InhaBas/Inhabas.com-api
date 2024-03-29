@@ -84,6 +84,6 @@ public class FileUtil {
 
   public static String generateFilePathWithUUID(
       MultipartFile multipartFile, String UUID, String dirName) {
-    return dirName + UUID + "_" + multipartFile.getOriginalFilename();
+    return dirName + "/" + UUID + "_" + multipartFile.getOriginalFilename();
   }
 }
