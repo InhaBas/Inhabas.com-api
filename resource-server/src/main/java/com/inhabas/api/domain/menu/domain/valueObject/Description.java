@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Description {
 
-  @Column(name = "DESCRIPTION", length = 50)
+  @Column(name = "DESCRIPTION", length = 100)
   private String value;
 
-  @Transient private final int MAX_LENGTH = 50;
+  @Transient private final int MAX_LENGTH = 100;
 
   public Description(String value) {
     if (validate(value)) this.value = value;
