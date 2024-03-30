@@ -41,7 +41,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 .writer
                 .id
                 .eq(memberId)
-                // MenuType을 기반으로 BUDGET_APPLICATION과 BUDGET_HISTORY 게시글 제외
+                // MenuType을 기반으로 BUDGET_SUPPORT과 BUDGET_ACCOUNT 게시글 제외
                 .and(baseBoard.menu.type.ne(BUDGET_SUPPORT))
                 .and(baseBoard.menu.type.ne(BUDGET_ACCOUNT)))
         .orderBy(baseBoard.dateCreated.desc())
