@@ -3,14 +3,14 @@ package com.inhabas.api.domain.myInfo.repository;
 import static com.inhabas.api.domain.board.domain.QBaseBoard.baseBoard;
 import static com.inhabas.api.domain.budget.domain.QBudgetSupportApplication.budgetSupportApplication;
 import static com.inhabas.api.domain.comment.domain.QComment.comment;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuType.BUDGET_ACCOUNT;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuType.BUDGET_SUPPORT;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import com.inhabas.api.domain.budget.domain.BudgetHistory;
-import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
@@ -41,9 +41,9 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                 .writer
                 .id
                 .eq(memberId)
-                // budgetSupportApplication, budgetHistory은 게시판 조회 범주에서 제외
-                .and(baseBoard.instanceOf(BudgetSupportApplication.class).not())
-                .and(baseBoard.instanceOf(BudgetHistory.class).not()))
+                // MenuType을 기반으로 BUDGET_APPLICATION과 BUDGET_HISTORY 게시글 제외
+                .and(baseBoard.menu.type.ne(BUDGET_SUPPORT))
+                .and(baseBoard.menu.type.ne(BUDGET_ACCOUNT)))
         .orderBy(baseBoard.dateCreated.desc())
         .fetch();
   }
