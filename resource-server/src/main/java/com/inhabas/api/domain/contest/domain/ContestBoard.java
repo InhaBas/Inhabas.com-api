@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.contest.domain;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,10 +52,10 @@ public class ContestBoard extends BaseBoard {
   @Embedded private Content content;
 
   @Column(name = "DATE_CONTEST_START", nullable = false)
-  private LocalDate dateContestStart;
+  private LocalDateTime dateContestStart;
 
   @Column(name = "DATE_CONTEST_END", nullable = false)
-  private LocalDate dateContestEnd;
+  private LocalDateTime dateContestEnd;
 
   @OneToMany(mappedBy = "parentBoard", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Comment> comments = new ArrayList<>();
@@ -69,8 +69,8 @@ public class ContestBoard extends BaseBoard {
       String content,
       String association,
       String topic,
-      LocalDate dateContestStart,
-      LocalDate dateContestEnd) {
+      LocalDateTime dateContestStart,
+      LocalDateTime dateContestEnd) {
 
     super(title, menu);
     this.contestField = contestField;
@@ -108,8 +108,8 @@ public class ContestBoard extends BaseBoard {
       String content,
       String association,
       String topic,
-      LocalDate dateContestStart,
-      LocalDate dateContestEnd) {
+      LocalDateTime dateContestStart,
+      LocalDateTime dateContestEnd) {
 
     this.contestField = contestField;
     this.title = new Title(title);

@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.contest.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,11 +40,15 @@ public class ContestBoardDetailDto {
 
   private List<FileDownloadDto> otherFiles;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate dateContestStart;
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateContestStart;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate dateContestEnd;
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateContestEnd;
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -66,8 +69,8 @@ public class ContestBoardDetailDto {
       String writerName,
       String association,
       String topic,
-      LocalDate dateContestStart,
-      LocalDate dateContestEnd,
+      LocalDateTime dateContestStart,
+      LocalDateTime dateContestEnd,
       LocalDateTime dateCreated,
       LocalDateTime dateUpdated,
       FileDownloadDto thumbnail,

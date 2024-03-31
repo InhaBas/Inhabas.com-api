@@ -3,6 +3,7 @@ package com.inhabas.api.domain.contest.dto;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 
@@ -21,8 +22,8 @@ public class ContestBoardDtoTest {
     String title = "테스트 제목";
     String topic = "테스트 주제";
     String association = "테스트 협회";
-    LocalDate dateContestStart = LocalDate.of(2024, 1, 1);
-    LocalDate dateContestEnd = LocalDate.of(2024, 3, 1);
+    LocalDateTime dateContestStart = LocalDateTime.of(2024, 1, 1, 0, 0, 0);
+    LocalDateTime dateContestEnd = LocalDateTime.of(2024, 3, 1, 0, 0, 0);
     FileDownloadDto thumbnail =
         new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg");
 

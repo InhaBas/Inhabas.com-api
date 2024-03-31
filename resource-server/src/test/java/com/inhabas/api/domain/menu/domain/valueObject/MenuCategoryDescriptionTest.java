@@ -22,17 +22,17 @@ public class MenuCategoryDescriptionTest {
     Assertions.assertThrows(IllegalArgumentException.class, () -> new Description("  "));
   }
 
-  @DisplayName("게시판 설명 50글자 이상은 허용 안됨.")
+  @DisplayName("게시판 설명 100글자 이상은 허용 안됨.")
   @Test
   public void CategoryName_too_long() {
     // given
-    String description = "이문장7글자임".repeat(7);
+    String description = "이문장은11글자입니다".repeat(9);
 
-    // when : 49글자 정상 저장
+    // when : 99글자 정상 저장
     Description categoryName = new Description(description);
     assertThat(categoryName.getValue()).isEqualTo(description);
 
-    // when : 50글자 저장 안됨.
+    // when : 100글자 저장 안됨.
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> new Description(description + "."));
   }

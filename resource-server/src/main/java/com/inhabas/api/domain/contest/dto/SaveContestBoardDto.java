@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.contest.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
 // 공모전 게시판 글 업데이트 및 저장
@@ -38,11 +40,15 @@ public class SaveContestBoardDto {
   private String topic;
 
   @NotNull(message = "공모전 모집 시작일을 등록해주세요.")
-  private LocalDate dateContestStart;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateContestStart;
 
   @NotNull(message = "공모전 모집 마감일을 등록해주세요.")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
   @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
-  private LocalDate dateContestEnd;
+  private LocalDateTime dateContestEnd;
 
   private List<String> files = new ArrayList<>();
 
@@ -53,8 +59,8 @@ public class SaveContestBoardDto {
       String content,
       String association,
       String topic,
-      LocalDate dateContestStart,
-      LocalDate dateContestEnd,
+      LocalDateTime dateContestStart,
+      LocalDateTime dateContestEnd,
       List<String> files) {
 
     this.contestFieldId = contestFieldId;

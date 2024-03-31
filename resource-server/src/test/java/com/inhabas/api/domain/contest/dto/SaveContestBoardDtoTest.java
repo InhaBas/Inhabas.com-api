@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.contest.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -93,8 +93,8 @@ public class SaveContestBoardDtoTest {
             "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
             "Assoc".repeat(20) + ".",
             "topic".repeat(100) + ".",
-            LocalDate.of(2022, 1, 1),
-            LocalDate.of(9999, 3, 3),
+            LocalDateTime.of(2022, 1, 1, 0, 0, 0),
+            LocalDateTime.of(9999, 3, 3, 0, 0, 0),
             null);
 
     // when
@@ -121,8 +121,8 @@ public class SaveContestBoardDtoTest {
             "content",
             "association",
             "topic",
-            LocalDate.of(2022, 1, 1),
-            LocalDate.of(2022, 2, 1),
+            LocalDateTime.of(2022, 1, 1, 0, 0, 0),
+            LocalDateTime.of(2022, 2, 1, 0, 0, 0),
             null);
 
     // when

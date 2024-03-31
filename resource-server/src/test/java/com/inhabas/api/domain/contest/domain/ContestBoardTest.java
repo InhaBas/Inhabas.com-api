@@ -3,7 +3,7 @@ package com.inhabas.api.domain.contest.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +36,8 @@ class ContestBoardTest {
     String content = "테스트 내용";
     String association = "테스트 협회";
     String topic = "테스트 주제";
-    LocalDate dateContestStart = LocalDate.of(2023, 1, 1);
-    LocalDate dateContestEnd = LocalDate.of(2023, 12, 31);
+    LocalDateTime dateContestStart = LocalDateTime.of(2023, 1, 1, 0, 0, 0);
+    LocalDateTime dateContestEnd = LocalDateTime.of(2023, 12, 31, 0, 0, 0);
 
     when(contestField.getId()).thenReturn(contestFieldId);
 
@@ -63,8 +63,8 @@ class ContestBoardTest {
     assertThat(contestBoard.getContent()).isEqualTo("테스트 내용");
     assertThat(contestBoard.getAssociation()).isEqualTo("테스트 협회");
     assertThat(contestBoard.getTopic()).isEqualTo("테스트 주제");
-    assertThat(contestBoard.getDateContestStart()).isEqualTo(LocalDate.of(2023, 1, 1));
-    assertThat(contestBoard.getDateContestEnd()).isEqualTo(LocalDate.of(2023, 12, 31));
+    assertThat(contestBoard.getDateContestStart()).isEqualTo(LocalDateTime.of(2023, 1, 1, 0, 0, 0));
+    assertThat(contestBoard.getDateContestEnd()).isEqualTo(LocalDateTime.of(2023, 12, 31, 0, 0, 0));
   }
 
   @Test
@@ -78,8 +78,8 @@ class ContestBoardTest {
     String newContent = "새로운 내용";
     String newAssociation = "새로운 협회";
     String newTopic = "새로운 주제";
-    LocalDate newDateContestStart = LocalDate.now();
-    LocalDate newDateContestEnd = LocalDate.now().plusDays(30);
+    LocalDateTime newDateContestStart = LocalDateTime.now();
+    LocalDateTime newDateContestEnd = LocalDateTime.now().plusDays(30);
 
     ContestField newContestField = new ContestField("새로운 분야");
     ReflectionTestUtils.setField(newContestField, "id", newContestFieldId);
