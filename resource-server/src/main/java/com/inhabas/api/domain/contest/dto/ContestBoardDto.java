@@ -1,6 +1,7 @@
 package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 // 공모전 게시판 전체 조회
 @Getter
@@ -22,11 +24,13 @@ public class ContestBoardDto {
   private String topic;
   private String association;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate dateContestStart;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateContestStart;
 
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-  private LocalDate dateContestEnd;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  private LocalDateTime dateContestEnd;
 
   @JsonProperty("D-day")
   private long dDay;
@@ -40,8 +44,8 @@ public class ContestBoardDto {
       String title,
       String topic,
       String association,
-      LocalDate dateContestStart,
-      LocalDate dateContestEnd,
+      LocalDateTime dateContestStart,
+      LocalDateTime dateContestEnd,
       FileDownloadDto thumbnail) {
     this.id = id;
     this.contestFieldId = contestFieldId;

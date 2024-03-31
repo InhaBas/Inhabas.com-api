@@ -2,7 +2,6 @@ package com.inhabas.api.domain.contest.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Set;
@@ -48,8 +47,8 @@ class ContestBoardDetailDtoTest {
             .writerName("송민석")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .thumbnail(
@@ -79,8 +78,8 @@ class ContestBoardDetailDtoTest {
             .writerName("송민석")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .thumbnail(

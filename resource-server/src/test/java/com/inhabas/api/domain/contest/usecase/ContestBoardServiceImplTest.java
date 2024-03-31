@@ -14,7 +14,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,8 +73,8 @@ public class ContestBoardServiceImplTest {
             .title("테스트 제목")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .thumbnail(
                 new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .build();
@@ -109,8 +109,8 @@ public class ContestBoardServiceImplTest {
             .content("테스트 내용")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.of(2024, 1, 1, 0, 0, 0))
+            .dateContestEnd(LocalDateTime.of(2024, 1, 1, 0, 0, 0).plusDays(10))
             .build()
             .writtenBy(member, ContestBoard.class);
 
@@ -126,8 +126,9 @@ public class ContestBoardServiceImplTest {
     assertThat(dto.getContent()).isEqualTo("테스트 내용");
     assertThat(dto.getAssociation()).isEqualTo("(주) 아이바스");
     assertThat(dto.getTopic()).isEqualTo("테스트 주제");
-    assertThat(dto.getDateContestStart()).isEqualTo(LocalDate.now());
-    assertThat(dto.getDateContestEnd()).isEqualTo(LocalDate.now().plusDays(10));
+    assertThat(dto.getDateContestStart()).isEqualTo(LocalDateTime.of(2024, 1, 1, 0, 0, 0));
+    assertThat(dto.getDateContestEnd())
+        .isEqualTo(LocalDateTime.of(2024, 1, 1, 0, 0, 0).plusDays(10));
   }
 
   @DisplayName("Contest board 게시글을 작성한다.")
@@ -146,8 +147,8 @@ public class ContestBoardServiceImplTest {
             .content("테스트 내용")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(null)
             .build();
 
@@ -160,8 +161,8 @@ public class ContestBoardServiceImplTest {
             .content("테스트 내용")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build()
             .writtenBy(member, ContestBoard.class);
 
@@ -193,8 +194,8 @@ public class ContestBoardServiceImplTest {
             .content("테스트 내용")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(null)
             .build();
 
@@ -208,8 +209,8 @@ public class ContestBoardServiceImplTest {
             .content("테스트 내용")
             .association("(주) 아이바스")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     ReflectionTestUtils.setField(contestBoard, "id", 1L);

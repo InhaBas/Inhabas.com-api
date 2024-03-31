@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -88,8 +87,8 @@ public class ContestBoardControllerTest {
             .title("테스트 제목")
             .topic("테스트 주제")
             .association("테스트 협회")
-            .dateContestStart(LocalDate.of(2024, 1, 1))
-            .dateContestEnd(LocalDate.of(2024, 3, 1))
+            .dateContestStart(LocalDateTime.of(2024, 1, 1, 0, 0, 0))
+            .dateContestEnd(LocalDateTime.of(2024, 3, 1, 0, 0, 0))
             .thumbnail(
                 new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .build();
@@ -143,8 +142,8 @@ public class ContestBoardControllerTest {
             .writerName(writer.getName())
             .association("테스트 협회")
             .topic("테스트 주제")
-            .dateContestStart(LocalDate.of(2024, 1, 1))
-            .dateContestEnd(LocalDate.of(2024, 3, 1))
+            .dateContestStart(LocalDateTime.of(2024, 1, 1, 0, 0, 0))
+            .dateContestEnd(LocalDateTime.of(2024, 3, 1, 0, 0, 0))
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .thumbnail(
@@ -212,8 +211,8 @@ public class ContestBoardControllerTest {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     // when
@@ -244,8 +243,8 @@ public class ContestBoardControllerTest {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
@@ -279,8 +278,8 @@ public class ContestBoardControllerTest {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     // when then
@@ -307,8 +306,8 @@ public class ContestBoardControllerTest {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     // when
@@ -341,8 +340,8 @@ public class ContestBoardControllerTest {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDate.now())
-            .dateContestEnd(LocalDate.now().plusDays(10))
+            .dateContestStart(LocalDateTime.now())
+            .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
 
     // when
