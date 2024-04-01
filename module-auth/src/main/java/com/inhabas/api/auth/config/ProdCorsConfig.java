@@ -13,7 +13,7 @@ public class ProdCorsConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     registry
         .addMapping("/**")
-        .allowedOrigins("https://inhabas.com")
+        .allowedOrigins("https://inhabas.com", "https://www.inhabas.com")
         .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
         .allowedHeaders("Authorization")
         .maxAge(3600);
