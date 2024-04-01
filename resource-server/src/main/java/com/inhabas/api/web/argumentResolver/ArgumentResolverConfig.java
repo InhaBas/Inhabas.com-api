@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-@Profile({"dev", "local", "integration_test"})
+@Profile({"dev", "production", "local", "integration_test"})
 public class ArgumentResolverConfig implements WebMvcConfigurer {
 
   private final LoginMemberArgumentResolver loginMemberArgumentResolver;
