@@ -15,7 +15,7 @@ public class ProdCorsConfig implements WebMvcConfigurer {
         .addMapping("/**")
         .allowedOrigins("https://inhabas.com")
         .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
-        .allowedHeaders("Authorization", "Content-Type")
+        .allowedHeaders("Authorization")
         .maxAge(3600);
   }
 }
