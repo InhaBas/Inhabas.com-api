@@ -112,11 +112,9 @@ public class ScholarshipController {
                             "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
   })
   public ResponseEntity<ScholarshipBoardDetailDto> getBoard(
-      @PathVariable Long boardId,
-      @PathVariable ScholarshipBoardType boardType,
-      @Authenticated Long memberId) {
+      @PathVariable Long boardId, @PathVariable ScholarshipBoardType boardType) {
 
-    return ResponseEntity.ok(scholarshipBoardService.getPost(boardType, boardId, memberId));
+    return ResponseEntity.ok(scholarshipBoardService.getPost(boardType, boardId));
   }
 
   @Operation(summary = "장학회 게시글 추가")

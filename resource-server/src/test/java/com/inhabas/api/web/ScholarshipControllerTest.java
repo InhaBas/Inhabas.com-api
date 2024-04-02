@@ -109,8 +109,7 @@ public class ScholarshipControllerTest {
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .build();
-    given(scholarshipBoardService.getPost(any(), any(), any()))
-        .willReturn(scholarshipBoardDetailDto);
+    given(scholarshipBoardService.getPost(any(), any())).willReturn(scholarshipBoardDetailDto);
 
     // when
     String response =
@@ -143,7 +142,7 @@ public class ScholarshipControllerTest {
   @Test
   void getBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(scholarshipBoardService).getPost(any(), any(), any());
+    doThrow(NotFoundException.class).when(scholarshipBoardService).getPost(any(), any());
 
     // when
     String response =
