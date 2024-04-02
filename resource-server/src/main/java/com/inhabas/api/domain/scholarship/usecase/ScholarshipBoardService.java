@@ -11,7 +11,7 @@ public interface ScholarshipBoardService {
 
   List<ScholarshipBoardDto> getPosts(ScholarshipBoardType boardType, String search);
 
-  ScholarshipBoardDetailDto getPost(ScholarshipBoardType boardType, Long boardId, Long memberId);
+  ScholarshipBoardDetailDto getPost(ScholarshipBoardType boardType, Long boardId);
 
   Long write(
       ScholarshipBoardType boardType,

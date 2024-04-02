@@ -32,7 +32,7 @@ public class ScholarshipBoardRepositoryImpl implements ScholarshipBoardRepositor
                 scholarship.dateCreated,
                 scholarship.dateUpdated))
         .from(scholarship)
-        .where(eqScholarshipBoardType(boardType))
+        .where(eqScholarshipBoardType(boardType).and(likeTitle(search).or(likeContent(search))))
         .orderBy(scholarship.dateCreated.desc())
         .fetch();
   }
@@ -49,5 +49,13 @@ public class ScholarshipBoardRepositoryImpl implements ScholarshipBoardRepositor
 
   private BooleanExpression eqScholarshipBoardType(ScholarshipBoardType scholarshipBoardType) {
     return scholarship.menu.id.eq(scholarshipBoardType.getMenuId());
+  }
+
+  private BooleanExpression likeTitle(String search) {
+    return scholarship.title.value.like("%" + search + "%");
+  }
+
+  private BooleanExpression likeContent(String search) {
+    return scholarship.content.value.like("%" + search + "%");
   }
 }

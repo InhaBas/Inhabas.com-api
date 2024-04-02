@@ -48,8 +48,7 @@ public class ScholarshipBoardServiceImpl implements ScholarshipBoardService {
 
   @Transactional(readOnly = true)
   @Override
-  public ScholarshipBoardDetailDto getPost(
-      ScholarshipBoardType boardType, Long boardId, Long memberId) {
+  public ScholarshipBoardDetailDto getPost(ScholarshipBoardType boardType, Long boardId) {
 
     Scholarship scholarship =
         scholarshipBoardRepository
