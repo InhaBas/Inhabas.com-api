@@ -36,10 +36,10 @@ public class SignUpSchedule {
   @Column(name = "SIGNUP_END", nullable = false)
   private LocalDateTime signupEndDate;
 
-  @Column(name = "INTERVIEW_START", nullable = false)
+  @Column(name = "INTERVIEW_START", nullable = true)
   private LocalDateTime interviewStartDate;
 
-  @Column(name = "INTERVIEW_END", nullable = false)
+  @Column(name = "INTERVIEW_END", nullable = true)
   private LocalDateTime interviewEndDate;
 
   @Column(name = "RESULT_ANNOUNCE_DATE", nullable = false)
@@ -85,12 +85,24 @@ public class SignUpSchedule {
   }
 
   private void setInterviewDate(LocalDateTime interviewStartDate, LocalDateTime interviewEndDate) {
-    if (interviewEndDate.isAfter(interviewStartDate)) {
-      this.interviewStartDate = interviewStartDate;
-      this.interviewEndDate = interviewEndDate;
-    } else {
-      throw new InvalidDateException(ErrorCode.INVALID_INTERVIEW_DATE);
+    boolean isStartNull = interviewStartDate == null;
+    boolean isEndNull = interviewEndDate == null;
+
+    // 면접 시작일과 종료일 중 하나만 null인 경우 오류 발생
+    if (isStartNull ^ isEndNull) {
+      throw new InvalidDateException(ErrorCode.INCOMPLETE_INTERVIEW_DATE);
     }
+
+    // 둘 다 null이 아니면, 종료일이 시작일 이후인지 검사
+    if (!isStartNull && !isEndNull) {
+      if (!interviewEndDate.isAfter(interviewStartDate)) {
+        throw new InvalidDateException(ErrorCode.INVALID_INTERVIEW_DATE);
+      }
+    }
+
+    // 모든 검사를 통과하면 필드 업데이트
+    this.interviewStartDate = interviewStartDate;
+    this.interviewEndDate = interviewEndDate;
   }
 
   private void setResultAnnounceDate(
@@ -98,7 +110,15 @@ public class SignUpSchedule {
       LocalDateTime interviewEndDate,
       LocalDateTime resultAnnounceDate) {
 
-    if (resultAnnounceDate.isAfter(signupEndDate) && resultAnnounceDate.isAfter(interviewEndDate)) {
+    // 면접 종료일이 null이 아닌 경우, 결과 발표일은 면접 종료일 이후여야 한다.
+    boolean isAfterInterviewEnd =
+        interviewEndDate == null || resultAnnounceDate.isAfter(interviewEndDate);
+
+    // 결과 발표일은 항상 회원가입 종료일 이후여야 한다.
+    boolean isAfterSignupEnd = resultAnnounceDate.isAfter(signupEndDate);
+
+    // 면접 종료일이 없는 경우(null) True가 반환되므로 회원가입 종료일 이후인지만 검사를 진행한다.
+    if (isAfterSignupEnd && isAfterInterviewEnd) {
       this.resultAnnounceDate = resultAnnounceDate;
     } else {
       throw new InvalidDateException(ErrorCode.INVALID_ANNOUNCE_DATE);
