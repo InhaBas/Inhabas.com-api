@@ -110,14 +110,15 @@ public class SignUpSchedule {
       LocalDateTime interviewEndDate,
       LocalDateTime resultAnnounceDate) {
 
-    // 면접 종료일이 null이 아닌 경우, 결과 발표일은 면접 종료일 이후여야 한다.
+    // 면접 종료일이 설정되지 않았거나 (null), 결과 발표일이 면접 종료일 이후인 경우가 있는지 확인한다.
     boolean isAfterInterviewEnd =
         interviewEndDate == null || resultAnnounceDate.isAfter(interviewEndDate);
 
     // 결과 발표일은 항상 회원가입 종료일 이후여야 한다.
     boolean isAfterSignupEnd = resultAnnounceDate.isAfter(signupEndDate);
 
-    // 면접 종료일이 없는 경우(null) True가 반환되므로 회원가입 종료일 이후인지만 검사를 진행한다.
+    // 면접 종료일이 null인 경우, 결과 발표일 설정은 면접 종료일과 무관하게 회원가입 종료일만 고려한다.
+    // 면접 종료일이 null이 아닌 경우, 결과 발표일은 면접 종료일 이후여야 한다.
     if (isAfterSignupEnd && isAfterInterviewEnd) {
       this.resultAnnounceDate = resultAnnounceDate;
     } else {
