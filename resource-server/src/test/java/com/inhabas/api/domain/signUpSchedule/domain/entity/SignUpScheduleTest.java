@@ -147,7 +147,8 @@ public class SignUpScheduleTest {
                     resultAnnounce));
 
     // then
-    assertThat(invalidDateException.getMessage()).isEqualTo("결과 발표일이 면접 마감일보다 앞설 수 없습니다.");
+    assertThat(invalidDateException.getMessage())
+        .isEqualTo("결과 발표일이 면접 마감일 또는 모집 마감일보다 앞설 수 없습니다.");
   }
 
   @DisplayName("면접 날짜 둘 다 누락되어있으면 결과 공고일 검사는 모집일정을 기준으로만 판단한다.")
