@@ -43,9 +43,10 @@ public enum ErrorCode {
   SIGNUP_NOT_AVAILABLE(403, "S001", "회원가입 기간이 아닙니다."),
   INVALID_SIGNUP_DATE(400, "S002", "등록 마감일이 시작일보다 앞설 수 없습니다."),
   INVALID_INTERVIEW_DATE(400, "S003", "면접 마감일이 시작일보다 앞설 수 없습니다."),
-  INVALID_ANNOUNCE_DATE(400, "S004", "결과 발표일이 면접 마감일보다 앞설 수 없습니다."),
-  NOT_WRITE_PROFILE(400, "S005", "아직 회원 프로필을 생성하지 않아서 회원가입을 마무리 할 수 없습니다."),
-  NOT_WRITE_ANSWERS(400, "S006", "아직 면접 질문을 작성하지 않아서 회원가입을 마무리 할 수 없습니다."),
+  INCOMPLETE_INTERVIEW_DATE(400, "S004", "면접 시작일과 종료일 중 하나만 설정되어 있습니다."),
+  INVALID_ANNOUNCE_DATE(400, "S005", "결과 발표일이 면접 마감일 또는 모집 마감일보다 앞설 수 없습니다."),
+  NOT_WRITE_PROFILE(400, "S006", "아직 회원 프로필을 생성하지 않아서 회원가입을 마무리 할 수 없습니다."),
+  NOT_WRITE_ANSWERS(400, "S007", "아직 면접 질문을 작성하지 않아서 회원가입을 마무리 할 수 없습니다."),
 
   // Board
   WRITER_UNMODIFIABLE(403, "B001", "글 작성자를 변경 할 수 없습니다."),

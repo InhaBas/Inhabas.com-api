@@ -33,12 +33,10 @@ public class SignUpScheduleDto {
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime signupEndDate;
 
-  @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime interviewStartDate;
 
-  @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime interviewEndDate;
