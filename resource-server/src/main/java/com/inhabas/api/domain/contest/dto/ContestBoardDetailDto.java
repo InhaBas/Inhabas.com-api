@@ -28,6 +28,8 @@ public class ContestBoardDetailDto {
 
   @NotBlank private String content;
 
+  @NotNull private Long writerId;
+
   @NotBlank private String writerName;
 
   @NotBlank private String association;
@@ -66,6 +68,7 @@ public class ContestBoardDetailDto {
       Long contestFieldId,
       String title,
       String content,
+      Long writerId,
       String writerName,
       String association,
       String topic,
@@ -80,6 +83,7 @@ public class ContestBoardDetailDto {
     this.contestFieldId = contestFieldId;
     this.title = title;
     this.content = content;
+    this.writerId = writerId;
     this.writerName = writerName;
     this.association = association;
     this.topic = topic;
