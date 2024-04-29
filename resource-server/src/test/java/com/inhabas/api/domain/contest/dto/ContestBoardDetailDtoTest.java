@@ -44,6 +44,7 @@ class ContestBoardDetailDtoTest {
             .contestFieldId(1L)
             .title("테스트 제목")
             .content("테스트 내용")
+            .writerId(1L)
             .writerName("송민석")
             .association("(주) 아이바스")
             .topic("테스트 주제")
@@ -75,6 +76,7 @@ class ContestBoardDetailDtoTest {
             .contestFieldId(1L)
             // title 필드 null
             .content("테스트 내용")
+            .writerId(1L)
             .writerName("송민석")
             .association("(주) 아이바스")
             .topic("테스트 주제")
