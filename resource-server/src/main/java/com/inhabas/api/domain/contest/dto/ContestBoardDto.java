@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -30,7 +29,6 @@ public class ContestBoardDto {
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateContestEnd;
 
-  @JsonProperty("D-day")
   private Long dDay;
 
   private FileDownloadDto thumbnail;
