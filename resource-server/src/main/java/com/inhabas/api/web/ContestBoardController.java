@@ -112,9 +112,9 @@ public class ContestBoardController {
           @RequestParam(name = "size", defaultValue = "4")
           int size,
       @Parameter(
-              description = "'dateCreated' 또는 'dateContestEnd' 기준 내림차순 정렬",
+              description = "'ALL'(마감된 공모전 포함) 또는 'DUE_DATE'(마감된 공모전 제외) 기준 정렬",
               example = "dateCreated")
-          @RequestParam(name = "orderBy", defaultValue = "dateCreatedEnd")
+          @RequestParam(name = "orderBy", defaultValue = "ALL")
           OrderBy orderBy) {
 
     Pageable pageable = PageRequest.of(page, size);

@@ -1,8 +1,6 @@
 package com.inhabas.api.domain.contest.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +31,7 @@ public class ContestBoardDto {
   private LocalDateTime dateContestEnd;
 
   @JsonProperty("D-day")
-  private long dDay;
+  private Long dDay;
 
   private FileDownloadDto thumbnail;
 
@@ -46,6 +44,7 @@ public class ContestBoardDto {
       String association,
       LocalDateTime dateContestStart,
       LocalDateTime dateContestEnd,
+      Long dDay,
       FileDownloadDto thumbnail) {
     this.id = id;
     this.contestFieldId = contestFieldId;
@@ -54,7 +53,7 @@ public class ContestBoardDto {
     this.association = association;
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
-    this.dDay = ChronoUnit.DAYS.between(LocalDate.now(), dateContestEnd);
+    this.dDay = dDay;
     this.thumbnail = thumbnail;
   }
 }
