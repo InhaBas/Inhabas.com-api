@@ -1,15 +1,12 @@
 package com.inhabas.api.domain.contest.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -32,8 +29,7 @@ public class ContestBoardDto {
   @Schema(type = "string", example = "2024-11-01T00:00:00")
   private LocalDateTime dateContestEnd;
 
-  @JsonProperty("D-day")
-  private long dDay;
+  private Long dDay;
 
   private FileDownloadDto thumbnail;
 
@@ -46,6 +42,7 @@ public class ContestBoardDto {
       String association,
       LocalDateTime dateContestStart,
       LocalDateTime dateContestEnd,
+      Long dDay,
       FileDownloadDto thumbnail) {
     this.id = id;
     this.contestFieldId = contestFieldId;
@@ -54,7 +51,7 @@ public class ContestBoardDto {
     this.association = association;
     this.dateContestStart = dateContestStart;
     this.dateContestEnd = dateContestEnd;
-    this.dDay = ChronoUnit.DAYS.between(LocalDate.now(), dateContestEnd);
+    this.dDay = dDay;
     this.thumbnail = thumbnail;
   }
 }

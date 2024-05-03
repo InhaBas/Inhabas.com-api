@@ -39,10 +39,13 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
                     .or(likeAssociation(search))
                     .or(likeTopic(search)));
 
+    // orderBy에 따라 정렬 및 필터링 조건을 가져옵니다.
+    // 예: 마감일 순으로 정렬하는 경우, DUE_DATE의 getOrderBy와 getFilter가 호출됩니다.
     OrderSpecifier<?> order = orderBy.getOrderBy(contestBoard);
+    BooleanExpression filter = orderBy.getFilter(contestBoard);
 
     List<ContestBoard> boards =
-        queryFactory.selectFrom(contestBoard).where(target).orderBy(order).fetch();
+        queryFactory.selectFrom(contestBoard).where(target.and(filter)).orderBy(order).fetch();
 
     return boards.stream()
         .map(

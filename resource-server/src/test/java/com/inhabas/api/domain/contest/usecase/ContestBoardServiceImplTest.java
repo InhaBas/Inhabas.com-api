@@ -2,7 +2,7 @@ package com.inhabas.api.domain.contest.usecase;
 
 import static com.inhabas.api.domain.contest.domain.ContestType.ACTIVITY;
 import static com.inhabas.api.domain.contest.domain.ContestType.CONTEST;
-import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DATE_CONTEST_END;
+import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.DUE_DATE;
 import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getContestMenu;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getContestMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,8 +85,7 @@ public class ContestBoardServiceImplTest {
         .willReturn(List.of(contestBoardDto));
 
     // when
-    List<ContestBoardDto> result =
-        contestBoardService.getContestBoards(ACTIVITY, 1L, "", DATE_CONTEST_END);
+    List<ContestBoardDto> result = contestBoardService.getContestBoards(ACTIVITY, 1L, "", DUE_DATE);
 
     // then
     Assertions.assertThat(result).hasSize(1);
