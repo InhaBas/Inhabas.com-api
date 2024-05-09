@@ -61,7 +61,7 @@ public class ClubActivityControllerTest {
             .thumbnail(null)
             .build();
     List<ClubActivityDto> clubActivityDtoList = List.of(clubActivityDto);
-    given(clubActivityService.getClubActivities()).willReturn(clubActivityDtoList);
+    given(clubActivityService.getClubActivities("")).willReturn(clubActivityDtoList);
 
     // when
     mvc.perform(get("/club/activities"))

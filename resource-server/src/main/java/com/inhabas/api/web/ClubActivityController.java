@@ -56,10 +56,13 @@ public class ClubActivityController {
           int page,
       @Parameter(description = "페이지당 개수", example = "10")
           @RequestParam(name = "size", defaultValue = "10")
-          int size) {
+          int size,
+      @Parameter(description = "검색어 (작성자 이름 or 제목 or 내용)", example = "")
+          @RequestParam(name = "search", defaultValue = "")
+          String search) {
 
     Pageable pageable = PageRequest.of(page, size);
-    List<ClubActivityDto> allDtos = clubActivityService.getClubActivities();
+    List<ClubActivityDto> allDtos = clubActivityService.getClubActivities(search);
     List<ClubActivityDto> pagedDtos = PageUtil.getPagedDtoList(pageable, allDtos);
 
     PageImpl<ClubActivityDto> ClubActivityDtoPage =
