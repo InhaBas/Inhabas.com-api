@@ -43,9 +43,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
   public List<ClubActivityDto> getClubActivities(String search) {
     List<ClubActivityDto> clubActivityList = new ArrayList<>();
 
-    clubActivityList.addAll(clubActivityRepository.findAllAndSearch(search));
-
-    return clubActivityList;
+    return clubActivityRepository.findAllAndSearch(search);
   }
 
   @Override

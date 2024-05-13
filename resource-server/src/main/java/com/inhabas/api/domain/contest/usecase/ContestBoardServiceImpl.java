@@ -52,12 +52,8 @@ public class ContestBoardServiceImpl implements ContestBoardService {
       search = "";
     }
 
-    List<ContestBoardDto> contestBoardList = new ArrayList<>();
-
-    contestBoardList.addAll(
-        contestBoardRepository.findAllByTypeAndFieldAndSearch(
-            contestType, contestFieldId, search, orderBy));
-    return contestBoardList;
+    return contestBoardRepository.findAllByTypeAndFieldAndSearch(
+        contestType, contestFieldId, search, orderBy);
   }
 
   // 공모전 게시판 단일조회
