@@ -8,7 +8,7 @@ import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 
 public interface ClubActivityService {
 
-  List<ClubActivityDto> getClubActivities();
+  List<ClubActivityDto> getClubActivities(String search);
 
   Long writeClubActivity(Long memberId, SaveClubActivityDto saveClubActivityDto);
 

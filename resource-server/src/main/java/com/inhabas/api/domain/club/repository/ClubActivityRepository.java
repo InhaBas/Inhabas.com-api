@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 
-public interface ClubActivityRepository extends JpaRepository<AlbumBoard, Long> {}
+public interface ClubActivityRepository
+    extends JpaRepository<AlbumBoard, Long>, ClubActivityRepositoryCustom {}

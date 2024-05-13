@@ -39,6 +39,7 @@ public class ClubActivityDetailDtoTest {
             .id(-1L)
             .title("")
             .content("")
+            .writerId(1L)
             .writerName("")
             .dateCreated(null)
             .dateUpdated(null)

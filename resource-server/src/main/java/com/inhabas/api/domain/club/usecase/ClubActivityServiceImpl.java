@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.club.usecase;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,24 +40,10 @@ public class ClubActivityServiceImpl implements ClubActivityService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<ClubActivityDto> getClubActivities() {
+  public List<ClubActivityDto> getClubActivities(String search) {
+    List<ClubActivityDto> clubActivityList = new ArrayList<>();
 
-    List<AlbumBoard> clubActivityList = clubActivityRepository.findAll();
-
-    return clubActivityList.stream()
-        .map(
-            board -> {
-              ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(board.getFiles());
-              return ClubActivityDto.builder()
-                  .id(board.getId())
-                  .title(board.getTitle())
-                  .writerName(board.getWriter().getName())
-                  .dateCreated(board.getDateCreated())
-                  .dateUpdated(board.getDateUpdated())
-                  .thumbnail(classifiedFiles.getThumbnail())
-                  .build();
-            })
-        .collect(Collectors.toList());
+    return clubActivityRepository.findAllAndSearch(search);
   }
 
   @Override
@@ -118,6 +104,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
     AlbumBoard clubActivity =
         clubActivityRepository.findById(boardId).orElseThrow(NotFoundException::new);
 
+    clubActivity.updateText(saveClubActivityDto.getTitle(), saveClubActivityDto.getContent());
     List<String> fileIdList = saveClubActivityDto.getFiles();
     List<BoardFile> boardFileList = boardFileRepository.getAllByIdInAndUploader(fileIdList, writer);
     clubActivity.updateFiles(boardFileList);

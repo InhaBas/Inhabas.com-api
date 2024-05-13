@@ -22,6 +22,8 @@ public class ClubActivityDto {
 
   @NotBlank private String title;
 
+  @NotNull private Long writerId;
+
   @NotBlank private String writerName;
 
   @NotNull
@@ -40,12 +42,14 @@ public class ClubActivityDto {
   public ClubActivityDto(
       Long id,
       String title,
+      Long writerId,
       String writerName,
       LocalDateTime dateCreated,
       LocalDateTime dateUpdated,
       FileDownloadDto thumbnail) {
     this.id = id;
     this.title = title;
+    this.writerId = writerId;
     this.writerName = writerName;
     this.dateCreated = dateCreated;
     this.dateUpdated = dateUpdated;
