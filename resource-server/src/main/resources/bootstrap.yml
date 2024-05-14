@@ -3,7 +3,6 @@ spring:
     name: api
 
 ---
-
 spring:
   config:
     activate:
@@ -11,12 +10,6 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
 
 ---
 spring:
@@ -26,9 +19,3 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
