@@ -1,6 +1,5 @@
 package com.inhabas.api.domain.club.usecase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -41,8 +40,6 @@ public class ClubActivityServiceImpl implements ClubActivityService {
   @Override
   @Transactional(readOnly = true)
   public List<ClubActivityDto> getClubActivities(String search) {
-    List<ClubActivityDto> clubActivityList = new ArrayList<>();
-
     return clubActivityRepository.findAllAndSearch(search);
   }
 
@@ -88,6 +85,7 @@ public class ClubActivityServiceImpl implements ClubActivityService {
         .id(clubActivity.getId())
         .title(clubActivity.getTitle())
         .content(clubActivity.getContent())
+        .writerId(clubActivity.getWriter().getId())
         .writerName(clubActivity.getWriter().getName())
         .dateCreated(clubActivity.getDateCreated())
         .dateUpdated(clubActivity.getDateUpdated())
