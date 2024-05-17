@@ -38,9 +38,9 @@ public class ContestBoardDetailDto {
 
   @NotNull private FileDownloadDto thumbnail;
 
-  private List<FileDownloadDto> images;
+  @NotNull private List<FileDownloadDto> images;
 
-  private List<FileDownloadDto> otherFiles;
+  @NotNull private List<FileDownloadDto> otherFiles;
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")

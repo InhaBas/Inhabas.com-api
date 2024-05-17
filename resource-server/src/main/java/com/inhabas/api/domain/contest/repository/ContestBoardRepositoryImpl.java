@@ -55,11 +55,13 @@ public class ContestBoardRepositoryImpl implements ContestBoardRepositoryCustom 
               return ContestBoardDto.builder()
                   .id(board.getId())
                   .contestFieldId(board.getContestField().getId())
+                  .writerId(board.getWriter().getId())
                   .title(board.getTitle())
                   .topic(board.getTopic())
                   .association(board.getAssociation())
                   .dateContestStart(board.getDateContestStart())
                   .dateContestEnd(board.getDateContestEnd())
+                  .dDay(board.getDDay())
                   .thumbnail(classifiedFiles.getThumbnail())
                   .build();
             })

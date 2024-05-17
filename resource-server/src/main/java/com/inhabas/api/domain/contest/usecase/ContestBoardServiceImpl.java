@@ -74,6 +74,7 @@ public class ContestBoardServiceImpl implements ContestBoardService {
         .contestFieldId(contestBoard.getContestField().getId())
         .title(contestBoard.getTitle())
         .content(contestBoard.getContent())
+        .writerId(contestBoard.getWriter().getId())
         .writerName(contestBoard.getWriter().getName())
         .association(contestBoard.getAssociation())
         .topic(contestBoard.getTopic())
