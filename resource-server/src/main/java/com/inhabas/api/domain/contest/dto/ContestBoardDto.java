@@ -2,6 +2,10 @@ package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +19,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 public class ContestBoardDto {
   // 공모전 게시판 id
-  private Long id;
-  private Long contestFieldId;
-  private String title;
-  private String topic;
-  private String association;
+
+  @NotNull @Positive private Long id;
+
+  @NotNull private Long contestFieldId;
+
+  @NotBlank private String title;
+
+  @NotNull private Long writerId;
+
+  @NotNull private String topic;
+
+  @NotNull private String association;
 
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   @Schema(type = "string", example = "2024-11-01T00:00:00")
@@ -37,6 +48,7 @@ public class ContestBoardDto {
   public ContestBoardDto(
       Long id,
       Long contestFieldId,
+      Long writerId,
       String title,
       String topic,
       String association,
@@ -46,6 +58,7 @@ public class ContestBoardDto {
       FileDownloadDto thumbnail) {
     this.id = id;
     this.contestFieldId = contestFieldId;
+    this.writerId = writerId;
     this.title = title;
     this.topic = topic;
     this.association = association;
