@@ -52,8 +52,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${IBAS_DEV_KAKAO_CLIENT_ID}
-            client-secret: ${IBAS_DEV_KAKAO_CLIENT_SECRET}
+            client-id: test_dump
+            client-secret: test_dump
             redirect-uri: http://localhost:8080/api/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -64,8 +64,8 @@ spring:
               - profile_image
               - account_email
           naver:
-            client-id: ${IBAS_DEV_NAVER_CLIENT_ID} # 테스트용
-            client-secret: ${IBAS_DEV_NAVER_CLIENT_SECRET}
+            client-id: test_dump
+            client-secret: test_dump
             redirect-uri: http://localhost:8080/api/login/oauth2/code/naver
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -75,8 +75,8 @@ spring:
               - email
           google:
             redirect-uri: http://localhost:8080/api/login/oauth2/code/google
-            client-id: ${IBAS_DEV_GOOGLE_CLIENT_ID}
-            client-secret: ${IBAS_DEV_GOOGLE_CLIENT_SECRET}
+            client-id: test_dump
+            client-secret: test_dump
             scope:
               - profile
               - email
@@ -109,13 +109,13 @@ cloud:
     region:
       static: ap-northeast-2
     credentials:
-      accessKey: ${IBAS_DEV_S3_ACCESS_KEY}
-      secretKey: ${IBAS_DEV_S3_SECRET_KEY}
+      accessKey: test_dump
+      secretKey: test_dump
 
     ses:
       from: manager@inhabas.com
-      accessKey: ${IBAS_DEV_SES_ACCESS_KEY}
-      secretKey: ${IBAS_DEV_SES_SECRET_KEY}
+      accessKey: test_dump
+      secretKey: test_dump
 
 logging:
   level:
@@ -125,4 +125,4 @@ logging:
     org.springframework.security.oauth2: DEBUG
 
 jwt:
-  secretKey: ${IBAS_DEV_JWT_SECRET_KEY}
+  secretKey: testDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDumpDatatestDump
