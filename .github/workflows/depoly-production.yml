@@ -1,0 +1,54 @@
+name: deploy-production
+
+on:
+  push:
+    branches:
+      - release-*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.IBAS_PROD_HOST }}
+          username: ${{ secrets.IBAS_PROD_USERNAME }}
+          passphrase: ${{ secrets.IBAS_PROD_PASSWORD }}
+          key: ${{ secrets.IBAS_PROD_SSH_KEY }}
+          # port: ${{ secrets.PORT }} # default : 22
+          script: |
+            set -e
+            REPO_PATH=${{ secrets.IBAS_PROD_PATH }}/Inhabas.com-api
+            
+            if [ -d "$REPO_PATH" ]; then
+              cd $REPO_PATH
+              git checkout dev
+              git pull
+            else
+              echo "Error: Directory $REPO_PATH does not exist."
+              exit 1
+            fi
+            
+            chmod u+x gradlew
+            ./gradlew build -x test
+            
+            CONTAINER_NAME=api-prod
+            IMAGE_NAME=api-prod
+            
+            if [ $(docker ps -q -f name=$CONTAINER_NAME) ]; then
+              docker stop $CONTAINER_NAME
+              docker rm $CONTAINER_NAME
+            fi
+            
+            if [ $(docker images -q $IMAGE_NAME) ]; then
+              docker rmi $IMAGE_NAME
+            fi
+            
+            docker build -t $IMAGE_NAME .
+            docker run -d --name $CONTAINER_NAME --network host -p 8080:8080 -e SPRING_CONFIG_IMPORT=configserver:http://localhost:8888 $IMAGE_NAME
+            
+            echo "Deployment done"
