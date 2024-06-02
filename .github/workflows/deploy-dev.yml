@@ -27,7 +27,7 @@ jobs:
           
           if [ -d "$REPO_PATH" ]; then
             cd $REPO_PATH
-            git checkout dev
+            git checkout master
             git pull
           else
             echo "Error: Directory $REPO_PATH does not exist."
