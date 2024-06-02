@@ -92,7 +92,7 @@ public class ScholarshipBoardServiceTest {
         .willReturn(Optional.of(scholarship));
 
     // when
-    ScholarshipBoardDetailDto dto = scholarshipBoardService.getPost(SPONSOR, 1L, 1L);
+    ScholarshipBoardDetailDto dto = scholarshipBoardService.getPost(SPONSOR, 1L);
 
     // then
     assertThat(dto.getTitle()).isEqualTo("title");

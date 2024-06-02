@@ -27,6 +27,8 @@ public class ContestBoardDtoTest {
     FileDownloadDto thumbnail =
         new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg");
 
+    long expectedDDay = LocalDate.now().until(dateContestEnd, java.time.temporal.ChronoUnit.DAYS);
+
     // when
     ContestBoardDto contestBoardDto =
         ContestBoardDto.builder()
@@ -37,6 +39,7 @@ public class ContestBoardDtoTest {
             .association(association)
             .dateContestStart(dateContestStart)
             .dateContestEnd(dateContestEnd)
+            .dDay(expectedDDay)
             .thumbnail(thumbnail)
             .build();
 
@@ -50,7 +53,7 @@ public class ContestBoardDtoTest {
     assertThat(contestBoardDto.getDateContestEnd()).isEqualTo(dateContestEnd);
     assertThat(contestBoardDto.getThumbnail()).isEqualTo(thumbnail);
 
-    long expectedDDay = LocalDate.now().until(dateContestEnd, java.time.temporal.ChronoUnit.DAYS);
+    // D-day 검증
     assertThat(contestBoardDto.getDDay()).as("D-day가 일치하지 않습니다.").isEqualTo(expectedDDay);
   }
 }

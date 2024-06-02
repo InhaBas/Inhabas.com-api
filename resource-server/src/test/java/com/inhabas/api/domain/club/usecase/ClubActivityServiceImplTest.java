@@ -6,12 +6,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -46,26 +47,27 @@ public class ClubActivityServiceImplTest {
   @Mock private MenuRepository menuRepository;
 
   @DisplayName("동아리 활동 조회 성공")
+  @Transactional(readOnly = true)
   @Test
   public void getClubActivitiesTest_Success() {
     // given
     Member member = MemberTest.chiefMember();
-    AlbumBoard clubActivity =
-        AlbumBoard.builder()
+    ClubActivityDto dto =
+        ClubActivityDto.builder()
             .title("title")
-            .content("content")
-            .menu(mock(Menu.class))
-            .build()
-            .writtenBy(member, AlbumBoard.class);
+            .writerName(member.getName())
+            .dateCreated(LocalDateTime.now())
+            .dateUpdated(LocalDateTime.now())
+            .build();
 
-    given(clubActivityRepository.findAll()).willReturn(Arrays.asList(clubActivity));
+    given(clubActivityRepository.findAllAndSearch(any())).willReturn(List.of(dto));
 
     // when
-    List<ClubActivityDto> clubActivityDtoList = clubActivityService.getClubActivities();
+    List<ClubActivityDto> clubActivityDtoList = clubActivityService.getClubActivities("");
 
     // then
     assertThat(clubActivityDtoList).hasSize(1);
-    assertThat(clubActivityDtoList.get(0).getTitle()).isEqualTo(clubActivity.getTitle());
+    assertThat(clubActivityDtoList.get(0).getTitle()).isEqualTo(dto.getTitle());
   }
 
   @DisplayName("동아리 활동 생성 성공")

@@ -24,6 +24,7 @@ public class NormalBoardDetailDto {
   @NotBlank private String title;
 
   @NotBlank private String content;
+
   @NotNull private Long writerId;
 
   @NotBlank private String writerName;
