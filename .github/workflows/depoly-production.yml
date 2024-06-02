@@ -58,11 +58,11 @@ jobs:
         uses: discord-actions/message@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Production deployment completed successfully!"
+          message: "Backend production deployment completed successfully!"
 
       - name: Notify Discord on Failure
         if: failure()
         uses: discord-actions/message@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Production deployment failed..."
+          message: "Backend production deployment failed..."
