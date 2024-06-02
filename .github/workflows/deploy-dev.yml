@@ -53,19 +53,17 @@ jobs:
           docker run -d --name $CONTAINER_NAME --network host -p 8082:8082 -e SPRING_CONFIG_IMPORT=configserver:http://localhost:8888 $IMAGE_NAME
           
           echo "Deployment done"
-      
 
     - name: Notify Discord on Success
       if: success()
-      run: |
-        curl -H "Content-Type: application/json" \
-        -d '{"content": "Production deployment completed successfully!"}' \
-        ${{ secrets.DISCORD_WEBHOOK_URL }}
-
+      uses: discord-actions/message@v2
+      with:
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        message: "Dev deployment completed successfully!"
 
     - name: Notify Discord on Failure
       if: failure()
-      run: |
-        curl -H "Content-Type: application/json" \
-        -d '{"content": "Production deployment failed!"}' \
-        ${{ secrets.DISCORD_WEBHOOK_URL }}
+      uses: discord-actions/message@v2
+      with:
+        webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        message: "Dev deployment failed..."
