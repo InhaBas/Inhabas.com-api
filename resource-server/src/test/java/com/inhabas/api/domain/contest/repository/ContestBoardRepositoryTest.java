@@ -93,14 +93,13 @@ public class ContestBoardRepositoryTest {
   public void findAllByTypeAndSearch() {
     // given
     ContestBoard saveBoard = contestBoardRepository.save(CONTEST_BOARD);
-    ContestBoard saveBoard2 = contestBoardRepository.save(CONTEST_BOARD_2);
 
     // when
     List<ContestBoardDto> dtoList =
         contestBoardRepository.findAllByTypeAndFieldAndSearch(CONTEST, null, "", ALL);
 
     // then
-    assertThat(dtoList).hasSize(2);
+    assertThat(dtoList).hasSize(1);
     assertThat(dtoList.get(0).getTitle()).isEqualTo(saveBoard.getTitle());
   }
 

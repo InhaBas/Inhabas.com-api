@@ -2,16 +2,14 @@
 name: deploy-dev
 
 on:
-  pull_request:
-    types: [ closed ]
+  push:
     branches: [ master ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged
-    
+
     steps:
     - uses: actions/checkout@v4
 
