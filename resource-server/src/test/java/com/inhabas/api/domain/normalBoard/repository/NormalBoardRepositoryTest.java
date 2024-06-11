@@ -74,23 +74,6 @@ public class NormalBoardRepositoryTest {
     assertThat(saveBoard.getWriter()).isEqualTo(writer);
   }
 
-  @DisplayName("memberId, type, search 로 게시글 목록 조회한다.")
-  @Test
-  public void findAllByMemberIdAndTypeAndSearch() {
-    // given
-    NormalBoard saveBoard = normalBoardRepository.save(NOTICE_BOARD);
-    NormalBoard saveBoard2 = normalBoardRepository.save(NOTICE_BOARD_2);
-    Long writerId = writer.getId();
-
-    // when
-    List<NormalBoardDto> dtoList =
-        normalBoardRepository.findAllByMemberIdAndTypeAndSearch(writerId, NOTICE, "");
-
-    // then
-    assertThat(dtoList).hasSize(2);
-    assertThat(dtoList.get(0).getTitle()).isEqualTo(saveBoard.getTitle());
-  }
-
   @DisplayName("type, search 로 게시글 목록 조회한다.")
   @Test
   public void findAllByTypeAndSearch() {
@@ -104,24 +87,6 @@ public class NormalBoardRepositoryTest {
     // then
     assertThat(dtoList).hasSize(2);
     assertThat(dtoList.get(0).getTitle()).isEqualTo(saveBoard.getTitle());
-  }
-
-  @DisplayName("memberId, type, id 로 게시글 상세 조회한다.")
-  @Test
-  public void findByMemberIdAndTypeAndId() {
-    // given
-    NormalBoard saveBoard = normalBoardRepository.save(NOTICE_BOARD);
-    Long writerId = writer.getId();
-
-    // when
-    NormalBoard normalBoard =
-        normalBoardRepository
-            .findByMemberIdAndTypeAndId(writerId, NOTICE, saveBoard.getId())
-            .orElse(null);
-
-    // then
-    assertThat(normalBoard).isNotNull();
-    assertThat(normalBoard.getTitle()).isEqualTo(saveBoard.getTitle());
   }
 
   @DisplayName("type, id 로 게시글 상세 조회한다.")

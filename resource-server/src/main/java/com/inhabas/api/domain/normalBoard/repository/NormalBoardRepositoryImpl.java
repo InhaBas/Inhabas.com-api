@@ -44,30 +44,6 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
   }
 
   @Override
-  public List<NormalBoardDto> findAllByMemberIdAndTypeAndSearch(
-      Long memberId, NormalBoardType boardType, String search) {
-    return queryFactory
-        .select(
-            Projections.constructor(
-                NormalBoardDto.class,
-                normalBoard.id,
-                normalBoard.title.value,
-                normalBoard.writer.id,
-                normalBoard.writer.name.value,
-                normalBoard.datePinExpiration,
-                normalBoard.dateCreated,
-                normalBoard.dateUpdated,
-                normalBoard.isPinned))
-        .from(normalBoard)
-        .where(
-            eqMemberId(memberId)
-                .and(eqNormalBoardType(boardType))
-                .and(likeTitle(search).or(likeContent(search))))
-        .orderBy(normalBoard.dateCreated.desc())
-        .fetch();
-  }
-
-  @Override
   public List<NormalBoardDto> findAllByTypeAndSearch(NormalBoardType boardType, String search) {
     return queryFactory
         .select(
@@ -88,20 +64,6 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
   }
 
   @Override
-  public Optional<NormalBoard> findByMemberIdAndTypeAndId(
-      Long memberId, NormalBoardType boardType, Long boardId) {
-    return Optional.ofNullable(
-        queryFactory
-            .selectFrom(normalBoard)
-            .where(
-                eqMemberId(memberId)
-                    .and(eqNormalBoardType(boardType))
-                    .and(normalBoard.id.eq(boardId)))
-            .orderBy(normalBoard.dateCreated.desc())
-            .fetchOne());
-  }
-
-  @Override
   public Optional<NormalBoard> findByTypeAndId(NormalBoardType boardType, Long boardId) {
     return Optional.ofNullable(
         queryFactory
@@ -109,10 +71,6 @@ public class NormalBoardRepositoryImpl implements NormalBoardRepositoryCustom {
             .where((eqNormalBoardType(boardType)).and(normalBoard.id.eq(boardId)))
             .orderBy(normalBoard.dateCreated.desc())
             .fetchOne());
-  }
-
-  private BooleanExpression eqMemberId(Long memberId) {
-    return normalBoard.writer.id.eq(memberId);
   }
 
   private BooleanExpression eqNormalBoardType(NormalBoardType normalBoardType) {
