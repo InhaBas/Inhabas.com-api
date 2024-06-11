@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
 import static com.inhabas.api.domain.board.domain.PinOption.*;
-import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.*;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.EXECUTIVE;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
 
@@ -11,11 +10,9 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.inhabas.api.auth.domain.error.authException.InvalidAuthorityException;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
@@ -62,35 +59,16 @@ public class NormalBoardServiceImpl implements NormalBoardService {
   @Override
   @Transactional(readOnly = true)
   public List<NormalBoardDto> getPosts(NormalBoardType boardType, String search) {
-    List<NormalBoardDto> normalBoardList = new ArrayList<>();
-    if (boardType.equals(SUGGEST)) {
-      if (SecurityContextHolder.getContext() == null) {
-        throw new InvalidAuthorityException();
-      }
-      Long memberId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      normalBoardList.addAll(
-          normalBoardRepository.findAllByMemberIdAndTypeAndSearch(memberId, boardType, search));
-    } else {
-      normalBoardList.addAll(normalBoardRepository.findAllByTypeAndSearch(boardType, search));
-    }
-    return normalBoardList;
+    return normalBoardRepository.findAllByTypeAndSearch(boardType, search);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId) {
-    NormalBoard normalBoard;
-    if (boardType.equals(SUGGEST)) {
-      normalBoard =
-          normalBoardRepository
-              .findByMemberIdAndTypeAndId(memberId, boardType, boardId)
-              .orElseThrow(NotFoundException::new);
-    } else {
-      normalBoard =
-          normalBoardRepository
-              .findByTypeAndId(boardType, boardId)
-              .orElseThrow(NotFoundException::new);
-    }
+  public NormalBoardDetailDto getPost(NormalBoardType boardType, Long boardId) {
+    NormalBoard normalBoard =
+        normalBoardRepository
+            .findByTypeAndId(boardType, boardId)
+            .orElseThrow(NotFoundException::new);
 
     ClassifiedFiles classifiedFiles = ClassifyFiles.classifyFiles(normalBoard.getFiles());
 

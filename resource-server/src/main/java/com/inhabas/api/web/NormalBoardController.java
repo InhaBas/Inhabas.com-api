@@ -146,11 +146,9 @@ public class NormalBoardController {
                             "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
   })
   public ResponseEntity<NormalBoardDetailDto> getBoard(
-      @PathVariable Long boardId,
-      @PathVariable NormalBoardType boardType,
-      @Authenticated Long memberId) {
+      @PathVariable Long boardId, @PathVariable NormalBoardType boardType) {
 
-    return ResponseEntity.ok(normalBoardService.getPost(memberId, boardType, boardId));
+    return ResponseEntity.ok(normalBoardService.getPost(boardType, boardId));
   }
 
   @Operation(summary = "게시글 추가")
