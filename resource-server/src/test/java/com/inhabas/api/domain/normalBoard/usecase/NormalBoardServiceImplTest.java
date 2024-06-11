@@ -88,7 +88,7 @@ public class NormalBoardServiceImplTest {
     given(normalBoardRepository.findByTypeAndId(any(), any())).willReturn(Optional.of(normalBoard));
 
     // when
-    NormalBoardDetailDto dto = normalBoardService.getPost(1L, NOTICE, 1L);
+    NormalBoardDetailDto dto = normalBoardService.getPost(NOTICE, 1L);
 
     // then
     assertThat(dto.getTitle()).isEqualTo(normalBoard.getTitle());

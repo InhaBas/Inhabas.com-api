@@ -132,7 +132,7 @@ public class NormalBoardControllerTest {
             .dateUpdated(LocalDateTime.now())
             .isPinned(false)
             .build();
-    given(normalBoardService.getPost(any(), any(), any())).willReturn(normalBoardDetailDto);
+    given(normalBoardService.getPost(any(), any())).willReturn(normalBoardDetailDto);
 
     // when
     String response =
@@ -165,7 +165,7 @@ public class NormalBoardControllerTest {
   @Test
   void getBoard_Not_Found() throws Exception {
     // given
-    doThrow(NotFoundException.class).when(normalBoardService).getPost(any(), any(), any());
+    doThrow(NotFoundException.class).when(normalBoardService).getPost(any(), any());
 
     // when
     String response =
