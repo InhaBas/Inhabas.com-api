@@ -4,6 +4,8 @@ import static com.inhabas.api.domain.budget.domain.QBudgetHistory.budgetHistory;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,13 +13,10 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+@RequiredArgsConstructor
 public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
-
-  public BudgetHistoryRepositoryImpl(JPAQueryFactory queryFactory) {
-    this.queryFactory = queryFactory;
-  }
 
   @Override
   public List<BudgetHistoryDto> search(Integer year) {
@@ -61,6 +60,7 @@ public class BudgetHistoryRepositoryImpl implements BudgetHistoryRepositoryCusto
                 budgetHistory.outcome.value,
                 budgetHistory.memberReceived.studentId.id,
                 budgetHistory.memberReceived.name.value,
+                budgetHistory.memberInCharge.id,
                 budgetHistory.memberInCharge.studentId.id,
                 budgetHistory.memberInCharge.name.value))
         .from(budgetHistory);

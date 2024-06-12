@@ -44,12 +44,12 @@ public class CommentRepositoryImpl implements CustomCommentRepository {
     Map<Long, CommentDetailDto> map = new HashMap<>();
 
     commentList.forEach(
-        c -> {
-          CommentDetailDto dto = CommentDetailDto.fromEntity(c);
+        comment -> {
+          CommentDetailDto dto = CommentDetailDto.fromEntity(comment);
 
           map.put(dto.getId(), dto);
-          if (isRootComment(c)) result.add(dto);
-          else map.get(c.getParentComment().getId()).getChildrenComment().add(dto);
+          if (isRootComment(comment)) result.add(dto);
+          else map.get(comment.getParentComment().getId()).getChildrenComment().add(dto);
         });
 
     return result;
