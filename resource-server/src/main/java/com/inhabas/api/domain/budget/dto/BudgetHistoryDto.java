@@ -42,11 +42,13 @@ public class BudgetHistoryDto {
 
   @NotNull @PositiveOrZero private Integer outcome;
 
-  @NotNull private String memberStudentIdReceived;
+  @NotBlank private String memberStudentIdReceived;
 
   @NotBlank private String memberNameReceived;
 
-  @NotNull private String memberStudentIdInCharge;
+  @NotNull private Long memberIdInCharge;
+
+  @NotBlank private String memberStudentIdInCharge;
 
   @NotBlank private String memberNameInCharge;
 
@@ -61,6 +63,7 @@ public class BudgetHistoryDto {
       Integer outcome,
       String memberStudentIdReceived,
       String memberNameReceived,
+      Long memberIdInCharge,
       String memberStudentIdInCharge,
       String memberNameInCharge) {
     this.id = id;
@@ -72,6 +75,7 @@ public class BudgetHistoryDto {
     this.outcome = outcome;
     this.memberStudentIdReceived = memberStudentIdReceived;
     this.memberNameReceived = memberNameReceived;
+    this.memberIdInCharge = memberIdInCharge;
     this.memberStudentIdInCharge = memberStudentIdInCharge;
     this.memberNameInCharge = memberNameInCharge;
   }
