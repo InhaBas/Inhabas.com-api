@@ -28,6 +28,8 @@ public class CommentDetailDto {
 
   @NotBlank private String content;
 
+  @NotNull private Boolean isDeleted;
+
   private List<CommentDetailDto> childrenComment = new ArrayList<>();
 
   private static final String DELETED_MESSAGE = "삭제된 댓글입니다.";
@@ -40,12 +42,21 @@ public class CommentDetailDto {
   public static CommentDetailDto fromEntity(Comment comment) {
     return comment.getIsDeleted()
         ? new CommentDetailDto(
-            comment.getId(), comment.getWriter(), DELETED_MESSAGE, comment.getDateUpdated())
+            comment.getId(),
+            comment.getWriter(),
+            DELETED_MESSAGE,
+            comment.getIsDeleted(),
+            comment.getDateUpdated())
         : new CommentDetailDto(
-            comment.getId(), comment.getWriter(), comment.getContent(), comment.getDateUpdated());
+            comment.getId(),
+            comment.getWriter(),
+            comment.getContent(),
+            comment.getIsDeleted(),
+            comment.getDateUpdated());
   }
 
-  public CommentDetailDto(Long id, Member writer, String content, LocalDateTime dateUpdated) {
+  public CommentDetailDto(
+      Long id, Member writer, String content, Boolean isDeleted, LocalDateTime dateUpdated) {
     this.id = id;
     if (writer != null) {
       this.writerInfo =
@@ -56,6 +67,7 @@ public class CommentDetailDto {
               writer.getPicture());
     }
     this.content = content;
+    this.isDeleted = isDeleted;
     this.dateUpdated = dateUpdated;
   }
 }
