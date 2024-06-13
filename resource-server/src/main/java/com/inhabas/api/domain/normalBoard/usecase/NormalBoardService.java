@@ -13,7 +13,7 @@ public interface NormalBoardService {
 
   List<NormalBoardDto> getPosts(NormalBoardType boardType, String search);
 
-  NormalBoardDetailDto getPost(Long memberId, NormalBoardType boardType, Long boardId);
+  NormalBoardDetailDto getPost(NormalBoardType boardType, Long boardId);
 
   Long write(Long memberId, NormalBoardType normalBoardType, SaveNormalBoardDto saveNormalBoardDto);
 

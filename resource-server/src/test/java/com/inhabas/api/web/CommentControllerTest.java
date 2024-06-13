@@ -67,9 +67,9 @@ public class CommentControllerTest {
     List<CommentDetailDto> commentList =
         List.of(
             new CommentDetailDto[] {
-              new CommentDetailDto(1L, writer, "contents1", LocalDateTime.now()),
-              new CommentDetailDto(2L, writer, "contents2", LocalDateTime.now()),
-              new CommentDetailDto(3L, writer, "contents3", LocalDateTime.now())
+              new CommentDetailDto(1L, writer, "contents1", false, LocalDateTime.now()),
+              new CommentDetailDto(2L, writer, "contents2", false, LocalDateTime.now()),
+              new CommentDetailDto(3L, writer, "contents3", false, LocalDateTime.now())
             });
     given(commentService.getComments(anyInt(), anyLong())).willReturn(commentList);
 
