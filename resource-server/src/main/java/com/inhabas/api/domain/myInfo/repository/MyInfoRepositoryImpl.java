@@ -66,6 +66,7 @@ public class MyInfoRepositoryImpl implements MyInfoRepositoryCustom {
                     comment.getParentBoard().getMenu().getType(),
                     comment.getParentBoard().getMenu().getName(),
                     comment.getContent(),
+                    comment.getIsDeleted(),
                     comment.getDateCreated()))
         .collect(Collectors.toList());
   }
