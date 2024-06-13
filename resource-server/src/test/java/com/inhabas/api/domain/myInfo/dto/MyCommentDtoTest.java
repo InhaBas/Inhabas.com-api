@@ -43,6 +43,7 @@ public class MyCommentDtoTest {
             .menuType(ALPHA)
             .menuName("알파 테스터")
             .content("댓글 내용")
+            .isDeleted(Boolean.FALSE)
             .dateCreated(LocalDateTime.now())
             .build();
 
@@ -64,6 +65,7 @@ public class MyCommentDtoTest {
             .menuType(ALPHA)
             .menuName("알파 테스터")
             .content("")
+            .isDeleted(Boolean.FALSE)
             .dateCreated(LocalDateTime.now())
             .build();
 

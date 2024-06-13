@@ -38,11 +38,7 @@ public class MyInfoServiceImpl implements MyInfoService {
   @Transactional(readOnly = true)
   public List<MyCommentDto> getMyComments(Long memberId) {
 
-    List<MyCommentDto> myCommentDtoList = new ArrayList<>();
-
-    myCommentDtoList.addAll(myInfoRepository.findAllCommentsByMemberId(memberId));
-
-    return myCommentDtoList;
+    return myInfoRepository.findAllCommentsByMemberId(memberId);
   }
 
   // 현재 로그인한 유저의 모든 예산 신청 내역을 불러온다.
