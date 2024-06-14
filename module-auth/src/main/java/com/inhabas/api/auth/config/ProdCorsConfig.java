@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@Profile("production")
+@Profile({"prod1", "prod2"})
 public class ProdCorsConfig implements WebMvcConfigurer {
 
   @Override

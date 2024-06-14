@@ -56,7 +56,7 @@ public class SwaggerConfig {
   }
 
   @Bean
-  @Profile("dev")
+  @Profile({"dev1", "dev2"})
   public OpenAPI devOpenAPI() {
     // HTTPS 서버 URL 설정
     Server server = new Server().url(DOMAIN);
