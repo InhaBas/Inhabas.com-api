@@ -39,6 +39,7 @@ jobs:
         # port: ${{ secrets.PORT }} # default : 22
         source: "resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar"
         target: ${{ secrets.IBAS_DEV_DEPLOY_PATH }}
+        strip_components: 3
 
     - name: execute deploy shell script via ssh
       uses: appleboy/ssh-action@master
