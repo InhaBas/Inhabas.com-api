@@ -62,6 +62,7 @@ public class ScholarshipBoardServiceImpl implements ScholarshipBoardService {
         .title(scholarship.getTitle())
         .content(scholarship.getContent())
         .writer(scholarship.getWriter())
+        .dateHistory(scholarship.getDateHistory())
         .dateCreated(scholarship.getDateCreated())
         .dateUpdated(scholarship.getDateUpdated())
         .images(classifiedFiles.getImages())

@@ -15,6 +15,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,6 +26,7 @@ import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 
+@Getter
 @Entity
 @Table(name = "SCHOLARSHIP_BOARD")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,7 +41,6 @@ public class Scholarship extends BaseBoard {
   private LocalDateTime dateHistory;
 
   /* constructor */
-
   public Scholarship(String title, Menu menu, String content, LocalDateTime dateHistory) {
     super(title, menu);
     this.content = new Content(content);
@@ -47,7 +48,6 @@ public class Scholarship extends BaseBoard {
   }
 
   /* getter */
-
   public String getContent() {
     return content.getValue();
   }
