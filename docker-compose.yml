@@ -2,7 +2,7 @@ version: '3'
 services:
   prod1:
     image: whtmdgus56/ibas-config:prod
-    container_name: backend/prod1
+    container_name: backend-prod1
     ports:
       - "8080:8080"
     environment:
@@ -11,7 +11,7 @@ services:
 
   prod2:
     image: whtmdgus56/ibas-config:prod
-    container_name: backend/prod2
+    container_name: backend-prod2
     ports:
       - "8081:8081"
     environment:
@@ -20,7 +20,7 @@ services:
 
   dev1:
     image: whtmdgus56/ibas-config:dev
-    container_name: backend/dev1
+    container_name: backend-dev1
     ports:
       - "8082:8082"
     environment:
@@ -29,7 +29,7 @@ services:
 
   dev2:
     image: whtmdgus56/ibas-config:dev
-    container_name: backend/dev2
+    container_name: backend-dev2
     ports:
       - "8083:8083"
     environment:

@@ -10,59 +10,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout sources
+        uses: actions/checkout@v4
 
-      - name: executing remote ssh commands using password
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: copy file via ssh
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.IBAS_PROD_HOST }}
+          username: ${{ secrets.IBAS_PROD_USERNAME }}
+          key: ${{ secrets.IBAS_PROD_SSH_KEY }}
+          passphrase: ${{ secrets.IBAS_PROD_PASSWORD }}
+          # port: ${{ secrets.PORT }} # default : 22
+          source: "docker-compose.yml"
+          target: ${{ secrets.IBAS_PROD_DEPLOY_PATH }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_STORAGE }}:prod
+
+      - name: execute deploy shell script via ssh
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.IBAS_PROD_HOST }}
           username: ${{ secrets.IBAS_PROD_USERNAME }}
-          passphrase: ${{ secrets.IBAS_PROD_PASSWORD }}
           key: ${{ secrets.IBAS_PROD_SSH_KEY }}
+          passphrase: ${{ secrets.IBAS_PROD_PASSWORD }}
           # port: ${{ secrets.PORT }} # default : 22
           script: |
-            set -e
-            REPO_PATH=${{ secrets.IBAS_PROD_PATH }}/Inhabas.com-api
-            
-            if [ -d "$REPO_PATH" ]; then
-              cd $REPO_PATH
-              git checkout dev
-              git pull
-            else
-              echo "Error: Directory $REPO_PATH does not exist."
-              exit 1
-            fi
-            
-            chmod u+x gradlew
-            ./gradlew build -x test
-            
-            CONTAINER_NAME=api-prod
-            IMAGE_NAME=api-prod
-            
-            if [ $(docker ps -q -f name=$CONTAINER_NAME) ]; then
-              docker stop $CONTAINER_NAME
-              docker rm $CONTAINER_NAME
-            fi
-            
-            if [ $(docker images -q $IMAGE_NAME) ]; then
-              docker rmi $IMAGE_NAME
-            fi
-            
-            docker build -t $IMAGE_NAME .
-            docker run -d --name $CONTAINER_NAME --network host -p 8080:8080 -e SPRING_CONFIG_IMPORT=configserver:http://localhost:8888 $IMAGE_NAME
-            
-            echo "Deployment done"
-
-      - name: Notify Discord on Success
-        if: success()
-        uses: discord-actions/message@v2
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Backend production deployment completed successfully!"
-
-      - name: Notify Discord on Failure
-        if: failure()
-        uses: discord-actions/message@v2
-        with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Backend production deployment failed..."
+            bash ${{ secrets.IBAS_PROD_DEPLOY_PATH }}/deploy.sh
