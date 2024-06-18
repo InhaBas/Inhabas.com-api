@@ -1,0 +1,37 @@
+version: '3'
+services:
+  prod1:
+    image: whtmdgus56/ibas-config:prod
+    container_name: backend/prod1
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod1
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=prod1"]
+
+  prod2:
+    image: whtmdgus56/ibas-config:prod
+    container_name: backend/prod2
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod2
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=prod2"]
+
+  dev1:
+    image: whtmdgus56/ibas-config:dev
+    container_name: backend/dev1
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev1
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev1"]
+
+  dev2:
+    image: whtmdgus56/ibas-config:dev
+    container_name: backend/dev2
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev2
+    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev2"]
