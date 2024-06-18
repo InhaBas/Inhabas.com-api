@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,9 +37,26 @@ jobs:
         key: ${{ secrets.IBAS_DEV_SSH_KEY }}
         passphrase: ${{ secrets.IBAS_DEV_PASSWORD }}
         # port: ${{ secrets.PORT }} # default : 22
-        source: "resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar"
+        source: "docker-compose.yml"
         target: ${{ secrets.IBAS_DEV_DEPLOY_PATH }}
-        strip_components: 3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        push: true
+        tags: ${{ secrets.DOCKERHUB_STORAGE }}:dev
 
     - name: execute deploy shell script via ssh
       uses: appleboy/ssh-action@master
