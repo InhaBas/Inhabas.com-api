@@ -1,10 +1,21 @@
 version: '3'
 services:
+  config:
+    image: whtmdgus56/ibas-config:config
+    container_name: backend-cloud-config
+    networks:
+      ibas-network:
+        - ipv4_address: 172.18.0.4
+    ports:
+      - "8888:8888"
+    entrypoint: [ "java", "-jar", "app.jar" ]
+
   prod1:
     image: whtmdgus56/ibas-config:prod
     container_name: backend-prod1
     networks:
-      - ibas-network
+      ibas-network:
+        - ipv4_address: 172.18.0.2
     ports:
       - "8080:8080"
     environment:
@@ -15,7 +26,8 @@ services:
     image: whtmdgus56/ibas-config:prod
     container_name: backend-prod2
     networks:
-      - ibas-network
+      ibas-network:
+        - ipv4_address: 172.18.0.2
     ports:
       - "8081:8081"
     environment:
@@ -26,7 +38,8 @@ services:
     image: whtmdgus56/ibas-config:dev
     container_name: backend-dev1
     networks:
-      - ibas-network
+      ibas-network:
+        - ipv4_address: 172.18.0.3
     ports:
       - "8082:8082"
     environment:
@@ -37,9 +50,18 @@ services:
     image: whtmdgus56/ibas-config:dev
     container_name: backend-dev2
     networks:
-      - ibas-network
+      ibas-network:
+        - ipv4_address: 172.18.0.3
     ports:
       - "8083:8083"
     environment:
       - SPRING_PROFILES_ACTIVE=dev2
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev2"]
+
+
+networks:
+  ibas-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
