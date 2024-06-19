@@ -3,6 +3,8 @@ services:
   prod1:
     image: whtmdgus56/ibas-config:prod
     container_name: backend-prod1
+    networks:
+      - ibas-network
     ports:
       - "8080:8080"
     environment:
@@ -12,6 +14,8 @@ services:
   prod2:
     image: whtmdgus56/ibas-config:prod
     container_name: backend-prod2
+    networks:
+      - ibas-network
     ports:
       - "8081:8081"
     environment:
@@ -21,6 +25,8 @@ services:
   dev1:
     image: whtmdgus56/ibas-config:dev
     container_name: backend-dev1
+    networks:
+      - ibas-network
     ports:
       - "8082:8082"
     environment:
@@ -30,6 +36,8 @@ services:
   dev2:
     image: whtmdgus56/ibas-config:dev
     container_name: backend-dev2
+    networks:
+      - ibas-network
     ports:
       - "8083:8083"
     environment:
