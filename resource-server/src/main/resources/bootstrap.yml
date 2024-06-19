@@ -9,7 +9,7 @@ spring:
       on-profile: dev1, dev2, prod1, prod2
   cloud:
     config:
-      uri: http://172.18.0.4:8888
+      uri: http://172.18.0.6:8888
 
 ---
 spring:
