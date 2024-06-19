@@ -6,7 +6,7 @@ spring:
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: dev1, dev2, prod1, prod2
   cloud:
     config:
       uri: http://localhost:8888
