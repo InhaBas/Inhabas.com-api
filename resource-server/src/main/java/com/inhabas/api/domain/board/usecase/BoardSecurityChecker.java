@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
@@ -102,13 +102,11 @@ public class BoardSecurityChecker {
         break;
     }
 
-    Set<String> prefixedRoles = requiredRoles.stream()
-        .map(role -> ROLE_PREFIX + role)
-        .collect(Collectors.toSet());
+    Set<String> prefixedRoles =
+        requiredRoles.stream().map(role -> ROLE_PREFIX + role).collect(Collectors.toSet());
 
-    boolean hasAuthority = authorities.stream()
-        .map(GrantedAuthority::getAuthority)
-        .anyMatch(prefixedRoles::contains);
+    boolean hasAuthority =
+        authorities.stream().map(GrantedAuthority::getAuthority).anyMatch(prefixedRoles::contains);
 
     if (!hasAuthority) {
       throw new InvalidAuthorityException();
