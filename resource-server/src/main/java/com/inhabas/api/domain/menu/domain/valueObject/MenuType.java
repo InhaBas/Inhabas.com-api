@@ -1,6 +1,9 @@
 package com.inhabas.api.domain.menu.domain.valueObject;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
+import static java.util.Arrays.*;
+
+import java.util.List;
 
 import lombok.Getter;
 
@@ -11,67 +14,160 @@ public enum MenuType {
   // 관리자에 의해 추가, 삭제 불가능한 메뉴,(메뉴 순서와 이름만 변경가능하다.)
 
   // 동아리 소개
-  INTRODUCE(ANONYMOUS, EXECUTIVES, ANONYMOUS, ADMIN, ADMIN),
+  INTRODUCE(
+      List.of(ANONYMOUS), List.of(EXECUTIVES), List.of(ANONYMOUS), List.of(ADMIN), List.of(ADMIN)),
   // 동아리 활동
-  ALBUM(ANONYMOUS, EXECUTIVES, ANONYMOUS, DEACTIVATED, ANONYMOUS),
+  ALBUM(
+      List.of(ANONYMOUS),
+      List.of(EXECUTIVES),
+      List.of(ANONYMOUS),
+      List.of(DEACTIVATED),
+      List.of(ANONYMOUS)),
   // 명예의 전당
-  HALL_OF_FAME(ANONYMOUS, ADMIN, ANONYMOUS, ADMIN, ADMIN),
+  HALL_OF_FAME(
+      List.of(ANONYMOUS), List.of(ADMIN), List.of(ANONYMOUS), List.of(ADMIN), List.of(ADMIN)),
   // 공지사항
-  NOTICE(DEACTIVATED, EXECUTIVES, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  NOTICE(
+      List.of(DEACTIVATED),
+      List.of(EXECUTIVES),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 자유게시판
-  FREE(DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  FREE(
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 질문게시판
-  QUESTION(DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  QUESTION(
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 건의 사항
-  SUGGEST(DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  SUGGEST(
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 공개 자료실
-  STORAGE(ANONYMOUS, BASIC, ANONYMOUS, DEACTIVATED, ANONYMOUS),
+  STORAGE(
+      List.of(ANONYMOUS),
+      List.of(BASIC),
+      List.of(ANONYMOUS),
+      List.of(DEACTIVATED),
+      List.of(ANONYMOUS)),
   // 회장단 게시판
-  EXECUTIVE(SECRETARY, SECRETARY, SECRETARY, SECRETARY, SECRETARY),
+  EXECUTIVE(
+      asList(SECRETARY, EXECUTIVES),
+      asList(SECRETARY, EXECUTIVES),
+      asList(SECRETARY, EXECUTIVES),
+      asList(SECRETARY, EXECUTIVES),
+      asList(SECRETARY, EXECUTIVES)),
   // 강의
-  LECTURE(BASIC, BASIC, BASIC, BASIC, BASIC),
+  LECTURE(List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC)),
   // 스터디
-  STUDY(BASIC, BASIC, BASIC, BASIC, BASIC),
+  STUDY(List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC)),
   // 취미활동
-  HOBBY(BASIC, BASIC, BASIC, BASIC, BASIC),
+  HOBBY(List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC)),
   // 대기중인 강의 관리
-  LECTURE_PENDING(EXECUTIVES, ADMIN, EXECUTIVES, ADMIN, ADMIN),
+  LECTURE_PENDING(
+      List.of(EXECUTIVES), List.of(ADMIN), List.of(EXECUTIVES), List.of(ADMIN), List.of(ADMIN)),
   // 지원금 신청
-  BUDGET_SUPPORT(DEACTIVATED, DEACTIVATED, DEACTIVATED, ADMIN, ADMIN),
+  BUDGET_SUPPORT(
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(ADMIN),
+      List.of(ADMIN)),
   // 회계 내역
-  BUDGET_ACCOUNT(DEACTIVATED, SECRETARY, DEACTIVATED, ADMIN, ADMIN),
+  BUDGET_ACCOUNT(
+      List.of(DEACTIVATED),
+      List.of(SECRETARY),
+      List.of(DEACTIVATED),
+      List.of(ADMIN),
+      List.of(ADMIN)),
   // 알파테스터
-  ALPHA(DEACTIVATED, BASIC, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  ALPHA(
+      List.of(DEACTIVATED),
+      List.of(BASIC),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 베타테스터
-  BETA(DEACTIVATED, BASIC, DEACTIVATED, DEACTIVATED, DEACTIVATED),
+  BETA(
+      List.of(DEACTIVATED),
+      List.of(BASIC),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED),
+      List.of(DEACTIVATED)),
   // 공모전
-  CONTEST(ANONYMOUS, BASIC, ANONYMOUS, DEACTIVATED, ANONYMOUS),
+  CONTEST(
+      List.of(ANONYMOUS),
+      List.of(BASIC),
+      List.of(ANONYMOUS),
+      List.of(DEACTIVATED),
+      List.of(ANONYMOUS)),
   // 대외활동
-  ACTIVITY(ANONYMOUS, BASIC, ANONYMOUS, DEACTIVATED, ANONYMOUS),
+  ACTIVITY(
+      List.of(ANONYMOUS),
+      List.of(BASIC),
+      List.of(ANONYMOUS),
+      List.of(DEACTIVATED),
+      List.of(ANONYMOUS)),
   // 장학회
-  SCHOLARSHIP(ANONYMOUS, SECRETARY, ANONYMOUS, ADMIN, ADMIN),
+  SCHOLARSHIP(
+      List.of(ANONYMOUS),
+      asList(SECRETARY, EXECUTIVES),
+      List.of(ANONYMOUS),
+      List.of(ADMIN),
+      List.of(ADMIN)),
   // 후원 내용
-  SPONSOR(ANONYMOUS, SECRETARY, ANONYMOUS, BASIC, ANONYMOUS),
+  SPONSOR(
+      List.of(ANONYMOUS),
+      asList(SECRETARY, EXECUTIVES),
+      List.of(ANONYMOUS),
+      List.of(BASIC),
+      List.of(ANONYMOUS)),
   // 사용 내역
-  USAGE(ANONYMOUS, SECRETARY, ANONYMOUS, BASIC, ANONYMOUS),
+  USAGE(
+      List.of(ANONYMOUS),
+      asList(SECRETARY, EXECUTIVES),
+      List.of(ANONYMOUS),
+      List.of(BASIC),
+      List.of(ANONYMOUS)),
 
   // 관리자가 추가, 삭제 가능한 메뉴.(NormalBoard 연관)
-  LIST(ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS), // 리스트형 게시판 메뉴
-  CARD(ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS, ANONYMOUS), // 카드형 게시판 메뉴
+  LIST(
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS)), // 리스트형 게시판 메뉴
+  CARD(
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS),
+      List.of(ANONYMOUS)), // 카드형 게시판 메뉴
   ;
 
-  private final Role readBoardListRole;
-  private final Role createBoardRole;
-  private final Role readBoardRole;
-  private final Role createCommentRole;
-  private final Role readCommentRole;
+  private final List<Role> readBoardListRole;
+  private final List<Role> createBoardRole;
+  private final List<Role> readBoardRole;
+  private final List<Role> createCommentRole;
+  private final List<Role> readCommentRole;
 
   MenuType(
-      Role readBoardListRole,
-      Role createBoardRole,
-      Role readBoardRole,
-      Role createCommentRole,
-      Role readCommentRole) {
+      List<Role> readBoardListRole,
+      List<Role> createBoardRole,
+      List<Role> readBoardRole,
+      List<Role> createCommentRole,
+      List<Role> readCommentRole) {
     this.readBoardListRole = readBoardListRole;
     this.createBoardRole = createBoardRole;
     this.readBoardRole = readBoardRole;
