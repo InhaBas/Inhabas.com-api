@@ -2,8 +2,12 @@ package com.inhabas.api.domain.board.usecase;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.ANONYMOUS;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -79,29 +83,32 @@ public class BoardSecurityChecker {
     }
 
     Menu menu = menuRepository.findById(menuId).orElseThrow(NotFoundException::new);
-    Role required = null;
+    List<Role> requiredRoles = new ArrayList<>();
     switch (action) {
       case READ_BOARD_LIST:
-        required = menu.getType().getReadBoardListRole();
+        requiredRoles = menu.getType().getReadBoardListRole();
         break;
       case CREATE_BOARD:
-        required = menu.getType().getCreateBoardRole();
+        requiredRoles = menu.getType().getCreateBoardRole();
         break;
       case READ_BOARD:
-        required = menu.getType().getReadBoardRole();
+        requiredRoles = menu.getType().getReadBoardRole();
         break;
       case CREATE_COMMENT:
-        required = menu.getType().getCreateCommentRole();
+        requiredRoles = menu.getType().getCreateCommentRole();
         break;
       case READ_COMMENT:
-        required = menu.getType().getReadCommentRole();
+        requiredRoles = menu.getType().getReadCommentRole();
         break;
     }
 
-    String finalRequired = ROLE_PREFIX + required;
-    if (required == null
-        || authorities.stream()
-            .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(finalRequired))) {
+    Set<String> prefixedRoles =
+        requiredRoles.stream().map(role -> ROLE_PREFIX + role).collect(Collectors.toSet());
+
+    boolean hasAuthority =
+        authorities.stream().map(GrantedAuthority::getAuthority).anyMatch(prefixedRoles::contains);
+
+    if (!hasAuthority) {
       throw new InvalidAuthorityException();
     }
 
