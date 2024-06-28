@@ -105,6 +105,7 @@ public class BudgetHistoryServiceTest {
             .dateUsed(LocalDateTime.now())
             .title("title")
             .details("details")
+            .memberIdReceived(1L)
             .memberStudentIdReceived("12171707")
             .memberNameReceived("조승현")
             .income(0)
@@ -125,7 +126,7 @@ public class BudgetHistoryServiceTest {
             .build();
 
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
-    given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
+    given(memberRepository.findByIdAndStudentId_IdAndName_Value(any(), any(), any()))
         .willReturn(Optional.of(memberReceived));
     given(menuRepository.findById(anyInt())).willReturn(Optional.of(menu));
     given(boardFileRepository.getAllByIdInAndUploader(anyList(), any())).willReturn(List.of(file));
@@ -153,6 +154,7 @@ public class BudgetHistoryServiceTest {
             LocalDateTime.now().minusDays(1L),
             "title",
             "details",
+            1L,
             "12171234",
             "유동현",
             0,
@@ -173,7 +175,7 @@ public class BudgetHistoryServiceTest {
             .writtenBy(secretary, BudgetHistory.class);
     ReflectionTestUtils.setField(budgetHistory, "id", 1L);
     given(memberRepository.findById(any())).willReturn(Optional.of(secretary));
-    given(memberRepository.findByStudentId_IdAndName_Value(any(), any()))
+    given(memberRepository.findByIdAndStudentId_IdAndName_Value(any(), any(), any()))
         .willReturn(Optional.of(memberReceived));
     given(budgetHistoryRepository.findById(any())).willReturn(Optional.of(budgetHistory));
     given(boardFileRepository.getAllByIdInAndUploader(anyList(), any())).willReturn(List.of(file));

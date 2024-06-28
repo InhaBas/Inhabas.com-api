@@ -35,6 +35,8 @@ public class BudgetHistoryCreateForm {
 
   @NotBlank private String details;
 
+  private Long memberIdReceived;
+
   private String memberStudentIdReceived;
 
   private String memberNameReceived;
@@ -54,6 +56,7 @@ public class BudgetHistoryCreateForm {
       LocalDateTime dateUsed,
       String title,
       String details,
+      Long memberIdReceived,
       String memberStudentIdReceived,
       String memberNameReceived,
       Integer income,
@@ -62,6 +65,7 @@ public class BudgetHistoryCreateForm {
     this.dateUsed = dateUsed;
     this.title = title;
     this.details = details;
+    this.memberIdReceived = memberIdReceived;
     this.memberStudentIdReceived = memberStudentIdReceived;
     this.memberNameReceived = memberNameReceived;
     this.income = income;
@@ -75,6 +79,7 @@ public class BudgetHistoryCreateForm {
   public boolean isIncome() {
     return this.income > ZERO
         && this.outcome == 0
+        && this.memberIdReceived == null
         && this.memberNameReceived == null
         && this.memberStudentIdReceived == null;
   }
@@ -82,6 +87,7 @@ public class BudgetHistoryCreateForm {
   public boolean isOutcome() {
     return this.outcome > ZERO
         && this.income == 0
+        && this.memberIdReceived != null
         && this.memberNameReceived != null
         && this.memberStudentIdReceived != null;
   }
