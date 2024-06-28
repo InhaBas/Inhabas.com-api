@@ -112,6 +112,7 @@ public class MemberManageServiceImpl implements MemberManageService {
         .map(
             member ->
                 ApprovedMemberSummaryDto.builder()
+                    .id(member.getId())
                     .name(member.getName())
                     .studentId(member.getStudentId())
                     .memberType(member.getSchoolInformation().getMemberType())

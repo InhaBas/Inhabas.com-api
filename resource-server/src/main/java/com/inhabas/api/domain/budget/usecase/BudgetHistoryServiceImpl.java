@@ -47,8 +47,10 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     } else if (form.isOutcome()) {
       memberReceived =
           memberRepository
-              .findByStudentId_IdAndName_Value(
-                  form.getMemberStudentIdReceived(), form.getMemberNameReceived())
+              .findByIdAndStudentId_IdAndName_Value(
+                  form.getMemberIdReceived(),
+                  form.getMemberStudentIdReceived(),
+                  form.getMemberNameReceived())
               .orElseThrow(MemberNotFoundException::new);
     } else {
       throw new InvalidInputException();
@@ -79,8 +81,10 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
     } else if (form.isOutcome()) {
       memberReceived =
           memberRepository
-              .findByStudentId_IdAndName_Value(
-                  form.getMemberStudentIdReceived(), form.getMemberNameReceived())
+              .findByIdAndStudentId_IdAndName_Value(
+                  form.getMemberIdReceived(),
+                  form.getMemberStudentIdReceived(),
+                  form.getMemberNameReceived())
               .orElseThrow(MemberNotFoundException::new);
     } else {
       throw new InvalidInputException();

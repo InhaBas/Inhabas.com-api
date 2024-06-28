@@ -18,7 +18,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
   List<Member> findAllByIbasInformation_IsHOF(boolean IsHOF);
 
-  Optional<Member> findByStudentId_IdAndName_Value(String studentId, String name);
+  Optional<Member> findByIdAndStudentId_IdAndName_Value(Long id, String studentId, String name);
 
   // OAuth
   boolean existsByProviderAndUid(OAuth2Provider provider, UID uid);
