@@ -13,6 +13,9 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @NoArgsConstructor
 public class ApprovedMemberSummaryDto {
+
+  @NotNull private Long id;
+
   @NotBlank
   @Length(max = 50)
   private String name;
@@ -29,7 +32,13 @@ public class ApprovedMemberSummaryDto {
 
   @Builder
   public ApprovedMemberSummaryDto(
-      String name, String studentId, MemberType memberType, Integer generation, String major) {
+      Long id,
+      String name,
+      String studentId,
+      MemberType memberType,
+      Integer generation,
+      String major) {
+    this.id = id;
     this.name = name;
     this.studentId = studentId;
     this.memberType = memberType;

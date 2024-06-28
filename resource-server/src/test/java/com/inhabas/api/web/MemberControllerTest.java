@@ -170,7 +170,7 @@ public class MemberControllerTest {
     // given
     List<ApprovedMemberSummaryDto> dtoList = new ArrayList<>();
     ApprovedMemberSummaryDto dto1 =
-        new ApprovedMemberSummaryDto("홍길동", "12171707", UNDERGRADUATE, 1, "컴퓨터공학과");
+        new ApprovedMemberSummaryDto(1L, "홍길동", "12171707", UNDERGRADUATE, 1, "컴퓨터공학과");
     dtoList.add(dto1);
 
     given(memberManageService.getAllApprovedMembersBySearchAndRole(any())).willReturn(dtoList);
