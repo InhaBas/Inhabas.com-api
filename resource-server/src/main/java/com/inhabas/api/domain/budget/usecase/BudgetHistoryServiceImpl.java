@@ -152,6 +152,7 @@ public class BudgetHistoryServiceImpl implements BudgetHistoryService {
         .account(history.getAccount())
         .income(history.getIncome())
         .outcome(history.getOutcome())
+        .memberIdReceived(history.getMemberReceived().getId())
         .memberStudentIdInCharge(history.getMemberInCharge().getStudentId())
         .memberNameInCharge(history.getMemberInCharge().getName())
         .memberStudentIdReceived(history.getMemberReceived().getStudentId())
