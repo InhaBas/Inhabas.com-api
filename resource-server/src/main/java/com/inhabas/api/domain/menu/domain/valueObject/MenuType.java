@@ -1,7 +1,6 @@
 package com.inhabas.api.domain.menu.domain.valueObject;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
-import static java.util.Arrays.*;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ public enum MenuType {
   // 동아리 활동
   ALBUM(
       List.of(ANONYMOUS),
-      List.of(EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
       List.of(ANONYMOUS),
       List.of(DEACTIVATED),
       List.of(ANONYMOUS)),
@@ -29,7 +28,7 @@ public enum MenuType {
   // 공지사항
   NOTICE(
       List.of(DEACTIVATED),
-      List.of(EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
       List.of(DEACTIVATED),
       List.of(DEACTIVATED),
       List.of(DEACTIVATED)),
@@ -63,11 +62,11 @@ public enum MenuType {
       List.of(ANONYMOUS)),
   // 회장단 게시판
   EXECUTIVE(
-      asList(SECRETARY, EXECUTIVES),
-      asList(SECRETARY, EXECUTIVES),
-      asList(SECRETARY, EXECUTIVES),
-      asList(SECRETARY, EXECUTIVES),
-      asList(SECRETARY, EXECUTIVES)),
+      List.of(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES)),
   // 강의
   LECTURE(List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC), List.of(BASIC)),
   // 스터디
@@ -122,21 +121,21 @@ public enum MenuType {
   // 장학회
   SCHOLARSHIP(
       List.of(ANONYMOUS),
-      asList(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
       List.of(ANONYMOUS),
       List.of(ADMIN),
       List.of(ADMIN)),
   // 후원 내용
   SPONSOR(
       List.of(ANONYMOUS),
-      asList(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
       List.of(ANONYMOUS),
       List.of(BASIC),
       List.of(ANONYMOUS)),
   // 사용 내역
   USAGE(
       List.of(ANONYMOUS),
-      asList(SECRETARY, EXECUTIVES),
+      List.of(SECRETARY, EXECUTIVES),
       List.of(ANONYMOUS),
       List.of(BASIC),
       List.of(ANONYMOUS)),
