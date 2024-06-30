@@ -48,6 +48,8 @@ public class BudgetHistoryDetailDto {
 
   @NotBlank private String account;
 
+  @NotNull private Long memberIdReceived;
+
   @NotNull private String memberStudentIdReceived;
 
   @NotBlank private String memberNameReceived;
@@ -69,6 +71,7 @@ public class BudgetHistoryDetailDto {
       Integer income,
       Integer outcome,
       String account,
+      Long memberIdReceived,
       String memberStudentIdReceived,
       String memberNameReceived,
       String memberStudentIdInCharge,
@@ -83,6 +86,7 @@ public class BudgetHistoryDetailDto {
     this.income = income;
     this.outcome = outcome;
     this.account = account;
+    this.memberIdReceived = memberIdReceived;
     this.memberStudentIdReceived = memberStudentIdReceived;
     this.memberNameReceived = memberNameReceived;
     this.memberStudentIdInCharge = memberStudentIdInCharge;
