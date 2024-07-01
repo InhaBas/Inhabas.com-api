@@ -42,10 +42,10 @@ public class JwtTokenUtil implements TokenUtil {
 
   private final Long ACCESS_TOKEN_VALID_MILLISECOND = 30 * 60 * 1000L; // 0.5 hour
   private static final Long REFRESH_TOKEN_VALID_MILLI_SECOND = 7 * 24 * 60 * 60 * 1000L; // 7 days
-  private static final String PROVIDER = "provider";
   private static final String AUTHORITY = "authorities";
-  private static final String EMAIL = "email";
   private static final String MEMBER_ID = "memberId";
+  private static final String MEMBER_NAME = "memberName";
+  private static final String MEMBER_PICTURE = "memberPicture";
 
   @Override
   public String createAccessToken(Authentication authentication) {
@@ -72,12 +72,9 @@ public class JwtTokenUtil implements TokenUtil {
 
     OAuth2UserInfo oAuth2UserInfo =
         OAuth2UserInfoFactory.getOAuth2UserInfo((OAuth2AuthenticationToken) authentication);
-    String provider = oAuth2UserInfo.getProvider().toString();
     String uid = oAuth2UserInfo.getId();
-    String email = oAuth2UserInfo.getEmail();
 
     CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-    Long memberId = customOAuth2User.getMemberId();
 
     List<String> authorities =
         authentication.getAuthorities().stream()
@@ -91,9 +88,9 @@ public class JwtTokenUtil implements TokenUtil {
     return Jwts.builder()
         .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
         .setSubject(uid)
-        .claim(MEMBER_ID, memberId)
-        .claim(PROVIDER, provider)
-        .claim(EMAIL, email)
+        .claim(MEMBER_ID, customOAuth2User.getMemberId())
+        .claim(MEMBER_NAME, customOAuth2User.getMemberName())
+        .claim(MEMBER_PICTURE, customOAuth2User.getMemberPicture())
         .claim(AUTHORITY, authorities)
         .setIssuedAt(now)
         .setExpiration(expiryDate)

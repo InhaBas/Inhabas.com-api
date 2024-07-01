@@ -65,6 +65,8 @@ public class SignUpIntegrationTest {
   @Autowired private SignUpScheduleRepository scheduleRepository;
 
   private static final String ROLE_PREFIX = "ROLE_";
+  private static final String DEFAULT_PICTURE =
+      "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
 
   private String token;
 
@@ -336,7 +338,8 @@ public class SignUpIntegrationTest {
         OAuth2UserInfoFactory.getOAuth2UserInfo("NAVER", nameAttributeKey);
     memberService.updateSocialAccountInfo(oAuth2UserInfo);
     CustomOAuth2User customOAuth2User =
-        new CustomOAuth2User(grantedAuthorities, nameAttributeKey, "response", 1L);
+        new CustomOAuth2User(
+            grantedAuthorities, nameAttributeKey, "response", 1L, "조승현", DEFAULT_PICTURE);
 
     return tokenUtil.createAccessToken(
         new OAuth2AuthenticationToken(customOAuth2User, grantedAuthorities, "NAVER"));

@@ -46,7 +46,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     Member member =
         memberRepository
             .findByProviderAndUid(oAuth2UserInfo.getProvider(), new UID(oAuth2UserInfo.getId()))
-            .orElseThrow(() -> new InvalidOAuth2InfoException());
+            .orElseThrow(InvalidOAuth2InfoException::new);
 
     // 현재 로그인하려는 유저에 맞는 권한을 들고옴.
     Collection<SimpleGrantedAuthority> authorities =
@@ -59,6 +59,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             .getUserInfoEndpoint()
             .getUserNameAttributeName();
     return new CustomOAuth2User(
-        authorities, oAuth2UserInfo.getAttributes(), nameAttributeKey, member.getId());
+        authorities,
+        oAuth2UserInfo.getAttributes(),
+        nameAttributeKey,
+        member.getId(),
+        member.getName(),
+        member.getPicture());
   }
 }

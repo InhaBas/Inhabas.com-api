@@ -34,6 +34,9 @@ public class JwtTokenUtilTest {
 
   @InjectMocks private JwtTokenUtil jwtTokenUtil;
 
+  private static final String DEFAULT_PICTURE =
+      "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+
   @BeforeEach
   void setUp() {
     ReflectionTestUtils.setField(
@@ -61,7 +64,9 @@ public class JwtTokenUtilTest {
         };
     OAuth2AuthenticationToken authentication =
         new OAuth2AuthenticationToken(
-            new CustomOAuth2User(authorities, attributes, "sub", 1L), authorities, "google");
+            new CustomOAuth2User(authorities, attributes, "sub", 1L, "조승현", DEFAULT_PICTURE),
+            authorities,
+            "google");
 
     // when
     String accessToken = jwtTokenUtil.createAccessToken(authentication);
@@ -96,7 +101,9 @@ public class JwtTokenUtilTest {
         };
     OAuth2AuthenticationToken authentication =
         new OAuth2AuthenticationToken(
-            new CustomOAuth2User(authorities, attributes, "sub", 1L), authorities, "google");
+            new CustomOAuth2User(authorities, attributes, "sub", 1L, "조승현", DEFAULT_PICTURE),
+            authorities,
+            "google");
 
     String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
@@ -129,7 +136,9 @@ public class JwtTokenUtilTest {
         };
     OAuth2AuthenticationToken authentication =
         new OAuth2AuthenticationToken(
-            new CustomOAuth2User(authorities, attributes, "sub", 1L), authorities, "google");
+            new CustomOAuth2User(authorities, attributes, "sub", 1L, "조승현", DEFAULT_PICTURE),
+            authorities,
+            "google");
     String refreshToken = jwtTokenUtil.createRefreshToken(authentication);
 
     // when
@@ -180,7 +189,9 @@ public class JwtTokenUtilTest {
         };
     OAuth2AuthenticationToken authentication =
         new OAuth2AuthenticationToken(
-            new CustomOAuth2User(authorities, attributes, "sub", 1L), authorities, "google");
+            new CustomOAuth2User(authorities, attributes, "sub", 1L, "조승현", DEFAULT_PICTURE),
+            authorities,
+            "google");
 
     String accessToken = jwtTokenUtil.createAccessToken(authentication);
 
