@@ -1,3 +1,12 @@
+
+[![GitHub contributors](https://img.shields.io/github/contributors/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/graphs/contributors/)
+[![GitHub issues](https://img.shields.io/github/issues/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/issues/)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/pulls/)
+
+[![GitHub watchers](https://img.shields.io/github/watchers/InhaBas/Inhabas.com-api?style=social&label=Watch)](https://GitHub.com/InhaBas/Inhabas.com-api/watchers/)
+[![GitHub forks](https://img.shields.io/github/forks/InhaBas/Inhabas.com-api.svg?style=social&label=Fork)](https://GitHub.com/InhaBas/Inhabas.com-api/network/)
+[![GitHub stars](https://img.shields.io/github/stars/InhaBas/Inhabas.com-api?style=social&label=Star)](https://GitHub.com/InhaBas/Inhabas.com-api/stargazers/)
+
 # IBAS (Inha Bigdata Analysis Society)
 
 ![main logo of IBAS](docs/images/logo_purple.png)
@@ -24,8 +33,8 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 
 1. PR올리는 경우
 
-    [CONTRIBUTING.md](CONTRIBUTING.md)
+   [CONTRIBUTING.md](CONTRIBUTING.md)
 
 2. PR Merge 하는 경우
 
-    [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
+   [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
