@@ -1,13 +1,13 @@
+# IBAS (Inha Bigdata Analysis Society)
 
-[![GitHub contributors](https://img.shields.io/github/contributors/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/graphs/contributors/)
 [![GitHub issues](https://img.shields.io/github/issues/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/issues/)
+![GitHub issues-closed](https://img.shields.io/github/issues-closed/InhaBas/Inhabas.com-api.svg)
 [![GitHub pull-requests](https://img.shields.io/github/issues-pr/InhaBas/Inhabas.com-api.svg)](https://GitHub.com/InhaBas/Inhabas.com-api/pulls/)
+![GitHub pull-requests-closed](https://img.shields.io/github/issues-pr-closed/InhaBas/Inhabas.com-api.svg)
 
-[![GitHub watchers](https://img.shields.io/github/watchers/InhaBas/Inhabas.com-api?style=social&label=Watch)](https://GitHub.com/InhaBas/Inhabas.com-api/watchers/)
 [![GitHub forks](https://img.shields.io/github/forks/InhaBas/Inhabas.com-api.svg?style=social&label=Fork)](https://GitHub.com/InhaBas/Inhabas.com-api/network/)
 [![GitHub stars](https://img.shields.io/github/stars/InhaBas/Inhabas.com-api?style=social&label=Star)](https://GitHub.com/InhaBas/Inhabas.com-api/stargazers/)
-
-# IBAS (Inha Bigdata Analysis Society)
+![GitHub followers](https://img.shields.io/github/followers/InhaBas?style=social&label=Follow)
 
 ![main logo of IBAS](docs/images/logo_purple.png)
 
@@ -18,6 +18,12 @@ IBAS는 인하대학교의 빅데이터 학술동아리 입니다. 주로 데이
 IBAS 개발팀은 동아리의 활동과 비전을 온라인에 효과적으로 전달하기 위해 웹 페이지를 운영하고 있습니다. IBAS 웹페이지는 회원들과의 소통을 강화하고 외부에 동아리의 활동을 알리는 플랫폼으로 활용되고 있습니다.
 
 [IBAS 웹페이지 바로가기](https://www.inhabas.com/)
+
+[2023.09~2024.07 웹서비스 개발 문서](https://www.notion.so/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0)
+
+### Architecture
+
+![Architecture](docs/images/architecture.png)
 
 ### Style Convention
 
@@ -38,3 +44,7 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 2. PR Merge 하는 경우
 
    [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
+
+## Contributor Wall of Fame
+
+[![IBAS back end contributors](https://contrib.rocks/image?repo=InhaBas/Inhabas.com-api)](https://github.com/microsoft/semantic-kernel/graphs/contributors)
