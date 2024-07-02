@@ -7,6 +7,7 @@
 
 [![GitHub forks](https://img.shields.io/github/forks/InhaBas/Inhabas.com-api.svg?style=social&label=Fork)](https://GitHub.com/InhaBas/Inhabas.com-api/network/)
 [![GitHub stars](https://img.shields.io/github/stars/InhaBas/Inhabas.com-api?style=social&label=Star)](https://GitHub.com/InhaBas/Inhabas.com-api/stargazers/)
+
 ![GitHub followers](https://img.shields.io/github/followers/InhaBas?style=social&label=Follow)
 
 ![main logo of IBAS](docs/images/logo_purple.png)
@@ -47,4 +48,4 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 
 ## Contributor Wall of Fame
 
-[![IBAS back end contributors](https://contrib.rocks/image?repo=InhaBas/Inhabas.com-api)](https://github.com/microsoft/semantic-kernel/graphs/contributors)
+[![IBAS back end contributors](https://contrib.rocks/image?repo=InhaBas/Inhabas.com-api)](https://github.com/InhaBas/Inhabas.com-api/graphs/contributors)
