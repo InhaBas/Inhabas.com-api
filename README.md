@@ -7,7 +7,6 @@
 
 [![GitHub forks](https://img.shields.io/github/forks/InhaBas/Inhabas.com-api.svg?style=social&label=Fork)](https://GitHub.com/InhaBas/Inhabas.com-api/network/)
 [![GitHub stars](https://img.shields.io/github/stars/InhaBas/Inhabas.com-api?style=social&label=Star)](https://GitHub.com/InhaBas/Inhabas.com-api/stargazers/)
-
 ![GitHub followers](https://img.shields.io/github/followers/InhaBas?style=social&label=Follow)
 
 ![main logo of IBAS](docs/images/logo_purple.png)
