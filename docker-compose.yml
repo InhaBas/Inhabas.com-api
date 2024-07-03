@@ -8,6 +8,8 @@ services:
         ipv4_address: 172.18.0.6
     ports:
       - "8888:8888"
+    environment:
+      TZ: Asia/Seoul
     entrypoint: [ "java", "-jar", "app.jar" ]
 
   prod1:
@@ -19,7 +21,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod1
+      SPRING_PROFILES_ACTIVE: prod1
+      TZ: Asia/Seoul
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=prod1"]
 
   prod2:
@@ -31,7 +34,8 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod2
+      SPRING_PROFILES_ACTIVE: prod2
+      TZ: Asia/Seoul
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=prod2"]
 
   dev1:
@@ -43,7 +47,8 @@ services:
     ports:
       - "8082:8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev1
+      SPRING_PROFILES_ACTIVE: dev1
+      TZ: Asia/Seoul
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev1"]
 
   dev2:
@@ -55,7 +60,8 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev2
+      SPRING_PROFILES_ACTIVE: dev2
+      TZ: Asia/Seoul
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev2"]
 
 

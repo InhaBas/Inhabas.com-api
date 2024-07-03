@@ -18,11 +18,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
   @CreatedDate
-  @Column(
-      nullable = false,
-      updatable = false,
-      insertable = false,
-      columnDefinition = "DATETIME(0) DEFAULT CURRENT_TIMESTAMP")
+  @Column(nullable = false, updatable = false, columnDefinition = "DATETIME(0)")
   private LocalDateTime dateCreated;
 
   @CreatedDate
