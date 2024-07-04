@@ -47,7 +47,14 @@ public class DefaultRoleHierarchy implements Hierarchical {
                     ANONYMOUS));
             put(
                 CHIEF,
-                Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
+                Arrays.asList(
+                    VICE_CHIEF,
+                    EXECUTIVES,
+                    SECRETARY,
+                    BASIC,
+                    DEACTIVATED,
+                    NOT_APPROVED,
+                    ANONYMOUS));
             put(
                 VICE_CHIEF,
                 Arrays.asList(EXECUTIVES, SECRETARY, BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
