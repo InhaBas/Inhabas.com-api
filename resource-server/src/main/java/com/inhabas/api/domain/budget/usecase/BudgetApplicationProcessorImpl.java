@@ -1,5 +1,8 @@
 package com.inhabas.api.domain.budget.usecase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -9,10 +12,12 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
+import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
+import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 
@@ -53,9 +58,27 @@ public class BudgetApplicationProcessorImpl implements BudgetApplicationProcesso
 
       case COMPLETED:
         application.complete(secretary);
-        historyRepository.save(application.makeHistory(secretary, menu)); // application to history
-        applicationRepository.save(application);
+
+        // application to history
+        transformToHistory(application, secretary, menu);
         break;
     }
+  }
+
+  private void transformToHistory(
+      BudgetSupportApplication application, Member secretary, Menu menu) {
+    BudgetHistory transformedHistory =
+        historyRepository.save(application.makeHistory(secretary, menu));
+
+    // application 에 있던 file 들을 history 에 복사
+    List<BoardFile> files = application.getFiles();
+    List<BoardFile> copiedFiles = new ArrayList<>();
+    for (BoardFile file : files) {
+      BoardFile copiedFile = file.copyFileWithNewId();
+      copiedFiles.add(copiedFile);
+      copiedFile.toBoard(transformedHistory);
+    }
+
+    transformedHistory.updateFiles(copiedFiles);
   }
 }

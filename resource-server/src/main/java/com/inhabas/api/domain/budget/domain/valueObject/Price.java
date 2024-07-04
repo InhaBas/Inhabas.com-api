@@ -13,7 +13,7 @@ import com.inhabas.api.auth.domain.error.businessException.InvalidInputException
 @Embeddable
 public class Price {
 
-  @Column(nullable = false)
+  @Column(nullable = false, name = "OUTCOME")
   private Integer value;
 
   public Price() {}

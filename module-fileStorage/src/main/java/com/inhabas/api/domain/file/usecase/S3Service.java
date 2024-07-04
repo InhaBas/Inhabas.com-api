@@ -9,7 +9,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 
 public interface S3Service {
 
-  String uploadS3File(MultipartFile multipartFile, String dirName)
+  String uploadS3File(MultipartFile multipartFile, String fileName)
       throws SdkClientException, IOException;
 
   String uploadS3Image(MultipartFile multipartFile, String fileName)
