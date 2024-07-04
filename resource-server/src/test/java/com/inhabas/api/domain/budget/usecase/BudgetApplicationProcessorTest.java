@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
@@ -84,6 +85,7 @@ public class BudgetApplicationProcessorTest {
   }
 
   @DisplayName("대기중인 요청을 승인한다.")
+  @Transactional
   @Test
   public void waitingToApproveTest() {
     // given
@@ -100,6 +102,7 @@ public class BudgetApplicationProcessorTest {
   }
 
   @DisplayName("대기중인 요청을 거절한다.")
+  @Transactional
   @Test
   public void waitingToDenyTest() {
     // given
@@ -116,6 +119,7 @@ public class BudgetApplicationProcessorTest {
   }
 
   @DisplayName("대기중인 요청을 거절할 때, 거절 사유는 필수이다.")
+  @Transactional
   @Test
   public void rejectReasonIsNecessaryToDenyTest() {
     // given
@@ -129,6 +133,7 @@ public class BudgetApplicationProcessorTest {
   }
 
   @DisplayName("대기중인 요청을 완료처리한다.")
+  @Transactional
   @Test
   public void waitingToProcessTest() {
     // given
@@ -142,7 +147,19 @@ public class BudgetApplicationProcessorTest {
             APPLICATION_OUTCOME,
             applicant,
             RequestStatus.APPROVED);
+    BudgetHistory history =
+        new BudgetHistory(
+            "title",
+            menu,
+            "datails",
+            LocalDateTime.now().minusDays(1),
+            secretary,
+            ACCOUNT_NUMBER,
+            0,
+            APPLICATION_OUTCOME,
+            applicant);
     given(applicationRepository.findById(any())).willReturn(Optional.of(application));
+    given(historyRepository.save(any())).willReturn(history);
     BudgetApplicationStatusChangeRequest request =
         new BudgetApplicationStatusChangeRequest(RequestStatus.COMPLETED, null);
 
@@ -157,6 +174,7 @@ public class BudgetApplicationProcessorTest {
   }
 
   @DisplayName("거절했던 신청은 되돌리지 못한다.")
+  @Transactional
   @Test
   public void deniedToProcessTest() {
     // given

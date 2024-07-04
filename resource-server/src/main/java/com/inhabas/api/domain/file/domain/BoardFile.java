@@ -14,6 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.board.domain.BaseBoard;
+import com.inhabas.api.global.util.FileUtil;
 
 @Entity
 @Getter
@@ -34,8 +35,6 @@ public class BoardFile extends BaseFile {
   public BoardFile(String id, String name, String url, Member uploader, Long size, String type) {
     super(id, name, url, size, type);
     this.uploader = uploader;
-    this.size = size;
-    this.type = type;
   }
 
   // boardFile 과 baseBoard 의 연관관계 편의 메소드
@@ -45,6 +44,17 @@ public class BoardFile extends BaseFile {
     } else if (!this.board.getId().equals(newParentBoard.getId())) {
       throw new InvalidInputException();
     }
+  }
+
+  public BoardFile copyFileWithNewId() {
+    return BoardFile.builder()
+        .id(FileUtil.generateUUID())
+        .name(this.name.getValue())
+        .url(this.url.getValue())
+        .size(this.size)
+        .type(this.type)
+        .uploader(this.uploader)
+        .build();
   }
 
   @Override
