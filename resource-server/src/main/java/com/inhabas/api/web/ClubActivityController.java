@@ -3,6 +3,8 @@ package com.inhabas.api.web;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.PageImpl;
@@ -91,7 +93,7 @@ public class ClubActivityController {
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
   public ResponseEntity<Void> writeClubActivity(
-      @Authenticated Long memberId, @RequestBody SaveClubActivityDto form) {
+      @Authenticated Long memberId, @Valid @RequestBody SaveClubActivityDto form) {
     Long newClubActivityId = clubActivityService.writeClubActivity(memberId, form);
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
@@ -168,7 +170,7 @@ public class ClubActivityController {
   public ResponseEntity<ClubActivityDto> updateClubActivity(
       @Authenticated Long memberId,
       @PathVariable Long boardId,
-      @RequestBody SaveClubActivityDto form) {
+      @Valid @RequestBody SaveClubActivityDto form) {
     clubActivityService.updateClubActivity(boardId, form, memberId);
     return ResponseEntity.noContent().build();
   }

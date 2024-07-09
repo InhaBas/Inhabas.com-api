@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,6 +40,8 @@ public class BudgetApplicationRegisterForm {
 
   @NotBlank private String account;
 
+  @NotNull
+  @Size(min = 1)
   private List<String> files = new ArrayList<>();
 
   @Builder
