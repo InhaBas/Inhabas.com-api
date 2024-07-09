@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.club.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -36,7 +36,7 @@ public class SaveClubActivityDtoTest {
   public void validationTest() {
     // given
     SaveClubActivityDto saveClubActivityDto =
-        SaveClubActivityDto.builder().title("").content("").files(null).build();
+        SaveClubActivityDto.builder().title("").content("").files(Arrays.asList("fileId")).build();
 
     // when
     Set<ConstraintViolation<SaveClubActivityDto>> violations =

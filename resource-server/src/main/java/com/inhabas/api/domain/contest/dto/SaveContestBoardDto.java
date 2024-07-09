@@ -7,6 +7,7 @@ import java.util.List;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -50,6 +51,8 @@ public class SaveContestBoardDto {
   @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
   private LocalDateTime dateContestEnd;
 
+  @NotNull
+  @Size(min = 1)
   private List<String> files = new ArrayList<>();
 
   @Builder

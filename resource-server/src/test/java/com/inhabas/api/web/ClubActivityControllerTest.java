@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,7 +153,12 @@ public class ClubActivityControllerTest {
   @Test
   void writeClubActivity() throws Exception {
     // given
-    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
+    SaveClubActivityDto form =
+        SaveClubActivityDto.builder()
+            .title("title")
+            .content("content")
+            .files(Arrays.asList("fileId"))
+            .build();
     given(clubActivityService.writeClubActivity(any(), any())).willReturn(1L);
 
     // when
@@ -175,7 +181,8 @@ public class ClubActivityControllerTest {
   @Test
   void writeClubActivity_Invalid_Input() throws Exception {
     // given
-    SaveClubActivityDto form = new SaveClubActivityDto("", "", null);
+    SaveClubActivityDto form =
+        SaveClubActivityDto.builder().title("").content("").files(Arrays.asList()).build();
     doThrow(InvalidInputException.class).when(clubActivityService).writeClubActivity(any(), any());
 
     // when
@@ -197,7 +204,13 @@ public class ClubActivityControllerTest {
   @Test
   void updateClubActivity() throws Exception {
     // given
-    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
+    SaveClubActivityDto form =
+        SaveClubActivityDto.builder()
+            .title("title")
+            .content("content")
+            .files(Arrays.asList("fileId"))
+            .build();
+
     doNothing().when(clubActivityService).updateClubActivity(any(), any(), any());
 
     // when then
@@ -235,7 +248,12 @@ public class ClubActivityControllerTest {
   @Test
   void updateClubActivity_Not_Found() throws Exception {
     // given
-    SaveClubActivityDto form = new SaveClubActivityDto("title", "content", null);
+    SaveClubActivityDto form =
+        SaveClubActivityDto.builder()
+            .title("title")
+            .content("content")
+            .files(Arrays.asList("fileId"))
+            .build();
 
     doThrow(NotFoundException.class)
         .when(clubActivityService)
