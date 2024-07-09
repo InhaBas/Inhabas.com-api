@@ -15,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +110,7 @@ public class BudgetApplicationControllerTest {
             .dateUsed(LocalDateTime.now())
             .outcome(10000)
             .account("123-123-123")
+            .files(Arrays.asList("fileId"))
             .build();
 
     given(budgetApplicationService.registerApplication(any(), any())).willReturn(1L);
@@ -155,6 +157,7 @@ public class BudgetApplicationControllerTest {
             .dateUsed(LocalDateTime.now())
             .outcome(10000)
             .account("123-123-123")
+            .files(Arrays.asList("fileId"))
             .build();
     doNothing().when(budgetApplicationService).updateApplication(any(), any(), any());
 
@@ -194,6 +197,7 @@ public class BudgetApplicationControllerTest {
             .dateUsed(LocalDateTime.now())
             .outcome(10000)
             .account("123-123-123")
+            .files(Arrays.asList("fileId"))
             .build();
     doThrow(NotFoundException.class)
         .when(budgetApplicationService)

@@ -45,7 +45,6 @@ import org.junit.jupiter.api.Test;
 public class ContestBoardControllerTest {
 
   @Autowired private MockMvc mvc;
-
   @Autowired private ObjectMapper objectMapper;
 
   @MockBean private ContestBoardService contestBoardService;
@@ -213,6 +212,7 @@ public class ContestBoardControllerTest {
             .topic("good topic")
             .dateContestStart(LocalDateTime.now())
             .dateContestEnd(LocalDateTime.now().plusDays(10))
+            .files(List.of("fileId"))
             .build();
 
     // when
@@ -245,6 +245,7 @@ public class ContestBoardControllerTest {
             .topic("good topic")
             .dateContestStart(LocalDateTime.now())
             .dateContestEnd(LocalDateTime.now().plusDays(10))
+            .files(List.of("fileId"))
             .build();
 
     String saveContestBoardDtoJson = objectMapper.writeValueAsString(saveContestBoardDto);
@@ -280,6 +281,7 @@ public class ContestBoardControllerTest {
             .topic("good topic")
             .dateContestStart(LocalDateTime.now())
             .dateContestEnd(LocalDateTime.now().plusDays(10))
+            .files(List.of("fileId"))
             .build();
 
     // when then
@@ -308,6 +310,7 @@ public class ContestBoardControllerTest {
             .topic("good topic")
             .dateContestStart(LocalDateTime.now())
             .dateContestEnd(LocalDateTime.now().plusDays(10))
+            .files(List.of("fileId"))
             .build();
 
     // when
@@ -342,6 +345,7 @@ public class ContestBoardControllerTest {
             .topic("good topic")
             .dateContestStart(LocalDateTime.now())
             .dateContestEnd(LocalDateTime.now().plusDays(10))
+            .files(List.of("fileId"))
             .build();
 
     // when

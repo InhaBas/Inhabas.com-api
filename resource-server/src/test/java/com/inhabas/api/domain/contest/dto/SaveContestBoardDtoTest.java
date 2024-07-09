@@ -2,6 +2,7 @@ package com.inhabas.api.domain.contest.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -37,7 +38,16 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreNullError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(null, null, null, null, null, null, null, null);
+        SaveContestBoardDto.builder()
+            .contestFieldId(null)
+            .title(null)
+            .content(null)
+            .association(null)
+            .topic(null)
+            .dateContestStart(null)
+            .dateContestEnd(null)
+            .files(null)
+            .build();
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -62,7 +72,16 @@ public class SaveContestBoardDtoTest {
   public void FieldsAreBlankedError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(null, " ", " ", " ", " ", null, null, null);
+        SaveContestBoardDto.builder()
+            .contestFieldId(null)
+            .title(" ")
+            .content(" ")
+            .association(" ")
+            .topic(" ")
+            .dateContestStart(null)
+            .dateContestEnd(null)
+            .files(Arrays.asList())
+            .build();
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -87,15 +106,17 @@ public class SaveContestBoardDtoTest {
   public void InputsAreExceededError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(
-            1L,
-            "title".repeat(20) + ".",
-            "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.",
-            "Assoc".repeat(20) + ".",
-            "topic".repeat(100) + ".",
-            LocalDateTime.of(2022, 1, 1, 0, 0, 0),
-            LocalDateTime.of(9999, 3, 3, 0, 0, 0),
-            null);
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("title".repeat(20) + ".")
+            .content(
+                "content! Cucumber paste has to have a sun-dried, chilled sauerkraut component.")
+            .association("Assoc".repeat(20) + ".")
+            .topic("topic".repeat(100) + ".")
+            .dateContestStart(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
+            .dateContestEnd(LocalDateTime.of(9999, 3, 3, 0, 0, 0))
+            .files(Arrays.asList("fileId"))
+            .build();
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
@@ -115,15 +136,16 @@ public class SaveContestBoardDtoTest {
   public void DeadlineIsOutdatedError() {
     // given
     SaveContestBoardDto saveContestBoardDto =
-        new SaveContestBoardDto(
-            1L,
-            "title",
-            "content",
-            "association",
-            "topic",
-            LocalDateTime.of(2022, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2022, 2, 1, 0, 0, 0),
-            null);
+        SaveContestBoardDto.builder()
+            .contestFieldId(1L)
+            .title("title")
+            .content("content")
+            .association("association")
+            .topic("topic")
+            .dateContestStart(LocalDateTime.of(2022, 1, 1, 0, 0, 0))
+            .dateContestEnd(LocalDateTime.of(2022, 2, 1, 0, 0, 0))
+            .files(Arrays.asList("fileId"))
+            .build();
 
     // when
     Set<ConstraintViolation<SaveContestBoardDto>> violations =
