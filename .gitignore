@@ -5,9 +5,12 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+!src/main/resources/bootstrap.yml
+!src/main/resources/signUpFail.html
+!src/main/resources/signUpSuccess.html
 **/src/main/resources/*
 **/src/main/generated/
-!src/main/resources/bootstrap.yml
+
 ### STS ###
 .apt_generated
 .classpath
