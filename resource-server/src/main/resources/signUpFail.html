@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>IBAS 입부 신청 결과</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #444;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>IBAS 입부 신청 결과</h1>
+  <p th:text="'안녕하세요, ' + ${memberName} + '님. IBAS(Inha Bigdata Analysts Society)입니다.'"></p>
+  <p>저희 동아리에 지원해주셔서 진심으로 감사드립니다.</p>
+  <p th:text="'많은 고민과 심사숙고 끝에, 안타깝게도 ' + ${memberName} + '님의 입부 신청을 받아들일 수 없게 되었습니다. 이 결정이 ' + ${memberName} + '님께 실망을 끼칠까 우려되어 마음이 무겁습니다.'"></p>
+  <p th:text="'IBAS에 보여주신 관심에 감사드리며, 앞으로 ' + ${memberName} + '님의 미래에 있어 더욱 빛나는 성취가 있기를 진심으로 응원합니다.'"></p>
+  <p th:text="'다시 한번 깊은 감사의 말씀을 드리며, ' + ${memberName} + '님의 행복한 미래를 기원합니다.'"></p>
+  <p class="footer">감사합니다.<br>IBAS 올림</p>
+</div>
+</body>
+</html>
