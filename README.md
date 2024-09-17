@@ -126,7 +126,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 
 ## Problem documentation
 
-### [자세한 내용](https://www.notion.so/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0?pvs=4#cdf1c1b74fe04f91974b8d9464ade39a)
+### [자세한 내용](https://sparkly-lunge-241.notion.site/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0)
 
 - 회계 관련 동작 로직
 - 권한 체계 정책
