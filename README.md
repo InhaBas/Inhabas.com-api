@@ -23,7 +23,7 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 
 [IBAS 웹페이지 바로가기](https://www.inhabas.com/)
 
-[2023.09~2024.07 웹서비스 개발 문서](https://www.notion.so/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0)
+[2023.09~2024.07 웹서비스 개발 문서](https://sparkly-lunge-241.notion.site/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0)
 
 <br/>
 
