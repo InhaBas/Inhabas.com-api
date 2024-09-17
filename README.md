@@ -32,6 +32,11 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 
 <br/>
 
+## ERD Diagram
+![ERD](docs/images/erd.png)
+
+<br/>
+
 ## Stacks
 ### Language & Framework
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) ![Spring Dada JPA](https://img.shields.io/badge/Spring_data_jpa-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring%20Cloud%20config-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![Querydsl](https://img.shields.io/badge/Querydsl-003366?style=for-the-badge&logo=Querydsl&logoColor=white)
