@@ -76,6 +76,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 
 <br/>
 
+### 게시판
 ![Board](docs/images/show/board.gif)
 - 권한별, 게시판별 CRUD 
 - 검색 기능
@@ -90,6 +91,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 
 <br/>
 
+### 댓글
 ![Comment](docs/images/show/comment.gif)
 - 권한별 CRUD
 - 대댓글 기능
@@ -100,6 +102,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 
 <br/>
 
+### 회계관리
 ![Account](docs/images/show/account.gif)
 - 총무만 CRUD 허용
   - 단, 이전 기수 총무가 작성한 것은 수정 불가
