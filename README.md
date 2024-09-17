@@ -25,8 +25,12 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 
 [2023.09~2024.07 웹서비스 개발 문서](https://www.notion.so/IBAS-049505480e5f4bebbb01bfc9b1e9c3c0)
 
+<br/>
+
 ## Architecture
 ![Architecture](docs/images/architecture.png)
+
+<br/>
 
 ## Stacks
 ### Language & Framework
@@ -44,6 +48,7 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 ### Documentation
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white)
 
+<br/>
 
 ## Style Convention
 
@@ -51,6 +56,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 
 [STYLE-CONVENTION.md](STYLE-CONVENTION.md)
 
+<br/>
 
 ## Main Features
 
@@ -60,11 +66,15 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 - 자세한 Request, Response 예시 제공
 - Token 인증 방식을 활용한 권한 테스트 지원
 
+<br/>
+
 ### 회원관리
 ![Manage-users](docs/images/show/manage-user.gif)
 - 권한별 제한된 회원 등급 관리
 - 신입 부원 가입 관리
 - 권한별 개인정보 마스킹 처리
+
+<br/>
 
 ![Board](docs/images/show/board.gif)
 - 권한별, 게시판별 CRUD 
@@ -78,6 +88,8 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
   - 복수 파일 추가, 삭제 기능 
   - 다운로드 기능
 
+<br/>
+
 ![Comment](docs/images/show/comment.gif)
 - 권한별 CRUD
 - 대댓글 기능
@@ -86,12 +98,16 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
     - 해당 댓글이 대댓글을 포함한 경우 `삭제된 댓글입니다.` 표시로 대체
     - 해당 댓글이 말단 댓글인 경우만 삭제
 
+<br/>
+
 ![Account](docs/images/show/account.gif)
 - 총무만 CRUD 허용
   - 단, 이전 기수 총무가 작성한 것은 수정 불가
   - 총무가 직접 사용하지 않아 송금을 하는 경우, 예산지원 신청 심사를 거쳐 자동 기록
 - 트랜잭션 관리로 동시성 제어
 - 잔액 자동 계산 기능
+
+<br/>
 
 ### 그 외 여러가지 기능
 - OAuth2 로그인
@@ -101,6 +117,8 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 - 동아리 지원서 작성
 - 동아리 연혁
 - 공모전, 장학회 등 여러 형태의 게시판
+
+<br/>
 
 
 ## Problem documentation
@@ -119,6 +137,7 @@ IBAS Project는 코드 품질과 가독성을 유지하기 위해 일관된 스�
 - forked repository PR에서 pull_request시 secrets값을 가져오지 못하는 오류
 - JPA 성능 최적화
 
+<br/>
 
 ## How to contribute to IBAS
 
@@ -133,6 +152,8 @@ IBAS에 소속된 회원이라면 누구든지 이 프로젝트에 기여할 수
 2. PR Merge 하는 경우
 
    [COMMITER-INSTRUCTION.md](COMMITER-INSTRUCTION.md)
+
+<br/>
 
 ## Contributor Wall of Fame
 
