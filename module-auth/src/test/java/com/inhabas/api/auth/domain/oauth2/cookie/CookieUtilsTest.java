@@ -1,19 +1,23 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.servlet.http.Cookie;
 
-import org.apache.commons.codec.binary.Base64;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+
+import org.apache.commons.codec.binary.Base64;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class CookieUtilsTest {
 
@@ -25,14 +29,17 @@ public class CookieUtilsTest {
   @Test
   public void resolveCookieFromRequest() {
     // given
-    MockHttpServletRequest request = createRequestWithCookie(COOKIE_NAME, COOKIE_CONTENTS, COOKIE_MAX_AGE);
+    MockHttpServletRequest request =
+        createRequestWithCookie(COOKIE_NAME, COOKIE_CONTENTS, COOKIE_MAX_AGE);
 
     // when
     Optional<Cookie> myCookie = CookieUtils.resolveCookie(request, COOKIE_NAME);
 
     // then
-    assertThat(myCookie).isPresent()
-            .hasValueSatisfying(cookie -> {
+    assertThat(myCookie)
+        .isPresent()
+        .hasValueSatisfying(
+            cookie -> {
               assertThat(cookie.getValue()).isEqualTo(COOKIE_CONTENTS);
               assertThat(cookie.getMaxAge()).isEqualTo(COOKIE_MAX_AGE);
             });
@@ -49,8 +56,10 @@ public class CookieUtilsTest {
 
     // then
     Cookie resolvedCookie = response.getCookie(COOKIE_NAME);
-    assertThat(resolvedCookie).isNotNull()
-            .satisfies(cookie -> {
+    assertThat(resolvedCookie)
+        .isNotNull()
+        .satisfies(
+            cookie -> {
               assertThat(cookie.getName()).isEqualTo(COOKIE_NAME);
               assertThat(cookie.getValue()).isEqualTo(COOKIE_CONTENTS);
               assertThat(cookie.getMaxAge()).isEqualTo(COOKIE_MAX_AGE);
@@ -62,23 +71,28 @@ public class CookieUtilsTest {
   public void removeCookieOfRequest() {
     // given
     MockHttpServletResponse response = new MockHttpServletResponse();
-    MockHttpServletRequest request = createRequestWithCookie(COOKIE_NAME, COOKIE_CONTENTS, COOKIE_MAX_AGE);
+    MockHttpServletRequest request =
+        createRequestWithCookie(COOKIE_NAME, COOKIE_CONTENTS, COOKIE_MAX_AGE);
 
     // when
     CookieUtils.deleteCookie(request, response, COOKIE_NAME);
 
     // then
     Cookie deletedCookie = response.getCookie(COOKIE_NAME);
-    assertThat(deletedCookie).isNotNull()
-            .satisfies(cookie -> {
+    assertThat(deletedCookie)
+        .isNotNull()
+        .satisfies(
+            cookie -> {
               assertThat(cookie.getMaxAge()).isEqualTo(0);
-              assertThat(cookie.getValue()).isEqualTo("");
+              assertThat(cookie.getValue()).isEmpty();
             });
   }
 
   @DisplayName("성공적으로 serialize 한다.")
   @Test
-  public void serializingTest() throws Exception {
+  public void serializingTest()
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+          IllegalAccessException {
     OAuth2AuthorizationRequest request = createOAuth2AuthorizationRequest();
 
     // when
@@ -90,13 +104,16 @@ public class CookieUtilsTest {
 
   @DisplayName("성공적으로 deserialize 한다.")
   @Test
-  public void deserializingTest() throws Exception {
+  public void deserializingTest()
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+          IllegalAccessException {
     OAuth2AuthorizationRequest originalRequest = createOAuth2AuthorizationRequest();
     String serializedRequest = CookieUtils.serialize(originalRequest);
     Cookie cookie = new Cookie("base64", serializedRequest);
 
     // when
-    OAuth2AuthorizationRequest deserializedRequest = CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class);
+    OAuth2AuthorizationRequest deserializedRequest =
+        CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class);
 
     // then
     assertThat(deserializedRequest).usingRecursiveComparison().isEqualTo(originalRequest);
@@ -110,20 +127,26 @@ public class CookieUtilsTest {
     return request;
   }
 
-  static private OAuth2AuthorizationRequest createOAuth2AuthorizationRequest() throws Exception {
+  private static OAuth2AuthorizationRequest createOAuth2AuthorizationRequest()
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+          IllegalAccessException {
     // reflection
-    Constructor<?> constructor = OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(AuthorizationGrantType.class);
+    Constructor<?> constructor =
+        OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(
+            AuthorizationGrantType.class);
     constructor.setAccessible(true);
 
-    OAuth2AuthorizationRequest.Builder builder = (OAuth2AuthorizationRequest.Builder) constructor.newInstance(AuthorizationGrantType.AUTHORIZATION_CODE);
+    OAuth2AuthorizationRequest.Builder builder =
+        (OAuth2AuthorizationRequest.Builder)
+            constructor.newInstance(AuthorizationGrantType.AUTHORIZATION_CODE);
     return builder
-            .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-            .clientId("1234")
-            .redirectUri("http://localhost/api/login/oauth2/code/kakao")
-            .scopes(Set.of("gender", "profile_image", "account_email", "profile_nickname"))
-            .state("state1934")
-            .additionalParameters(java.util.Map.of())
-            .attributes(java.util.Map.of("registration_id", "kakao"))
-            .build();
+        .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+        .clientId("1234")
+        .redirectUri("http://localhost/api/login/oauth2/code/kakao")
+        .scopes(Set.of("gender", "profile_image", "account_email", "profile_nickname"))
+        .state("state1934")
+        .additionalParameters(java.util.Map.of())
+        .attributes(java.util.Map.of("registration_id", "kakao"))
+        .build();
   }
 }
