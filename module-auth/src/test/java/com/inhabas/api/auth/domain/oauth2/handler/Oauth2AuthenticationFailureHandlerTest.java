@@ -38,7 +38,6 @@ public class Oauth2AuthenticationFailureHandlerTest {
 
   @Mock private AuthProperties.OAuth2 oauth2Utils;
 
-
   private static final String VALID_REDIRECT_URL = "https://www.inhabas.com";
   private static final String INVALID_REDIRECT_URL = "https://www.unauthorized_url.com";
   private static final String ERROR_CODE = OAuth2ErrorCodes.INVALID_REQUEST;
@@ -59,7 +58,6 @@ public class Oauth2AuthenticationFailureHandlerTest {
     return new OAuth2AuthenticationException(errorCode);
   }
 
-
   @DisplayName("FailureHandler 호출 시, 허락된 defaultURL 로 정상적으로 리다이렉트 된다.")
   @Test
   public void redirectToDefaultTest() throws IOException {
@@ -76,7 +74,6 @@ public class Oauth2AuthenticationFailureHandlerTest {
 
     // then
     assertThat(response.getRedirectedUrl()).isEqualTo(VALID_REDIRECT_URL + "?error=" + ERROR_CODE);
-
   }
 
   @DisplayName("유효하지 않은 redirect_url 은 허용하지 않는다.")

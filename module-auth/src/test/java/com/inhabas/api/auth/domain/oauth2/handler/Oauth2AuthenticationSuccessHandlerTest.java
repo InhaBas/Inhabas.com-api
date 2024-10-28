@@ -87,8 +87,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
 
     // then
     assertThat(response.getRedirectedUrl())
-        .contains(
-            VALID_REDIRECT_URL, "accessToken", "refreshToken", "expiresIn", "imageUrl");
+        .contains(VALID_REDIRECT_URL, "accessToken", "refreshToken", "expiresIn", "imageUrl");
   }
 
   @DisplayName("인가되지 않은 redirect_url 요청 시, UnauthorizedRedirectUriException 발생")
