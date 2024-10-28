@@ -51,6 +51,8 @@ public class Oauth2AuthenticationSuccessHandlerTest {
   private final Set<SimpleGrantedAuthority> basicAuthorities =
       Collections.singleton(new SimpleGrantedAuthority("ROLE_BASIC"));
 
+  private static final String VALID_REDIRECT_URL = "https://www.inhabas.com";
+
   @BeforeEach
   public void setUp() {
     given(authProperties.getOauth2()).willReturn(oAuth2Utils);
@@ -58,18 +60,25 @@ public class Oauth2AuthenticationSuccessHandlerTest {
         new DefaultOAuth2User(basicAuthorities, Map.of("id", 1234, "properties", "blahblah"), "id");
   }
 
+  private MockHttpServletRequest createRequestWithCookie(String cookieValue) {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, cookieValue);
+    request.setCookies(redirectCookie);
+    return request;
+  }
+
+  private OAuth2AuthenticationToken createAuthenticationToken() {
+    return new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
+  }
+
   @DisplayName("SuccessHandler 호출 시, targetURL 로 정상적으로 리다이렉트 된다.")
   @Test
   public void redirectToTargetUrlTest() throws IOException {
 
     // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletRequest request = createRequestWithCookie(VALID_REDIRECT_URL);
     MockHttpServletResponse response = new MockHttpServletResponse();
-    OAuth2AuthenticationToken authenticationToken =
-        new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
-
-    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, "https://www.inhabas.com");
-    request.setCookies(redirectCookie);
+    OAuth2AuthenticationToken authenticationToken = createAuthenticationToken();
 
     given(oAuth2Utils.isAuthorizedRedirectUri(any())).willReturn(true);
 
@@ -79,7 +88,7 @@ public class Oauth2AuthenticationSuccessHandlerTest {
     // then
     assertThat(response.getRedirectedUrl())
         .contains(
-            "https://www.inhabas.com", "accessToken", "refreshToken", "expiresIn", "imageUrl");
+            VALID_REDIRECT_URL, "accessToken", "refreshToken", "expiresIn", "imageUrl");
   }
 
   @DisplayName("인가되지 않은 redirect_url 요청 시, UnauthorizedRedirectUriException 발생")
@@ -87,13 +96,9 @@ public class Oauth2AuthenticationSuccessHandlerTest {
   public void unAuthorizedTargetUrlTest() {
 
     // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletRequest request = createRequestWithCookie(VALID_REDIRECT_URL);
     MockHttpServletResponse response = new MockHttpServletResponse();
-    OAuth2AuthenticationToken authenticationToken =
-        new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
-
-    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, "https://www.inhabas.com");
-    request.setCookies(redirectCookie);
+    OAuth2AuthenticationToken authenticationToken = createAuthenticationToken();
 
     given(oAuth2Utils.isAuthorizedRedirectUri(any())).willReturn(false);
 
@@ -107,20 +112,16 @@ public class Oauth2AuthenticationSuccessHandlerTest {
   @Test
   public void clearCookieAfterHandleOAuth2Authentication() throws IOException {
     // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletRequest request = createRequestWithCookie(VALID_REDIRECT_URL);
     MockHttpServletResponse response = new MockHttpServletResponse();
-    OAuth2AuthenticationToken authenticationToken =
-        new OAuth2AuthenticationToken(defaultOAuth2User, basicAuthorities, "google");
-
-    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, "https://www.inhabas.com");
-    request.setCookies(redirectCookie);
+    OAuth2AuthenticationToken authenticationToken = createAuthenticationToken();
 
     given(oAuth2Utils.isAuthorizedRedirectUri(any())).willReturn(true);
 
     // when
     successHandler.onAuthenticationSuccess(request, response, authenticationToken);
 
-    // when
+    // then
     then(requestRepository).should(times(1)).clearCookies(any(), any());
   }
 }
