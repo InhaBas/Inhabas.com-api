@@ -9,7 +9,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -33,26 +32,25 @@ public class MajorInfoServiceTest {
 
   @Mock private MajorInfoRepository majorInfoRepository;
 
+  private List<MajorInfo> createSampleMajorInfos() {
+    MajorInfo majorInfo1 = createMajorInfo("공과대학", "기계공학과", 1);
+    MajorInfo majorInfo2 = createMajorInfo("자연과학대학", "수학과", 2);
+    MajorInfo majorInfo3 = createMajorInfo("경영대학", "경영학과", 3);
+    return List.of(majorInfo1, majorInfo2, majorInfo3);
+  }
+
+  private MajorInfo createMajorInfo(String college, String major, int id) {
+    MajorInfo majorInfo = new MajorInfo(college, major);
+    ReflectionTestUtils.setField(majorInfo, "id", id);
+    return majorInfo;
+  }
+
   @DisplayName("모든 학과 정보를 불러온다.")
   @Test
-  public void findAllTest() {
+  public void getAllMajorInfoTest() {
 
     // given
-    MajorInfo majorInfo1 = new MajorInfo("공과대학", "기계공학과");
-    MajorInfo majorInfo2 = new MajorInfo("자연과학대학", "수학과");
-    MajorInfo majorInfo3 = new MajorInfo("경영대학", "경영학과");
-    ReflectionTestUtils.setField(majorInfo1, "id", 1);
-    ReflectionTestUtils.setField(majorInfo2, "id", 2);
-    ReflectionTestUtils.setField(majorInfo3, "id", 3);
-    List<MajorInfo> majorInfos =
-        new ArrayList<>() {
-          {
-            add(majorInfo1);
-            add(majorInfo2);
-            add(majorInfo3);
-          }
-        };
-
+    List<MajorInfo> majorInfos = createSampleMajorInfos();
     given(majorInfoRepository.findAll()).willReturn(majorInfos);
 
     // when
@@ -68,7 +66,7 @@ public class MajorInfoServiceTest {
 
   @DisplayName("새로운 학과를 추가한다.")
   @Test
-  public void saveMajorInfoTest() {
+  public void saveNewMajorInfoTest() {
 
     // given
     MajorInfoSaveDto newMajor = new MajorInfoSaveDto("경영대학", "글로벌금융학과");

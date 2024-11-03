@@ -12,7 +12,7 @@ public class MajorTest {
 
   @DisplayName("Major 타입에 제목을 저장한다.")
   @Test
-  public void Major_is_OK() {
+  public void saveValidMajorName() {
 
     // given
     String majorString = "컴퓨터공학과";
@@ -26,7 +26,7 @@ public class MajorTest {
 
   @DisplayName("Major 타입에 너무 긴 이름을 저장한다. 50자 이상")
   @Test
-  public void Major_is_too_long() {
+  public void throwExceptionWhenSavingTooLongMajorName() {
 
     // given
     String majorString = "지금이문장은10자임".repeat(50);
@@ -37,14 +37,14 @@ public class MajorTest {
 
   @DisplayName("Major 은 null 일 수 없습니다.")
   @Test
-  public void Major_cannot_be_Null() {
+  public void throwExceptionWhenSavingNullMajorName() {
 
     assertThrows(InvalidInputException.class, () -> new Major(null));
   }
 
   @DisplayName("Major 은 빈 문자열일 수 없습니다.")
   @Test
-  public void Major_cannot_be_Blank() {
+  public void throwExceptionWhenSavingBlankMajorName() {
 
     assertThrows(InvalidInputException.class, () -> new Major("\t"));
   }
