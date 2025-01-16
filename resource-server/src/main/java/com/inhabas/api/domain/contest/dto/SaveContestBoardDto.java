@@ -42,12 +42,12 @@ public class SaveContestBoardDto {
 
   @NotNull(message = "공모전 모집 시작일을 등록해주세요.")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   private LocalDateTime dateContestStart;
 
   @NotNull(message = "공모전 모집 마감일을 등록해주세요.")
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   @Future(message = "이미 모집기간이 종료된 공모전은 등록할 수 없습니다.")
   private LocalDateTime dateContestEnd;
 
