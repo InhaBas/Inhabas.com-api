@@ -148,7 +148,7 @@ public class BudgetHistoryRepositoryTest {
   public void getAllYearOfHistory() {
     // given
     List<BudgetHistory> histories = new ArrayList<>();
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
       histories.add(
           BudgetHistory.builder()
               .title(HISTORY_TITLE)
@@ -169,8 +169,8 @@ public class BudgetHistoryRepositoryTest {
     List<Integer> allYear = budgetHistoryRepository.findAllYear();
 
     // then
-    assertThat(allYear).containsExactly(2024, 2023, 2022, 2021, 2020);
-    assertThat(allYear).hasSize(5);
+    assertThat(allYear).containsExactly(2025, 2024, 2023, 2022, 2021, 2020);
+    assertThat(allYear).hasSize(6);
   }
 
   @DisplayName("잔액 조회")
