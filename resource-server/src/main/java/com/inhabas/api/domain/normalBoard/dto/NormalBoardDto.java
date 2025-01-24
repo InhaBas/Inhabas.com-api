@@ -27,17 +27,17 @@ public class NormalBoardDto {
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   private LocalDateTime datePinExpiration;
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   private LocalDateTime dateCreated;
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   private LocalDateTime dateUpdated;
 
   @NotNull private Boolean isPinned;

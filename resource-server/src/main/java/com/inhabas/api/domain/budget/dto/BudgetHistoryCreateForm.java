@@ -27,7 +27,7 @@ public class BudgetHistoryCreateForm {
 
   @NotNull
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-  @Schema(type = "string", example = "2024-11-01T00:00:00")
+  @Schema(type = "string", example = "2025-11-01T00:00:00")
   @Past
   private LocalDateTime dateUsed;
 
