@@ -12,7 +12,7 @@ public class CollegeTest {
 
   @DisplayName("College 타입에 제목을 저장한다.")
   @Test
-  public void College_is_OK() {
+  public void saveValidCollegeName() {
 
     // given
     String collegeString = "사회과학대학";
@@ -26,7 +26,7 @@ public class CollegeTest {
 
   @DisplayName("College 타입에 너무 긴 이름을 저장한다. 20자 이상")
   @Test
-  public void College_is_too_long() {
+  public void throwExceptionWhenSavingTooLongCollegeName() {
 
     // given
     String collegeString = "지금이문장은10자임".repeat(20);
@@ -37,14 +37,14 @@ public class CollegeTest {
 
   @DisplayName("College 은 null 일 수 없습니다.")
   @Test
-  public void College_cannot_be_Null() {
+  public void throwExceptionWhenSavingNullCollegeName() {
 
     assertThrows(InvalidInputException.class, () -> new College(null));
   }
 
   @DisplayName("College 은 빈 문자열일 수 없습니다.")
   @Test
-  public void College_cannot_be_Blank() {
+  public void throwExceptionWhenSavingBlankCollegeName() {
 
     assertThrows(InvalidInputException.class, () -> new College("\t"));
   }

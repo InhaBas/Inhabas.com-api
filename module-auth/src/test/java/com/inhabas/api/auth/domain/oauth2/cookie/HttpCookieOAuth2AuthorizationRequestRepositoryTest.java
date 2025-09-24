@@ -3,7 +3,6 @@ package com.inhabas.api.auth.domain.oauth2.cookie;
 import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME;
 import static com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,10 +18,18 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 
 import org.apache.commons.codec.binary.Base64;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
+
+  private HttpCookieOAuth2AuthorizationRequestRepository repository;
+
+  @BeforeEach
+  public void setUp() {
+    repository = new HttpCookieOAuth2AuthorizationRequestRepository();
+  }
 
   private final HttpCookieOAuth2AuthorizationRequestRepository
       httpCookieOAuth2AuthorizationRequestRepository =
@@ -62,8 +69,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     MockHttpServletResponse response = new MockHttpServletResponse();
 
     // when
-    httpCookieOAuth2AuthorizationRequestRepository.saveAuthorizationRequest(
-        null, request, response);
+    repository.saveAuthorizationRequest(null, request, response);
 
     // then
     assertThat(response.getCookies())
@@ -83,14 +89,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     OAuth2AuthorizationRequest oAuth2AuthorizationRequest = this.createOAuth2AuthorizationRequest();
 
     // when
-    httpCookieOAuth2AuthorizationRequestRepository.saveAuthorizationRequest(
-        oAuth2AuthorizationRequest, request, response);
+    repository.saveAuthorizationRequest(oAuth2AuthorizationRequest, request, response);
 
     // then
     // 쿠키 한가지 존재하는지 확인.
     Cookie savedCookie = response.getCookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-    assert savedCookie != null;
-    assertTrue(Base64.isBase64(savedCookie.getValue()));
+    assertThat(savedCookie).isNotNull();
+    assertThat(Base64.isBase64(savedCookie.getValue())).isTrue();
   }
 
   @DisplayName("OAuth2AuthorizationRequest 를 쿠키로 저장할 때, redirect_url 도 쿠키로 저장한다.")
@@ -104,8 +109,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     request.setParameter(REDIRECT_URL_PARAM_COOKIE_NAME, "/index.html");
 
     // when
-    httpCookieOAuth2AuthorizationRequestRepository.saveAuthorizationRequest(
-        oAuth2AuthorizationRequest, request, response);
+    repository.saveAuthorizationRequest(oAuth2AuthorizationRequest, request, response);
 
     // then
     // 쿠키 두가지 존재하는 지 확인
@@ -133,13 +137,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     // when
     OAuth2AuthorizationRequest returnedRequest =
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequest(
-            request, response);
+        repository.removeAuthorizationRequest(request, response);
 
     // then
     Cookie cookie = response.getCookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-    assert cookie != null;
-    assertTrue(cookie.getValue().isBlank() && cookie.getMaxAge() == 0);
+    assertThat(cookie).isNotNull();
+    assertThat(cookie.getValue()).isBlank();
+    assertThat(cookie.getMaxAge()).isEqualTo(0);
   }
 
   @DisplayName("OAuth2AuthorizationRequest 를 성공적으로 쿠키에서 삭제한다. (redirectUrl 쿠키도 삭제된다.)")
@@ -150,7 +154,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     MockHttpServletResponse response = new MockHttpServletResponse();
 
     // when
-    httpCookieOAuth2AuthorizationRequestRepository.clearCookies(request, response);
+    repository.clearCookies(request, response);
 
     // then
     assertThat(response.getCookies())
@@ -189,8 +193,8 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
           .attributes(java.util.Map.of("registration_id", "kakao"))
           .build();
 
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException ignored) {
-      return null;
+    } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+      throw new RuntimeException("Failed to create OAuth2AuthorizationRequest", e);
     }
   }
 }
