@@ -46,7 +46,12 @@ subprojects {
 
     group = 'com.inhabas'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '11'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -137,7 +142,6 @@ project(':module-auth') {
         // security
         api 'org.springframework.boot:spring-boot-starter-security'
         api 'org.springframework.boot:spring-boot-starter-oauth2-client'
-        api 'org.springframework.security:spring-security-core:5.1.6.RELEASE'
         api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:2.13.0'
