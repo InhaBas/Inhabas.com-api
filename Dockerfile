@@ -1,4 +1,4 @@
-FROM openjdk:17-jre-slim as spring
+FROM eclipse-temurin:17-jre-jammy AS spring
 
 ARG JAR_FILE=./resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar
 
