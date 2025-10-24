@@ -57,6 +57,7 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKERHUB_STORAGE }}:dev
+        platforms: linux/arm64
 
     - name: execute deploy shell script via ssh
       uses: appleboy/ssh-action@master
