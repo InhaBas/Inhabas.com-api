@@ -38,53 +38,59 @@ public class Oauth2AuthenticationFailureHandlerTest {
 
   @Mock private AuthProperties.OAuth2 oauth2Utils;
 
+  private static final String VALID_REDIRECT_URL = "https://www.inhabas.com";
+  private static final String INVALID_REDIRECT_URL = "https://www.unauthorized_url.com";
+  private static final String ERROR_CODE = OAuth2ErrorCodes.INVALID_REQUEST;
+
   @BeforeEach
   public void setUp() {
     given(authProperties.getOauth2()).willReturn(oauth2Utils);
+  }
+
+  private MockHttpServletRequest createRequestWithCookie(String cookieValue) {
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, cookieValue);
+    request.setCookies(redirectCookie);
+    return request;
+  }
+
+  private AuthenticationException createAuthenticationException(String errorCode) {
+    return new OAuth2AuthenticationException(errorCode);
   }
 
   @DisplayName("FailureHandler 호출 시, 허락된 defaultURL 로 정상적으로 리다이렉트 된다.")
   @Test
   public void redirectToDefaultTest() throws IOException {
     // given
-    String errorCode = OAuth2ErrorCodes.INVALID_REQUEST;
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletRequest request = createRequestWithCookie(VALID_REDIRECT_URL);
     MockHttpServletResponse response = new MockHttpServletResponse();
-    AuthenticationException authenticationException = new OAuth2AuthenticationException(errorCode);
+    AuthenticationException authenticationException = new OAuth2AuthenticationException(ERROR_CODE);
 
-    Cookie redirectCookie = new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, "https://www.inhabas.com");
-    request.setCookies(redirectCookie);
-
-    given(oauth2Utils.getDefaultRedirectUri()).willReturn("https://www.inhabas.com");
+    given(oauth2Utils.getDefaultRedirectUri()).willReturn(VALID_REDIRECT_URL);
 
     // when
     oauth2AuthenticationFailureHandler.onAuthenticationFailure(
         request, response, authenticationException);
 
     // then
-    assertThat(response.getRedirectedUrl()).isEqualTo("https://www.inhabas.com?error=" + errorCode);
+    assertThat(response.getRedirectedUrl()).isEqualTo(VALID_REDIRECT_URL + "?error=" + ERROR_CODE);
   }
 
   @DisplayName("유효하지 않은 redirect_url 은 허용하지 않는다.")
   @Test
   public void validateRedirectUrlTest() throws IOException {
     // given
-    String errorCode = OAuth2ErrorCodes.INVALID_REQUEST;
-    MockHttpServletRequest request = new MockHttpServletRequest();
+    MockHttpServletRequest request = createRequestWithCookie(INVALID_REDIRECT_URL);
     MockHttpServletResponse response = new MockHttpServletResponse();
-    AuthenticationException authenticationException = new OAuth2AuthenticationException(errorCode);
+    AuthenticationException authenticationException = createAuthenticationException(ERROR_CODE);
 
-    Cookie redirectCookie =
-        new Cookie(REDIRECT_URL_PARAM_COOKIE_NAME, "https://www.unauthorized_url.com");
-    request.setCookies(redirectCookie);
-
-    given(oauth2Utils.getDefaultRedirectUri()).willReturn("https://www.inhabas.com");
+    given(oauth2Utils.getDefaultRedirectUri()).willReturn(VALID_REDIRECT_URL);
 
     // when
     oauth2AuthenticationFailureHandler.onAuthenticationFailure(
         request, response, authenticationException);
 
     // then
-    assertThat(response.getRedirectedUrl()).isEqualTo("https://www.inhabas.com?error=" + errorCode);
+    assertThat(response.getRedirectedUrl()).isEqualTo(VALID_REDIRECT_URL + "?error=" + ERROR_CODE);
   }
 }
