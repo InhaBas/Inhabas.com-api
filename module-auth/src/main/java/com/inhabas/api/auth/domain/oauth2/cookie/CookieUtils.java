@@ -1,8 +1,12 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.Duration;
 import java.util.Base64;
-import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.servlet.http.Cookie;
@@ -11,9 +15,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.util.SerializationUtils;
-
-import io.micrometer.core.instrument.util.StringUtils;
 
 public interface CookieUtils {
 
@@ -130,8 +131,14 @@ public interface CookieUtils {
    * @return 브라우저 쿠키에 담기 위해 OAuth2AuthorizationRequest 를 string 으로 변환.
    */
   static String serialize(OAuth2AuthorizationRequest request) {
-
-    return Base64.getUrlEncoder().encodeToString(SerializationUtils.serialize(request));
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+      oos.writeObject(request);
+      oos.flush();
+      return Base64.getUrlEncoder().encodeToString(bos.toByteArray());
+    } catch (IOException e) {
+      throw new IllegalStateException("Failed to serialize OAuth2AuthorizationRequest", e);
+    }
   }
 
   /**
@@ -141,18 +148,19 @@ public interface CookieUtils {
    */
   static <T> T deserialize(Cookie cookie, Class<T> clz) {
 
-    if (isDeleted(cookie)) return null;
-    else {
-      try {
-        return clz.cast(
-            SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.getValue())));
-      } catch (RuntimeException ex) { // Base64 decoding error or deserialization error
-        return null;
+    if (cookie == null || isBlank(cookie.getValue())) return null;
+    try {
+      byte[] data = Base64.getUrlDecoder().decode(cookie.getValue());
+      try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data))) {
+        Object obj = ois.readObject();
+        return clz.cast(obj);
       }
+    } catch (IOException | ClassNotFoundException | IllegalArgumentException ex) {
+      return null;
     }
   }
 
-  private static boolean isDeleted(Cookie cookie) {
-    return StringUtils.isBlank(cookie.getValue()) || Objects.isNull(cookie.getValue());
+  private static boolean isBlank(String s) {
+    return s == null || s.trim().isEmpty();
   }
 }

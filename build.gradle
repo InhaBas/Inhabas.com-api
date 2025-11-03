@@ -64,6 +64,14 @@ subprojects {
         }
     }
 
+    testing {
+        suites {
+            test {
+                useJUnitJupiter()
+            }
+        }
+    }
+
     dependencies {
         annotationProcessor(
                 'org.projectlombok:lombok',
@@ -101,10 +109,6 @@ subprojects {
                 'org.mariadb.jdbc:mariadb-java-client',
                 'com.h2database:h2'
         )
-    }
-
-    test {
-        useJUnitPlatform()
     }
 
 }
@@ -175,7 +179,7 @@ project(':resource-server') {
         delete file('src/main/generated')
     }
 
-    task cleanGeneratedDir(type: Delete) {
+    tasks.register('cleanGeneratedDir', Delete) {
         delete file('src/main/generated')
     }
 }
