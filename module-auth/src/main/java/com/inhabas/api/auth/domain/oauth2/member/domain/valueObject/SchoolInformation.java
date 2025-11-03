@@ -2,7 +2,7 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
 import java.util.Objects;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

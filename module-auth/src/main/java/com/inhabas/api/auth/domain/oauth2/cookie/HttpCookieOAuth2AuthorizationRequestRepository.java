@@ -1,7 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -64,12 +64,6 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
           CookieUtils.SameSite.LAX,
           null);
     }
-  }
-
-  @Deprecated
-  @Override
-  public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-    return null;
   }
 
   /**

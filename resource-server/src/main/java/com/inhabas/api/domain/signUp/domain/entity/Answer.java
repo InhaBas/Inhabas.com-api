@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.signUp.domain.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;

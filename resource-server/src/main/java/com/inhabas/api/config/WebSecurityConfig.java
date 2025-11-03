@@ -15,19 +15,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
@@ -87,14 +83,13 @@ public class WebSecurityConfig {
     private final Hierarchical hierarchy;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthBeansConfig authBeansConfig;
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Value("${cors.allowed-origins:*}")
     private String allowedOriginsProp;
 
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
+    public AuthenticationManager authenticationManager() {
       return new ProviderManager(List.of(jwtAuthenticationProvider));
     }
 
@@ -160,10 +155,9 @@ public class WebSecurityConfig {
                   exceptionHandling
                       .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                       .accessDeniedHandler(jwtAccessDeniedHandler))
-          .authorizeRequests(
+          .authorizeHttpRequests(
               authorize ->
                   authorize
-                      .expressionHandler(expressionHandler())
                       .requestMatchers(CorsUtils::isPreFlightRequest)
                       .permitAll()
                       // Swagger 및 공개 경로는 필터 체인은 타되 인가만 면제
@@ -213,7 +207,7 @@ public class WebSecurityConfig {
                       .requestMatchers(methodMatchers(HttpMethod.PUT, "/signUp/schedule"))
                       .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
                       .requestMatchers(pathMatchers("/signUp/check"))
-                      .hasRole(ANONYMOUS.toString())
+                      .hasAnyRole(ANONYMOUS.toString(), SIGNING_UP.toString())
                       .requestMatchers(pathMatchers("/signUp/**"))
                       .hasRole(SIGNING_UP.toString())
                       .requestMatchers(pathMatchers("/club/history/**"))
@@ -238,14 +232,6 @@ public class WebSecurityConfig {
       return Arrays.stream(patterns)
           .map(p -> new AntPathRequestMatcher(p, method.name()))
           .toArray(RequestMatcher[]::new);
-    }
-
-    @Bean
-    public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
-      DefaultWebSecurityExpressionHandler webSecurityExpressionHandler =
-          new DefaultWebSecurityExpressionHandler();
-      webSecurityExpressionHandler.setRoleHierarchy(hierarchy.getHierarchy());
-      return webSecurityExpressionHandler;
     }
 
     @Bean

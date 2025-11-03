@@ -4,9 +4,9 @@ import static com.inhabas.api.global.util.FileUtil.isValidFileName;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.Transient;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Transient;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 

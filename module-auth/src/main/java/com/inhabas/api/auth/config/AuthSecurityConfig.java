@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsUtils;
 
 import com.inhabas.api.auth.domain.oauth2.CustomOAuth2UserService;
@@ -40,7 +39,7 @@ public class AuthSecurityConfig {
 
     http
         // /login/** 경로에만 이 보안 체인 적용
-        .requestMatcher(new AntPathRequestMatcher("/login/**"))
+        .securityMatcher("/login/**")
         // 세션 생성 금지
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
