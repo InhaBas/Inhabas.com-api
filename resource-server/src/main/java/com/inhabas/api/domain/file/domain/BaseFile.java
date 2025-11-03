@@ -3,7 +3,7 @@ package com.inhabas.api.domain.file.domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;

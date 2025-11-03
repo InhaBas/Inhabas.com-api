@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.io.IOException;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

@@ -3,7 +3,7 @@ package com.inhabas.api.domain.board.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;

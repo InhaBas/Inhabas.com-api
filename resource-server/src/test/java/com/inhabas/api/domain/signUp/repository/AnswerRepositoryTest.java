@@ -34,7 +34,7 @@ class AnswerRepositoryTest {
     // given
     Member member = memberRepository.save(MemberTest.signingUpMember1());
     Questionnaire questionnaire = new Questionnaire(1L, "hello");
-    questionnaireRepository.save(questionnaire);
+    questionnaire = questionnaireRepository.saveAndFlush(questionnaire);
     String content = "Ok... bye";
     Answer answer = new Answer(member, questionnaire, content);
 

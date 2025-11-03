@@ -2,7 +2,7 @@ package com.inhabas.api.domain.lecture.domain.converter;
 
 import java.util.Objects;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 import com.inhabas.api.domain.lecture.domain.valueObject.StudentStatus;
 

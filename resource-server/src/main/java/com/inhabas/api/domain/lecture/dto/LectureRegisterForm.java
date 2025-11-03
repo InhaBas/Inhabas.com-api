@@ -2,9 +2,9 @@ package com.inhabas.api.domain.lecture.dto;
 
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.Getter;

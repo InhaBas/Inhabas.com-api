@@ -1,7 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -35,26 +35,35 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
       HttpServletRequest request,
       HttpServletResponse response) {
     if (authorizationRequest == null) {
-      CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-      CookieUtils.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
+      CookieUtils.deleteCookie(
+          request,
+          response,
+          OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
+          CookieUtils.SameSite.LAX,
+          null);
+      CookieUtils.deleteCookie(
+          request, response, REDIRECT_URL_PARAM_COOKIE_NAME, CookieUtils.SameSite.LAX, null);
       return;
     }
     CookieUtils.setCookie(
+        request,
         response,
         OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
         CookieUtils.serialize(authorizationRequest),
-        cookieExpireSeconds);
+        cookieExpireSeconds,
+        CookieUtils.SameSite.LAX,
+        null);
     String redirectUrlAfterLogin = request.getParameter(REDIRECT_URL_PARAM_COOKIE_NAME);
     if (StringUtils.isNotBlank(redirectUrlAfterLogin)) {
       CookieUtils.setCookie(
-          response, REDIRECT_URL_PARAM_COOKIE_NAME, redirectUrlAfterLogin, cookieExpireSeconds);
+          request,
+          response,
+          REDIRECT_URL_PARAM_COOKIE_NAME,
+          redirectUrlAfterLogin,
+          cookieExpireSeconds,
+          CookieUtils.SameSite.LAX,
+          null);
     }
-  }
-
-  @Deprecated
-  @Override
-  public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request) {
-    return null;
   }
 
   /**
@@ -68,14 +77,25 @@ public class HttpCookieOAuth2AuthorizationRequestRepository
 
     // 쿠키 삭제하기 전에 쿠키 문자열을 객체로 변환
     OAuth2AuthorizationRequest authorizationRequest = this.loadAuthorizationRequest(request);
-    CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+    CookieUtils.deleteCookie(
+        request,
+        response,
+        OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
+        CookieUtils.SameSite.LAX,
+        null);
 
     return authorizationRequest;
   }
 
   /** redirect_url이 담긴 쿠키는 인증이 완전히 완료된 후에 제거되어야함. */
   public void clearCookies(HttpServletRequest request, HttpServletResponse response) {
-    CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-    CookieUtils.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
+    CookieUtils.deleteCookie(
+        request,
+        response,
+        OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
+        CookieUtils.SameSite.LAX,
+        null);
+    CookieUtils.deleteCookie(
+        request, response, REDIRECT_URL_PARAM_COOKIE_NAME, CookieUtils.SameSite.LAX, null);
   }
 }

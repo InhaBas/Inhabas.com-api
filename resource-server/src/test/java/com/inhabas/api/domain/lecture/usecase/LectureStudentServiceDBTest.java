@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.lecture.usecase;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

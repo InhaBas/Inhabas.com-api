@@ -2,8 +2,8 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 
 import lombok.Getter;
 

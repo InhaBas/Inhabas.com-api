@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.error.authException.CustomAuthException;
 import com.inhabas.api.auth.domain.token.TokenResolver;
@@ -47,7 +48,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
   @Override
   public Authentication attemptAuthentication(
       HttpServletRequest request, HttpServletResponse response)
-      throws AuthenticationException, IOException, ServletException {
+      throws AuthenticationException, IOException {
 
     final String token = tokenResolver.resolveAccessTokenOrNull(request);
 
@@ -80,14 +81,27 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
   @Override
   protected void unsuccessfulAuthentication(
       HttpServletRequest request, HttpServletResponse response, AuthenticationException failed)
-      throws IOException, ServletException {
+      throws IOException {
     SecurityContextHolder.clearContext();
-    log.info("Failed to process authentication request", failed);
-    response.setStatus(((CustomAuthException) failed).getErrorCode().getStatus());
+    log.info("Failed to process authentication request: {}", failed.getMessage());
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+    if (failed instanceof CustomAuthException) {
+      response.setStatus(((CustomAuthException) failed).getErrorCode().getStatus());
+      try (OutputStream os = response.getOutputStream()) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.writeValue(
+            os, ErrorResponse.of(((CustomAuthException) failed).getErrorCode()));
+        os.flush();
+      }
+      return;
+    }
+
+    // 일반 인증 실패에 대해서는 401로 응답하고 자세한 정보를 노출하지 않음
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     try (OutputStream os = response.getOutputStream()) {
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.writeValue(os, ErrorResponse.of(((CustomAuthException) failed).getErrorCode()));
+      objectMapper.writeValue(os, ErrorResponse.of(ErrorCode.JWT_INVALID));
       os.flush();
     }
   }

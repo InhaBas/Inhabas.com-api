@@ -80,7 +80,7 @@ public class JwtTokenUtilTest {
   @Test
   public void nullAuthenticationTokenTest() {
 
-    assertThrows(AssertionError.class, () -> jwtTokenUtil.createAccessToken(null));
+    assertThrows(IllegalArgumentException.class, () -> jwtTokenUtil.createAccessToken(null));
   }
 
   @DisplayName("토큰을 정상적으로 decode")
