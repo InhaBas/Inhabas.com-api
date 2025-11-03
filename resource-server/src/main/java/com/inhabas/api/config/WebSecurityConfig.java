@@ -3,28 +3,40 @@ package com.inhabas.api.config;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.FilterInvocation;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
@@ -42,10 +54,10 @@ import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST_SWAGGER = {
-    "/swagger-ui/**", "/swagger/**", "/docs/**"
+    "/swagger-ui/**", "/swagger/**", "/docs/**", "/v3/api-docs/**", "/swagger-resources/**"
   };
   private static final String[] AUTH_WHITELIST_STATIC = {
-    "/static/css/**", "/static/js/**", "*.ico"
+    "/static/css/**", "/static/js/**", "/**/*.ico", "/favicon.ico"
   };
   private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
   private static final String[] AUTH_WHITELIST_PATH = {
@@ -60,134 +72,172 @@ public class WebSecurityConfig {
     "/club/activity/**", "/club/activities"
   };
   private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {"/board/count"};
-
   private static final String[] AUTH_WHITELIST_PROJECT_BOARD = {"/project/count"};
-
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 
-  @Order(1)
-  @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
+  @Configuration
+  @EnableMethodSecurity(jsr250Enabled = true)
   @EnableWebSecurity
   @RequiredArgsConstructor
   @Profile({"local", "dev1", "dev2", "default_mvc_test", "prod1", "prod2", "integration_test"})
-  public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
+  public static class ApiSecurityForDev {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final Hierarchical hierarchy;
     private final JwtTokenUtil jwtTokenUtil;
-    private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final AuthBeansConfig authBeansConfig;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-      auth.authenticationProvider(jwtAuthenticationProvider);
+    @Value("${cors.allowed-origins:*}")
+    private String allowedOriginsProp;
+
+    @Bean
+    public AuthenticationManager authenticationManager() throws Exception {
+      return new ProviderManager(List.of(jwtAuthenticationProvider));
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-      web.ignoring()
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD)
-          .antMatchers(AUTH_WHITELIST_SWAGGER)
-          .antMatchers(AUTH_WHITELIST_STATIC)
-          .antMatchers(AUTH_WHITELIST_PATH);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration config = new CorsConfiguration();
+
+      List<String> origins =
+          Arrays.stream(allowedOriginsProp.split(","))
+              .map(String::trim)
+              .filter(s -> !s.isEmpty())
+              .collect(Collectors.toList());
+
+      boolean wildcard = origins.contains("*");
+      if (wildcard) {
+        // 패턴 전체 허용 시, 자격 증명은 허용하지 않음 (보안 권장)
+        config.setAllowedOriginPatterns(List.of("*"));
+        config.setAllowCredentials(false);
+      } else {
+        config.setAllowedOrigins(origins);
+        config.setAllowCredentials(true);
+      }
+
+      config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+      config.setAllowedHeaders(List.of("*"));
+      config.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
+      config.setMaxAge(3600L);
+
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", config);
+      return source;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      http
-          // OAuth 관련 경로 제외 모든 경로
-          .requestMatchers()
-          .antMatchers("/**")
-          .and()
-          .anonymous()
-          .authorities("ROLE_" + ANONYMOUS)
-          .and()
-          // HTTP 기본 인증 비활성화
-          .httpBasic()
-          .disable()
-          // 세션 생성 금지
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-          .and()
-          // API 이므로 CORS 활성화, CSRF 비활성화
-          .cors()
-          .and()
-          .csrf()
-          .disable()
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+      return (web) -> {
+        // 동적 API는 필터 체인을 타게 두고, 정적 리소스만 완전히 무시
+        for (String pattern : AUTH_WHITELIST_STATIC) {
+          web.ignoring().requestMatchers(new AntPathRequestMatcher(pattern));
+        }
+      };
+    }
 
-          // 인증 예외 처리시 jwtAuthenticationEntryPoint 사용
-          .exceptionHandling()
-          .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-          .accessDeniedHandler(jwtAccessDeniedHandler)
-          .and()
-          .authorizeRequests()
-          // 권한 부여 표현식
-          .expressionHandler(expressionHandler())
-          // Preflight 방식
-          .requestMatchers(CorsUtils::isPreFlightRequest)
-          .permitAll()
-          .antMatchers("/myInfo/requests")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-          .antMatchers("/myInfo/request/**")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 회원 관리
-          .antMatchers("/members/executive")
-          .hasRole(ANONYMOUS.toString())
-          .antMatchers("/members/hof")
-          .hasRole(DEACTIVATED.toString())
-          .antMatchers("/members/approved/role")
-          .hasRole(SECRETARY.toString())
-          .antMatchers("/members/approved/type")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-          .antMatchers("/members/**", "/member/**")
-          .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
-          // 회계내역
-          .antMatchers(
-              "/budget/history/**",
-              "/budget/histories",
-              "/budget/application/**",
-              "/budget/applications")
-          .hasRole(DEACTIVATED.toString())
-          // 강의
-          .antMatchers("/lecture/**/status")
-          .hasRole(EXECUTIVES.toString())
-          .antMatchers("/lecture/**")
-          .hasRole(DEACTIVATED.toString())
-
-          // 회원가입 일정 수정
-          .antMatchers(HttpMethod.PUT, "/signUp/schedule")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-          .antMatchers("/signUp/check")
-          .hasRole(ANONYMOUS.toString())
-          .antMatchers("/signUp/**")
-          .hasRole(SIGNING_UP.toString())
-
-          // 동아리 연혁 수정
-          .antMatchers("/club/history/**")
-          .hasRole(EXECUTIVES.toString())
-
-          // 정책 수정
-          .antMatchers(HttpMethod.PUT, "/policy/**")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 장학회 연혁 수정
-          .antMatchers("/scholarship/history/**")
-          .hasRole(SECRETARY.toString())
-
-          // 그 외
-          .anyRequest()
-          .hasRole(ANONYMOUS.toString());
+    @Bean
+    @Order(1)
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+      http.anonymous(
+              anonymous -> anonymous.principal("anonymousUser").authorities("ROLE_" + ANONYMOUS))
+          .httpBasic(httpBasic -> httpBasic.disable())
+          .sessionManagement(
+              sessionManagement ->
+                  sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+          .csrf(AbstractHttpConfigurer::disable)
+          .headers(
+              headers ->
+                  headers
+                      .referrerPolicy(
+                          r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
+                      .frameOptions(frame -> frame.sameOrigin()))
+          .exceptionHandling(
+              exceptionHandling ->
+                  exceptionHandling
+                      .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                      .accessDeniedHandler(jwtAccessDeniedHandler))
+          .authorizeRequests(
+              authorize ->
+                  authorize
+                      .expressionHandler(expressionHandler())
+                      .requestMatchers(CorsUtils::isPreFlightRequest)
+                      .permitAll()
+                      // Swagger 및 공개 경로는 필터 체인은 타되 인가만 면제
+                      .requestMatchers(pathMatchers(AUTH_WHITELIST_SWAGGER))
+                      .permitAll()
+                      .requestMatchers(pathMatchers(AUTH_WHITELIST_PATH))
+                      .permitAll()
+                      // GET 공개 엔드포인트들
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY))
+                      .permitAll()
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP))
+                      .permitAll()
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB))
+                      .permitAll()
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD))
+                      .permitAll()
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD))
+                      .permitAll()
+                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD))
+                      .permitAll()
+                      // 나머지 기존 인가 규칙 유지
+                      .requestMatchers(pathMatchers("/myInfo/requests"))
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers(pathMatchers("/myInfo/request/**"))
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers(pathMatchers("/members/executive"))
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers(pathMatchers("/members/hof"))
+                      .hasRole(DEACTIVATED.toString())
+                      .requestMatchers(pathMatchers("/members/approved/role"))
+                      .hasRole(SECRETARY.toString())
+                      .requestMatchers(pathMatchers("/members/approved/type"))
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers(pathMatchers("/members/**", "/member/**"))
+                      .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
+                      .requestMatchers(
+                          pathMatchers(
+                              "/budget/history/**",
+                              "/budget/histories",
+                              "/budget/application/**",
+                              "/budget/applications"))
+                      .hasRole(DEACTIVATED.toString())
+                      .requestMatchers(pathMatchers("/lecture/**/status"))
+                      .hasRole(EXECUTIVES.toString())
+                      .requestMatchers(pathMatchers("/lecture/**"))
+                      .hasRole(DEACTIVATED.toString())
+                      .requestMatchers(methodMatchers(HttpMethod.PUT, "/signUp/schedule"))
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers(pathMatchers("/signUp/check"))
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers(pathMatchers("/signUp/**"))
+                      .hasRole(SIGNING_UP.toString())
+                      .requestMatchers(pathMatchers("/club/history/**"))
+                      .hasRole(EXECUTIVES.toString())
+                      .requestMatchers(methodMatchers(HttpMethod.PUT, "/policy/**"))
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers(pathMatchers("/scholarship/history/**"))
+                      .hasRole(SECRETARY.toString())
+                      .anyRequest()
+                      .hasRole(ANONYMOUS.toString()));
 
       http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+      return http.build();
+    }
+
+    private static RequestMatcher[] pathMatchers(String... patterns) {
+      return Arrays.stream(patterns).map(AntPathRequestMatcher::new).toArray(RequestMatcher[]::new);
+    }
+
+    private static RequestMatcher[] methodMatchers(HttpMethod method, String... patterns) {
+      return Arrays.stream(patterns)
+          .map(p -> new AntPathRequestMatcher(p, method.name()))
+          .toArray(RequestMatcher[]::new);
     }
 
     @Bean
@@ -198,6 +248,7 @@ public class WebSecurityConfig {
       return webSecurityExpressionHandler;
     }
 
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
       final List<RequestMatcher> skipPaths = new ArrayList<>();
 
@@ -213,8 +264,7 @@ public class WebSecurityConfig {
       final JwtAuthenticationFilter filter =
           new JwtAuthenticationFilter(
               requestMatcher, jwtTokenUtil, authBeansConfig.tokenResolver());
-
-      filter.setAuthenticationManager(super.authenticationManager());
+      filter.setAuthenticationManager(authenticationManager());
       return filter;
     }
   }
