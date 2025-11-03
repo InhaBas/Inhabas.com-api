@@ -125,12 +125,7 @@ public class WebSecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-      return (web) -> {
-        // 동적 API는 필터 체인을 타게 두고, 정적 리소스만 완전히 무시
-        for (String pattern : AUTH_WHITELIST_STATIC) {
-          web.ignoring().requestMatchers(new AntPathRequestMatcher(pattern));
-        }
-      };
+      return (web) -> {};
     }
 
     @Bean
@@ -162,6 +157,8 @@ public class WebSecurityConfig {
                       .permitAll()
                       // Swagger 및 공개 경로는 필터 체인은 타되 인가만 면제
                       .requestMatchers(pathMatchers(AUTH_WHITELIST_SWAGGER))
+                      .permitAll()
+                      .requestMatchers(pathMatchers(AUTH_WHITELIST_STATIC))
                       .permitAll()
                       .requestMatchers(pathMatchers(AUTH_WHITELIST_PATH))
                       .permitAll()
