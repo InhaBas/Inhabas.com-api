@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

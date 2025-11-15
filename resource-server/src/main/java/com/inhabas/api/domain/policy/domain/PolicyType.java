@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.policy.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;

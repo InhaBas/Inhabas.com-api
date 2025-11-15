@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.signUp.dto;
 
-import jakarta.validation.constraints.Positive;
+import javax.validation.constraints.Positive;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

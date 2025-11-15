@@ -1,8 +1,8 @@
 plugins {
-    id 'org.springframework.boot' version '3.3.5'
-    id 'io.spring.dependency-management' version '1.1.6'
+    id 'org.springframework.boot' version '2.7.18'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'java-library'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.diffplug.spotless' version '6.13.0'
 }
 
 spotless {
@@ -20,7 +20,7 @@ spotless {
         //임포트 순서 정리
         importOrder(
                 "java",
-                "jakarta",
+                "javax",
                 "lombok",
                 "org.springframework",
                 "",
@@ -64,33 +64,26 @@ subprojects {
         }
     }
 
-    testing {
-        suites {
-            test {
-                useJUnitJupiter()
-            }
-        }
-    }
-
     dependencies {
         annotationProcessor(
                 'org.projectlombok:lombok',
                 'org.springframework.boot:spring-boot-configuration-processor',
                 'jakarta.persistence:jakarta.persistence-api',
                 'jakarta.annotation:jakarta.annotation-api',
-                'com.querydsl:querydsl-apt:5.0.0:jakarta'
+                "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
         )
 
         implementation (
                 'org.springframework.boot:spring-boot-starter-web',
                 'org.springframework.boot:spring-boot-starter-validation',
-                'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0',
+                'org.springdoc:springdoc-openapi-ui:1.7.0',
                 'com.google.code.findbugs:jsr305:3.0.2',
+                'io.awspring.cloud:spring-cloud-starter-aws:2.4.4',
 
                 // cloud config
-                'org.springframework.cloud:spring-cloud-starter-config:4.1.4',
+                'org.springframework.cloud:spring-cloud-starter-config:3.1.8',
                 'org.springframework.boot:spring-boot-starter-actuator',
-                'org.springframework.cloud:spring-cloud-starter-bootstrap:4.1.4',
+                'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.8',
 
                 // mail
                 'org.springframework.boot:spring-boot-starter-mail',
@@ -111,6 +104,10 @@ subprojects {
         )
     }
 
+    test {
+        useJUnitPlatform()
+    }
+
 }
 
 project(':module-jpa') {
@@ -120,8 +117,8 @@ project(':module-jpa') {
     dependencies {
         api (
                 'org.springframework.boot:spring-boot-starter-data-jpa',
-                'com.querydsl:querydsl-jpa:5.0.0:jakarta',
-                'com.jcraft:jsch:0.1.55',
+                'com.querydsl:querydsl-jpa', // query dsl
+                'com.jcraft:jsch:0.1.55',  // 로컬 개발용 db ssh tunneling, https://mavenlibs.com/maven/dependency/com.jcraft/jsch
 //                'org.mariadb.jdbc:mariadb-java-client',
                 'com.mysql:mysql-connector-j',
                 'com.h2database:h2'
@@ -136,18 +133,18 @@ project(':module-auth') {
     dependencies {
         api project(':module-jpa')
         // jwt
-        api 'io.jsonwebtoken:jjwt-api:0.11.5'
-        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5',
+        api 'io.jsonwebtoken:jjwt-api:0.11.2'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
                 // Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
                 //'org.bouncycastle:bcprov-jdk15on:1.60',
-                'io.jsonwebtoken:jjwt-jackson:0.11.5'
+                'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 
         // security
         api 'org.springframework.boot:spring-boot-starter-security'
         api 'org.springframework.boot:spring-boot-starter-oauth2-client'
-        api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+        api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
-        testImplementation 'org.mockito:mockito-inline:5.2.0'
+        testImplementation 'org.mockito:mockito-inline:2.13.0'
     }
 }
 
@@ -158,10 +155,9 @@ project(':module-fileStorage') {
     dependencies {
         api project(':module-jpa')
 
-        api 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-        implementation 'com.amazonaws:aws-java-sdk-s3:1.12.188'
+        api 'javax.xml.bind:jaxb-api'
         testImplementation 'org.springframework.security:spring-security-test'
-        testImplementation 'org.mockito:mockito-inline:5.2.0'
+        testImplementation 'org.mockito:mockito-inline:2.13.0'
     }
 }
 
@@ -171,7 +167,6 @@ project(':resource-server') {
         api project(':module-auth')
         api project(':module-fileStorage')
         api 'org.springframework.boot:spring-boot-starter-security'
-        implementation 'com.amazonaws:aws-java-sdk-s3:1.12.188'
         testImplementation 'org.springframework.security:spring-security-test'
     }
 
@@ -179,7 +174,7 @@ project(':resource-server') {
         delete file('src/main/generated')
     }
 
-    tasks.register('cleanGeneratedDir', Delete) {
+    task cleanGeneratedDir(type: Delete) {
         delete file('src/main/generated')
     }
 }

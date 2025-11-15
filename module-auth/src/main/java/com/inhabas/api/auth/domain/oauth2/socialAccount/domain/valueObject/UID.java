@@ -2,9 +2,9 @@ package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Transient;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 

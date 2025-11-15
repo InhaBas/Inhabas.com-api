@@ -9,7 +9,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 
-import jakarta.persistence.EntityManager;
+import javax.persistence.EntityManager;
 
 import org.springframework.test.util.ReflectionTestUtils;
 

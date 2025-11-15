@@ -3,7 +3,7 @@ package com.inhabas.api.domain.signUp.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.validation.constraints.*;
+import javax.validation.constraints.*;
 
 import lombok.Builder;
 import lombok.Getter;

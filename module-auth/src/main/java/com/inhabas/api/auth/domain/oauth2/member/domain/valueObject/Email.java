@@ -3,8 +3,8 @@ package com.inhabas.api.auth.domain.oauth2.member.domain.valueObject;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 

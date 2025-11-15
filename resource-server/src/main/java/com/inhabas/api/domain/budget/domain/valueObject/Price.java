@@ -2,8 +2,8 @@ package com.inhabas.api.domain.budget.domain.valueObject;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.Getter;
 

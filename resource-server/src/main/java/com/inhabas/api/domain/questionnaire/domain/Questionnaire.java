@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.questionnaire.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -3,7 +3,7 @@ package com.inhabas.api.web;
 import java.net.URI;
 import java.util.List;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 

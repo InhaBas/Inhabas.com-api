@@ -10,7 +10,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import jakarta.servlet.http.Cookie;
+import javax.servlet.http.Cookie;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;

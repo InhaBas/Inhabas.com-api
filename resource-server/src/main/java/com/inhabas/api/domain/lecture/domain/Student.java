@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.lecture.domain;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

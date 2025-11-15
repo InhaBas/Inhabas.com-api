@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.token.jwtUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.util.StringUtils;
 

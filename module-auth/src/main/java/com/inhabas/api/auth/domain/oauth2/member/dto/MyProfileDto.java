@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.dto;
 
-import jakarta.validation.constraints.*;
+import javax.validation.constraints.*;
 
 import lombok.*;
 

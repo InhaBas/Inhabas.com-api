@@ -2,7 +2,7 @@ package com.inhabas.api.domain.comment.usecase;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
+import javax.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
 

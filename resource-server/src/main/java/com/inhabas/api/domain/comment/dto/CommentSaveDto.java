@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.comment.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 import lombok.AccessLevel;
 import lombok.Getter;

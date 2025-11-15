@@ -2,8 +2,8 @@ package com.inhabas.api.domain.lecture.domain.converter;
 
 import java.util.Objects;
 
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 import com.inhabas.api.domain.lecture.domain.valueObject.LectureStatus;
 

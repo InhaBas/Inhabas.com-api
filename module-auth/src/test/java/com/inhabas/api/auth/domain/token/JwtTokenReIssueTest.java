@@ -6,7 +6,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
 import com.inhabas.api.auth.domain.token.exception.InvalidTokenException;
 import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenReIssuer;

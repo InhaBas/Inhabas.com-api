@@ -29,6 +29,8 @@ public class DefaultRoleHierarchy implements Hierarchical {
   @Override
   public RoleHierarchy getHierarchy() {
 
+    RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+
     Map<String, List<String>> roleHierarchyMap =
         new HashMap<>() {
           {
@@ -60,12 +62,14 @@ public class DefaultRoleHierarchy implements Hierarchical {
             put(SECRETARY, Arrays.asList(BASIC, DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(BASIC, Arrays.asList(DEACTIVATED, NOT_APPROVED, ANONYMOUS));
             put(DEACTIVATED, Arrays.asList(NOT_APPROVED, ANONYMOUS));
-            put(NOT_APPROVED, Collections.singletonList(ANONYMOUS));
-            put(SIGNING_UP, Collections.singletonList(ANONYMOUS));
+            put(NOT_APPROVED, Arrays.asList(ANONYMOUS));
+            put(SIGNING_UP, Arrays.asList(ANONYMOUS));
           }
         };
 
     String roles = RoleHierarchyUtils.roleHierarchyFromMap(roleHierarchyMap);
-    return RoleHierarchyImpl.fromHierarchy(roles);
+    roleHierarchy.setHierarchy(roles);
+
+    return roleHierarchy;
   }
 }

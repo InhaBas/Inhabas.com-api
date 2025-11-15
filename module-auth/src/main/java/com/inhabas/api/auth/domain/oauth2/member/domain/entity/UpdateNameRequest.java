@@ -4,7 +4,7 @@ import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Reque
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;

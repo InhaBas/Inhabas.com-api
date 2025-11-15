@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

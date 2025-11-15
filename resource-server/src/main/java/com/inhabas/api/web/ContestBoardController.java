@@ -3,7 +3,7 @@ package com.inhabas.api.web;
 import java.net.URI;
 import java.util.List;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
-import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
 import com.inhabas.api.domain.contest.domain.ContestType;
@@ -243,12 +242,6 @@ public class ContestBoardController {
     contestBoardService.updateContestBoard(boardId, contestType, form, memberId);
 
     return ResponseEntity.noContent().build();
-  }
-
-  // 잘못된 경로(boardsId 누락)로 들어오는 요청을 400으로 처리
-  @PostMapping(path = "/contest/{contestType}/")
-  public ResponseEntity<Void> updateContestBoardInvalidPath(@PathVariable ContestType contestType) {
-    throw new InvalidInputException();
   }
 
   @Operation(summary = "공모전 게시글 삭제")

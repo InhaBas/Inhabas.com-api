@@ -4,7 +4,7 @@ import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,7 +26,7 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
     uniqueConstraints = {
       @UniqueConstraint(
           name = "UNIQUE_PROVIDER_UID",
-          columnNames = {"provider", "UID"})
+          columnNames = {"provider", "uid"})
     })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
