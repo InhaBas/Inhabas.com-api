@@ -2,7 +2,7 @@ package com.inhabas.api.domain.file.domain;
 
 import java.util.Objects;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;

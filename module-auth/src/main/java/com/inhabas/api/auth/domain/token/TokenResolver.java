@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.token;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface TokenResolver {
 

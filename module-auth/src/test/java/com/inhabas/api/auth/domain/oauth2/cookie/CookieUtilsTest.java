@@ -8,7 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -83,7 +83,9 @@ public class CookieUtilsTest {
   @DisplayName("성공적으로 serialize 한다.")
   @Test
   public void serializingTest()
-      throws InvocationTargetException, InstantiationException, IllegalAccessException,
+      throws InvocationTargetException,
+          InstantiationException,
+          IllegalAccessException,
           NoSuchMethodException {
     // reflection
     Constructor<?> constructor =
@@ -116,7 +118,9 @@ public class CookieUtilsTest {
   @DisplayName("성공적으로 deserialize 한다.")
   @Test
   public void deserializingTest()
-      throws NoSuchMethodException, InvocationTargetException, InstantiationException,
+      throws NoSuchMethodException,
+          InvocationTargetException,
+          InstantiationException,
           IllegalAccessException {
 
     // reflection

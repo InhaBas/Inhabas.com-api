@@ -4,8 +4,8 @@ import static java.lang.System.exit;
 
 import java.util.Properties;
 
-import javax.annotation.PreDestroy;
-import javax.validation.constraints.NotNull;
+import jakarta.annotation.PreDestroy;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

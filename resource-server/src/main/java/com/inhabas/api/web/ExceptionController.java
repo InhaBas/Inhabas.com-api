@@ -8,7 +8,7 @@ import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_WRITE_PROFILE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.SIGNUP_NOT_AVAILABLE;
 import static org.springframework.http.HttpStatus.*;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 
 import lombok.extern.slf4j.Slf4j;
 

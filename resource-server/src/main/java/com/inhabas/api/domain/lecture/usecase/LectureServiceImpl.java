@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.lecture.usecase;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 

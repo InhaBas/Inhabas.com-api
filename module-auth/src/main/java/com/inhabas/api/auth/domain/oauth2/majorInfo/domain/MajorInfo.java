@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.majorInfo.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

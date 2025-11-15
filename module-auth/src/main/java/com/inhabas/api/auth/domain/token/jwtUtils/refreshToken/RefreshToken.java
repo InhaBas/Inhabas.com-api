@@ -2,7 +2,7 @@ package com.inhabas.api.auth.domain.token.jwtUtils.refreshToken;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.Getter;

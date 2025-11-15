@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.budget.dto;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.Getter;
