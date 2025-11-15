@@ -8,19 +8,20 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -65,12 +66,13 @@ public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 
+  @Configuration
   @Order(1)
-  @EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
+  @EnableMethodSecurity(jsr250Enabled = true)
   @EnableWebSecurity
   @RequiredArgsConstructor
   @Profile({"local", "dev1", "dev2", "default_mvc_test", "prod1", "prod2", "integration_test"})
-  public static class ApiSecurityForDev extends WebSecurityConfigurerAdapter {
+  public static class ApiSecurityForDev {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -79,126 +81,17 @@ public class WebSecurityConfig {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final AuthBeansConfig authBeansConfig;
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-      auth.authenticationProvider(jwtAuthenticationProvider);
-    }
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-      web.ignoring()
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD)
-          .antMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD)
-          .antMatchers(AUTH_WHITELIST_SWAGGER)
-          .antMatchers(AUTH_WHITELIST_STATIC)
-          .antMatchers(AUTH_WHITELIST_PATH);
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      http
-          // OAuth 관련 경로 제외 모든 경로
-          .requestMatchers()
-          .antMatchers("/**")
-          .and()
-          .anonymous()
-          .authorities("ROLE_" + ANONYMOUS)
-          .and()
-          // HTTP 기본 인증 비활성화
-          .httpBasic()
-          .disable()
-          // 세션 생성 금지
-          .sessionManagement()
-          .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-          .and()
-          // API 이므로 CORS 활성화, CSRF 비활성화
-          .cors()
-          .and()
-          .csrf()
-          .disable()
-
-          // 인증 예외 처리시 jwtAuthenticationEntryPoint 사용
-          .exceptionHandling()
-          .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-          .accessDeniedHandler(jwtAccessDeniedHandler)
-          .and()
-          .authorizeRequests()
-          // 권한 부여 표현식
-          .expressionHandler(expressionHandler())
-          // Preflight 방식
-          .requestMatchers(CorsUtils::isPreFlightRequest)
-          .permitAll()
-          .antMatchers("/myInfo/requests")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-          .antMatchers("/myInfo/request/**")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 회원 관리
-          .antMatchers("/members/executive")
-          .hasRole(ANONYMOUS.toString())
-          .antMatchers("/members/hof")
-          .hasRole(DEACTIVATED.toString())
-          .antMatchers("/members/approved/role")
-          .hasRole(SECRETARY.toString())
-          .antMatchers("/members/approved/type")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-          .antMatchers("/members/**", "/member/**")
-          .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
-          // 회계내역
-          .antMatchers(
-              "/budget/history/**",
-              "/budget/histories",
-              "/budget/application/**",
-              "/budget/applications")
-          .hasRole(DEACTIVATED.toString())
-          // 강의
-          .antMatchers("/lecture/**/status")
-          .hasRole(EXECUTIVES.toString())
-          .antMatchers("/lecture/**")
-          .hasRole(DEACTIVATED.toString())
-
-          // 회원가입 일정 수정
-          .antMatchers(HttpMethod.PUT, "/signUp/schedule")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
-          .antMatchers("/signUp/check")
-          .hasRole(ANONYMOUS.toString())
-          .antMatchers("/signUp/**")
-          .hasRole(SIGNING_UP.toString())
-
-          // 동아리 연혁 수정
-          .antMatchers("/club/history/**")
-          .hasRole(EXECUTIVES.toString())
-
-          // 정책 수정
-          .antMatchers(HttpMethod.PUT, "/policy/**")
-          .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-
-          // 장학회 연혁 수정
-          .antMatchers("/scholarship/history/**")
-          .hasRole(SECRETARY.toString())
-
-          // 그 외
-          .anyRequest()
-          .hasRole(ANONYMOUS.toString());
-
-      http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+      AuthenticationManagerBuilder builder =
+          http.getSharedObject(AuthenticationManagerBuilder.class);
+      builder.authenticationProvider(jwtAuthenticationProvider);
+      return builder.build();
     }
 
     @Bean
-    public SecurityExpressionHandler<FilterInvocation> expressionHandler() {
-      DefaultWebSecurityExpressionHandler webSecurityExpressionHandler =
-          new DefaultWebSecurityExpressionHandler();
-      webSecurityExpressionHandler.setRoleHierarchy(hierarchy.getHierarchy());
-      return webSecurityExpressionHandler;
-    }
-
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+        AuthenticationManager authenticationManager) {
       final List<RequestMatcher> skipPaths = new ArrayList<>();
 
       for (String path : AUTH_WHITELIST_CLUB_ACTIVITY) {
@@ -214,8 +107,106 @@ public class WebSecurityConfig {
           new JwtAuthenticationFilter(
               requestMatcher, jwtTokenUtil, authBeansConfig.tokenResolver());
 
-      filter.setAuthenticationManager(super.authenticationManager());
+      filter.setAuthenticationManager(authenticationManager);
       return filter;
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(
+        HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+      http.securityMatcher("/**")
+          .anonymous(anon -> anon.authorities("ROLE_" + ANONYMOUS))
+          .httpBasic(AbstractHttpConfigurer::disable)
+          .sessionManagement(
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .cors(Customizer.withDefaults())
+          .csrf(AbstractHttpConfigurer::disable)
+          .exceptionHandling(
+              ex ->
+                  ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                      .accessDeniedHandler(jwtAccessDeniedHandler))
+          .authorizeHttpRequests(
+              authorize ->
+                  authorize
+                      .requestMatchers(CorsUtils::isPreFlightRequest)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_SWAGGER)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_STATIC)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_PATH)
+                      .permitAll()
+                      .requestMatchers("/myInfo/requests")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers("/myInfo/request/**")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 회원 관리
+                      .requestMatchers("/members/executive")
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers("/members/hof")
+                      .hasRole(DEACTIVATED.toString())
+                      .requestMatchers("/members/approved/role")
+                      .hasRole(SECRETARY.toString())
+                      .requestMatchers("/members/approved/type")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers("/members/**", "/member/**")
+                      .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
+                      // 회계내역
+                      .requestMatchers(
+                          "/budget/history/**",
+                          "/budget/histories",
+                          "/budget/application/**",
+                          "/budget/applications")
+                      .hasRole(DEACTIVATED.toString())
+                      // 강의
+                      .requestMatchers(
+                          "/lecture/*/status",
+                          "/lecture/*/students/status",
+                          "/lecture/*/student/*/status")
+                      .hasRole(EXECUTIVES.toString())
+                      .requestMatchers("/lecture/**")
+                      .hasRole(DEACTIVATED.toString())
+                      // 회원가입 일정 수정
+                      .requestMatchers(HttpMethod.PUT, "/signUp/schedule")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
+                      .requestMatchers("/signUp/check")
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers("/signUp/**")
+                      .hasRole(SIGNING_UP.toString())
+                      // 동아리 연혁 수정
+                      .requestMatchers("/club/history/**")
+                      .hasRole(EXECUTIVES.toString())
+                      // 정책 수정
+                      .requestMatchers(HttpMethod.PUT, "/policy/**")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 장학회 연혁 수정
+                      .requestMatchers("/scholarship/history/**")
+                      .hasRole(SECRETARY.toString())
+                      // 그 외
+                      .anyRequest()
+                      .hasRole(ANONYMOUS.toString()));
+
+      http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+      return http.build();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+      return hierarchy.getHierarchy();
     }
   }
 }
