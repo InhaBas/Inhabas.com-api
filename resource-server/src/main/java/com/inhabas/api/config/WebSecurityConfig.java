@@ -3,36 +3,29 @@ package com.inhabas.api.config;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.Hierarchical;
@@ -50,10 +43,10 @@ import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationFilter;
 public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST_SWAGGER = {
-    "/swagger-ui/**", "/swagger/**", "/docs/**", "/v3/api-docs/**", "/swagger-resources/**"
+    "/swagger-ui/**", "/swagger/**", "/docs/**"
   };
   private static final String[] AUTH_WHITELIST_STATIC = {
-    "/static/css/**", "/static/js/**", "/**/*.ico", "/favicon.ico"
+    "/static/css/**", "/static/js/**", "*.ico"
   };
   private static final String[] AUTH_WHITELIST_TOKEN = {"/token/**"};
   private static final String[] AUTH_WHITELIST_PATH = {
@@ -68,10 +61,13 @@ public class WebSecurityConfig {
     "/club/activity/**", "/club/activities"
   };
   private static final String[] AUTH_WHITELIST_NORMAL_BOARD = {"/board/count"};
+
   private static final String[] AUTH_WHITELIST_PROJECT_BOARD = {"/project/count"};
+
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 
   @Configuration
+  @Order(1)
   @EnableMethodSecurity(jsr250Enabled = true)
   @EnableWebSecurity
   @RequiredArgsConstructor
@@ -82,157 +78,20 @@ public class WebSecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final Hierarchical hierarchy;
     private final JwtTokenUtil jwtTokenUtil;
-    private final AuthBeansConfig authBeansConfig;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
-
-    @Value("${cors.allowed-origins:*}")
-    private String allowedOriginsProp;
+    private final AuthBeansConfig authBeansConfig;
 
     @Bean
-    public AuthenticationManager authenticationManager() {
-      return new ProviderManager(List.of(jwtAuthenticationProvider));
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-      CorsConfiguration config = new CorsConfiguration();
-
-      List<String> origins =
-          Arrays.stream(allowedOriginsProp.split(","))
-              .map(String::trim)
-              .filter(s -> !s.isEmpty())
-              .collect(Collectors.toList());
-
-      boolean wildcard = origins.contains("*");
-      if (wildcard) {
-        // 패턴 전체 허용 시, 자격 증명은 허용하지 않음 (보안 권장)
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowCredentials(false);
-      } else {
-        config.setAllowedOrigins(origins);
-        config.setAllowCredentials(true);
-      }
-
-      config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-      config.setAllowedHeaders(List.of("*"));
-      config.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
-      config.setMaxAge(3600L);
-
-      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      source.registerCorsConfiguration("/**", config);
-      return source;
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+      AuthenticationManagerBuilder builder =
+          http.getSharedObject(AuthenticationManagerBuilder.class);
+      builder.authenticationProvider(jwtAuthenticationProvider);
+      return builder.build();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-      return (web) -> {};
-    }
-
-    @Bean
-    @Order(1)
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      http.anonymous(
-              anonymous -> anonymous.principal("anonymousUser").authorities("ROLE_" + ANONYMOUS))
-          .httpBasic(httpBasic -> httpBasic.disable())
-          .sessionManagement(
-              sessionManagement ->
-                  sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-          .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-          .csrf(AbstractHttpConfigurer::disable)
-          .headers(
-              headers ->
-                  headers
-                      .referrerPolicy(
-                          r -> r.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.NO_REFERRER))
-                      .frameOptions(frame -> frame.sameOrigin()))
-          .exceptionHandling(
-              exceptionHandling ->
-                  exceptionHandling
-                      .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                      .accessDeniedHandler(jwtAccessDeniedHandler))
-          .authorizeHttpRequests(
-              authorize ->
-                  authorize
-                      .requestMatchers(CorsUtils::isPreFlightRequest)
-                      .permitAll()
-                      // Swagger 및 공개 경로는 필터 체인은 타되 인가만 면제
-                      .requestMatchers(pathMatchers(AUTH_WHITELIST_SWAGGER))
-                      .permitAll()
-                      .requestMatchers(pathMatchers(AUTH_WHITELIST_STATIC))
-                      .permitAll()
-                      .requestMatchers(pathMatchers(AUTH_WHITELIST_PATH))
-                      .permitAll()
-                      // GET 공개 엔드포인트들
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY))
-                      .permitAll()
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP))
-                      .permitAll()
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB))
-                      .permitAll()
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD))
-                      .permitAll()
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD))
-                      .permitAll()
-                      .requestMatchers(methodMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD))
-                      .permitAll()
-                      // 나머지 기존 인가 규칙 유지
-                      .requestMatchers(pathMatchers("/myInfo/requests"))
-                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-                      .requestMatchers(pathMatchers("/myInfo/request/**"))
-                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-                      .requestMatchers(pathMatchers("/members/executive"))
-                      .hasRole(ANONYMOUS.toString())
-                      .requestMatchers(pathMatchers("/members/hof"))
-                      .hasRole(DEACTIVATED.toString())
-                      .requestMatchers(pathMatchers("/members/approved/role"))
-                      .hasRole(SECRETARY.toString())
-                      .requestMatchers(pathMatchers("/members/approved/type"))
-                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-                      .requestMatchers(pathMatchers("/members/**", "/member/**"))
-                      .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
-                      .requestMatchers(
-                          pathMatchers(
-                              "/budget/history/**",
-                              "/budget/histories",
-                              "/budget/application/**",
-                              "/budget/applications"))
-                      .hasRole(DEACTIVATED.toString())
-                      .requestMatchers(pathMatchers("/lecture/**/status"))
-                      .hasRole(EXECUTIVES.toString())
-                      .requestMatchers(pathMatchers("/lecture/**"))
-                      .hasRole(DEACTIVATED.toString())
-                      .requestMatchers(methodMatchers(HttpMethod.PUT, "/signUp/schedule"))
-                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-                      .requestMatchers(pathMatchers("/signUp/check"))
-                      .hasAnyRole(ANONYMOUS.toString(), SIGNING_UP.toString())
-                      .requestMatchers(pathMatchers("/signUp/**"))
-                      .hasRole(SIGNING_UP.toString())
-                      .requestMatchers(pathMatchers("/club/history/**"))
-                      .hasRole(EXECUTIVES.toString())
-                      .requestMatchers(methodMatchers(HttpMethod.PUT, "/policy/**"))
-                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
-                      .requestMatchers(pathMatchers("/scholarship/history/**"))
-                      .hasRole(SECRETARY.toString())
-                      .anyRequest()
-                      .hasRole(ANONYMOUS.toString()));
-
-      http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-      return http.build();
-    }
-
-    private static RequestMatcher[] pathMatchers(String... patterns) {
-      return Arrays.stream(patterns).map(AntPathRequestMatcher::new).toArray(RequestMatcher[]::new);
-    }
-
-    private static RequestMatcher[] methodMatchers(HttpMethod method, String... patterns) {
-      return Arrays.stream(patterns)
-          .map(p -> new AntPathRequestMatcher(p, method.name()))
-          .toArray(RequestMatcher[]::new);
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+        AuthenticationManager authenticationManager) {
       final List<RequestMatcher> skipPaths = new ArrayList<>();
 
       for (String path : AUTH_WHITELIST_CLUB_ACTIVITY) {
@@ -247,8 +106,107 @@ public class WebSecurityConfig {
       final JwtAuthenticationFilter filter =
           new JwtAuthenticationFilter(
               requestMatcher, jwtTokenUtil, authBeansConfig.tokenResolver());
-      filter.setAuthenticationManager(authenticationManager());
+
+      filter.setAuthenticationManager(authenticationManager);
       return filter;
+    }
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain apiSecurityFilterChain(
+        HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+      http.securityMatcher("/**")
+          .anonymous(anon -> anon.authorities("ROLE_" + ANONYMOUS))
+          .httpBasic(AbstractHttpConfigurer::disable)
+          .sessionManagement(
+              session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .cors(Customizer.withDefaults())
+          .csrf(AbstractHttpConfigurer::disable)
+          .exceptionHandling(
+              ex ->
+                  ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                      .accessDeniedHandler(jwtAccessDeniedHandler))
+          .authorizeHttpRequests(
+              authorize ->
+                  authorize
+                      .requestMatchers(CorsUtils::isPreFlightRequest)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_POLICY)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_SIGNUP)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_CLUB)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_NORMAL_BOARD)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_PROJECT_BOARD)
+                      .permitAll()
+                      .requestMatchers(HttpMethod.GET, AUTH_WHITELIST_CONTEST_BOARD)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_SWAGGER)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_STATIC)
+                      .permitAll()
+                      .requestMatchers(AUTH_WHITELIST_PATH)
+                      .permitAll()
+                      .requestMatchers("/myInfo/requests")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers("/myInfo/request/**")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 회원 관리
+                      .requestMatchers("/members/executive")
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers("/members/hof")
+                      .hasRole(DEACTIVATED.toString())
+                      .requestMatchers("/members/approved/role")
+                      .hasRole(SECRETARY.toString())
+                      .requestMatchers("/members/approved/type")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      .requestMatchers("/members/**", "/member/**")
+                      .hasAnyRole(SECRETARY.toString(), EXECUTIVES.toString())
+                      // 회계내역
+                      .requestMatchers(
+                          "/budget/history/**",
+                          "/budget/histories",
+                          "/budget/application/**",
+                          "/budget/applications")
+                      .hasRole(DEACTIVATED.toString())
+                      // 강의
+                      .requestMatchers(
+                          "/lecture/*/status",
+                          "/lecture/*/students/status",
+                          "/lecture/*/student/*/status")
+                      .hasRole(EXECUTIVES.toString())
+                      .requestMatchers("/lecture/**")
+                      .hasRole(DEACTIVATED.toString())
+                      // 회원가입 일정 수정
+                      .requestMatchers(HttpMethod.PUT, "/signUp/schedule")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 회원가입은 ANONYMOUS 권한은 명시적으로 부여받은 상태에서만 가능
+                      .requestMatchers("/signUp/check")
+                      .hasRole(ANONYMOUS.toString())
+                      .requestMatchers("/signUp/**")
+                      .hasRole(SIGNING_UP.toString())
+                      // 동아리 연혁 수정
+                      .requestMatchers("/club/history/**")
+                      .hasRole(EXECUTIVES.toString())
+                      // 정책 수정
+                      .requestMatchers(HttpMethod.PUT, "/policy/**")
+                      .hasAnyRole(CHIEF.toString(), VICE_CHIEF.toString())
+                      // 장학회 연혁 수정
+                      .requestMatchers("/scholarship/history/**")
+                      .hasRole(SECRETARY.toString())
+                      // 그 외
+                      .anyRequest()
+                      .hasRole(ANONYMOUS.toString()));
+
+      http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+      return http.build();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+      return hierarchy.getHierarchy();
     }
   }
 }

@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,11 +34,6 @@ public class AuthBeansConfig {
   private final JwtTokenUtil jwtTokenUtil;
   private final AuthProperties authProperties;
   private final RefreshTokenRepository refreshTokenRepository;
-
-  @Bean
-  public ApplicationRunner jwtSecretKeyStrengthChecker(JwtTokenUtil jwtTokenUtil) {
-    return args -> jwtTokenUtil.validateSecretKeyStrength();
-  }
 
   @Bean
   public HttpCookieOAuth2AuthorizationRequestRepository

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
@@ -16,7 +16,7 @@ import com.inhabas.testConfig.InterceptorConfigMockBean;
 
 /**
  * WebMvcTest(excludeAutoConfiguration = {SecurityAutoConfiguration.class,
- * OAuth2ClientAutoConfiguration.class}) , default security filter 를 사용하지 않음. 테스트 설정 파일에서
+ * OAuth2ClientWebSecurityAutoConfiguration.class}) , default security filter 를 사용하지 않음. 테스트 설정 파일에서
  * OAuth2Client 정보를 읽어들이지 않음.
  *
  * @see DefaultWebMvcTest
@@ -27,7 +27,7 @@ import com.inhabas.testConfig.InterceptorConfigMockBean;
 @WebMvcTest(
     excludeAutoConfiguration = {
       SecurityAutoConfiguration.class,
-      OAuth2ClientAutoConfiguration.class
+      OAuth2ClientWebSecurityAutoConfiguration.class
     }) // disable default spring-security configuration
 @Import(InterceptorConfigMockBean.class)
 public @interface NoSecureWebMvcTest {

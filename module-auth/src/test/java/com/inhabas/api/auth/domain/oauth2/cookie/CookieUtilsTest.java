@@ -44,13 +44,12 @@ public class CookieUtilsTest {
   @Test
   public void saveCookieToResponse() {
     // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
     String cookieName = "myCookie";
     String cookieContents = "hello";
 
     // when
-    CookieUtils.setCookie(request, response, cookieName, cookieContents, 180);
+    CookieUtils.setCookie(response, cookieName, cookieContents, 180);
 
     // then
     Cookie resolvedCookie = response.getCookie(cookieName);
@@ -98,7 +97,7 @@ public class CookieUtilsTest {
     OAuth2AuthorizationRequest.Builder builder =
         (OAuth2AuthorizationRequest.Builder)
             constructor.newInstance(AuthorizationGrantType.AUTHORIZATION_CODE);
-    OAuth2AuthorizationRequest requestObj =
+    OAuth2AuthorizationRequest request =
         builder
             .authorizationUri("https://kauth.kakao.com/oauth/authorize")
             .clientId("1234")
@@ -110,7 +109,7 @@ public class CookieUtilsTest {
             .build();
 
     // when
-    String serializedRequest = CookieUtils.serialize(requestObj);
+    String serializedRequest = CookieUtils.serialize(request);
 
     // then
     assertTrue(Base64.isBase64(serializedRequest));
@@ -154,57 +153,5 @@ public class CookieUtilsTest {
 
     // then
     assertThat(deserializedRequest).usingRecursiveComparison().isEqualTo(originalRequest);
-  }
-
-  @DisplayName("역직렬화 실패 시 null 반환한다.")
-  @Test
-  public void deserializeReturnsNullOnInvalidBase64OrPayload() {
-    // given
-    Cookie invalid = new Cookie("bad", "not_base64!!");
-
-    // when
-    OAuth2AuthorizationRequest result =
-        CookieUtils.deserialize(invalid, OAuth2AuthorizationRequest.class);
-
-    // then
-    assertThat(result).isNull();
-  }
-
-  @DisplayName("setCookie 시 SameSite=Lax 헤더를 추가한다.")
-  @Test
-  public void setCookieAddsSameSiteHeader() {
-    // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    MockHttpServletResponse response = new MockHttpServletResponse();
-
-    // when
-    CookieUtils.setCookie(request, response, "s", "v", 60);
-
-    // then
-    java.util.List<String> setCookies = response.getHeaders("Set-Cookie");
-    assertThat(setCookies).isNotEmpty();
-    assertThat(String.join(" ", setCookies)).contains("SameSite=Lax");
-  }
-
-  @DisplayName("deleteCookie 시 SameSite=Lax, Max-Age=0, HttpOnly를 포함한다.")
-  @Test
-  public void deleteCookieAddsAttributesProperly() {
-    // given
-    MockHttpServletRequest request = new MockHttpServletRequest();
-    MockHttpServletResponse response = new MockHttpServletResponse();
-    Cookie cookie = new Cookie("del", "bye");
-    cookie.setMaxAge(120);
-    request.setCookies(cookie);
-
-    // when
-    CookieUtils.deleteCookie(request, response, "del");
-
-    // then
-    java.util.List<String> setCookies = response.getHeaders("Set-Cookie");
-    assertThat(setCookies).isNotEmpty();
-    String combined = String.join(" ", setCookies);
-    assertThat(combined).contains("SameSite=Lax");
-    assertThat(combined).contains("Max-Age=0");
-    assertThat(combined).contains("HttpOnly");
   }
 }

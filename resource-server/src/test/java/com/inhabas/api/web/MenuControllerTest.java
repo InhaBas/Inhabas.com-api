@@ -49,7 +49,7 @@ public class MenuControllerTest {
         .andExpect(
             content()
                 .string(
-                    "[{\"id\":1,\"groupName\":\"IBAS\",\"menuList\":[{\"menuId\":6,\"priority\":1,\"name\":\"ë\u008F\u0099ì\u0095\u0084ë¦¬ ì\u0086\u008Cê°\u009C\",\"type\":\"INTRODUCE\",\"description\":\"\"}]}]"))
+                    "[{\"id\":1,\"groupName\":\"IBAS\",\"menuList\":[{\"menuId\":6,\"priority\":1,\"name\":\"동아리 소개\",\"type\":\"INTRODUCE\",\"description\":\"\"}]}]"))
         .andReturn();
 
     then(menuService).should(times(1)).getAllMenuInfo();
@@ -66,7 +66,7 @@ public class MenuControllerTest {
         .andExpect(
             content()
                 .string(
-                    "{\"menuId\":6,\"priority\":1,\"name\":\"ê³µì§\u0080ì\u0082¬í\u0095\u00AD\",\"type\":\"LIST\",\"description\":\"\"}"))
+                    "{\"menuId\":6,\"priority\":1,\"name\":\"공지사항\",\"type\":\"LIST\",\"description\":\"\"}"))
         .andExpect(status().isOk())
         .andReturn();
 
