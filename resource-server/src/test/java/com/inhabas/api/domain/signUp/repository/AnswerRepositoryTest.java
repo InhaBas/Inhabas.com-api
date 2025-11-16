@@ -33,7 +33,7 @@ class AnswerRepositoryTest {
   void findByMember_Id() {
     // given
     Member member = memberRepository.save(MemberTest.signingUpMember1());
-    Questionnaire questionnaire = new Questionnaire(1L, "hello");
+    Questionnaire questionnaire = new Questionnaire(null, "hello");
     questionnaireRepository.save(questionnaire);
     String content = "Ok... bye";
     Answer answer = new Answer(member, questionnaire, content);

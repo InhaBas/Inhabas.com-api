@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
@@ -31,16 +30,17 @@ public class ScholarshipHistoryRepositoryTest {
     Member writer = memberRepository.save(MemberTest.chiefMember());
     ScholarshipHistory scholarshipHistory =
         new ScholarshipHistory(writer, "title", LocalDateTime.now());
-    ReflectionTestUtils.setField(scholarshipHistory, "id", 1L);
     ScholarshipHistory savedScholarshipHistory =
         scholarshipHistoryRepository.save(scholarshipHistory);
     Data data =
-        new Data(1L, savedScholarshipHistory.getTitle(), savedScholarshipHistory.getDateHistory());
+        new Data(
+            savedScholarshipHistory.getId(),
+            savedScholarshipHistory.getTitle(),
+            savedScholarshipHistory.getDateHistory());
     List<YearlyData> savedData =
         List.of(new YearlyData(savedScholarshipHistory.getDateHistory().getYear(), List.of(data)));
 
     // when
-    scholarshipHistoryRepository.save(scholarshipHistory);
     List<YearlyData> yearlyData = scholarshipHistoryRepository.getYearlyData();
 
     // then

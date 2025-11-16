@@ -26,7 +26,7 @@ import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
     uniqueConstraints = {
       @UniqueConstraint(
           name = "UNIQUE_PROVIDER_UID",
-          columnNames = {"provider", "uid"})
+          columnNames = {"provider", "UID"})
     })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

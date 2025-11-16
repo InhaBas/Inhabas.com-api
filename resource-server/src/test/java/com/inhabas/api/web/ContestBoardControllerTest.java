@@ -316,7 +316,7 @@ public class ContestBoardControllerTest {
     // when
     String response =
         mvc.perform(
-                post("/contest/contest/")
+                post("/contest/contest/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(jsonOf(saveContestBoardDto)))
             .andExpect(status().isBadRequest())
