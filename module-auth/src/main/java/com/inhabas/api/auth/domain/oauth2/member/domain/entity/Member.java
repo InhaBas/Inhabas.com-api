@@ -61,7 +61,7 @@ public class Member {
   private LocalDateTime lastLogin;
 
   @Lob
-  @Column(name = "EXTRA_DATA", nullable = false)
+  @Column(name = "EXTRA_DATA", nullable = false, columnDefinition = "longtext")
   private String extraData;
 
   @Column(name = "IS_DELETED")
