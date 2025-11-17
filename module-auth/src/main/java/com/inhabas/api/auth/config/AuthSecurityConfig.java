@@ -18,7 +18,6 @@ import com.inhabas.api.auth.domain.oauth2.cookie.HttpCookieOAuth2AuthorizationRe
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationFailureHandler;
 import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHandler;
 
-@Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -55,6 +54,7 @@ public class AuthSecurityConfig {
    * 따라서 critical 한 url 에 대해서 OAuth2 인증이 완료된 세션에 한해서만 허용.
    */
   @Bean
+  @Order(0) // 인증 관련 security filter chain 은 우선순위가 가장 높아야 함.
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.securityMatcher("/login/**")

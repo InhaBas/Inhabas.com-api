@@ -67,7 +67,6 @@ public class WebSecurityConfig {
   private static final String[] AUTH_WHITELIST_CONTEST_BOARD = {"/contest/count"};
 
   @Configuration
-  @Order(1)
   @EnableMethodSecurity(jsr250Enabled = true)
   @EnableWebSecurity
   @RequiredArgsConstructor
