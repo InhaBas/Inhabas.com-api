@@ -39,7 +39,7 @@ public class BudgetHistoryRepositoryTest {
   private static final String HISTORY_DETAILS = "details";
   private static final Integer HISTORY_OUTCOME = 10000;
   private static final String ACCOUNT_NUMBER = "123-123-123";
-  private static final LocalDateTime HISTORY_DATE_USED = LocalDateTime.now().minusDays(10L);
+  private static final LocalDateTime HISTORY_DATE_USED = LocalDateTime.of(2025, 1, 15, 0, 0);
 
   @BeforeEach
   public void setUp() {
