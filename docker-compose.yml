@@ -39,7 +39,7 @@ services:
 
   dev1:
     image: whtmdgus56/ibas-config:dev
-    container_name: backend-dev
+    container_name: backend-dev1
     networks:
       ibas-network:
         ipv4_address: 172.18.0.4
