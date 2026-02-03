@@ -28,6 +28,25 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
+      - name: Get GitHub Actions IP
+        id: ip
+        uses: haythem/public-ip@v1.3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_USER_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_USER_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Add GitHub IP to Security Group
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
       - name: copy file via ssh
         uses: appleboy/scp-action@master
         with:
@@ -69,3 +88,12 @@ jobs:
           # port: ${{ secrets.PORT }} # default : 22
           script: |
             bash ${{ secrets.IBAS_PROD_DEPLOY_PATH }}/deploy.sh
+
+      - name: Remove GitHub IP from Security Group
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ steps.ip.outputs.ipv4 }}/32
