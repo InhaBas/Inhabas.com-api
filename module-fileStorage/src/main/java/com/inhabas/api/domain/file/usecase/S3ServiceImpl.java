@@ -37,8 +37,6 @@ public class S3ServiceImpl implements S3Service {
         new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
             .withCannedAcl(CannedAccessControlList.PublicRead));
 
-    printS3ObjectSummaries();
-
     return s3Client.getUrl(bucket, fileName).toString();
   }
 
@@ -55,8 +53,6 @@ public class S3ServiceImpl implements S3Service {
     s3Client.putObject(
         new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
             .withCannedAcl(CannedAccessControlList.PublicRead));
-
-    printS3ObjectSummaries();
 
     return s3Client.getUrl(bucket, fileName).toString();
   }
@@ -124,13 +120,6 @@ public class S3ServiceImpl implements S3Service {
       throw new IOException();
     }
     return contentTypeMap.get(ext);
-  }
-
-  private void printS3ObjectSummaries() {
-    ListObjectsV2Result listObjectsV2Result = s3Client.listObjectsV2(bucket);
-    for (S3ObjectSummary object : listObjectsV2Result.getObjectSummaries()) {
-      System.out.println("object = " + object.toString());
-    }
   }
 
   private String getExtension(String fileName) {
