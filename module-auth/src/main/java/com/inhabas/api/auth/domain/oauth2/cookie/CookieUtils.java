@@ -1,7 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.cookie;
 
 import java.util.Base64;
-import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.servlet.http.Cookie;
@@ -10,8 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.util.SerializationUtils;
-
-import io.micrometer.core.instrument.util.StringUtils;
+import org.springframework.util.StringUtils;
 
 public interface CookieUtils {
 
@@ -88,6 +86,6 @@ public interface CookieUtils {
   }
 
   private static boolean isDeleted(Cookie cookie) {
-    return StringUtils.isBlank(cookie.getValue()) || Objects.isNull(cookie.getValue());
+    return !StringUtils.hasText(cookie.getValue());
   }
 }

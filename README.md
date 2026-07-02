@@ -42,13 +42,13 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) ![Spring Dada JPA](https://img.shields.io/badge/Spring_data_jpa-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring%20Cloud%20config-6DB33F?style=for-the-badge&logo=spring&logoColor=white) ![Querydsl](https://img.shields.io/badge/Querydsl-003366?style=for-the-badge&logo=Querydsl&logoColor=white)
 
 ### Database
-![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white) ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)
 
 ### Test
-![Jnit5](https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white) ![Mockito](https://img.shields.io/badge/Mockito-83B81A?style=for-the-badge&logo=Mockito&logoColor=white")
+![Junit5](https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white) ![Mockito](https://img.shields.io/badge/Mockito-83B81A?style=for-the-badge&logo=Mockito&logoColor=white")
 
 ### Infra
-![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white) ![Prometheus](https://img.shields.io/badge/Prometheus-20232A?style=for-the-badge&logo=prometheus) ![Grafana](https://img.shields.io/badge/Grafana-5f5f5f?style=for-the-badge&logo=grafana) ![K6](https://img.shields.io/badge/k6-5432a8?style=for-the-badge&logo=K6&logoColor=white) ![Github actions](https://img.shields.io/badge/Github%20actions-5f5f5f?style=for-the-badge&logo=github&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white) ![Github actions](https://img.shields.io/badge/Github%20actions-5f5f5f?style=for-the-badge&logo=github&logoColor=white)
 
 ### Documentation
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white)
