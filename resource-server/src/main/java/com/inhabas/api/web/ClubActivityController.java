@@ -15,22 +15,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.club.dto.ClubActivityDetailDto;
 import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.usecase.ClubActivityService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
+import com.inhabas.api.global.swagger.Response200And400And404;
+import com.inhabas.api.global.swagger.Response201And400;
+import com.inhabas.api.global.swagger.Response204And400And404;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -42,12 +39,6 @@ public class ClubActivityController {
   private final ClubActivityService clubActivityService;
 
   @Operation(summary = "동아리 활동 목록 조회", description = "동아리 활동 목록 조회 (썸네일은 첫 사진 첨부파일)")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = PagedResponseDto.class))}),
-      })
   @SecurityRequirements(value = {})
   @GetMapping("/club/activities")
   @PreAuthorize(
@@ -75,20 +66,7 @@ public class ClubActivityController {
   }
 
   @Operation(summary = "동아리 활동 글 생성", description = "동아리 활동 글 생성 (운영진 이상)")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
-      })
+  @Response201And400
   @PostMapping("/club/activity")
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(2, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).CREATE_BOARD)")
@@ -105,30 +83,7 @@ public class ClubActivityController {
   }
 
   @Operation(summary = "동아리 활동 글 단일 조회", description = "동아리 활동 글 단일 조회")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "200"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response200And400And404
   @SecurityRequirements(value = {})
   @GetMapping("/club/activity/{boardId}")
   @PreAuthorize(
@@ -141,30 +96,7 @@ public class ClubActivityController {
   }
 
   @Operation(summary = "동아리 활동 글 수정", description = "동아리 활동 글 수정 (작성자, 회장만)")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response204And400And404
   @PostMapping("/club/activity/{boardId}")
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<ClubActivityDto> updateClubActivity(
@@ -176,30 +108,7 @@ public class ClubActivityController {
   }
 
   @Operation(summary = "동아리 활동 글 삭제", description = "동아리 활동 글 삭제 (작성자, 회장만)")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response204And400And404
   @DeleteMapping("/club/activity/{boardId}")
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#boardId) or hasRole('VICE_CHIEF')")
   public ResponseEntity<ClubActivityDto> deleteClubActivity(

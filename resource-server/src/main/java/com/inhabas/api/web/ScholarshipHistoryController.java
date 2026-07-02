@@ -17,17 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import com.inhabas.api.domain.scholarship.usecase.ScholarshipHistoryService;
+import com.inhabas.api.global.swagger.Response201And400;
+import com.inhabas.api.global.swagger.Response204And400And404;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -39,14 +35,6 @@ public class ScholarshipHistoryController {
   private final ScholarshipHistoryService scholarshipHistoryService;
 
   @Operation(summary = "장학회 연혁 조회")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            content = {
-              @Content(schema = @Schema(implementation = YearlyData.class, type = "array"))
-            }),
-      })
   @SecurityRequirements(value = {})
   @GetMapping("/scholarship/histories")
   public ResponseEntity<List<YearlyData>> getScholarHistories() {
@@ -56,20 +44,7 @@ public class ScholarshipHistoryController {
   }
 
   @Operation(summary = "장학회 연혁 생성")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}")))
-      })
+  @Response201And400
   @PostMapping("/scholarship/history")
   public ResponseEntity<Void> writeScholarshipHistory(
       @Authenticated Long memberId,
@@ -86,30 +61,7 @@ public class ScholarshipHistoryController {
   }
 
   @Operation(summary = "장학회 연혁 수정")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response204And400And404
   @PutMapping("/scholarship/history/{scholarshipHistoryId}")
   public ResponseEntity<Void> updateScholarshipHistory(
       @PathVariable Long scholarshipHistoryId,
@@ -122,30 +74,7 @@ public class ScholarshipHistoryController {
   }
 
   @Operation(summary = "장학회 연혁 삭제", description = "장학회 연혁 삭제")
-  @ApiResponses(
-      value = {
-        @ApiResponse(responseCode = "204"),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response204And400And404
   @DeleteMapping("/scholarship/history/{scholarshipHistoryId}")
   public ResponseEntity<Void> deleteScholarshipHistory(@PathVariable Long scholarshipHistoryId) {
 

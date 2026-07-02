@@ -31,6 +31,10 @@ import com.inhabas.api.domain.budget.dto.BudgetHistoryListResponse;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.api.global.dto.PageInfoDto;
 import com.inhabas.api.global.dto.PagedResponseDto;
+import com.inhabas.api.global.swagger.Response200And400And404;
+import com.inhabas.api.global.swagger.Response201And400;
+import com.inhabas.api.global.swagger.Response204And400And404;
+import com.inhabas.api.global.swagger.Response204And404;
 import com.inhabas.api.global.util.PageUtil;
 import com.inhabas.api.web.argumentResolver.Authenticated;
 import io.swagger.v3.oas.annotations.Operation;
@@ -69,7 +73,7 @@ public class BudgetHistoryController {
               @Content(schema = @Schema(implementation = BudgetHistoryListResponse.class))
             }),
         @ApiResponse(
-            responseCode = "400 ",
+            responseCode = "400",
             description = "입력값이 없거나, 타입이 유효하지 않습니다.",
             content =
                 @Content(
@@ -107,32 +111,7 @@ public class BudgetHistoryController {
 
   @Operation(summary = "회계 내역 단일 조회")
   @GetMapping("/budget/history/{historyId}")
-  @ApiResponses(
-      value = {
-        @ApiResponse(
-            responseCode = "200",
-            content = {@Content(schema = @Schema(implementation = BudgetHistoryDetailDto.class))}),
-        @ApiResponse(
-            responseCode = "400 ",
-            description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-        @ApiResponse(
-            responseCode = "404",
-            description = "데이터가 존재하지 않습니다.",
-            content =
-                @Content(
-                    schema = @Schema(implementation = ErrorResponse.class),
-                    examples =
-                        @ExampleObject(
-                            value =
-                                "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-      })
+  @Response200And400And404
   @PreAuthorize(
       "@boardSecurityChecker.checkMenuAccess(15, T(com.inhabas.api.domain.board.usecase.BoardSecurityChecker).READ_BOARD)")
   public ResponseEntity<BudgetHistoryDetailDto> getBudgetHistory(@PathVariable Long historyId) {
@@ -144,19 +123,7 @@ public class BudgetHistoryController {
 
   @Operation(summary = "회계 내역 추가")
   @PostMapping("/budget/history")
-  @ApiResponses({
-    @ApiResponse(responseCode = "201", description = "'Location' 헤더에 생성된 리소스의 URI 가 포함됩니다."),
-    @ApiResponse(
-        responseCode = "400 ",
-        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-  })
+  @Response201And400
   @PreAuthorize("hasRole('SECRETARY')")
   public ResponseEntity<?> createNewHistory(
       @Authenticated Long memberId, @Valid @RequestBody BudgetHistoryCreateForm form) {
@@ -173,29 +140,7 @@ public class BudgetHistoryController {
 
   @Operation(summary = "회계 내역 수정")
   @PostMapping("/budget/history/{historyId}")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204"),
-    @ApiResponse(
-        responseCode = "400 ",
-        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-  })
+  @Response204And400And404
   @PreAuthorize("hasRole('SECRETARY')")
   public ResponseEntity<?> modifyHistory(
       @Authenticated Long memberId,
@@ -209,19 +154,7 @@ public class BudgetHistoryController {
 
   @Operation(summary = "회계 내역 삭제")
   @DeleteMapping("/budget/history/{historyId}")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204"),
-    @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-  })
+  @Response204And404
   @PreAuthorize("@boardSecurityChecker.boardWriterOnly(#historyId) and hasRole('SECRETARY')")
   public ResponseEntity<?> deleteHistory(
       @Authenticated Long memberId, @PathVariable Long historyId) {

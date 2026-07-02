@@ -9,16 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.policy.dto.PolicyTermDto;
 import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 import com.inhabas.api.domain.policy.usecase.PolicyTermService;
+import com.inhabas.api.global.swagger.Response200And400And404;
+import com.inhabas.api.global.swagger.Response204And400And404;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -32,11 +28,6 @@ public class PolicyTermController {
   @GetMapping("/policies")
   @SecurityRequirements(value = {})
   @Operation(summary = "모든 정책을 조회한다.")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        content = @Content(schema = @Schema(implementation = PolicyTermDto.class)))
-  })
   public ResponseEntity<List<PolicyTermDto>> getAllPolicyTerm() {
 
     List<PolicyTermDto> policyTermDto = policyTermService.getAllPolicyTerm();
@@ -46,31 +37,7 @@ public class PolicyTermController {
   @GetMapping("/policy/{policyTermId}")
   @SecurityRequirements(value = {})
   @Operation(summary = "해당 정책을 조회한다.", description = "policyTermId는 1,2,3만 존재")
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        content = @Content(schema = @Schema(implementation = PolicyTermDto.class))),
-    @ApiResponse(
-        responseCode = "400 ",
-        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-  })
+  @Response200And400And404
   public ResponseEntity<PolicyTermDto> findPolicyTerm(@PathVariable Long policyTermId) {
 
     PolicyTermDto policyTermDto = policyTermService.findPolicyTerm(policyTermId);
@@ -79,29 +46,7 @@ public class PolicyTermController {
 
   @PutMapping("/policy/{policyTermId}")
   @Operation(summary = "해당 정책을 수정한다.", description = "policyTermId는 1,2,3만 존재")
-  @ApiResponses({
-    @ApiResponse(responseCode = "204"),
-    @ApiResponse(
-        responseCode = "400 ",
-        description = "입력값이 없거나, 타입이 유효하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 400, \"code\": \"G003\", \"message\": \"입력값이 없거나, 타입이 유효하지 않습니다.\"}"))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-  })
+  @Response204And400And404
   public ResponseEntity<PolicyTermDto> updatePolicyTerm(
       @PathVariable Long policyTermId, @Valid @RequestBody SavePolicyTernDto savePolicyTernDto) {
 
