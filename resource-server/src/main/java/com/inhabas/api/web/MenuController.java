@@ -9,17 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.dto.MenuDto;
 import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.api.domain.menu.usecase.MenuService;
+import com.inhabas.api.global.swagger.Response200And404;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -57,27 +56,7 @@ public class MenuController {
       required = true,
       in = ParameterIn.PATH,
       schema = @Schema(type = "integer", format = "int64"))
-  @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        content =
-            @Content(
-                schema = @Schema(implementation = MenuDto.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{ \"menuId\": 1, \"priority\": 1, \"name\": \"동아리 소개\", \"type\": \"INTRODUCE\", \"description\": \"동아리 소개 메뉴입니다.\" }"))),
-    @ApiResponse(
-        responseCode = "404",
-        description = "데이터가 존재하지 않습니다.",
-        content =
-            @Content(
-                schema = @Schema(implementation = ErrorResponse.class),
-                examples =
-                    @ExampleObject(
-                        value =
-                            "{\"status\": 404, \"code\": \"G004\", \"message\": \"데이터가 존재하지 않습니다.\"}")))
-  })
+  @Response200And404
   public ResponseEntity<MenuDto> getMenuInfo(@PathVariable MenuId menuId) {
     MenuDto menu = menuService.getMenuInfoById(menuId);
 
