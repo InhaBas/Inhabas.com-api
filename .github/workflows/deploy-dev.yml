@@ -30,7 +30,7 @@ jobs:
 
     - name: Get GitHub Actions IP
       id: ip
-      uses: haythem/public-ip@v1.3
+      run: echo "ipv4=$(curl -s https://checkip.amazonaws.com)" >> $GITHUB_OUTPUT
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v5
