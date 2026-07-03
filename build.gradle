@@ -126,7 +126,6 @@ project(':module-jpa') {
         api (
                 'org.springframework.boot:spring-boot-starter-data-jpa',
                 "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta",
-                'com.jcraft:jsch:0.1.55',  // 로컬 개발용 db ssh tunneling, https://mavenlibs.com/maven/dependency/com.jcraft/jsch
 //                'org.mariadb.jdbc:mariadb-java-client',
                 'com.mysql:mysql-connector-j',
                 'com.h2database:h2'
