@@ -118,27 +118,16 @@ subprojects {
 
 }
 
-project(':module-jpa') {
-    bootJar {enabled = false}
-    jar {enabled = true}
-
-    dependencies {
-        api (
-                'org.springframework.boot:spring-boot-starter-data-jpa',
-                "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta",
-//                'org.mariadb.jdbc:mariadb-java-client',
-                'com.mysql:mysql-connector-j',
-                'com.h2database:h2'
-        )
-    }
-}
-
 project(':module-auth') {
     bootJar {enabled = false}
     jar {enabled = true}
 
     dependencies {
-        api project(':module-jpa')
+        // jpa
+        api (
+                'org.springframework.boot:spring-boot-starter-data-jpa',
+                "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+        )
         // jwt
         api 'io.jsonwebtoken:jjwt-api:0.11.2'
         runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
@@ -159,8 +148,6 @@ project(':module-fileStorage') {
     jar {enabled = true}
 
     dependencies {
-        api project(':module-jpa')
-
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'org.mockito:mockito-inline:2.13.0'
     }
