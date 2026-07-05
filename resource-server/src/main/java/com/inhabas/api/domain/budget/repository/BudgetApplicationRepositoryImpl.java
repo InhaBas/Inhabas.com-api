@@ -36,8 +36,7 @@ public class BudgetApplicationRepositoryImpl implements BudgetApplicationReposit
                 budgetSupportApplication.status))
         .from(budgetSupportApplication)
         .where(sameStatus(status))
-        .orderBy(
-            budgetSupportApplication.dateUsed.desc(), budgetSupportApplication.dateCreated.desc())
+        .orderBy(budgetSupportApplication.dateCreated.desc(), budgetSupportApplication.id.desc())
         .fetch();
   }
 

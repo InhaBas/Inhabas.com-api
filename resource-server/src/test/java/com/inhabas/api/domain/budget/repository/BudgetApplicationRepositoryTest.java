@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,34 @@ public class BudgetApplicationRepositoryTest {
 
     // then
     assertThat(dtoList).hasSize(5);
+  }
+
+  @DisplayName("예산지원신청서는 작성 시점 기준 내림차순으로 정렬된다.")
+  @Test
+  public void searchOrderedByDateCreatedTest() {
+    // given : 나중에 작성한 신청서일수록 사용일은 더 과거가 되도록 저장
+    List<Long> savedIds = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      BudgetSupportApplication application =
+          new BudgetSupportApplication(
+                  menu,
+                  APPLICATION_TITLE,
+                  APPLICATION_DETAILS,
+                  LocalDateTime.now().minusDays(i + 1),
+                  ACCOUNT_NUMBER,
+                  APPLICATION_OUTCOME,
+                  member,
+                  INITIAL_REQUEST_STATUS)
+              .writtenBy(member, BudgetSupportApplication.class);
+      savedIds.add(budgetApplicationRepository.save(application).getId());
+    }
+
+    // when
+    List<BudgetApplicationDto> dtoList = budgetApplicationRepository.search(null);
+
+    // then : 사용일 순서와 무관하게 최근에 작성한 신청서가 먼저 조회된다.
+    Collections.reverse(savedIds);
+    assertThat(dtoList).extracting(BudgetApplicationDto::getId).containsExactlyElementsOf(savedIds);
   }
 
   private Object getFieldValueByReflection(Object target, String fieldName) {
