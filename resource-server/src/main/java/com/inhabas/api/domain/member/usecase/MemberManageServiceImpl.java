@@ -201,7 +201,7 @@ public class MemberManageServiceImpl implements MemberManageService {
       memberRepository.saveAll(members);
 
       for (Member member : members) {
-        member.setRole(DEACTIVATED);
+        member.setRole(BASIC);
         Map<String, Object> variables = Map.of("memberName", member.getName());
         String to = member.getEmail();
         amazonSMTPService.sendPassMail(PASS_EMAIL_SUBJECT, variables, to);
