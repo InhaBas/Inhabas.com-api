@@ -111,8 +111,10 @@ public class MemberManageServiceImplTest {
     memberManageService.updateUnapprovedMembers(any(), state);
 
     // then
-    if (state.equals("pass")) then(memberRepository).should(times(1)).saveAll(any());
-    else if (state.equals("fail")) then(memberRepository).should(times(1)).deleteAll(any());
+    if (state.equals("pass")) {
+      then(memberRepository).should(times(1)).saveAll(any());
+      assertThat(member.getRole()).isEqualTo(BASIC);
+    } else if (state.equals("fail")) then(memberRepository).should(times(1)).deleteAll(any());
   }
 
   @DisplayName("비활동 이상 회원들의 역할을 가능한 만큼만 수정한다.")
