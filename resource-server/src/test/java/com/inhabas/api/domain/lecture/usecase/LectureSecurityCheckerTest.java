@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.lecture.usecase;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.web.LectureController;
@@ -14,11 +14,11 @@ public class LectureSecurityCheckerTest {
 
   @Autowired private LectureSecurityChecker securityChecker;
 
-  @MockBean private LectureRepository repository;
+  @MockitoBean private LectureRepository repository;
 
-  @MockBean private LectureServiceImpl lectureService;
+  @MockitoBean private LectureServiceImpl lectureService;
 
-  @MockBean private LectureStudentServiceImpl studentService;
+  @MockitoBean private LectureStudentServiceImpl studentService;
 
   //    @DisplayName("강의자만 접근할 수 있다.")
   //    @Test

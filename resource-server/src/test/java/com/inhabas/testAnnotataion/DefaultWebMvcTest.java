@@ -9,9 +9,17 @@ import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAu
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.DefaultRoleHierarchy;
+import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
+import com.inhabas.api.web.interceptor.InterceptorConfig;
 import com.inhabas.testConfig.TestConfigurationForSecurity;
 
 /**
@@ -28,6 +36,16 @@ import com.inhabas.testConfig.TestConfigurationForSecurity;
     excludeAutoConfiguration = {
       OAuth2ClientAutoConfiguration.class
     }) // disable autoload OAuth2-Client-Components from test properties
+@MockitoBean(
+    types = {
+      InterceptorConfig.class,
+      JwtAuthenticationEntryPoint.class,
+      JwtAccessDeniedHandler.class,
+      JwtTokenUtil.class,
+      JwtAuthenticationProvider.class,
+      AuthBeansConfig.class,
+      AuthenticationManager.class
+    })
 @Import({DefaultRoleHierarchy.class, TestConfigurationForSecurity.class})
 public @interface DefaultWebMvcTest {
   @AliasFor(annotation = WebMvcTest.class, attribute = "value")

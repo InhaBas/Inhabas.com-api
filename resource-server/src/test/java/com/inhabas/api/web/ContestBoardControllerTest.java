@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,8 +47,8 @@ public class ContestBoardControllerTest {
   @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private ContestBoardService contestBoardService;
-  @MockBean private BaseBoardRepository baseBoardRepository;
+  @MockitoBean private ContestBoardService contestBoardService;
+  @MockitoBean private BaseBoardRepository baseBoardRepository;
 
   private String jsonOf(Object response) throws JsonProcessingException {
     return objectMapper.writeValueAsString(response);

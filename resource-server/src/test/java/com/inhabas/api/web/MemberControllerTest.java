@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -45,9 +45,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class MemberControllerTest {
 
   @Autowired private MockMvc mvc;
-  @MockBean private MemberManageService memberManageService;
-  @MockBean private AnswerService answerService;
-  @MockBean private MemberRepository memberRepository;
+  @MockitoBean private MemberManageService memberManageService;
+  @MockitoBean private AnswerService answerService;
+  @MockitoBean private MemberRepository memberRepository;
   @Autowired private ObjectMapper objectMapper;
 
   @DisplayName("(신입)미승인 멤버 정보 목록을 불러온다")

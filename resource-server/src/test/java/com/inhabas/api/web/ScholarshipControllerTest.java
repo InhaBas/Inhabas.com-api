@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +43,7 @@ public class ScholarshipControllerTest {
 
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private ScholarshipBoardService scholarshipBoardService;
+  @MockitoBean private ScholarshipBoardService scholarshipBoardService;
 
   private String jsonOf(Object response) throws JsonProcessingException {
     return objectMapper.writeValueAsString(response);

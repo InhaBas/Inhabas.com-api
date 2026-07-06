@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,7 +37,7 @@ public class BudgetHistoryControllerTest {
 
   @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
-  @MockBean private BudgetHistoryService budgetHistoryService;
+  @MockitoBean private BudgetHistoryService budgetHistoryService;
 
   @DisplayName("회계 내역의 모든 연도 조회 200.")
   @Test

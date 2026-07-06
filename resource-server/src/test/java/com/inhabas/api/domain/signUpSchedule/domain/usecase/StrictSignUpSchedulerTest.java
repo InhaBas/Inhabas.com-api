@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
@@ -29,7 +29,7 @@ public class StrictSignUpSchedulerTest {
 
   @Autowired SignUpSchedulerStrict signUpScheduler;
 
-  @SpyBean SignUpScheduleRepository signUpScheduleRepository;
+  @MockitoSpyBean SignUpScheduleRepository signUpScheduleRepository;
 
   @Autowired TestEntityManager entityManager;
 
