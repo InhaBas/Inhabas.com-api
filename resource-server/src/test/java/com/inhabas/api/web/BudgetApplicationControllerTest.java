@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,8 +46,8 @@ public class BudgetApplicationControllerTest {
 
   @Autowired private MockMvc mvc;
   @Autowired private ObjectMapper objectMapper;
-  @MockBean private BudgetApplicationService budgetApplicationService;
-  @MockBean private BudgetApplicationProcessor applicationProcessor;
+  @MockitoBean private BudgetApplicationService budgetApplicationService;
+  @MockitoBean private BudgetApplicationProcessor applicationProcessor;
 
   @DisplayName("예산지원요청 글 목록 조회 200")
   @Test

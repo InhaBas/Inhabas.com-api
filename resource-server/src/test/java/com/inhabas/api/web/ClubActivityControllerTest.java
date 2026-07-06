@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,7 +42,7 @@ public class ClubActivityControllerTest {
 
   @Autowired private ObjectMapper objectMapper;
 
-  @MockBean private ClubActivityService clubActivityService;
+  @MockitoBean private ClubActivityService clubActivityService;
 
   private String jsonOf(Object response) throws JsonProcessingException {
     return objectMapper.writeValueAsString(response);

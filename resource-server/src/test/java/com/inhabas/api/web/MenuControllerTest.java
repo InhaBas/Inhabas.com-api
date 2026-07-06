@@ -12,7 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 @NoSecureWebMvcTest(MenuController.class)
 public class MenuControllerTest {
 
-  @MockBean private MenuService menuService;
+  @MockitoBean private MenuService menuService;
 
   @Autowired private MockMvc mvc;
 

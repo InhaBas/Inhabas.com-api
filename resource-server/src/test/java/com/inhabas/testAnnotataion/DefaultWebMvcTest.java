@@ -5,13 +5,22 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientWebSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
+import com.inhabas.api.auth.config.AuthBeansConfig;
 import com.inhabas.api.auth.domain.oauth2.member.security.DefaultRoleHierarchy;
+import com.inhabas.api.auth.domain.token.JwtAccessDeniedHandler;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtAuthenticationProvider;
+import com.inhabas.api.auth.domain.token.jwtUtils.JwtTokenUtil;
+import com.inhabas.api.auth.domain.token.securityFilter.JwtAuthenticationEntryPoint;
+import com.inhabas.api.web.interceptor.InterceptorConfig;
 import com.inhabas.testConfig.TestConfigurationForSecurity;
 
 /**
@@ -26,8 +35,19 @@ import com.inhabas.testConfig.TestConfigurationForSecurity;
 @ActiveProfiles("test") // for disable cloud config & security filter chain
 @WebMvcTest(
     excludeAutoConfiguration = {
-      OAuth2ClientAutoConfiguration.class
+      OAuth2ClientAutoConfiguration.class,
+      OAuth2ClientWebSecurityAutoConfiguration.class
     }) // disable autoload OAuth2-Client-Components from test properties
+@MockitoBean(
+    types = {
+      InterceptorConfig.class,
+      JwtAuthenticationEntryPoint.class,
+      JwtAccessDeniedHandler.class,
+      JwtTokenUtil.class,
+      JwtAuthenticationProvider.class,
+      AuthBeansConfig.class,
+      AuthenticationManager.class
+    })
 @Import({DefaultRoleHierarchy.class, TestConfigurationForSecurity.class})
 public @interface DefaultWebMvcTest {
   @AliasFor(annotation = WebMvcTest.class, attribute = "value")

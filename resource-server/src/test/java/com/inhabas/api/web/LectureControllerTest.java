@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.inhabas.api.domain.lecture.usecase.LectureService;
@@ -24,9 +24,9 @@ public class LectureControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private LectureService lectureService;
+  @MockitoBean private LectureService lectureService;
 
-  @MockBean private LectureStudentService studentService;
+  @MockitoBean private LectureStudentService studentService;
 
   //    @DisplayName("강의 등록 uri 를 정상적으로 호출 및 응답.")
   //    @Test

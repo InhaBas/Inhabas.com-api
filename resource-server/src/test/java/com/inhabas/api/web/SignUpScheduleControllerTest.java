@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +35,7 @@ public class SignUpScheduleControllerTest {
 
   @Autowired private MockMvc mvc;
 
-  @MockBean private SignUpScheduler signUpScheduler;
+  @MockitoBean private SignUpScheduler signUpScheduler;
 
   @DisplayName("회원가입 일정을 조회한다.")
   @Test

@@ -12,13 +12,13 @@ public class RoleHierarchyTest {
   //    @Autowired
   //    NormalBoardController boardController;
   //
-  //    @MockBean
+  //    @MockitoBean
   //    NormalBoardService boardService;
   //
-  //    @MockBean
+  //    @MockitoBean
   //    MemberManageService memberService;
   //
-  //    @MockBean
+  //    @MockitoBean
   //    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
   //
   //

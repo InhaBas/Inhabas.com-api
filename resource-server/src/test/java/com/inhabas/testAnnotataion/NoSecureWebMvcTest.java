@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientWebSecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import com.inhabas.testConfig.InterceptorConfigMockBean;
+import com.inhabas.api.web.interceptor.InterceptorConfig;
 
 /**
  * WebMvcTest(excludeAutoConfiguration = {SecurityAutoConfiguration.class,
@@ -29,7 +29,7 @@ import com.inhabas.testConfig.InterceptorConfigMockBean;
       SecurityAutoConfiguration.class,
       OAuth2ClientWebSecurityAutoConfiguration.class
     }) // disable default spring-security configuration
-@Import(InterceptorConfigMockBean.class)
+@MockitoBean(types = InterceptorConfig.class)
 public @interface NoSecureWebMvcTest {
 
   @AliasFor(annotation = WebMvcTest.class, attribute = "value")
