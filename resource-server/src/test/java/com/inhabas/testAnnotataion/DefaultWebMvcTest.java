@@ -5,7 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientWebSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
@@ -34,7 +35,8 @@ import com.inhabas.testConfig.TestConfigurationForSecurity;
 @ActiveProfiles("test") // for disable cloud config & security filter chain
 @WebMvcTest(
     excludeAutoConfiguration = {
-      OAuth2ClientAutoConfiguration.class
+      OAuth2ClientAutoConfiguration.class,
+      OAuth2ClientWebSecurityAutoConfiguration.class
     }) // disable autoload OAuth2-Client-Components from test properties
 @MockitoBean(
     types = {
