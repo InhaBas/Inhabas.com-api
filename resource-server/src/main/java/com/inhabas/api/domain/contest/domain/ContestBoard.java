@@ -13,6 +13,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -43,7 +44,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 @DiscriminatorValue("CONTEST")
 public class ContestBoard extends BaseBoard {
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "CONTEST_FIELD_ID", foreignKey = @ForeignKey(name = "FK_CONTEST_FIELD_OF_ID"))
   private ContestField contestField;
 

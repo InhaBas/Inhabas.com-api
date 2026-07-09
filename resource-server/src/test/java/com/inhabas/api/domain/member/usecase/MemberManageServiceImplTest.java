@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,8 +25,8 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ApprovedMemberManagementDto
 import com.inhabas.api.auth.domain.oauth2.member.dto.ContactDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.member.service.SMTPService;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
+import com.inhabas.api.domain.member.event.MemberRegistrationMailEvent;
 import com.inhabas.api.domain.signUp.repository.AnswerRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,9 +43,9 @@ public class MemberManageServiceImplTest {
 
   @InjectMocks MemberManageServiceImpl memberManageService;
   @Mock MemberRepository memberRepository;
-  @Mock SMTPService amazonSMTPService;
   @Mock AnswerRepository answerRepository;
   @Mock MemberSocialAccountRepository memberSocialAccountRepository;
+  @Mock ApplicationEventPublisher eventPublisher;
 
   @DisplayName("미승인 회원을 [역할과 {학번 or 이름}] 으로 조회한다.")
   @Test
@@ -112,9 +113,9 @@ public class MemberManageServiceImplTest {
 
     // then
     if (state.equals("pass")) {
-      then(memberRepository).should(times(1)).saveAll(any());
       assertThat(member.getRole()).isEqualTo(BASIC);
     } else if (state.equals("fail")) then(memberRepository).should(times(1)).deleteAll(any());
+    then(eventPublisher).should(times(1)).publishEvent(any(MemberRegistrationMailEvent.class));
   }
 
   @DisplayName("비활동 이상 회원들의 역할을 가능한 만큼만 수정한다.")

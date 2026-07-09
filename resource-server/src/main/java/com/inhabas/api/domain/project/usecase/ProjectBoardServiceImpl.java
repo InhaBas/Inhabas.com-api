@@ -52,7 +52,7 @@ public class ProjectBoardServiceImpl implements ProjectBoardService {
   private static final Integer TEMPORARY_DAYS = 14;
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public List<ProjectBoardDto> getPinned(ProjectBoardType projectboardType) {
     List<ProjectBoardDto> projectBoardList = new ArrayList<>();
     if (projectboardType.equals(ALPHA) || projectboardType.equals(BETA)) {

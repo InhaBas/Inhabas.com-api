@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,8 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ExecutiveMemberDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.HallOfFameDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.NotApprovedMemberManagementDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.auth.domain.oauth2.member.service.SMTPService;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.repository.MemberSocialAccountRepository;
+import com.inhabas.api.domain.member.event.MemberRegistrationMailEvent;
 import com.inhabas.api.domain.signUp.repository.AnswerRepository;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,21 +38,18 @@ public class MemberManageServiceImpl implements MemberManageService {
   private static final Role DEFAULT_ROLE_AFTER_FINISH_SIGNUP = NOT_APPROVED;
   private static final Set<Role> OLD_ROLES =
       Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
-  private static final Set<Role> CHIEF_CHANGEABLE_ROLES =
-      Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY, BASIC, DEACTIVATED);
+  private static final Set<Role> CHIEF_CHANGEABLE_ROLES = OLD_ROLES;
   private static final Set<Role> SECRETARY_CHANGEABLE_ROLES = Set.of(BASIC, DEACTIVATED);
   private static final Set<Role> EXECUTIVE_ROLES =
       Set.of(ADMIN, CHIEF, VICE_CHIEF, EXECUTIVES, SECRETARY);
   private static final String PASS_STATE = "pass";
   private static final String FAIL_STATE = "fail";
-  private static final String PASS_EMAIL_SUBJECT = "[IBAS] 축하합니다. 동아리에 입부되셨습니다.";
-  private static final String FAIL_EMAIL_SUBJECT = "[IBAS] 입부 신청 결과를 알립니다.";
   private static final String ROLE_PREFIX = "ROLE_";
   private static final String BLANK = "";
   private final MemberRepository memberRepository;
-  private final SMTPService amazonSMTPService;
   private final AnswerRepository answerRepository;
   private final MemberSocialAccountRepository memberSocialAccountRepository;
+  private final ApplicationEventPublisher eventPublisher;
 
   @Override
   @Transactional(readOnly = true)
@@ -197,26 +195,20 @@ public class MemberManageServiceImpl implements MemberManageService {
       throw new InvalidInputException();
     }
 
-    if (state.equals(PASS_STATE)) {
-      memberRepository.saveAll(members);
+    boolean passed = state.equals(PASS_STATE);
+    MemberRegistrationMailEvent mailEvent = new MemberRegistrationMailEvent(members, passed);
 
+    if (passed) {
       for (Member member : members) {
         member.setRole(BASIC);
-        Map<String, Object> variables = Map.of("memberName", member.getName());
-        String to = member.getEmail();
-        amazonSMTPService.sendPassMail(PASS_EMAIL_SUBJECT, variables, to);
       }
     } else {
       answerRepository.deleteByMember_IdIn(memberIdList);
       memberSocialAccountRepository.deleteByMember_IdIn(memberIdList);
       memberRepository.deleteAll(members);
-
-      for (Member member : members) {
-        Map<String, Object> variables = Map.of("memberName", member.getName());
-        String to = member.getEmail();
-        amazonSMTPService.sendRejectMail(FAIL_EMAIL_SUBJECT, variables, to);
-      }
     }
+
+    eventPublisher.publishEvent(mailEvent);
   }
 
   @Override
