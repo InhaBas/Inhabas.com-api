@@ -412,7 +412,6 @@ ADMIN
 
 | 어노테이션/프로파일 | 설명 |
 |--------------------|------|
-| `@DefaultWebMvcTest` | 시큐리티 포함 MVC 테스트 |
 | `@NoSecureWebMvcTest` | 시큐리티 제외 MVC 테스트 |
 | `@DefaultDataJpaTest` | H2 기반 JPA 테스트 |
 | `@CustomSpringBootTest` | 전체 컨텍스트 통합 테스트 |

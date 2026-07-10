@@ -18,8 +18,6 @@ import com.inhabas.api.web.interceptor.InterceptorConfig;
  * WebMvcTest(excludeAutoConfiguration = {SecurityAutoConfiguration.class,
  * OAuth2ClientWebSecurityAutoConfiguration.class}) , default security filter 를 사용하지 않음. 테스트 설정 파일에서
  * OAuth2Client 정보를 읽어들이지 않음.
- *
- * @see DefaultWebMvcTest
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

@@ -9,7 +9,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -19,7 +18,6 @@ import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.testAnnotataion.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -52,32 +50,6 @@ public class MenuRepositoryTest {
         .usingRecursiveComparison()
         .ignoringFields("id", "dateCreated", "dateUpdated")
         .isEqualTo(activityBoardMenu);
-  }
-
-  @Disabled
-  @DisplayName("메뉴 이름을 수정한다.")
-  @Test
-  public void updateMenuName() {
-    // given
-    MenuGroup menuGroup = em.persist(new MenuGroup("게시판 목록"));
-    Menu noticeMenu =
-        menuRepository.save(new Menu(menuGroup, 1, MenuType.LIST, "공지사항", "동아리 공지를 게시하는 게시판입니다."));
-
-    // when
-    String newName = "공지 사항";
-    Menu param =
-        new Menu(
-            noticeMenu.getMenuGroup(),
-            noticeMenu.getPriority(),
-            noticeMenu.getType(),
-            newName,
-            noticeMenu.getDescription());
-    Integer menuId = (Integer) ReflectionTestUtils.getField(param, "id");
-    ReflectionTestUtils.setField(param, "id", menuId);
-    // Menu updated = menuRepository.save(param);  // service 로 제대로 구현한 뒤에 테스트 해야함.
-
-    // then
-    // assertThat(updated.getName()).isEqualTo(newName);
   }
 
   @DisplayName("한 메뉴그룹에, priority 가 중복될 시 오류")
