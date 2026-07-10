@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class ClubActivityControllerTest extends ControllerTestSupport {
         ClubActivityDto.builder()
             .id(1L)
             .title("title")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .writerName("jsh")
             .thumbnail(null)
             .build();
@@ -71,8 +71,8 @@ public class ClubActivityControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .content("content")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .writerName("jsh")
             .images(null)
             .otherFiles(null)
@@ -100,8 +100,8 @@ public class ClubActivityControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .content("content")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .writerName("jsh")
             .images(null)
             .otherFiles(null)

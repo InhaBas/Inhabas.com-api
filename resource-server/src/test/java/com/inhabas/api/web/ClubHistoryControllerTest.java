@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,11 +39,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
   void getClubHistories() throws Exception {
     // given
     ClubHistoryDto clubHistoryDto =
-        ClubHistoryDto.builder()
-            .title("title")
-            .content("content")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        ClubHistoryDto.builder().title("title").content("content").dateHistory(FIXED_TIME).build();
     List<ClubHistoryDto> clubHistoryList = List.of(clubHistoryDto);
     given(clubHistoryService.getClubHistories()).willReturn(clubHistoryList);
 
@@ -63,11 +60,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
   void findClubHistory() throws Exception {
     // given
     ClubHistoryDto clubHistoryDto =
-        ClubHistoryDto.builder()
-            .title("title")
-            .content("content")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        ClubHistoryDto.builder().title("title").content("content").dateHistory(FIXED_TIME).build();
     given(clubHistoryService.findClubHistory(any())).willReturn(clubHistoryDto);
 
     // when
@@ -87,11 +80,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
   void findClubHistory_Invalid_Input() throws Exception {
     // given
     ClubHistoryDto clubHistoryDto =
-        ClubHistoryDto.builder()
-            .title("title")
-            .content("content")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        ClubHistoryDto.builder().title("title").content("content").dateHistory(FIXED_TIME).build();
     given(clubHistoryService.findClubHistory(any())).willReturn(clubHistoryDto);
 
     // when
@@ -160,7 +149,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
         SaveClubHistoryDto.builder()
             .title("meaningless")
             .content("meaningless")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
     doThrow(InvalidInputException.class).when(clubHistoryService).writeClubHistory(any(), any());
 
@@ -187,7 +176,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
         SaveClubHistoryDto.builder()
             .title("meaningless")
             .content("meaningless")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
     doNothing().when(clubHistoryService).updateClubHistory(any(), any(), any());
 
@@ -207,7 +196,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
         SaveClubHistoryDto.builder()
             .title("meaningless")
             .content("meaningless")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
     doThrow(InvalidInputException.class)
         .when(clubHistoryService)
@@ -236,7 +225,7 @@ public class ClubHistoryControllerTest extends ControllerTestSupport {
         SaveClubHistoryDto.builder()
             .title("meaningless")
             .content("meaningless")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
     doThrow(NotFoundException.class)
         .when(clubHistoryService)

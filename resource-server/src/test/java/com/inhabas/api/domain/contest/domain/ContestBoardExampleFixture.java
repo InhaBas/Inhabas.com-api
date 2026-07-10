@@ -1,5 +1,7 @@
 package com.inhabas.api.domain.contest.domain;
 
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
+
 import java.time.LocalDateTime;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -16,7 +18,7 @@ public class ContestBoardExampleFixture {
             .content("테스트 내용1")
             .association("(주) 아이바스1")
             .topic("테스트 주제1")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
     return contestBoard;
@@ -31,7 +33,7 @@ public class ContestBoardExampleFixture {
             .content("테스트 내용2")
             .association("(주) 아이바스2")
             .topic("테스트 주제2")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME.plusHours(1))
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
     return contestBoard;
@@ -46,7 +48,7 @@ public class ContestBoardExampleFixture {
             .content("테스트 내용3")
             .association("(주) 아이바스3")
             .topic("테스트 주제3")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME.plusHours(2))
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
     return contestBoard;
@@ -62,7 +64,7 @@ public class ContestBoardExampleFixture {
             .content("테스트 내용1")
             .association("(주) 아이바스1")
             .topic("테스트 주제1")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .build();
     ReflectionTestUtils.setField(contestBoard, "id", id);

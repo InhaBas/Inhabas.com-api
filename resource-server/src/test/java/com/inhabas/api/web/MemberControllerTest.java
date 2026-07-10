@@ -3,6 +3,7 @@ package com.inhabas.api.web;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.GRADUATED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.UNDERGRADUATE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.BASIC;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -12,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,7 +123,7 @@ public class MemberControllerTest extends ControllerTestSupport {
             "컴공",
             "123@123",
             "010-1111-2222",
-            LocalDateTime.now(),
+            FIXED_TIME,
             questionAnswerDtoList);
 
     given(answerService.getApplication(any())).willReturn(applicationDetailDto);

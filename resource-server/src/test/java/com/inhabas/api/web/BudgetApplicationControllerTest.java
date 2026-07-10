@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,7 +15,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class BudgetApplicationControllerTest extends ControllerTestSupport {
         BudgetApplicationDto.builder()
             .id(1L)
             .title("title")
-            .dateCreated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
             .applicant(applicant)
             .status(RequestStatus.PENDING)
             .build();
@@ -77,9 +77,9 @@ public class BudgetApplicationControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .details("details")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
-            .dateUsed(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
+            .dateUsed(FIXED_TIME)
             .account("123-123-123")
             .outcome(10000)
             .memberInCharge(applicant)
@@ -102,7 +102,7 @@ public class BudgetApplicationControllerTest extends ControllerTestSupport {
         BudgetApplicationRegisterForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .outcome(10000)
             .account("123-123-123")
             .files(Arrays.asList("fileId"))
@@ -149,7 +149,7 @@ public class BudgetApplicationControllerTest extends ControllerTestSupport {
         BudgetApplicationRegisterForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .outcome(10000)
             .account("123-123-123")
             .files(Arrays.asList("fileId"))
@@ -189,7 +189,7 @@ public class BudgetApplicationControllerTest extends ControllerTestSupport {
         BudgetApplicationRegisterForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .outcome(10000)
             .account("123-123-123")
             .files(Arrays.asList("fileId"))

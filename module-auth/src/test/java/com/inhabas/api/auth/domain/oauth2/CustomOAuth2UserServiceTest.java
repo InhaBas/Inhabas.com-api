@@ -1,5 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2;
 
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_INSTANT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 
-import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,8 +87,8 @@ public class CustomOAuth2UserServiceTest {
         new OAuth2AccessToken(
             OAuth2AccessToken.TokenType.BEARER,
             "access-token",
-            Instant.now(),
-            Instant.now().plusSeconds(3600));
+            FIXED_INSTANT,
+            FIXED_INSTANT.plusSeconds(3600));
     return new OAuth2UserRequest(clientRegistration, accessToken);
   }
 

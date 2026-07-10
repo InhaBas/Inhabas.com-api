@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -41,8 +42,7 @@ public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
   @Test
   void getScholarHistoriesTest() throws Exception {
     // given
-    YearlyData yearlyData =
-        new YearlyData(2024, List.of(new Data(1L, "title", LocalDateTime.now())));
+    YearlyData yearlyData = new YearlyData(2024, List.of(new Data(1L, "title", FIXED_TIME)));
     List<YearlyData> yearlyDataList = List.of(yearlyData);
     given(scholarshipHistoryService.getScholarshipHistories()).willReturn(yearlyDataList);
 
@@ -89,10 +89,7 @@ public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
   void writeScholarshipHistory_Invalid_Input() throws Exception {
     // given
     SaveScholarshipHistoryDto saveScholarshipHistoryDto =
-        SaveScholarshipHistoryDto.builder()
-            .title("meaningless")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        SaveScholarshipHistoryDto.builder().title("meaningless").dateHistory(FIXED_TIME).build();
     doThrow(InvalidInputException.class)
         .when(scholarshipHistoryService)
         .writeScholarshipHistory(any(), any());
@@ -117,10 +114,7 @@ public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
   void updateScholarshipHistoryTest() throws Exception {
     // given
     SaveScholarshipHistoryDto saveScholarshipHistoryDto =
-        SaveScholarshipHistoryDto.builder()
-            .title("meaningless")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        SaveScholarshipHistoryDto.builder().title("meaningless").dateHistory(FIXED_TIME).build();
     doNothing().when(scholarshipHistoryService).updateScholarshipHistory(any(), any(), any());
 
     // when then
@@ -136,10 +130,7 @@ public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
   void updateScholarshipHistory_Invalid_Input() throws Exception {
     // given
     SaveScholarshipHistoryDto saveScholarshipHistoryDto =
-        SaveScholarshipHistoryDto.builder()
-            .title("meaningless")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        SaveScholarshipHistoryDto.builder().title("meaningless").dateHistory(FIXED_TIME).build();
     doThrow(InvalidInputException.class)
         .when(scholarshipHistoryService)
         .updateScholarshipHistory(any(), any(), any());
@@ -164,10 +155,7 @@ public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
   void updateScholarshipHistory_Not_Found() throws Exception {
     // given
     SaveScholarshipHistoryDto saveScholarshipHistoryDto =
-        SaveScholarshipHistoryDto.builder()
-            .title("meaningless")
-            .dateHistory(LocalDateTime.now())
-            .build();
+        SaveScholarshipHistoryDto.builder().title("meaningless").dateHistory(FIXED_TIME).build();
     doThrow(NotFoundException.class)
         .when(scholarshipHistoryService)
         .updateScholarshipHistory(any(), any(), any());

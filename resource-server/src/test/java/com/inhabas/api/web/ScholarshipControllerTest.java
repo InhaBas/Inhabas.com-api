@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -13,7 +14,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -48,8 +48,8 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .writer(writer)
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .build();
     List<ScholarshipBoardDto> dtoList = List.of(scholarshipBoardDto);
     given(scholarshipBoardService.getPosts(any(), any())).willReturn(dtoList);
@@ -94,9 +94,9 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
             .writer(writer)
             .images(null)
             .otherFiles(null)
-            .dateHistory(LocalDateTime.now())
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .build();
     given(scholarshipBoardService.getPost(any(), any())).willReturn(scholarshipBoardDetailDto);
 
@@ -155,7 +155,7 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
         SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
 
     // when
@@ -181,7 +181,7 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
         SaveScholarshipBoardDto.builder()
             .title("")
             .content("good content")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
 
     // when
@@ -209,7 +209,7 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
         SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
 
     // when then
@@ -232,7 +232,7 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
         SaveScholarshipBoardDto.builder()
             .title("")
             .content("good content")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
 
     // when
@@ -262,7 +262,7 @@ public class ScholarshipControllerTest extends ControllerTestSupport {
         SaveScholarshipBoardDto.builder()
             .title("good title")
             .content("good content")
-            .dateHistory(LocalDateTime.now())
+            .dateHistory(FIXED_TIME)
             .build();
 
     // when

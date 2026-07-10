@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -185,7 +185,7 @@ class MyInfoControllerTest extends ControllerTestSupport {
             .afterName("김이후")
             .status(RequestStatus.REJECTED)
             .rejectReason("돌아가")
-            .dateRequested(LocalDateTime.now())
+            .dateRequested(FIXED_TIME)
             .build();
     given(memberProfileService.getMyInfoMyRequests(any())).willReturn(List.of(dto));
 
@@ -210,7 +210,7 @@ class MyInfoControllerTest extends ControllerTestSupport {
             .afterName("김이후")
             .status(RequestStatus.REJECTED)
             .rejectReason("돌아가")
-            .dateRequested(LocalDateTime.now())
+            .dateRequested(FIXED_TIME)
             .build();
     given(memberProfileService.getMyInfoRequests()).willReturn(List.of(dto));
 
@@ -248,7 +248,7 @@ class MyInfoControllerTest extends ControllerTestSupport {
             .menuId(4)
             .menuName("공지사항")
             .title("이건 공지")
-            .dateCreated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
             .build();
     given(myInfoService.getMyBoards(writer.getId())).willReturn(List.of(myBoardDto));
 
@@ -275,7 +275,7 @@ class MyInfoControllerTest extends ControllerTestSupport {
             .menuId(1)
             .menuName("자유게시판")
             .content("댓글댓글")
-            .dateCreated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
             .build();
     given(myInfoService.getMyComments(writer.getId())).willReturn(List.of(myCommentDto));
 
@@ -301,9 +301,9 @@ class MyInfoControllerTest extends ControllerTestSupport {
             .id(1L)
             .status(RequestStatus.COMPLETED)
             .title("1월 ec2 서버비용")
-            .dateCreated(LocalDateTime.now())
-            .dateChecked(LocalDateTime.now())
-            .dateDeposited(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateChecked(FIXED_TIME)
+            .dateDeposited(FIXED_TIME)
             .build();
     given(myInfoService.getMyBudgetSupportApplications(writer.getId()))
         .willReturn(List.of(myBudgetSupportApplicationDto));

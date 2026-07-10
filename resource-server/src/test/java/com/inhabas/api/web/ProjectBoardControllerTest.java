@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -11,7 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -70,8 +70,8 @@ public class ProjectBoardControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .writerName(writer.getName())
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .isPinned(false)
             .build();
     List<ProjectBoardDto> dtoList = List.of(projectBoardDto);
@@ -117,8 +117,8 @@ public class ProjectBoardControllerTest extends ControllerTestSupport {
             .writerName(writer.getName())
             .images(null)
             .otherFiles(null)
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .isPinned(false)
             .build();
     given(projectBoardService.getPost(any(), any(), any())).willReturn(projectBoardDetailDto);

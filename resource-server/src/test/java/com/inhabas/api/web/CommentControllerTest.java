@@ -1,6 +1,7 @@
 package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -8,7 +9,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,9 +57,9 @@ public class CommentControllerTest extends ControllerTestSupport {
     List<CommentDetailDto> commentList =
         List.of(
             new CommentDetailDto[] {
-              new CommentDetailDto(1L, writer, "contents1", false, LocalDateTime.now()),
-              new CommentDetailDto(2L, writer, "contents2", false, LocalDateTime.now()),
-              new CommentDetailDto(3L, writer, "contents3", false, LocalDateTime.now())
+              new CommentDetailDto(1L, writer, "contents1", false, FIXED_TIME),
+              new CommentDetailDto(2L, writer, "contents2", false, FIXED_TIME),
+              new CommentDetailDto(3L, writer, "contents3", false, FIXED_TIME)
             });
     given(commentService.getComments(anyInt(), anyLong())).willReturn(commentList);
 

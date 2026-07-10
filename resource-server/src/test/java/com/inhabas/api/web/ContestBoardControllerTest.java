@@ -2,6 +2,7 @@ package com.inhabas.api.web;
 
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -133,8 +134,8 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .topic("테스트 주제")
             .dateContestStart(LocalDateTime.of(2024, 1, 1, 0, 0, 0))
             .dateContestEnd(LocalDateTime.of(2024, 3, 1, 0, 0, 0))
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
             .thumbnail(
                 new FileDownloadDto("random", "thumbnail.jpg", "/thumbnailUrl", 10L, "image/jpeg"))
             .images(null)
@@ -200,7 +201,7 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(List.of("fileId"))
             .build();
@@ -233,7 +234,7 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(List.of("fileId"))
             .build();
@@ -269,7 +270,7 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(List.of("fileId"))
             .build();
@@ -298,7 +299,7 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(List.of("fileId"))
             .build();
@@ -333,7 +334,7 @@ public class ContestBoardControllerTest extends ControllerTestSupport {
             .content("good content")
             .association("good association")
             .topic("good topic")
-            .dateContestStart(LocalDateTime.now())
+            .dateContestStart(FIXED_TIME)
             .dateContestEnd(LocalDateTime.now().plusDays(10))
             .files(List.of("fileId"))
             .build();

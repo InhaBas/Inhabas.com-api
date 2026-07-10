@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -12,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -61,9 +61,9 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
         BudgetHistoryDto.builder()
             .id(1L)
             .title("title")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
-            .dateUsed(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .memberStudentIdInCharge("121212")
@@ -90,9 +90,9 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
         BudgetHistoryDto.builder()
             .id(1L)
             .title("title")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
-            .dateUsed(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .memberStudentIdInCharge("121212")
@@ -118,9 +118,9 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .details("details")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
-            .dateUsed(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .account("123-1231-23")
@@ -148,9 +148,9 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
             .id(1L)
             .title("title")
             .details("details")
-            .dateCreated(LocalDateTime.now())
-            .dateUpdated(LocalDateTime.now())
-            .dateUsed(LocalDateTime.now())
+            .dateCreated(FIXED_TIME)
+            .dateUpdated(FIXED_TIME)
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .account("123-1231-23")
@@ -184,7 +184,7 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
         BudgetHistoryCreateForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .memberStudentIdReceived("123123123")
@@ -232,7 +232,7 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
         BudgetHistoryCreateForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .memberStudentIdReceived("123123123")
@@ -270,7 +270,7 @@ public class BudgetHistoryControllerTest extends ControllerTestSupport {
         BudgetHistoryCreateForm.builder()
             .title("title")
             .details("details")
-            .dateUsed(LocalDateTime.now())
+            .dateUsed(FIXED_TIME)
             .income(0)
             .outcome(10000)
             .memberStudentIdReceived("123123123")
