@@ -4,7 +4,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.domain.menu.domain.Menu;
 
-public class NormalBoardExampleTest {
+public class NormalBoardExampleFixture {
 
   public static NormalBoard getBoard1(Menu menu) {
     return new NormalBoard("이건 공지1", menu, "이건 공지1입니다.", false, null);

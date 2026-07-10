@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.project.usecase;
 
-import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getAlphaTesterMenu;
-import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getProjectMenuGroup;
+import static com.inhabas.api.domain.menu.domain.MenuExampleFixture.getAlphaTesterMenu;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture.getProjectMenuGroup;
 import static com.inhabas.api.domain.project.domain.ProjectBoardType.ALPHA;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

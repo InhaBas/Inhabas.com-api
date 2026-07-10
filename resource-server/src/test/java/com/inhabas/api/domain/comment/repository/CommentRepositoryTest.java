@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
-import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
+import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleFixture;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.menu.domain.Menu;
@@ -46,7 +46,7 @@ public class CommentRepositoryTest {
     boardWriter = em.persist(basicMember1());
     commentWriter = em.persist(basicMember2());
     albumBoard =
-        em.persist(AlbumExampleTest.getAlbumBoard1(menu).writtenBy(boardWriter, AlbumBoard.class));
+        em.persist(AlbumExampleFixture.getAlbumBoard1(menu).writtenBy(boardWriter, AlbumBoard.class));
   }
 
   @DisplayName("작성한 댓글과 저장된 댓글이 같다.")

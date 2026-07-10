@@ -2,7 +2,7 @@ package com.inhabas.api.domain.menu.domain;
 
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 
-public class MenuExampleTest {
+public class MenuExampleFixture {
 
   public static Menu getAlbumMenu(MenuGroup menuGroup) {
     return new Menu(menuGroup, 1, MenuType.ALBUM, "동아리 활동", "동아리 활동 설명");

@@ -17,7 +17,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.scholarship.domain.Scholarship;
-import com.inhabas.api.domain.scholarship.domain.ScholarshipBoardExampleTest;
+import com.inhabas.api.domain.scholarship.domain.ScholarshipBoardExampleFixture;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDto;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,10 +52,10 @@ public class ScholarshipBoardRepositoryTest {
                 .build());
     ReflectionTestUtils.setField(scholarshipBoardMenu, "id", 20);
     scholarshipBoard1 =
-        ScholarshipBoardExampleTest.getBoard1(scholarshipBoardMenu)
+        ScholarshipBoardExampleFixture.getBoard1(scholarshipBoardMenu)
             .writtenBy(writer, Scholarship.class);
     scholarshipBoard2 =
-        ScholarshipBoardExampleTest.getBoard2(scholarshipBoardMenu)
+        ScholarshipBoardExampleFixture.getBoard2(scholarshipBoardMenu)
             .writtenBy(writer, Scholarship.class);
 
     em.persist(scholarshipBoard1);

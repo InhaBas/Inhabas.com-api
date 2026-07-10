@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.scholarship.usecase;
 
-import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getScholarshipMenu;
-import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getScholarshipMenuGroup;
+import static com.inhabas.api.domain.menu.domain.MenuExampleFixture.getScholarshipMenu;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture.getScholarshipMenuGroup;
 import static com.inhabas.api.domain.scholarship.domain.ScholarshipBoardType.SPONSOR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

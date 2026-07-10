@@ -2,7 +2,7 @@ package com.inhabas.api.domain.menu.domain.valueObject;
 
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 
-public class MenuGroupExampleTest {
+public class MenuGroupExampleFixture {
 
   public static MenuGroup getIBASMenuGroup() {
     return new MenuGroup("IBAS");

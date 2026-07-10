@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.normalBoard.usecase;
 
-import static com.inhabas.api.domain.menu.domain.MenuExampleTest.getNormalNoticeMenu;
-import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest.getNormalMenuGroup;
+import static com.inhabas.api.domain.menu.domain.MenuExampleFixture.getNormalNoticeMenu;
+import static com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture.getNormalMenuGroup;
 import static com.inhabas.api.domain.normalBoard.domain.NormalBoardType.NOTICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

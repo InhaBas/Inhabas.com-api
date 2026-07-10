@@ -26,9 +26,9 @@ import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -146,8 +146,8 @@ public class BudgetHistoryServiceTest {
     Member secretary = MemberFixture.secretaryMember();
     ReflectionTestUtils.setField(secretary, "id", 1L);
     Member memberReceived = MemberFixture.basicMember1();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BoardFile file = new BoardFile("random", "name", "url", secretary, 100L, "image/jpeg");
     BudgetHistoryCreateForm form =
         new BudgetHistoryCreateForm(
@@ -252,8 +252,8 @@ public class BudgetHistoryServiceTest {
   public void getOneBudgetHistoryTest() {
     // given
     Member secretary = MemberFixture.secretaryMember();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BudgetHistory history =
         BudgetHistory.builder()
             .title(HISTORY_TITLE)

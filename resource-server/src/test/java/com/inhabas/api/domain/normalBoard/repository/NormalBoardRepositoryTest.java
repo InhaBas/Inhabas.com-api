@@ -16,7 +16,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
-import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleTest;
+import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleFixture;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 
 import org.junit.jupiter.api.AfterEach;
@@ -52,9 +52,9 @@ public class NormalBoardRepositoryTest {
                 .build());
     ReflectionTestUtils.setField(noticeBoardMenu, "id", 4);
     NOTICE_BOARD =
-        NormalBoardExampleTest.getBoard1(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
+        NormalBoardExampleFixture.getBoard1(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
     NOTICE_BOARD_2 =
-        NormalBoardExampleTest.getBoard2(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
+        NormalBoardExampleFixture.getBoard2(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
   }
 
   @AfterEach

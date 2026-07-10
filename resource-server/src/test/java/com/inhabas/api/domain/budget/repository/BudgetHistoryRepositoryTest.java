@@ -17,9 +17,9 @@ import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,8 +45,8 @@ public class BudgetHistoryRepositoryTest {
   public void setUp() {
     memberInCharge = em.persist(secretaryMember());
     memberReceived = em.persist(basicMember1());
-    menuGroup = em.persist(MenuGroupExampleTest.getBudgetMenuGroup());
-    menu = em.persist(MenuExampleTest.getBudgetHistoryMenu(menuGroup));
+    menuGroup = em.persist(MenuGroupExampleFixture.getBudgetMenuGroup());
+    menu = em.persist(MenuExampleFixture.getBudgetHistoryMenu(menuGroup));
   }
 
   @DisplayName("예산 내역을 하나 조회한다.")

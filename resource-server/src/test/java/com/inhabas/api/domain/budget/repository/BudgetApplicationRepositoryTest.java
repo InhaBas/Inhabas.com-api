@@ -18,9 +18,9 @@ import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +43,8 @@ public class BudgetApplicationRepositoryTest {
   @BeforeEach
   public void setUp() {
     member = em.persist(MemberFixture.basicMember1());
-    menuGroup = em.persist(MenuGroupExampleTest.getBudgetMenuGroup());
-    menu = em.persist(MenuExampleTest.getBudgetHistoryMenu(menuGroup));
+    menuGroup = em.persist(MenuGroupExampleFixture.getBudgetMenuGroup());
+    menu = em.persist(MenuExampleFixture.getBudgetHistoryMenu(menuGroup));
   }
 
   @DisplayName("처리 완료된 것을 제외한 모든 예산지원신청서를 검색한다.")

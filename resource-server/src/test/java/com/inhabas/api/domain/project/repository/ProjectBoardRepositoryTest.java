@@ -16,7 +16,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.project.domain.ProjectBoard;
-import com.inhabas.api.domain.project.domain.ProjectBoardExampleTest;
+import com.inhabas.api.domain.project.domain.ProjectBoardExampleFixture;
 import com.inhabas.api.domain.project.dto.ProjectBoardDto;
 
 import org.junit.jupiter.api.AfterEach;
@@ -52,9 +52,9 @@ public class ProjectBoardRepositoryTest {
                 .build());
     ReflectionTestUtils.setField(projectBoardMenu, "id", 16);
     PROJECT_BOARD =
-        ProjectBoardExampleTest.getBoard1(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
+        ProjectBoardExampleFixture.getBoard1(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
     PROJECT_BOARD_2 =
-        ProjectBoardExampleTest.getBoard2(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
+        ProjectBoardExampleFixture.getBoard2(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
   }
 
   @AfterEach

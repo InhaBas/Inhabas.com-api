@@ -17,15 +17,15 @@ import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
+import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleFixture;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.repository.CommentRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -52,11 +52,11 @@ public class CommentServiceTest {
   public void setUpMocking() {
     proxyWriter = MemberFixture.getTestBasicMember("12171652");
     ReflectionTestUtils.setField(proxyWriter, "id", 1L);
-    proxyMenuGroup = MenuGroupExampleTest.getIBASMenuGroup();
+    proxyMenuGroup = MenuGroupExampleFixture.getIBASMenuGroup();
     ReflectionTestUtils.setField(proxyMenuGroup, "id", 1);
-    proxyMenu = MenuExampleTest.getAlbumMenu(proxyMenuGroup);
+    proxyMenu = MenuExampleFixture.getAlbumMenu(proxyMenuGroup);
     ReflectionTestUtils.setField(proxyMenu, "id", 1);
-    proxyBoard = AlbumExampleTest.getAlbumBoard1(proxyMenu);
+    proxyBoard = AlbumExampleFixture.getAlbumBoard1(proxyMenu);
     ReflectionTestUtils.setField(proxyBoard, "id", 1L);
   }
 

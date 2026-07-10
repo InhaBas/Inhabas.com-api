@@ -27,9 +27,9 @@ import com.inhabas.api.domain.budget.exception.StatusNotFollowProceduresExceptio
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -67,8 +67,8 @@ public class BudgetApplicationProcessorTest {
     secretary = MemberFixture.secretaryMember();
     ReflectionTestUtils.setField(secretary, "id", 1L);
     applicant = MemberFixture.basicMember1();
-    menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     application =
         new BudgetSupportApplication(
             menu,

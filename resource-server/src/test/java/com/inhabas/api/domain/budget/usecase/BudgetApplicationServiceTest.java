@@ -28,9 +28,9 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
 import com.inhabas.api.domain.menu.domain.Menu;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -62,8 +62,8 @@ public class BudgetApplicationServiceTest {
   public void registerApplicationTest() {
     // given
     Member applicant = MemberFixture.basicMember1();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BudgetApplicationRegisterForm form =
         new BudgetApplicationRegisterForm(
             APPLICATION_TITLE,
@@ -104,8 +104,8 @@ public class BudgetApplicationServiceTest {
   public void updateApplicationTest() {
     // given
     Member applicant = MemberFixture.basicMember1();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
         new BudgetSupportApplication(
                 menu,
@@ -170,8 +170,8 @@ public class BudgetApplicationServiceTest {
   public void deleteBudgetApplicationTest() {
     // when
     Member applicant = MemberFixture.basicMember1();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
         new BudgetSupportApplication(
                 menu,
@@ -197,8 +197,8 @@ public class BudgetApplicationServiceTest {
   public void getBudgetApplicationDetailsTest() {
     // given
     Member applicant = MemberFixture.basicMember1();
-    MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
-    Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
+    MenuGroup menuGroup = MenuGroupExampleFixture.getBudgetMenuGroup();
+    Menu menu = MenuExampleFixture.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
         new BudgetSupportApplication(
             menu,

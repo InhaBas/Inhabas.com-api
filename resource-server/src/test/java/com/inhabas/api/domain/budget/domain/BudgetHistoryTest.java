@@ -8,8 +8,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
-import com.inhabas.api.domain.menu.domain.MenuExampleTest;
-import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
+import com.inhabas.api.domain.menu.domain.MenuExampleFixture;
+import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleFixture;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class BudgetHistoryTest {
     BudgetHistory budgetHistory =
         new BudgetHistory(
             "Title",
-            MenuExampleTest.getBudgetHistoryMenu(MenuGroupExampleTest.getBudgetMenuGroup()),
+            MenuExampleFixture.getBudgetHistoryMenu(MenuGroupExampleFixture.getBudgetMenuGroup()),
             "Details",
             dateUsed,
             memberInCharge,
@@ -80,7 +80,7 @@ public class BudgetHistoryTest {
   private BudgetHistory setupBudgetHistory(Member memberInCharge) {
     return BudgetHistory.builder()
         .title("Title")
-        .menu(MenuExampleTest.getBudgetHistoryMenu(MenuGroupExampleTest.getBudgetMenuGroup()))
+        .menu(MenuExampleFixture.getBudgetHistoryMenu(MenuGroupExampleFixture.getBudgetMenuGroup()))
         .details("Details")
         .dateUsed(LocalDateTime.now())
         .memberInCharge(memberInCharge)

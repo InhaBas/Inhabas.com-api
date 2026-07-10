@@ -14,7 +14,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
-import com.inhabas.api.domain.contest.domain.ContestBoardExampleTest;
+import com.inhabas.api.domain.contest.domain.ContestBoardExampleFixture;
 import com.inhabas.api.domain.contest.domain.ContestField;
 import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.menu.domain.Menu;
@@ -64,10 +64,10 @@ public class ContestBoardRepositoryTest {
     contestField = em.persist(contestField);
 
     CONTEST_BOARD =
-        ContestBoardExampleTest.getBoard1(contestBoardMenu, contestField)
+        ContestBoardExampleFixture.getBoard1(contestBoardMenu, contestField)
             .writtenBy(writer, ContestBoard.class);
     CONTEST_BOARD_2 =
-        ContestBoardExampleTest.getBoard2(contestBoardMenu, contestField)
+        ContestBoardExampleFixture.getBoard2(contestBoardMenu, contestField)
             .writtenBy(writer, ContestBoard.class);
   }
 

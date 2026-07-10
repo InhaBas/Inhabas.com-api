@@ -25,7 +25,7 @@ import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
-import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleTest;
+import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleFixture;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -60,9 +60,9 @@ public class MyInfoRepositoryTest {
                 .build());
 
     NormalBoard noticeBoard1 =
-        NormalBoardExampleTest.getBoard1(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
+        NormalBoardExampleFixture.getBoard1(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
     NormalBoard noticeBoard2 =
-        NormalBoardExampleTest.getBoard2(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
+        NormalBoardExampleFixture.getBoard2(noticeBoardMenu).writtenBy(writer, NormalBoard.class);
     normalBoardRepository.save(noticeBoard1);
     normalBoardRepository.save(noticeBoard2);
 

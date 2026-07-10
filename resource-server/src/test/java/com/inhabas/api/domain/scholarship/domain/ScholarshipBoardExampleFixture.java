@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.inhabas.api.domain.menu.domain.Menu;
 
-public class ScholarshipBoardExampleTest {
+public class ScholarshipBoardExampleFixture {
 
   public static Scholarship getBoard1(Menu menu) {
     return new Scholarship("제목1", menu, "내용1", LocalDateTime.now());

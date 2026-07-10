@@ -7,7 +7,7 @@ import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 
-public class AlbumExampleTest {
+public class AlbumExampleFixture {
 
   public static AlbumBoard getAlbumBoard1(Menu menu) {
     return new AlbumBoard("제목1", menu, "내용1");

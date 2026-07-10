@@ -4,7 +4,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.domain.menu.domain.Menu;
 
-public class ProjectBoardExampleTest {
+public class ProjectBoardExampleFixture {
 
   public static ProjectBoard getBoard1(Menu menu) {
     return new ProjectBoard("알파 테스터 제목", menu, "알파테스터 내용", false, null);

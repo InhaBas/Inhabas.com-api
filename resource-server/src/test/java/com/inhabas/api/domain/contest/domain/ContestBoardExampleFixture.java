@@ -6,7 +6,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.domain.menu.domain.Menu;
 
-public class ContestBoardExampleTest {
+public class ContestBoardExampleFixture {
   public static ContestBoard getBoard1(Menu menu, ContestField contestField) {
     ContestBoard contestBoard =
         ContestBoard.builder()
