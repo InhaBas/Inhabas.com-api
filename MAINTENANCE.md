@@ -413,8 +413,18 @@ ADMIN
 | 어노테이션/프로파일 | 설명 |
 |--------------------|------|
 | `@NoSecureWebMvcTest` | 시큐리티 제외 MVC 테스트 |
-| `@DefaultDataJpaTest` | H2 기반 JPA 테스트 |
+| `@DefaultDataJpaTest` | H2 기반 JPA 테스트 (module-auth testFixtures 제공) |
 | `@CustomSpringBootTest` | 전체 컨텍스트 통합 테스트 |
+
+### 공유 테스트 픽스처 (module-auth testFixtures)
+
+`module-auth`의 `src/testFixtures`는 `java-test-fixtures` 플러그인으로 다른 모듈에 공유됩니다.
+
+- `MemberFixture`: Role별 Member 픽스처 정적 팩토리 (`chiefMember()`, `basicMember1()` 등)
+- `TestTimeFixture`: 테스트 데이터용 고정 시각 (`FIXED_TIME`, `FIXED_INSTANT`). 시간 흐름 자체를 검증하는 테스트에는 사용하지 않습니다.
+- `@DefaultDataJpaTest`: QueryDSL(JPAQueryFactory) 포함 JPA 슬라이스 테스트 어노테이션
+
+컨트롤러 슬라이스 테스트는 `ControllerTestSupport`(resource-server `testSupport` 패키지)를 상속하면 `mvc`, `objectMapper`, `jsonOf()`가 제공됩니다.
 
 ### 인증 모킹
 
