@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -30,7 +29,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
   @DisplayName("Request 쿠키에서 OAuth2AuthorizationRequest 객체를 복원한다.")
   @Test
-  public void loadAuthorizationRequestTest() throws NoSuchMethodException {
+  public void loadAuthorizationRequestTest() throws ReflectiveOperationException {
     // given
     OAuth2AuthorizationRequest oAuth2AuthorizationRequest = createOAuth2AuthorizationRequest();
     Cookie cookie =
@@ -76,7 +75,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
   @DisplayName("OAuth2AuthorizationRequest 를 성공적으로 쿠키로 저장한다.")
   @Test
-  public void saveAuthorizationRequestTest() throws NoSuchMethodException {
+  public void saveAuthorizationRequestTest() throws ReflectiveOperationException {
     // given
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -89,13 +88,13 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     // then
     // 쿠키 한가지 존재하는지 확인.
     Cookie savedCookie = response.getCookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-    assert savedCookie != null;
+    assertThat(savedCookie).isNotNull();
     assertTrue(Base64.isBase64(savedCookie.getValue()));
   }
 
   @DisplayName("OAuth2AuthorizationRequest 를 쿠키로 저장할 때, redirect_url 도 쿠키로 저장한다.")
   @Test
-  public void saveAuthorizationRequestWithRedirectUrlTest() throws NoSuchMethodException {
+  public void saveAuthorizationRequestWithRedirectUrlTest() throws ReflectiveOperationException {
     // given
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -119,7 +118,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
   @DisplayName("OAuth2AuthorizationRequest 를 성공적으로 쿠키에서 삭제한다. (redirectUrl 쿠키는 삭제되지 않는다.)")
   @Test
-  public void removeAuthorizationRequestTest() throws NoSuchMethodException {
+  public void removeAuthorizationRequestTest() throws ReflectiveOperationException {
     // given
     MockHttpServletRequest request = new MockHttpServletRequest();
     MockHttpServletResponse response = new MockHttpServletResponse();
@@ -138,7 +137,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
 
     // then
     Cookie cookie = response.getCookie(OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-    assert cookie != null;
+    assertThat(cookie).isNotNull();
     assertTrue(cookie.getValue().isBlank() && cookie.getMaxAge() == 0);
   }
 
@@ -166,7 +165,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
   }
 
   private OAuth2AuthorizationRequest createOAuth2AuthorizationRequest()
-      throws NoSuchMethodException {
+      throws ReflectiveOperationException {
     // reflection
     Constructor<?> constructor =
         OAuth2AuthorizationRequest.Builder.class.getDeclaredConstructor(
@@ -174,23 +173,18 @@ public class HttpCookieOAuth2AuthorizationRequestRepositoryTest {
     constructor.setAccessible(true);
 
     // construct
-    try {
-      OAuth2AuthorizationRequest.Builder builder =
-          (OAuth2AuthorizationRequest.Builder)
-              constructor.newInstance(AuthorizationGrantType.AUTHORIZATION_CODE);
+    OAuth2AuthorizationRequest.Builder builder =
+        (OAuth2AuthorizationRequest.Builder)
+            constructor.newInstance(AuthorizationGrantType.AUTHORIZATION_CODE);
 
-      return builder
-          .authorizationUri("https://kauth.kakao.com/oauth/authorize")
-          .clientId("1234")
-          .redirectUri("http://localhost/api/login/oauth2/code/kakao")
-          .scopes(Set.of("gender", "profile_image", "account_email", "profile_nickname"))
-          .state("state1934")
-          .additionalParameters(java.util.Map.of())
-          .attributes(java.util.Map.of("registration_id", "kakao"))
-          .build();
-
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException ignored) {
-      return null;
-    }
+    return builder
+        .authorizationUri("https://kauth.kakao.com/oauth/authorize")
+        .clientId("1234")
+        .redirectUri("http://localhost/api/login/oauth2/code/kakao")
+        .scopes(Set.of("gender", "profile_image", "account_email", "profile_nickname"))
+        .state("state1934")
+        .additionalParameters(java.util.Map.of())
+        .attributes(java.util.Map.of("registration_id", "kakao"))
+        .build();
   }
 }

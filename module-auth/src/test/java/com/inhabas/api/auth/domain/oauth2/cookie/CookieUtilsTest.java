@@ -53,7 +53,7 @@ public class CookieUtilsTest {
 
     // then
     Cookie resolvedCookie = response.getCookie(cookieName);
-    assert resolvedCookie != null;
+    assertThat(resolvedCookie).isNotNull();
 
     assertThat(resolvedCookie.getName()).isEqualTo(cookieName);
     assertThat(resolvedCookie.getValue()).isEqualTo(cookieContents);
@@ -75,7 +75,7 @@ public class CookieUtilsTest {
 
     // then
     Cookie deletedCookie = response.getCookie("myCookie");
-    assert deletedCookie != null;
+    assertThat(deletedCookie).isNotNull();
     assertThat(deletedCookie.getMaxAge()).isEqualTo(0);
     assertThat(deletedCookie.getValue()).isEqualTo("");
   }
