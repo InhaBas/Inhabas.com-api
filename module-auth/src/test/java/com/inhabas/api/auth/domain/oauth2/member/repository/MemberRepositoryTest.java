@@ -4,6 +4,7 @@ import static com.inhabas.api.auth.domain.oauth2.OAuth2Provider.GOOGLE;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.*;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
+import static com.inhabas.api.auth.testFixture.TestTimeFixture.FIXED_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
@@ -200,5 +202,35 @@ public class MemberRepositoryTest {
 
     // then
     assertThat(members.size()).isEqualTo(1);
+  }
+
+  @DisplayName("미승인 멤버 목록은 지원서를 먼저 제출한 순서로 정렬된다.")
+  @Test
+  @Transactional
+  public void sort_not_approved_members_by_date_joined_asc() {
+    // given
+    Member early = basicMember1();
+    early.setRole(NOT_APPROVED);
+    ReflectionTestUtils.setField(early.getIbasInformation(), "dateJoined", FIXED_TIME.minusDays(1));
+
+    Member latest = notapprovedMember();
+    ReflectionTestUtils.setField(latest.getIbasInformation(), "dateJoined", FIXED_TIME);
+
+    // 저장 순서와 무관하게 제출일 순으로 정렬되는지 확인하기 위해 늦게 제출한 멤버를 먼저 저장
+    memberRepository.save(latest);
+    memberRepository.save(early);
+
+    // when
+    List<Member> byName = memberRepository.findAllByRoleAndNameLike(NOT_APPROVED, "");
+    List<Member> byStudentId =
+        memberRepository.findAllByRoleAndStudentIdLike(NOT_APPROVED, "12171707");
+
+    // then
+    assertThat(byName)
+        .extracting(member -> member.getIbasInformation().getDateJoined())
+        .containsExactly(FIXED_TIME.minusDays(1), FIXED_TIME);
+    assertThat(byStudentId)
+        .extracting(member -> member.getIbasInformation().getDateJoined())
+        .containsExactly(FIXED_TIME.minusDays(1), FIXED_TIME);
   }
 }

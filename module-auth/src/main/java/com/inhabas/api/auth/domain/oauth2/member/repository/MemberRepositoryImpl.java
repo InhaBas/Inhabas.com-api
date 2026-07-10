@@ -92,6 +92,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(eqRole(role).and(member.studentId.id.like("%" + studentId + "%")))
+        .orderBy(member.ibasInformation.dateJoined.asc())
         .fetch();
   }
 
@@ -101,6 +102,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(eqRole(role).and(member.name.value.like("%" + name + "%")))
+        .orderBy(member.ibasInformation.dateJoined.asc())
         .fetch();
   }
 
