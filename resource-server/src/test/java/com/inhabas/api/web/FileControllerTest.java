@@ -7,23 +7,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.usecase.BoardFileService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(FileController.class)
-public class FileControllerTest {
-
-  @Autowired private MockMvc mvc;
+public class FileControllerTest extends ControllerTestSupport {
 
   @MockitoBean private BoardFileService boardFileService;
 

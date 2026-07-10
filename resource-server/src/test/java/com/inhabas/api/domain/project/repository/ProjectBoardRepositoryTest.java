@@ -52,9 +52,11 @@ public class ProjectBoardRepositoryTest {
                 .build());
     ReflectionTestUtils.setField(projectBoardMenu, "id", 16);
     PROJECT_BOARD =
-        ProjectBoardExampleFixture.getBoard1(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
+        ProjectBoardExampleFixture.getBoard1(projectBoardMenu)
+            .writtenBy(writer, ProjectBoard.class);
     PROJECT_BOARD_2 =
-        ProjectBoardExampleFixture.getBoard2(projectBoardMenu).writtenBy(writer, ProjectBoard.class);
+        ProjectBoardExampleFixture.getBoard2(projectBoardMenu)
+            .writtenBy(writer, ProjectBoard.class);
   }
 
   @AfterEach

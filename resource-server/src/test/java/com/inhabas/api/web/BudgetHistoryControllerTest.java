@@ -15,28 +15,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.budget.usecase.BudgetHistoryService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(BudgetHistoryController.class)
-public class BudgetHistoryControllerTest {
+public class BudgetHistoryControllerTest extends ControllerTestSupport {
 
-  @Autowired private MockMvc mvc;
-  @Autowired private ObjectMapper objectMapper;
   @MockitoBean private BudgetHistoryService budgetHistoryService;
 
   @DisplayName("회계 내역의 모든 연도 조회 200.")
@@ -308,9 +303,5 @@ public class BudgetHistoryControllerTest {
 
     // when
     mvc.perform(delete("/budget/history/1")).andExpect(status().isNotFound());
-  }
-
-  private String jsonOf(Object o) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(o);
   }
 }

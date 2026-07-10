@@ -17,13 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
@@ -31,20 +27,15 @@ import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositor
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import com.inhabas.api.domain.scholarship.usecase.ScholarshipHistoryService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(ScholarshipHistoryController.class)
-public class ScholarshipHistoryControllerTest {
+public class ScholarshipHistoryControllerTest extends ControllerTestSupport {
 
-  @Autowired private MockMvc mvc;
-  @Autowired private ObjectMapper objectMapper;
   @MockitoBean private ScholarshipHistoryService scholarshipHistoryService;
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
-  }
 
   @DisplayName("장학회 연혁 조회 성공 200")
   @Test

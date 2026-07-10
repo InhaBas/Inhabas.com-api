@@ -11,9 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import com.inhabas.api.domain.menu.domain.valueObject.MenuId;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -21,16 +19,15 @@ import com.inhabas.api.domain.menu.dto.MenuDto;
 import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.api.domain.menu.usecase.MenuService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(MenuController.class)
-public class MenuControllerTest {
+public class MenuControllerTest extends ControllerTestSupport {
 
   @MockitoBean private MenuService menuService;
-
-  @Autowired private MockMvc mvc;
 
   @DisplayName("모든 메뉴 정보를 조회한다.")
   @Test

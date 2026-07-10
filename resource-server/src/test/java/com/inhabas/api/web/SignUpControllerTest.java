@@ -15,13 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
@@ -33,22 +29,15 @@ import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUp.usecase.SignUpService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(SignUpController.class)
-public class SignUpControllerTest {
-
-  @Autowired private MockMvc mvc;
-
-  @Autowired private ObjectMapper objectMapper;
+public class SignUpControllerTest extends ControllerTestSupport {
 
   @MockitoBean private SignUpService signUpService;
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
-  }
 
   @DisplayName("요청을 보낸 사용자가 회원가입을 했는지 확인한다.")
   @Test

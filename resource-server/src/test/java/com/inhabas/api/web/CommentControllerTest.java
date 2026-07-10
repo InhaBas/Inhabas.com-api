@@ -14,13 +14,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
@@ -29,19 +26,16 @@ import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(CommentController.class)
-public class CommentControllerTest {
-
-  @Autowired private MockMvc mvc;
+public class CommentControllerTest extends ControllerTestSupport {
 
   @Autowired private WebApplicationContext wac;
-
-  @Autowired private ObjectMapper objectMapper;
 
   @MockitoBean private CommentServiceImpl commentService;
 
@@ -53,10 +47,6 @@ public class CommentControllerTest {
         MockMvcBuilders.webAppContextSetup(wac)
             .addFilters(new CharacterEncodingFilter("UTF-8", true))
             .build();
-  }
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
   }
 
   @DisplayName("댓글 전체 조회 성공 200")

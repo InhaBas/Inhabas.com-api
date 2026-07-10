@@ -14,35 +14,24 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
 import com.inhabas.api.domain.club.usecase.ClubHistoryService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(ClubHistoryController.class)
-public class ClubHistoryControllerTest {
-
-  @Autowired private MockMvc mvc;
-
-  @Autowired private ObjectMapper objectMapper;
+public class ClubHistoryControllerTest extends ControllerTestSupport {
 
   @MockitoBean private ClubHistoryService clubHistoryService;
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
-  }
 
   @DisplayName("동아리 연혁 조회 성공 200")
   @Test

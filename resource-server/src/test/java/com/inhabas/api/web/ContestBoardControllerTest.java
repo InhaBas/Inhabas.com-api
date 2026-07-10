@@ -17,13 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
@@ -37,22 +33,16 @@ import com.inhabas.api.domain.contest.usecase.ContestBoardService;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(ContestBoardController.class)
-public class ContestBoardControllerTest {
-
-  @Autowired private MockMvc mvc;
-  @Autowired private ObjectMapper objectMapper;
+public class ContestBoardControllerTest extends ControllerTestSupport {
 
   @MockitoBean private ContestBoardService contestBoardService;
   @MockitoBean private BaseBoardRepository baseBoardRepository;
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
-  }
 
   @DisplayName("게시판 종류 당 글 개수 조회 성공 200")
   @Test

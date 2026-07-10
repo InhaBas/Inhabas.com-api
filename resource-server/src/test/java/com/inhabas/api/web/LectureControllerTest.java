@@ -7,22 +7,19 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import com.inhabas.api.domain.lecture.usecase.LectureService;
 import com.inhabas.api.domain.lecture.usecase.LectureStudentService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(LectureController.class)
-public class LectureControllerTest {
-
-  @Autowired private MockMvc mockMvc;
+public class LectureControllerTest extends ControllerTestSupport {
 
   @MockitoBean private LectureService lectureService;
 
@@ -36,7 +33,7 @@ public class LectureControllerTest {
   //        doNothing().when(lectureService).create(any(), any());
   //
   //        //when
-  //        mockMvc.perform(post("/lecture")
+  //        mvc.perform(post("/lecture")
   //                        .contentType(MediaType.APPLICATION_JSON)
   //                        .content("{\n" +
   //                                "  \"title\": \"절권도 강의\",\n" +
@@ -63,7 +60,7 @@ public class LectureControllerTest {
   //        doNothing().when(lectureService).update(any(), any());
   //
   //        //when
-  //        mockMvc.perform(put("/lecture")
+  //        mvc.perform(put("/lecture")
   //                        .contentType(MediaType.APPLICATION_JSON)
   //                        .content("{\n" +
   //                                "  \"id\": \"1\",\n" +
@@ -91,7 +88,7 @@ public class LectureControllerTest {
     doNothing().when(lectureService).delete(any(), any());
 
     // when
-    mockMvc.perform(delete("/lecture/1")).andExpect(status().isNoContent());
+    mvc.perform(delete("/lecture/1")).andExpect(status().isNoContent());
 
     // then
     then(lectureService).should(times(1)).delete(any(), any());
@@ -125,7 +122,7 @@ public class LectureControllerTest {
   //        given(lectureService.get(any())).willReturn(expectedDto);
   //
   //        //when
-  //        String response = mockMvc.perform(get("/lecture/1"))
+  //        String response = mvc.perform(get("/lecture/1"))
   //                .andExpect(status().isOk())
   //                .andReturn()
   //                .getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -184,7 +181,7 @@ public class LectureControllerTest {
   //        given(lectureService.getList(any())).willReturn(page);
   //
   //        //when
-  //        String response = mockMvc.perform(get("/lectures"))
+  //        String response = mvc.perform(get("/lectures"))
   //                .andExpect(status().isOk())
   //                .andReturn()
   //                .getResponse().getContentAsString(StandardCharsets.UTF_8);
@@ -263,8 +260,7 @@ public class LectureControllerTest {
     doNothing().when(lectureService).approveOrDeny(any(), any());
 
     // when
-    mockMvc
-        .perform(
+    mvc.perform(
             put("/lecture/1/status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
@@ -286,7 +282,7 @@ public class LectureControllerTest {
     doNothing().when(studentService).enroll(any(), any());
 
     // when
-    mockMvc.perform(post("/lecture/1/student")).andExpect(status().isNoContent());
+    mvc.perform(post("/lecture/1/student")).andExpect(status().isNoContent());
 
     // then
     then(studentService).should(times(1)).enroll(any(), any());
@@ -300,7 +296,7 @@ public class LectureControllerTest {
   // any());
   //
   //    // when
-  //    mockMvc
+  //    mvc
   //        .perform(
   //            put("/lecture/1/student/121/status")
   //                .contentType(MediaType.APPLICATION_JSON)
@@ -320,7 +316,7 @@ public class LectureControllerTest {
   //        doNothing().when(studentService).changeStatusOfStudentsByLecturer(any(), any(), any());
   //
   //        //when
-  //        mockMvc.perform(put("/lecture/1/students/status")
+  //        mvc.perform(put("/lecture/1/students/status")
   //                        .contentType(MediaType.APPLICATION_JSON)
   //                        .content("[{\"12\":\"BLOCKED\"}, {\"15\":\"BLOCKED\"}]"))
   //                .andExpect(status().isNoContent());
@@ -337,7 +333,7 @@ public class LectureControllerTest {
     doNothing().when(studentService).exitBySelf(any(), any());
 
     // when
-    mockMvc.perform(delete("/lecture/1/student")).andExpect(status().isNoContent());
+    mvc.perform(delete("/lecture/1/student")).andExpect(status().isNoContent());
 
     // then
     then(studentService).should(times(1)).exitBySelf(any(), any());
@@ -369,7 +365,7 @@ public class LectureControllerTest {
   //        given(studentService.searchStudents(any(), any())).willReturn(page);
   //
   //        //when
-  //        String response = mockMvc.perform(get("/lecture/1/students"))
+  //        String response = mvc.perform(get("/lecture/1/students"))
   //                .andExpect(status().isOk())
   //                .andReturn().getResponse()
   //                .getContentAsString(StandardCharsets.UTF_8);

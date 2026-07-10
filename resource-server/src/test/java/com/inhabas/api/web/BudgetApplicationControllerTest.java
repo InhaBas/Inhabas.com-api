@@ -18,14 +18,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
@@ -37,15 +33,14 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(BudgetApplicationController.class)
-public class BudgetApplicationControllerTest {
+public class BudgetApplicationControllerTest extends ControllerTestSupport {
 
-  @Autowired private MockMvc mvc;
-  @Autowired private ObjectMapper objectMapper;
   @MockitoBean private BudgetApplicationService budgetApplicationService;
   @MockitoBean private BudgetApplicationProcessor applicationProcessor;
 
@@ -277,9 +272,5 @@ public class BudgetApplicationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonOf(request)))
         .andExpect(status().isNotFound());
-  }
-
-  private String jsonOf(Object o) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(o);
   }
 }

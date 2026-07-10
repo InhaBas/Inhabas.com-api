@@ -14,35 +14,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.policy.dto.PolicyTermDto;
 import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 import com.inhabas.api.domain.policy.usecase.PolicyTermService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(PolicyTermController.class)
-public class PolicyTermControllerTest {
-
-  @Autowired private MockMvc mvc;
+public class PolicyTermControllerTest extends ControllerTestSupport {
 
   @MockitoBean private PolicyTermService policyTermService;
-
-  @Autowired private ObjectMapper objectMapper;
-
-  private String jsonOf(Object response) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(response);
-  }
 
   @DisplayName("정책 전체 조회 성공 200")
   @Test

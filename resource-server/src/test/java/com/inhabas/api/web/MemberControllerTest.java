@@ -16,14 +16,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
@@ -35,6 +31,7 @@ import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
 import com.inhabas.api.domain.signUp.dto.QuestionAnswerDto;
 import com.inhabas.api.domain.signUp.usecase.AnswerService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,13 +39,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @NoSecureWebMvcTest(MemberController.class)
-public class MemberControllerTest {
+public class MemberControllerTest extends ControllerTestSupport {
 
-  @Autowired private MockMvc mvc;
   @MockitoBean private MemberManageService memberManageService;
   @MockitoBean private AnswerService answerService;
   @MockitoBean private MemberRepository memberRepository;
-  @Autowired private ObjectMapper objectMapper;
 
   @DisplayName("(신입)미승인 멤버 정보 목록을 불러온다")
   @Test
@@ -293,9 +288,5 @@ public class MemberControllerTest {
         .andExpect(jsonPath("$.name").value(equalTo("강지훈")))
         .andExpect(jsonPath("$.phoneNumber").value(equalTo("010-0000-0000")))
         .andExpect(jsonPath("$.email").value(equalTo("my@email.com")));
-  }
-
-  private String jsonOf(Object o) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(o);
   }
 }

@@ -46,7 +46,8 @@ public class CommentRepositoryTest {
     boardWriter = em.persist(basicMember1());
     commentWriter = em.persist(basicMember2());
     albumBoard =
-        em.persist(AlbumExampleFixture.getAlbumBoard1(menu).writtenBy(boardWriter, AlbumBoard.class));
+        em.persist(
+            AlbumExampleFixture.getAlbumBoard1(menu).writtenBy(boardWriter, AlbumBoard.class));
   }
 
   @DisplayName("작성한 댓글과 저장된 댓글이 같다.")

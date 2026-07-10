@@ -13,14 +13,10 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
@@ -33,21 +29,16 @@ import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.myInfo.usecase.MyInfoService;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
+import com.inhabas.testSupport.ControllerTestSupport;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @NoSecureWebMvcTest(MyInfoController.class)
-class MyInfoControllerTest {
+class MyInfoControllerTest extends ControllerTestSupport {
 
-  @Autowired private MockMvc mvc;
   @MockitoBean private MemberProfileService memberProfileService;
   @MockitoBean private MyInfoService myInfoService;
-  @Autowired private ObjectMapper objectMapper;
-
-  private String jsonOf(Object o) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(o);
-  }
 
   @DisplayName("내 정보를 조회한다.")
   @Test
