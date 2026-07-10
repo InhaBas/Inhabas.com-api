@@ -23,7 +23,7 @@ import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpScheduler;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

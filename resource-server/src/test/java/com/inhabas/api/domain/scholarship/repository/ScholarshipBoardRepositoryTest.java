@@ -18,7 +18,7 @@ import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.scholarship.domain.Scholarship;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipBoardExampleTest;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDto;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

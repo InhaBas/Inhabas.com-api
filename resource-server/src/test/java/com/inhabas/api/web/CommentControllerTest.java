@@ -28,7 +28,7 @@ import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

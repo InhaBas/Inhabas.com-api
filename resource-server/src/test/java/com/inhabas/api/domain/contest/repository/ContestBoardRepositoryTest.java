@@ -19,7 +19,7 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -36,7 +36,7 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
 import com.inhabas.api.domain.member.domain.entity.MemberTest;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

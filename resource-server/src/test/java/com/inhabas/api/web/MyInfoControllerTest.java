@@ -32,7 +32,7 @@ import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.myInfo.usecase.MyInfoService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -20,7 +20,7 @@ import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.menu.dto.MenuDto;
 import com.inhabas.api.domain.menu.dto.MenuGroupDto;
 import com.inhabas.api.domain.menu.usecase.MenuService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

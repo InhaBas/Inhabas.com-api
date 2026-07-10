@@ -43,8 +43,8 @@ import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.SignUpDto;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
-import com.inhabas.testAnnotataion.CustomSpringBootTest;
-import com.inhabas.testAnnotataion.WithMockJwtAuthenticationToken;
+import com.inhabas.testAnnotation.CustomSpringBootTest;
+import com.inhabas.testAnnotation.WithMockJwtAuthenticationToken;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -32,7 +32,7 @@ import com.inhabas.api.domain.normalBoard.dto.NormalBoardDetailDto;
 import com.inhabas.api.domain.normalBoard.dto.NormalBoardDto;
 import com.inhabas.api.domain.normalBoard.dto.SaveNormalBoardDto;
 import com.inhabas.api.domain.normalBoard.usecase.NormalBoardService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

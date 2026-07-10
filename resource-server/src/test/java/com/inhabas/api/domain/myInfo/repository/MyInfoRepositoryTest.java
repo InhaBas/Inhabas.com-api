@@ -26,7 +26,7 @@ import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleTest;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

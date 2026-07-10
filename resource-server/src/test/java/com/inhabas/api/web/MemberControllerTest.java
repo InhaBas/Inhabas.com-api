@@ -34,7 +34,7 @@ import com.inhabas.api.domain.member.usecase.MemberManageService;
 import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
 import com.inhabas.api.domain.signUp.dto.QuestionAnswerDto;
 import com.inhabas.api.domain.signUp.usecase.AnswerService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

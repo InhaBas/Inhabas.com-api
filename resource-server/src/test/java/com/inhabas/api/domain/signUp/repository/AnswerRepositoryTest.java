@@ -13,7 +13,7 @@ import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

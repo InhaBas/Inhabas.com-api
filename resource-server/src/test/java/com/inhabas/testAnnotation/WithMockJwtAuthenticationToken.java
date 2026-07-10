@@ -1,4 +1,4 @@
-package com.inhabas.testAnnotataion;
+package com.inhabas.testAnnotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

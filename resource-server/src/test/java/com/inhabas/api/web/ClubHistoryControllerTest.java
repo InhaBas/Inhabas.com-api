@@ -26,7 +26,7 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
 import com.inhabas.api.domain.club.usecase.ClubHistoryService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

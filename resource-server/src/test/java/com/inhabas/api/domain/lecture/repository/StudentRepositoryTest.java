@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
 import com.inhabas.api.domain.lecture.domain.Lecture;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 @DefaultDataJpaTest
 public class StudentRepositoryTest {

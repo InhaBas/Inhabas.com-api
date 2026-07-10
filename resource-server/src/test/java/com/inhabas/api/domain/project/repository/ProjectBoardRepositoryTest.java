@@ -17,7 +17,7 @@ import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.project.domain.ProjectBoard;
 import com.inhabas.api.domain.project.domain.ProjectBoardExampleTest;
 import com.inhabas.api.domain.project.dto.ProjectBoardDto;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

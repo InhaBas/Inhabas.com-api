@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.ApiApplication;
-import com.inhabas.testAnnotataion.CustomSpringBootTest;
+import com.inhabas.testAnnotation.CustomSpringBootTest;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;

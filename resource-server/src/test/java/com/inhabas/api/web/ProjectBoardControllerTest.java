@@ -32,7 +32,7 @@ import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
 import com.inhabas.api.domain.project.dto.ProjectBoardDto;
 import com.inhabas.api.domain.project.dto.SaveProjectBoardDto;
 import com.inhabas.api.domain.project.usecase.ProjectBoardService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

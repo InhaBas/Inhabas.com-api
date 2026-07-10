@@ -30,7 +30,7 @@ import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.Data;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
 import com.inhabas.api.domain.scholarship.usecase.ScholarshipHistoryService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

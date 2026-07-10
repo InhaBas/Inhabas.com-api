@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.inhabas.api.config.WebConfig;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 import com.inhabas.testConfig.TestEmptyController;
 import io.swagger.v3.core.jackson.ModelResolver;
 import org.assertj.core.api.Assertions;

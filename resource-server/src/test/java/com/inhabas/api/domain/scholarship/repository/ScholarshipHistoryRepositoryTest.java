@@ -12,7 +12,7 @@ import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.Data;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
-import com.inhabas.testAnnotataion.DefaultDataJpaTest;
+import com.inhabas.testAnnotation.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
 
 import org.junit.jupiter.api.Test;

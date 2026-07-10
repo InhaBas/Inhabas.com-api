@@ -31,7 +31,7 @@ import com.inhabas.api.domain.scholarship.dto.SaveScholarshipBoardDto;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDetailDto;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDto;
 import com.inhabas.api.domain.scholarship.usecase.ScholarshipBoardService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

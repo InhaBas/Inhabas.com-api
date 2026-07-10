@@ -26,7 +26,7 @@ import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.domain.policy.dto.PolicyTermDto;
 import com.inhabas.api.domain.policy.dto.SavePolicyTernDto;
 import com.inhabas.api.domain.policy.usecase.PolicyTermService;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

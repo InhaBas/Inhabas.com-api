@@ -6,7 +6,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.web.LectureController;
-import com.inhabas.testAnnotataion.NoSecureWebMvcTest;
+import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 @NoSecureWebMvcTest(LectureController.class)
 @Import(LectureSecurityChecker.class)
