@@ -5,10 +5,10 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.lecture.domain.Lecture;
 import com.inhabas.api.domain.lecture.repository.LectureRepository;
 import com.inhabas.api.domain.lecture.repository.StudentRepository;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 @DefaultDataJpaTest
 public class LectureStudentServiceDBTest {

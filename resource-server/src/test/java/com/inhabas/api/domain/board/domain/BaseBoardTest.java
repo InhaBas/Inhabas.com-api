@@ -7,10 +7,10 @@ import static org.mockito.Mockito.*;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.exception.WriterUnmodifiableException;
 import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.file.domain.BoardFile;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -28,7 +28,7 @@ class BaseBoardTest {
   void setUp() {
     MockitoAnnotations.openMocks(this);
     String title = "title1";
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(member, "id", 1L);
     baseBoard =
         mock(
@@ -58,7 +58,7 @@ class BaseBoardTest {
   @Test
   void isWrittenByTest() {
     // given
-    Member anotherMember = MemberTest.basicMember1();
+    Member anotherMember = MemberFixture.basicMember1();
     ReflectionTestUtils.setField(anotherMember, "id", 2L);
 
     // when, then

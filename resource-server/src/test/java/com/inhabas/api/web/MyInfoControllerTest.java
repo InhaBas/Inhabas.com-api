@@ -22,11 +22,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
@@ -53,7 +53,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyProfileTest() throws Exception {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     MyProfileDto myProfileDto =
         MyProfileDto.builder()
             .name(member.getName())
@@ -84,7 +84,7 @@ class MyInfoControllerTest {
   @Test
   public void updateMyProfileDetailTest() throws Exception {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     ProfileDetailDto profileDetailDto =
         ProfileDetailDto.builder()
             .major(member.getSchoolInformation().getMajor())
@@ -107,7 +107,7 @@ class MyInfoControllerTest {
   @Test
   public void updateMyProfileIntroTest() throws Exception {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     ProfileIntroDto profileIntroDto =
         ProfileIntroDto.builder()
             .introduce(member.getIbasInformation().getIntroduce())
@@ -250,7 +250,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyBoardsTest() throws Exception {
     // given
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     MyBoardDto myBoardDto =
         MyBoardDto.builder()
             .id(1L)
@@ -277,7 +277,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyCommentsTest() throws Exception {
     // given
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     MyCommentDto myCommentDto =
         MyCommentDto.builder()
             .id(1L)
@@ -304,7 +304,7 @@ class MyInfoControllerTest {
   @Test
   public void getMyBudgetSupportApplicationsTest() throws Exception {
     // given
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     MyBudgetSupportApplicationDto myBudgetSupportApplicationDto =
         MyBudgetSupportApplicationDto.builder()
             .id(1L)

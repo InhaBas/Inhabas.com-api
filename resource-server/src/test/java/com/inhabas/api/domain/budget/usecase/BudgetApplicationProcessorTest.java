@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
@@ -25,7 +26,6 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.exception.StatusNotFollowProceduresException;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -64,9 +64,9 @@ public class BudgetApplicationProcessorTest {
 
   @BeforeEach
   public void setUp() {
-    secretary = MemberTest.secretaryMember();
+    secretary = MemberFixture.secretaryMember();
     ReflectionTestUtils.setField(secretary, "id", 1L);
-    applicant = MemberTest.basicMember1();
+    applicant = MemberFixture.basicMember1();
     menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     application =

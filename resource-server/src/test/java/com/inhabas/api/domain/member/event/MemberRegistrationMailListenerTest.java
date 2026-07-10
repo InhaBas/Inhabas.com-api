@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.member.event;
 
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.*;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;

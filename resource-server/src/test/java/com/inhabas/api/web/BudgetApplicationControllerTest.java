@@ -28,6 +28,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDetailDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
@@ -35,7 +36,6 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationStatusChangeRequest;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationProcessor;
 import com.inhabas.api.domain.budget.usecase.BudgetApplicationService;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ public class BudgetApplicationControllerTest {
   @Test
   public void getApplicationsTest_Success() throws Exception {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     BudgetApplicationDto dto =
         BudgetApplicationDto.builder()
             .id(1L)
@@ -75,7 +75,7 @@ public class BudgetApplicationControllerTest {
   @Test
   public void getApplicationTest_Success() throws Exception {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     ReflectionTestUtils.setField(applicant, "id", 1L);
     BudgetApplicationDetailDto dto =
         BudgetApplicationDetailDto.builder()

@@ -1,6 +1,6 @@
 package com.inhabas.api.domain.signUp.usecase;
 
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.signingUpMemberAfterProfile;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.signingUpMemberAfterProfile;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

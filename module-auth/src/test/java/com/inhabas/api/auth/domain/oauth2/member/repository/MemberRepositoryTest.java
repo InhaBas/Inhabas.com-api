@@ -1,7 +1,7 @@
 package com.inhabas.api.auth.domain.oauth2.member.repository;
 
 import static com.inhabas.api.auth.domain.oauth2.OAuth2Provider.GOOGLE;
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.*;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.*;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.NOT_APPROVED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.SIGNING_UP;
 import static org.assertj.core.api.Assertions.assertThat;

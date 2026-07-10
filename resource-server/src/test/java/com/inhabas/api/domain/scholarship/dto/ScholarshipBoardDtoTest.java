@@ -13,7 +13,7 @@ import jakarta.validation.ValidatorFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +40,7 @@ public class ScholarshipBoardDtoTest {
   @Test
   public void ScholarshipBoardDto_is_OK() {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(writer, "id", 1L);
     ScholarshipBoardDto scholarshipBoardDto =
         new ScholarshipBoardDto(1L, "title", writer, LocalDateTime.now(), LocalDateTime.now());
@@ -57,7 +57,7 @@ public class ScholarshipBoardDtoTest {
   @Test
   public void Content_is_null() {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(writer, "id", 1L);
     ScholarshipBoardDto scholarshipBoardDto =
         new ScholarshipBoardDto(null, null, writer, null, null);

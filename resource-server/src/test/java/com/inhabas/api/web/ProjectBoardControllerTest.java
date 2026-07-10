@@ -24,9 +24,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.dto.BoardCountDto;
 import com.inhabas.api.domain.board.repository.BaseBoardRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
 import com.inhabas.api.domain.project.dto.ProjectBoardDetailDto;
 import com.inhabas.api.domain.project.dto.ProjectBoardDto;
@@ -75,7 +75,7 @@ public class ProjectBoardControllerTest {
   @Test
   void getBoardList_Success() throws Exception {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ProjectBoardDto projectBoardDto =
         ProjectBoardDto.builder()
             .id(1L)
@@ -119,7 +119,7 @@ public class ProjectBoardControllerTest {
   @Test
   void getBoard() throws Exception {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ProjectBoardDetailDto projectBoardDetailDto =
         ProjectBoardDetailDto.builder()
             .id(1L)

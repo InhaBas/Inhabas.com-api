@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipBoardDto;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDetailDto;
 import com.inhabas.api.domain.scholarship.dto.ScholarshipBoardDto;
@@ -53,7 +53,7 @@ public class ScholarshipControllerTest {
   @Test
   void getBoardList_Success() throws Exception {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ScholarshipBoardDto scholarshipBoardDto =
         ScholarshipBoardDto.builder()
             .id(1L)
@@ -96,7 +96,7 @@ public class ScholarshipControllerTest {
   @Test
   void getBoard() throws Exception {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ScholarshipBoardDetailDto scholarshipBoardDetailDto =
         ScholarshipBoardDetailDto.builder()
             .id(1L)

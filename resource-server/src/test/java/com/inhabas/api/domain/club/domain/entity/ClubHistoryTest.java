@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
 import com.inhabas.api.domain.board.domain.valueObject.Title;
 import com.inhabas.api.domain.club.domain.ClubHistory;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ class ClubHistoryTest {
   @Test
   void updateClubHistory() {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ClubHistory clubHistory =
         ClubHistory.builder()
             .member(writer)

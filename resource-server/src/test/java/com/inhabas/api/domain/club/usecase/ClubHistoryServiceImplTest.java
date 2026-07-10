@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.valueObject.Content;
@@ -25,7 +26,6 @@ import com.inhabas.api.domain.club.domain.ClubHistory;
 import com.inhabas.api.domain.club.dto.ClubHistoryDto;
 import com.inhabas.api.domain.club.dto.SaveClubHistoryDto;
 import com.inhabas.api.domain.club.repository.ClubHistoryRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,7 +47,7 @@ public class ClubHistoryServiceImplTest {
   void writeClubHistory_Success() {
     // given
     Long memberId = 1L;
-    Member member = MemberTest.chiefMember(); // 필요한 속성으로 Member 객체 초기화
+    Member member = MemberFixture.chiefMember(); // 필요한 속성으로 Member 객체 초기화
     SaveClubHistoryDto saveClubHistoryDto =
         new SaveClubHistoryDto("title", "content", LocalDateTime.now());
 
@@ -89,7 +89,7 @@ public class ClubHistoryServiceImplTest {
     // given
     ClubHistory clubHistory =
         ClubHistory.builder()
-            .member(MemberTest.chiefMember())
+            .member(MemberFixture.chiefMember())
             .title(new Title("title"))
             .content(new Content("content"))
             .dateHistory(LocalDateTime.now())
@@ -125,7 +125,7 @@ public class ClubHistoryServiceImplTest {
     // given
     ClubHistory clubHistory =
         ClubHistory.builder()
-            .member(MemberTest.chiefMember())
+            .member(MemberFixture.chiefMember())
             .title(new Title("title"))
             .content(new Content("content"))
             .dateHistory(LocalDateTime.now())
@@ -151,7 +151,7 @@ public class ClubHistoryServiceImplTest {
   @Transactional
   void updateClubHistory_Success() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     ClubHistory clubHistory =
         ClubHistory.builder()
             .member(member)
@@ -179,7 +179,7 @@ public class ClubHistoryServiceImplTest {
     // given
     ClubHistory clubHistory =
         ClubHistory.builder()
-            .member(MemberTest.chiefMember())
+            .member(MemberFixture.chiefMember())
             .title(new Title("title"))
             .content(new Content("content"))
             .dateHistory(LocalDateTime.now())

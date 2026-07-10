@@ -20,9 +20,9 @@ import java.util.Optional;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.domain.scholarship.domain.Scholarship;
@@ -58,7 +58,7 @@ public class ScholarshipBoardServiceTest {
 
   @BeforeEach
   void setUp() {
-    writer = MemberTest.chiefMember();
+    writer = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(writer, "id", MEMBER_ID);
     menu = getScholarshipMenu(getScholarshipMenuGroup());
     scholarship =

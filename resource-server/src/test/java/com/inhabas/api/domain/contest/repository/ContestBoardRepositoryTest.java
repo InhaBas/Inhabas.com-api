@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.contest.repository;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.basicMember1;
 import static com.inhabas.api.domain.contest.domain.ContestType.CONTEST;
 import static com.inhabas.api.domain.contest.domain.valueObject.OrderBy.ALL;
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestBoardExampleTest;
 import com.inhabas.api.domain.contest.domain.ContestField;
@@ -19,7 +20,6 @@ import com.inhabas.api.domain.contest.dto.ContestBoardDto;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

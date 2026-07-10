@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Email;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.entity.MemberSocialAccount;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
@@ -30,7 +30,7 @@ public class MemberSocialAccountRepositoryTest {
   @Test
   public void getStudentIdBySocialAccount() {
     // given
-    Member member = em.persist(MemberTest.signingUpMember1());
+    Member member = em.persist(MemberFixture.signingUpMember1());
     memberSocialAccountRepository.save(
         new MemberSocialAccount(member, "my@gmail.com", "1234", GOOGLE));
 
@@ -47,7 +47,7 @@ public class MemberSocialAccountRepositoryTest {
   @Test
   public void checkSignUp() {
     // given
-    Member member = em.persist(MemberTest.basicMember());
+    Member member = em.persist(MemberFixture.basicMember());
     memberSocialAccountRepository.save(
         new MemberSocialAccount(member, "my@gmail.com", "1234", GOOGLE));
     Optional<MemberSocialAccount> memberSocialAccount =

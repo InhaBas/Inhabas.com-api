@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
 import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 
@@ -24,7 +24,7 @@ class UpdateNameRequestRepositoryTest {
   @Transactional
   public void saveTest() {
     // given
-    Member member = MemberTest.basicMember();
+    Member member = MemberFixture.basicMember();
     Member savedMember = memberRepository.save(member);
 
     UpdateNameRequest updateNameRequest =

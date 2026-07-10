@@ -27,7 +27,7 @@ import org.springframework.web.client.RestOperations;
 
 import com.inhabas.api.auth.domain.error.authException.InvalidOAuth2InfoException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.service.MemberService;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
@@ -104,7 +104,7 @@ public class CustomOAuth2UserServiceTest {
     // given
     givenUserInfoEndpointReturns(googleAttributes());
 
-    Member member = MemberTest.signingUpMember1();
+    Member member = MemberFixture.signingUpMember1();
     given(memberRepository.findByProviderAndUid(any(OAuth2Provider.class), any(UID.class)))
         .willReturn(Optional.of(member));
     given(userAuthorityProvider.determineAuthorities(any()))

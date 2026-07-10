@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
@@ -34,7 +34,7 @@ public class MyInfoServiceImplTest {
   @Transactional(readOnly = true)
   @Test
   void getMyBoards() {
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     given(myInfoRepository.findAllBoardsByMemberId(writer.getId()))
         .willReturn(Collections.singletonList(new MyBoardDto()));
 
@@ -48,7 +48,7 @@ public class MyInfoServiceImplTest {
   @Transactional(readOnly = true)
   @Test
   void getMyComments() {
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     given(myInfoRepository.findAllCommentsByMemberId(writer.getId()))
         .willReturn(Collections.singletonList(new MyCommentDto()));
 
@@ -62,7 +62,7 @@ public class MyInfoServiceImplTest {
   @Transactional(readOnly = true)
   @Test
   void getMyBudgetSupportApplications() {
-    Member writer = MemberTest.basicMember1();
+    Member writer = MemberFixture.basicMember1();
     given(myInfoRepository.findAllBudgetSupportApplicationsByMemberId(writer.getId()))
         .willReturn(Collections.singletonList(new MyBudgetSupportApplicationDto()));
 

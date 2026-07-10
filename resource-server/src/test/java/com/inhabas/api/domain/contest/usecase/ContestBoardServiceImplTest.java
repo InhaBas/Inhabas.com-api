@@ -23,6 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.contest.domain.ContestBoard;
 import com.inhabas.api.domain.contest.domain.ContestField;
@@ -34,7 +35,6 @@ import com.inhabas.api.domain.contest.repository.ContestBoardRepository;
 import com.inhabas.api.domain.contest.repository.ContestFieldRepository;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import org.assertj.core.api.Assertions;
@@ -96,7 +96,7 @@ public class ContestBoardServiceImplTest {
   @Test
   void getContestBoard() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     Menu menu = getContestMenu(getContestMenuGroup());
     ContestField contestField = ContestField.builder().name("빅데이터").build();
 
@@ -135,7 +135,7 @@ public class ContestBoardServiceImplTest {
   @Test
   void writeContestBoard() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
 
     ContestField contestField = ContestField.builder().name("빅데이터").build();
     ReflectionTestUtils.setField(contestField, "id", 1L);
@@ -214,7 +214,7 @@ public class ContestBoardServiceImplTest {
 
     ReflectionTestUtils.setField(contestBoard, "id", 1L);
 
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
 
     given(memberRepository.findById(any())).willReturn(Optional.of(writer));
     given(contestFieldRepository.findById(any())).willReturn(Optional.of(contestField));

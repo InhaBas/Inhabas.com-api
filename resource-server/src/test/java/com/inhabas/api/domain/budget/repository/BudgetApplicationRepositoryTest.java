@@ -12,15 +12,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +42,7 @@ public class BudgetApplicationRepositoryTest {
 
   @BeforeEach
   public void setUp() {
-    member = em.persist(MemberTest.basicMember1());
+    member = em.persist(MemberFixture.basicMember1());
     menuGroup = em.persist(MenuGroupExampleTest.getBudgetMenuGroup());
     menu = em.persist(MenuExampleTest.getBudgetHistoryMenu(menuGroup));
   }

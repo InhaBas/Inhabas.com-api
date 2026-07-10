@@ -5,8 +5,8 @@ import static org.mockito.Mockito.mock;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.domain.BaseBoard;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.assertj.core.api.Assertions;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ public class CommentTest {
   void constructorTest() {
     // given
     String content = "content";
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     BaseBoard baseBoard = mock(BaseBoard.class);
 
     // when
@@ -42,7 +42,7 @@ public class CommentTest {
   void updateTest() {
     // given
     String content = "content";
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(member, "id", 1L);
     BaseBoard baseBoard = mock(BaseBoard.class);
 
@@ -61,7 +61,7 @@ public class CommentTest {
   void replyToTest() {
     // given
     String content = "content";
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     BaseBoard baseBoard = mock(BaseBoard.class);
     Comment comment = new Comment(content, member, baseBoard);
 
@@ -77,7 +77,7 @@ public class CommentTest {
   void isWrittenByTest() {
     // given
     String content = "content";
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     BaseBoard baseBoard = mock(BaseBoard.class);
     ReflectionTestUtils.setField(member, "id", 1L);
     Comment comment = new Comment(content, member, baseBoard);

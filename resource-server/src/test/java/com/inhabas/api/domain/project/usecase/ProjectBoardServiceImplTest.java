@@ -21,9 +21,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.repository.MenuRepository;
 import com.inhabas.api.domain.project.domain.ProjectBoard;
@@ -79,7 +79,7 @@ public class ProjectBoardServiceImplTest {
   @Test
   void getPost() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     Menu menu = getAlphaTesterMenu(getProjectMenuGroup());
     ProjectBoard projectBoard =
         new ProjectBoard("title", menu, "content", false, LocalDateTime.now())
@@ -100,7 +100,7 @@ public class ProjectBoardServiceImplTest {
   @Test
   void write() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     SaveProjectBoardDto saveProjectBoardDto = new SaveProjectBoardDto("title", "content", null, 2);
     Menu menu = getAlphaTesterMenu(getProjectMenuGroup());
     ProjectBoard projectBoard =
@@ -129,7 +129,7 @@ public class ProjectBoardServiceImplTest {
     ProjectBoard projectBoard =
         new ProjectBoard("title", menu, "content", false, LocalDateTime.now());
     ReflectionTestUtils.setField(projectBoard, "id", 1L);
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
 
     given(memberRepository.findById(any())).willReturn(Optional.of(writer));
     given(projectBoardRepository.findById(any())).willReturn(Optional.of(projectBoard));

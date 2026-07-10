@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
@@ -23,7 +24,6 @@ import com.inhabas.api.domain.club.dto.ClubActivityDto;
 import com.inhabas.api.domain.club.dto.SaveClubActivityDto;
 import com.inhabas.api.domain.club.repository.ClubActivityRepository;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -51,7 +51,7 @@ public class ClubActivityServiceImplTest {
   @Test
   public void getClubActivitiesTest_Success() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     ClubActivityDto dto =
         ClubActivityDto.builder()
             .title("title")
@@ -75,7 +75,7 @@ public class ClubActivityServiceImplTest {
   public void writeClubActivityTest_Success() {
     // given
     Long memberId = 1L;
-    Member member = MemberTest.chiefMember(); // 필요한 속성으로 Member 객체 초기화
+    Member member = MemberFixture.chiefMember(); // 필요한 속성으로 Member 객체 초기화
     Menu menu = new Menu(mock(MenuGroup.class), 1, MenuType.ALBUM, "동아리 활동", "동아리 활동");
     SaveClubActivityDto saveClubActivityDto = new SaveClubActivityDto("title", "content", null);
 
@@ -106,7 +106,7 @@ public class ClubActivityServiceImplTest {
             .content("content")
             .menu(mock(Menu.class))
             .build()
-            .writtenBy(MemberTest.chiefMember(), AlbumBoard.class);
+            .writtenBy(MemberFixture.chiefMember(), AlbumBoard.class);
 
     given(clubActivityRepository.findById(any())).willReturn(Optional.of(clubActivity));
 
@@ -124,7 +124,7 @@ public class ClubActivityServiceImplTest {
   @Test
   public void updateClubActivityTest_Success() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     AlbumBoard clubActivity =
         AlbumBoard.builder()
             .title("title")

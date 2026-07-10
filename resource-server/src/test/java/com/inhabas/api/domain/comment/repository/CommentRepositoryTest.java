@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.comment.repository;
 
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember2;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.basicMember1;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.basicMember2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
 import com.inhabas.api.domain.comment.domain.Comment;
@@ -18,7 +19,6 @@ import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

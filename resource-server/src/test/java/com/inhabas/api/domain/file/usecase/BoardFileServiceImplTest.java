@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import com.amazonaws.SdkClientException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.exception.MemberNotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.board.exception.InvalidFileExtensionException;
@@ -22,7 +23,6 @@ import com.inhabas.api.domain.board.exception.S3UploadFailedException;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.dto.FileDownloadDto;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuType;
@@ -55,7 +55,7 @@ public class BoardFileServiceImplTest {
   @Test
   void uploadTest_Success() throws Exception {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     Menu menu = new Menu(mock(MenuGroup.class), 1, MenuType.LIST, "공지사항", "공지사항 게시판");
     MockMultipartFile file = validFile();
 
@@ -91,7 +91,8 @@ public class BoardFileServiceImplTest {
   @Test
   void uploadTest_MenuNotFound() {
     // given
-    given(memberRepository.findById(MEMBER_ID)).willReturn(Optional.of(MemberTest.chiefMember()));
+    given(memberRepository.findById(MEMBER_ID))
+        .willReturn(Optional.of(MemberFixture.chiefMember()));
     given(menuRepository.findById(MENU_ID)).willReturn(Optional.empty());
 
     // when then
@@ -104,7 +105,8 @@ public class BoardFileServiceImplTest {
   void uploadTest_InvalidFileExtension() throws Exception {
     // given
     Menu menu = new Menu(mock(MenuGroup.class), 1, MenuType.LIST, "공지사항", "공지사항 게시판");
-    given(memberRepository.findById(MEMBER_ID)).willReturn(Optional.of(MemberTest.chiefMember()));
+    given(memberRepository.findById(MEMBER_ID))
+        .willReturn(Optional.of(MemberFixture.chiefMember()));
     given(menuRepository.findById(MENU_ID)).willReturn(Optional.of(menu));
     given(s3Service.uploadS3File(any(), anyString())).willThrow(new IOException());
 
@@ -118,7 +120,8 @@ public class BoardFileServiceImplTest {
   void uploadTest_S3UploadFailed() throws Exception {
     // given
     Menu menu = new Menu(mock(MenuGroup.class), 1, MenuType.LIST, "공지사항", "공지사항 게시판");
-    given(memberRepository.findById(MEMBER_ID)).willReturn(Optional.of(MemberTest.chiefMember()));
+    given(memberRepository.findById(MEMBER_ID))
+        .willReturn(Optional.of(MemberFixture.chiefMember()));
     given(menuRepository.findById(MENU_ID)).willReturn(Optional.of(menu));
     given(s3Service.uploadS3File(any(), anyString())).willThrow(new SdkClientException("fail"));
 

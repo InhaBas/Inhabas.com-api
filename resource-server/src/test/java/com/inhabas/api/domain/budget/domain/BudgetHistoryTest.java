@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
 
@@ -19,9 +19,9 @@ public class BudgetHistoryTest {
   void createBudgetHistory_Success() {
     // Given
     LocalDateTime dateUsed = LocalDateTime.now();
-    Member memberInCharge = MemberTest.chiefMember();
+    Member memberInCharge = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(memberInCharge, "id", 1L);
-    Member memberReceived = MemberTest.basicMember1();
+    Member memberReceived = MemberFixture.basicMember1();
     ReflectionTestUtils.setField(memberReceived, "id", 2L);
 
     // When
@@ -47,9 +47,9 @@ public class BudgetHistoryTest {
   @Test
   void modifyBudgetHistory_Success() {
     // Given
-    Member memberInCharge = MemberTest.chiefMember();
+    Member memberInCharge = MemberFixture.chiefMember();
     ReflectionTestUtils.setField(memberInCharge, "id", 1L);
-    Member newMemberReceived = MemberTest.basicMember1();
+    Member newMemberReceived = MemberFixture.basicMember1();
     ReflectionTestUtils.setField(newMemberReceived, "id", 2L);
     BudgetHistory budgetHistory = setupBudgetHistory(memberInCharge);
     ReflectionTestUtils.setField(budgetHistory, "id", 1L);

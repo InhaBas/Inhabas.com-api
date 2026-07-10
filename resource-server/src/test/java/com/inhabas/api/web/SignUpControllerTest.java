@@ -24,8 +24,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.majorInfo.dto.MajorInfoDto;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.dto.QuestionnaireDto;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
@@ -283,7 +283,7 @@ public class SignUpControllerTest {
   @Test
   public void 회원가입을_위한_답변을_저장한다() throws Exception {
     // given
-    Member member = MemberTest.signingUpMemberAfterProfile();
+    Member member = MemberFixture.signingUpMemberAfterProfile();
     ArrayList<Questionnaire> questionnaires =
         new ArrayList<>() {
           {
@@ -318,7 +318,7 @@ public class SignUpControllerTest {
   @Test
   public void 회원가입을_완료처리한다() throws Exception {
     // given
-    Member member = MemberTest.signingUpMemberAfterProfile();
+    Member member = MemberFixture.signingUpMemberAfterProfile();
     ArrayList<Questionnaire> questionnaires =
         new ArrayList<>() {
           {

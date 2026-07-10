@@ -26,10 +26,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.member.usecase.MemberManageService;
 import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
 import com.inhabas.api.domain.signUp.dto.QuestionAnswerDto;
@@ -87,7 +87,7 @@ public class MemberControllerTest {
   public void passOrFailUnapprovedMembers(String state) throws Exception {
     // given
     List<Long> memberIdList = List.of(1L);
-    List<Member> members = List.of(MemberTest.notapprovedMember());
+    List<Member> members = List.of(MemberFixture.notapprovedMember());
 
     if (state.equals("pass") || state.equals("fail")) {
       // when
@@ -256,7 +256,7 @@ public class MemberControllerTest {
   public void updateApprovedMembers(String roleString) throws Exception {
     // given
     List<Long> memberIdList = List.of(1L);
-    List<Member> members = List.of(MemberTest.deactivatedMember());
+    List<Member> members = List.of(MemberFixture.deactivatedMember());
 
     if (roleString.equals("ADMIN")) {
       // when

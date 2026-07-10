@@ -8,12 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class AnswerRepositoryTest {
   @DisplayName("memberId로 작성한 답변을 가져올 수 있다.")
   void findByMember_Id() {
     // given
-    Member member = memberRepository.save(MemberTest.signingUpMember1());
+    Member member = memberRepository.save(MemberFixture.signingUpMember1());
     Questionnaire questionnaire = new Questionnaire(null, "hello");
     questionnaireRepository.save(questionnaire);
     String content = "Ok... bye";

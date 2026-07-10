@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.myInfo.repository;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.basicMember1;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus.PENDING;
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
 import static com.inhabas.api.domain.menu.domain.valueObject.MenuType.NOTICE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.comment.domain.Comment;
@@ -26,7 +27,6 @@ import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoard;
 import com.inhabas.api.domain.normalBoard.domain.NormalBoardExampleTest;
 import com.inhabas.api.domain.normalBoard.repository.NormalBoardRepository;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package com.inhabas.api.auth.domain.oauth2.member.service;
 
-import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest.signingUpMember1;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.signingUpMember1;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;

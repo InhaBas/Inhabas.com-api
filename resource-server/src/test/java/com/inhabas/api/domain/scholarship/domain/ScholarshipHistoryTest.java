@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ public class ScholarshipHistoryTest {
   @Test
   void update() {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     ScholarshipHistory scholarshipHistory =
         ScholarshipHistory.builder()
             .writer(writer)

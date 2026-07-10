@@ -14,6 +14,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.domain.AlbumBoard;
 import com.inhabas.api.domain.board.domain.BaseBoard;
 import com.inhabas.api.domain.board.domain.valueObject.AlbumExampleTest;
@@ -21,7 +22,6 @@ import com.inhabas.api.domain.comment.domain.Comment;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.repository.CommentRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -50,7 +50,7 @@ public class CommentServiceTest {
 
   @BeforeEach
   public void setUpMocking() {
-    proxyWriter = MemberTest.getTestBasicMember("12171652");
+    proxyWriter = MemberFixture.getTestBasicMember("12171652");
     ReflectionTestUtils.setField(proxyWriter, "id", 1L);
     proxyMenuGroup = MenuGroupExampleTest.getIBASMenuGroup();
     ReflectionTestUtils.setField(proxyMenuGroup, "id", 1);

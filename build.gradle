@@ -119,10 +119,15 @@ subprojects {
 }
 
 project(':module-auth') {
+    apply plugin: 'java-test-fixtures'
+
     bootJar {enabled = false}
     jar {enabled = true}
 
     dependencies {
+        // 테스트 픽스처(MemberFixture, @DefaultDataJpaTest 등)를 다른 모듈과 공유
+        testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+
         // jpa
         api (
                 'org.springframework.boot:spring-boot-starter-data-jpa',
@@ -160,6 +165,7 @@ project(':resource-server') {
         api project(':module-fileStorage')
         api 'org.springframework.boot:spring-boot-starter-security'
         testImplementation 'org.springframework.security:spring-security-test'
+        testImplementation testFixtures(project(':module-auth'))
     }
 
     clean {

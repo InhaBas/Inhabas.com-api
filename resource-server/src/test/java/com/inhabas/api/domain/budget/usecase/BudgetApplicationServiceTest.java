@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.inhabas.api.auth.domain.error.ErrorCode;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.RequestStatus;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetSupportApplication;
@@ -26,7 +27,6 @@ import com.inhabas.api.domain.budget.dto.BudgetApplicationDto;
 import com.inhabas.api.domain.budget.dto.BudgetApplicationRegisterForm;
 import com.inhabas.api.domain.budget.repository.BudgetApplicationRepository;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -61,7 +61,7 @@ public class BudgetApplicationServiceTest {
   @Test
   public void registerApplicationTest() {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetApplicationRegisterForm form =
@@ -103,7 +103,7 @@ public class BudgetApplicationServiceTest {
   @Test
   public void updateApplicationTest() {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
@@ -145,7 +145,7 @@ public class BudgetApplicationServiceTest {
   @Test
   public void throwNotFoundExceptionWhenUpdating() {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     BudgetApplicationRegisterForm form =
         new BudgetApplicationRegisterForm(
             APPLICATION_TITLE,
@@ -169,7 +169,7 @@ public class BudgetApplicationServiceTest {
   @Test
   public void deleteBudgetApplicationTest() {
     // when
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
@@ -196,7 +196,7 @@ public class BudgetApplicationServiceTest {
   @Test
   public void getBudgetApplicationDetailsTest() {
     // given
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetSupportApplication application =
@@ -236,7 +236,7 @@ public class BudgetApplicationServiceTest {
   public void getBudgetApplicationListTest() {
     // given
     List<BudgetApplicationDto> dtoList = new ArrayList<>();
-    Member applicant = MemberTest.basicMember1();
+    Member applicant = MemberFixture.basicMember1();
     BudgetApplicationDto budgetApplicationDto =
         new BudgetApplicationDto(
             1L, APPLICATION_TITLE, applicant, LocalDateTime.now(), INITIAL_REQUEST_STATUS);

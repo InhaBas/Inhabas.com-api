@@ -1,7 +1,7 @@
 package com.inhabas.api.domain.budget.repository;
 
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.basicMember1;
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.secretaryMember;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.basicMember1;
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.secretaryMember;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -13,13 +13,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryDto;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
 import com.inhabas.api.domain.menu.domain.valueObject.MenuGroupExampleTest;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

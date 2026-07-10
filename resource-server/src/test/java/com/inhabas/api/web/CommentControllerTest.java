@@ -22,12 +22,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.domain.board.usecase.BoardSecurityChecker;
 import com.inhabas.api.domain.comment.dto.CommentDetailDto;
 import com.inhabas.api.domain.comment.dto.CommentSaveDto;
 import com.inhabas.api.domain.comment.dto.CommentUpdateDto;
 import com.inhabas.api.domain.comment.usecase.CommentServiceImpl;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.testAnnotation.NoSecureWebMvcTest;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ public class CommentControllerTest {
   @Test
   void getCommentsOfBoardTest() throws Exception {
     // given
-    Member writer = MemberTest.chiefMember();
+    Member writer = MemberFixture.chiefMember();
     List<CommentDetailDto> commentList =
         List.of(
             new CommentDetailDto[] {

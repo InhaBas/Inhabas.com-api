@@ -12,8 +12,8 @@ import java.util.Optional;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.inhabas.api.domain.scholarship.dto.SaveScholarshipHistoryDto;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepository;
@@ -56,7 +56,7 @@ public class ScholarshipHistoryServiceTest {
   void writeScholarshipHistory() {
     // given
     Long memberId = 1L;
-    Member member = MemberTest.chiefMember(); // 필요한 속성으로 Member 객체 초기화
+    Member member = MemberFixture.chiefMember(); // 필요한 속성으로 Member 객체 초기화
     SaveScholarshipHistoryDto saveScholarshipHistoryDto =
         new SaveScholarshipHistoryDto("title", LocalDateTime.now());
 
@@ -83,7 +83,7 @@ public class ScholarshipHistoryServiceTest {
   @Test
   void updateScholarshipHistory() {
     // given
-    Member member = MemberTest.chiefMember();
+    Member member = MemberFixture.chiefMember();
     ScholarshipHistory scholarshipHistory =
         ScholarshipHistory.builder()
             .writer(member)
@@ -110,7 +110,7 @@ public class ScholarshipHistoryServiceTest {
     // given
     ScholarshipHistory scholarshipHistory =
         ScholarshipHistory.builder()
-            .writer(MemberTest.chiefMember())
+            .writer(MemberFixture.chiefMember())
             .title("title")
             .dateHistory(LocalDateTime.now())
             .build();

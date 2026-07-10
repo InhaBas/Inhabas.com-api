@@ -12,6 +12,7 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.UpdateNameRequest;
 import com.inhabas.api.auth.domain.oauth2.member.dto.HandleNameRequestDto;
 import com.inhabas.api.auth.domain.oauth2.member.dto.MyProfileDto;
@@ -21,7 +22,6 @@ import com.inhabas.api.auth.domain.oauth2.member.dto.ProfileNameDto;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.member.repository.UpdateNameRequestRepository;
 import com.inhabas.api.domain.file.usecase.S3Service;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -45,7 +45,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void getMyProfileTest() {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
 
     // when
@@ -67,7 +67,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void updateMyProfileDetailTest() {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     ProfileDetailDto profileDetailDto = new ProfileDetailDto("경영학과", null, null, null);
 
@@ -82,7 +82,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void updateMyProfileIntroTest() {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     ProfileIntroDto profileIntroDto = new ProfileIntroDto("HELLO", true);
 
@@ -99,7 +99,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void requestMyProfileNameTest() {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     given(memberRepository.findById(any())).willReturn(Optional.of(member));
     ProfileNameDto profileNameDto = new ProfileNameDto("유동현");
 
@@ -116,7 +116,7 @@ public class MemberProfileServiceImplTest {
     // given
     Long requestId = 1L;
     String newName = "송민석";
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
 
     UpdateNameRequest updateNameRequest = new UpdateNameRequest(member, newName);
     updateNameRequest.handleRequest("pass", null);
@@ -140,7 +140,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void updateMyProfileImageWithNullTest() {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
 
     // when
@@ -157,7 +157,7 @@ public class MemberProfileServiceImplTest {
   @Test
   void updateMyProfileImageTest() throws Exception {
     // given
-    Member member = MemberTest.basicMember1();
+    Member member = MemberFixture.basicMember1();
     MultipartFile file = mock(MultipartFile.class);
     String expectedUrl =
         "https://inhabas-bucket.s3.ap-northeast-2.amazonaws.com/uploaded-image.png";

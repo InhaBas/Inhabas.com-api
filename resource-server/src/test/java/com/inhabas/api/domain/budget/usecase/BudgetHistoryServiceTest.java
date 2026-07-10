@@ -18,13 +18,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.domain.budget.domain.BudgetHistory;
 import com.inhabas.api.domain.budget.dto.BudgetHistoryCreateForm;
 import com.inhabas.api.domain.budget.repository.BudgetHistoryRepository;
 import com.inhabas.api.domain.file.domain.BoardFile;
 import com.inhabas.api.domain.file.repository.BoardFileRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
 import com.inhabas.api.domain.menu.domain.Menu;
 import com.inhabas.api.domain.menu.domain.MenuExampleTest;
 import com.inhabas.api.domain.menu.domain.MenuGroup;
@@ -143,9 +143,9 @@ public class BudgetHistoryServiceTest {
   @Test
   public void modifyHistoryTest() {
     // given
-    Member secretary = MemberTest.secretaryMember();
+    Member secretary = MemberFixture.secretaryMember();
     ReflectionTestUtils.setField(secretary, "id", 1L);
-    Member memberReceived = MemberTest.basicMember1();
+    Member memberReceived = MemberFixture.basicMember1();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BoardFile file = new BoardFile("random", "name", "url", secretary, 100L, "image/jpeg");
@@ -251,7 +251,7 @@ public class BudgetHistoryServiceTest {
   @Test
   public void getOneBudgetHistoryTest() {
     // given
-    Member secretary = MemberTest.secretaryMember();
+    Member secretary = MemberFixture.secretaryMember();
     MenuGroup menuGroup = MenuGroupExampleTest.getBudgetMenuGroup();
     Menu menu = MenuExampleTest.getBudgetHistoryMenu(menuGroup);
     BudgetHistory history =

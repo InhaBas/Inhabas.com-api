@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.socialAccount.domain.valueObject.UID;
@@ -39,7 +39,7 @@ public class MemberServiceImplTest {
   @Test
   public void changeRoleTest() {
     // given
-    Member member = MemberTest.signingUpMember1();
+    Member member = MemberFixture.signingUpMember1();
 
     // when
     memberService.changeRole(member, Role.BASIC);
@@ -53,7 +53,7 @@ public class MemberServiceImplTest {
   @Test
   public void finishSignUpTest() {
     // given
-    Member member = MemberTest.signingUpMember1();
+    Member member = MemberFixture.signingUpMember1();
 
     // when
     memberService.finishSignUp(member);
@@ -67,7 +67,7 @@ public class MemberServiceImplTest {
   @Test
   public void updateExistingSocialAccountTest() {
     // given
-    Member member = MemberTest.signingUpMember1();
+    Member member = MemberFixture.signingUpMember1();
     LocalDateTime beforeUpdate = LocalDateTime.now();
 
     given(oAuth2UserInfo.getProvider()).willReturn(OAuth2Provider.GOOGLE);

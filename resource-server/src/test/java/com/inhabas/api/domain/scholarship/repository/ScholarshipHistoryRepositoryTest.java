@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 import com.inhabas.api.auth.domain.oauth2.member.domain.entity.Member;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
-import com.inhabas.api.domain.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.scholarship.domain.ScholarshipHistory;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.Data;
 import com.inhabas.api.domain.scholarship.repository.ScholarshipHistoryRepositoryImpl.YearlyData;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 import org.assertj.core.api.Assertions;
 
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ public class ScholarshipHistoryRepositoryTest {
   @Test
   void getYearlyData() {
     // given
-    Member writer = memberRepository.save(MemberTest.chiefMember());
+    Member writer = memberRepository.save(MemberFixture.chiefMember());
     ScholarshipHistory scholarshipHistory =
         new ScholarshipHistory(writer, "title", LocalDateTime.now());
     ScholarshipHistory savedScholarshipHistory =

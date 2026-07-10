@@ -1,8 +1,8 @@
 package com.inhabas.api.domain.member.usecase;
 
+import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.*;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.MemberType.GRADUATED;
 import static com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role.BASIC;
-import static com.inhabas.api.domain.member.domain.entity.MemberTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

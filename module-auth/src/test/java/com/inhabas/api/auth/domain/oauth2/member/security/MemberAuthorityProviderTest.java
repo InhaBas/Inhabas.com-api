@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.inhabas.api.auth.domain.oauth2.OAuth2Provider;
-import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberTest;
+import com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture;
 import com.inhabas.api.auth.domain.oauth2.member.domain.valueObject.Role;
 import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
@@ -62,7 +62,7 @@ public class MemberAuthorityProviderTest {
   public void cannotFindProfileMappedFromSocialAccount() {
     given(memberPrincipalService.loadUserPrincipal(any())).willReturn(null);
     given(memberRepository.findByProviderAndUid(any(), any()))
-        .willReturn(Optional.of(MemberTest.signingUpMember1()));
+        .willReturn(Optional.of(MemberFixture.signingUpMember1()));
 
     Collection<SimpleGrantedAuthority> simpleGrantedAuthorities =
         memberAuthorityProvider.determineAuthorities(oAuth2UserInfo);

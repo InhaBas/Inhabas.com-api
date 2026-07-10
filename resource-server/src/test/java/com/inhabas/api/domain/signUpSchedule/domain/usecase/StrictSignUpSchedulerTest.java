@@ -13,11 +13,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
+import com.inhabas.api.auth.testAnnotation.DefaultDataJpaTest;
 import com.inhabas.api.domain.signUpSchedule.domain.entity.SignUpSchedule;
 import com.inhabas.api.domain.signUpSchedule.dto.SignUpScheduleDto;
 import com.inhabas.api.domain.signUpSchedule.repository.SignUpScheduleRepository;
 import com.inhabas.api.domain.signUpSchedule.usecase.SignUpSchedulerStrict;
-import com.inhabas.testAnnotation.DefaultDataJpaTest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
