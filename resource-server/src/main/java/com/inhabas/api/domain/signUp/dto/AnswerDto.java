@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.hibernate.validator.constraints.Length;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +13,6 @@ public class AnswerDto {
 
   @Positive private Long questionId;
 
-  @Length(max = 1000)
+  // 길이 검증(1~1000자)은 AnswerServiceImpl 에서 InvalidAnswerLengthException 으로 처리한다.
   private String content;
 }

@@ -2,6 +2,7 @@ package com.inhabas.api.domain.signUp.usecase;
 
 import static com.inhabas.api.auth.domain.oauth2.member.domain.entity.MemberFixture.signingUpMemberAfterProfile;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -17,6 +18,7 @@ import com.inhabas.api.domain.questionnaire.domain.Questionnaire;
 import com.inhabas.api.domain.questionnaire.repository.QuestionnaireRepository;
 import com.inhabas.api.domain.signUp.domain.entity.Answer;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
+import com.inhabas.api.domain.signUp.exception.InvalidAnswerLengthException;
 import com.inhabas.api.domain.signUp.repository.AnswerRepository;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -95,6 +97,42 @@ public class AnswerServiceTest {
     assertThat(argumentCaptor.getValue())
         .usingRecursiveFieldByFieldElementComparator()
         .isEqualTo(savedAnswers);
+  }
+
+  @DisplayName("답변이 1000자를 초과하면 InvalidAnswerLengthException 이 발생한다.")
+  @Test
+  public void saveTooLongAnswerTest() {
+    // given
+    given(memberRepository.findById(any())).willReturn(Optional.of(member));
+    ArrayList<AnswerDto> tooLongAnswers =
+        new ArrayList<>() {
+          {
+            add(new AnswerDto(1L, "가".repeat(1001)));
+          }
+        };
+
+    // when then
+    assertThrows(
+        InvalidAnswerLengthException.class,
+        () -> answerService.saveAnswers(tooLongAnswers, member.getId()));
+  }
+
+  @DisplayName("답변이 빈 문자열이면 InvalidAnswerLengthException 이 발생한다.")
+  @Test
+  public void saveEmptyAnswerTest() {
+    // given
+    given(memberRepository.findById(any())).willReturn(Optional.of(member));
+    ArrayList<AnswerDto> emptyAnswers =
+        new ArrayList<>() {
+          {
+            add(new AnswerDto(1L, ""));
+          }
+        };
+
+    // when then
+    assertThrows(
+        InvalidAnswerLengthException.class,
+        () -> answerService.saveAnswers(emptyAnswers, member.getId()));
   }
 
   @DisplayName("사용자가 저장한 답변을 dto 로 변환해서 반환한다.")

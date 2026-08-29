@@ -224,7 +224,7 @@ public class SignUpIntegrationTest {
                 .content(
                     jsonOf(
                         Arrays.asList(
-                            new AnswerDto(1L, ""),
+                            new AnswerDto(1L, "몰랑"),
                             new AnswerDto(2L, "아몰랑"),
                             new AnswerDto(3L, "아아몰랑"),
                             new AnswerDto(4L, "아모른다구"),
@@ -361,6 +361,27 @@ public class SignUpIntegrationTest {
             new MajorInfo("공과대학", "기계공학과"),
             new MajorInfo("자연과학대학", "수학과"),
             new MajorInfo("경영대학", "경영학과")));
+  }
+
+  @Test
+  @Transactional
+  @WithMockJwtAuthenticationToken(memberRole = SIGNING_UP)
+  public void 답변이_1000자를_초과하면_지원서를_제출할_수_없다() throws Exception {
+    /* 유동현은 면접 질문에 1000자가 넘는 답변을 작성하여 임시저장을 시도했다. */
+    String response =
+        mockMvc
+            .perform(
+                post("/signUp/answers")
+                    .with(accessToken(token))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonOf(List.of(new AnswerDto(1L, "가".repeat(1001))))))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+    assertThat(response)
+        .isEqualTo(
+            "{\"status\":400,\"code\":\"S008\",\"message\":\"각 문항별 답변은 1~1000자 이내여야 합니다.\"}");
   }
 
   private String jsonOf(Object o) throws JsonProcessingException {

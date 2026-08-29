@@ -20,6 +20,7 @@ import com.inhabas.api.domain.signUp.domain.entity.Answer;
 import com.inhabas.api.domain.signUp.dto.AnswerDto;
 import com.inhabas.api.domain.signUp.dto.ApplicationDetailDto;
 import com.inhabas.api.domain.signUp.dto.QuestionAnswerDto;
+import com.inhabas.api.domain.signUp.exception.InvalidAnswerLengthException;
 import com.inhabas.api.domain.signUp.repository.AnswerRepository;
 
 @Service
@@ -37,6 +38,7 @@ public class AnswerServiceImpl implements AnswerService {
     Member currentMember =
         memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
 
+    this.answerLengthCheck(submittedAnswers);
     this.questionnaireIdsCheck(submittedAnswers);
 
     // 기존 답변 가져오기
@@ -69,6 +71,15 @@ public class AnswerServiceImpl implements AnswerService {
             .collect(Collectors.toList());
 
     answerRepository.saveAll(answersToUpdate);
+  }
+
+  private void answerLengthCheck(List<AnswerDto> submittedAnswers) {
+    for (AnswerDto dto : submittedAnswers) {
+      String content = dto.getContent();
+      if (content != null && (content.isEmpty() || content.length() > 1000)) {
+        throw new InvalidAnswerLengthException();
+      }
+    }
   }
 
   private void questionnaireIdsCheck(List<AnswerDto> submittedAnswers)

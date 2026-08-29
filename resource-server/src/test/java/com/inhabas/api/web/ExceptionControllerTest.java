@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.signUp.exception.InvalidAnswerLengthException;
 import com.inhabas.api.domain.signUpSchedule.exception.SignUpNotAvailableException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
 
@@ -55,6 +56,11 @@ public class ExceptionControllerTest {
     @GetMapping("/test/constraint-violation")
     public void constraintViolation() {
       throw new ConstraintViolationException("invalid", Set.of());
+    }
+
+    @GetMapping("/test/invalid-answer-length")
+    public void invalidAnswerLength() {
+      throw new InvalidAnswerLengthException();
     }
 
     @GetMapping("/test/signup-not-available")
@@ -101,6 +107,15 @@ public class ExceptionControllerTest {
     mvc.perform(get("/test/constraint-violation"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.code").value("G003"));
+  }
+
+  @DisplayName("InvalidAnswerLengthException은 400과 S008 코드, 안내 메시지로 응답한다.")
+  @Test
+  void handleInvalidAnswerLengthException() throws Exception {
+    mvc.perform(get("/test/invalid-answer-length"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.code").value("S008"))
+        .andExpect(jsonPath("$.message").value("각 문항별 답변은 1~1000자 이내여야 합니다."));
   }
 
   @DisplayName("SignUpNotAvailableException은 403으로 응답한다.")

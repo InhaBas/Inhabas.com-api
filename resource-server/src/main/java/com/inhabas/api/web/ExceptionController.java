@@ -1,5 +1,6 @@
 package com.inhabas.api.web;
 
+import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_ANSWER_LENGTH;
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_FILE_SIZE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.INVALID_INPUT_VALUE;
 import static com.inhabas.api.auth.domain.error.ErrorCode.NOT_FOUND;
@@ -19,12 +20,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import com.inhabas.api.auth.domain.error.ErrorResponse;
 import com.inhabas.api.auth.domain.error.businessException.InvalidInputException;
 import com.inhabas.api.auth.domain.error.businessException.NotFoundException;
+import com.inhabas.api.domain.signUp.exception.InvalidAnswerLengthException;
 import com.inhabas.api.domain.signUp.exception.NotWriteAnswersException;
 import com.inhabas.api.domain.signUp.exception.NotWriteProfileException;
 import com.inhabas.api.domain.signUpSchedule.exception.InvalidDateException;
@@ -96,6 +99,14 @@ public class ExceptionController {
     return new ResponseEntity<>(response, BAD_REQUEST);
   }
 
+  @ExceptionHandler(InvalidAnswerLengthException.class)
+  protected ResponseEntity<ErrorResponse> handleInvalidAnswerLengthException(
+      InvalidAnswerLengthException e) {
+    log.error("Invalid answer length", e);
+    final ErrorResponse response = ErrorResponse.of(INVALID_ANSWER_LENGTH);
+    return new ResponseEntity<>(response, BAD_REQUEST);
+  }
+
   @ExceptionHandler(NotWriteAnswersException.class)
   protected ResponseEntity<ErrorResponse> handleNotWriteAnswersException(
       NotWriteAnswersException e) {
@@ -108,6 +119,14 @@ public class ExceptionController {
   protected ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException e) {
     log.error("The request does not have the proper DTO format.", e);
+    final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
+    return new ResponseEntity<>(response, BAD_REQUEST);
+  }
+
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  protected ResponseEntity<ErrorResponse> handleHandlerMethodValidationException(
+      HandlerMethodValidationException e) {
+    log.error("Validation test failed", e);
     final ErrorResponse response = ErrorResponse.of(INVALID_INPUT_VALUE);
     return new ResponseEntity<>(response, BAD_REQUEST);
   }
