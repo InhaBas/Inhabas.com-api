@@ -191,7 +191,7 @@ resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar
 
 | 프로파일 | Config 서버 주소 |
 |---------|----------------|
-| `dev1`, `dev2`, `prod1`, `prod2` | `http://172.18.0.6:8888` (Docker 내부 네트워크) |
+| `prod1`, `prod2` | `http://172.18.0.6:8888` (Docker 내부 네트워크) |
 | `local` | `http://localhost:8888` |
 
 ### 실행 프로파일 종류
@@ -199,8 +199,6 @@ resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar
 | 프로파일 | 용도 | 포트 |
 |---------|------|------|
 | `local` | 로컬 개발 | 8080 |
-| `dev1` | 개발 서버 블루 | 8082 |
-| `dev2` | 개발 서버 그린 | 8083 |
 | `prod1` | 운영 서버 블루 | 8080 |
 | `prod2` | 운영 서버 그린 | 8081 |
 | `test` | 단위 테스트 (H2) | - |
@@ -216,20 +214,13 @@ resource-server/build/libs/resource-server-0.0.1-SNAPSHOT.jar
 |------|--------|------|
 | `spotless-check.yml` | 모든 push / PR | 코드 포맷 검사 |
 | `gradle-build.yml` | PR 오픈/재오픈/동기화 | 빌드 + 전체 테스트 |
-| `deploy-dev.yml` | `master` 브랜치 push | 개발 서버 자동 배포 |
-| `depoly-production.yml` | `release-*` 브랜치 push | 운영 서버 자동 배포 |
+| `deploy-production.yml` | `main` 브랜치 push / 수동 실행(workflow_dispatch) | 운영 서버 자동 배포 |
 
 ### 배포 흐름
 
 ```
-PR 작성 → gradle-build + spotless-check (자동) → 리뷰 → master merge
-    → deploy-dev 자동 실행
-        1. Gradle 빌드 (-x test)
-        2. Docker 이미지 빌드 & Docker Hub push (linux/arm64)
-        3. docker-compose.yml을 EC2 개발 서버로 SCP 전송
-        4. EC2에서 deploy.sh 실행 (블루/그린 전환)
-
-release-* 브랜치 push → deploy-production 자동 실행
+PR 작성 → gradle-build + spotless-check (자동) → 리뷰 → main merge
+    → deploy-production 자동 실행
     1. Gradle 빌드 (테스트 포함)
     2. Docker 이미지 빌드 & Docker Hub push (linux/arm64)
     3. docker-compose.yml을 EC2 운영 서버로 SCP 전송
@@ -243,8 +234,6 @@ services:
   config:       # Spring Cloud Config 서버 (8888)
   prod1:        # 운영 블루 (8080)
   prod2:        # 운영 그린 (8081)
-  dev1:         # 개발 블루 (8082)
-  dev2:         # 개발 그린 (8083)
 
 networks:
   ibas-network: # external - 서버에 미리 생성되어 있어야 함
@@ -252,18 +241,16 @@ networks:
       config:  172.18.0.6
       prod1:   172.18.0.2
       prod2:   172.18.0.3
-      dev1:    172.18.0.4
-      dev2:    172.18.0.5
 ```
 
-> Docker Hub 이미지: `whtmdgus56/ibas-config:{dev|prod|config}`
+> Docker Hub 이미지: `whtmdgus56/ibas-config:{prod|config}`
 > 이미지 아키텍처: `linux/arm64` (EC2 인스턴스가 ARM 기반)
 
 ### 운영 서버 릴리즈 절차
 
-1. `master`에서 `release-*` 브랜치 생성
-2. 해당 브랜치로 push하면 `depoly-production.yml` 자동 실행
-3. 배포 완료 후 브랜치 삭제 또는 유지
+1. 별도 개발 서버 없이 `main`에 merge되는 시점에 `deploy-production.yml`이 자동 실행되어 운영 서버에 배포됩니다.
+2. 재배포가 필요하면 GitHub Actions → `deploy-production` → **Run workflow** (main)로 수동 실행합니다.
+3. `main`에 merge된 내용은 곧바로 운영에 반영되므로, PR 단계에서 빌드/테스트 통과와 리뷰를 반드시 확인합니다.
 
 ---
 
@@ -465,11 +452,6 @@ datasource:
 | `DOCKERHUB_USERNAME` | Docker Hub 사용자명 |
 | `DOCKERHUB_TOKEN` | Docker Hub Access Token |
 | `DOCKERHUB_STORAGE` | Docker Hub 이미지 이름 (예: `whtmdgus56/ibas-config`) |
-| `IBAS_DEV_HOST` | 개발 서버 EC2 호스트 |
-| `IBAS_DEV_USERNAME` | 개발 서버 SSH 사용자 |
-| `IBAS_DEV_SSH_KEY` | 개발 서버 SSH 개인키 |
-| `IBAS_DEV_PASSWORD` | 개발 서버 SSH 키 패스프레이즈 |
-| `IBAS_DEV_DEPLOY_PATH` | 개발 서버 배포 경로 |
 | `IBAS_PROD_HOST` | 운영 서버 EC2 호스트 |
 | `IBAS_PROD_USERNAME` | 운영 서버 SSH 사용자 |
 | `IBAS_PROD_SSH_KEY` | 운영 서버 SSH 개인키 |
