@@ -12,7 +12,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
-@Profile({"dev1", "dev2", "prod1", "prod2", "local", "test", "integration_test"})
+@Profile({"prod1", "prod2", "local", "test", "integration_test"})
 public class S3Config {
 
   @Value("${cloud.aws.credentials.accessKey}")

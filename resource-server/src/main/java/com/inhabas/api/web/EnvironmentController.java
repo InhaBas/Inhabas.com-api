@@ -28,16 +28,4 @@ public class EnvironmentController {
         .findAny()
         .orElse(defaultProfile);
   }
-
-  @GetMapping("/dev/profiles")
-  public String devProfile() {
-    final List<String> profiles = Arrays.asList(environment.getActiveProfiles());
-    final List<String> prodProfiles = Arrays.asList("dev1", "dev2");
-    final String defaultProfile = profiles.get(0);
-
-    return Arrays.stream(environment.getActiveProfiles())
-        .filter(prodProfiles::contains)
-        .findAny()
-        .orElse(defaultProfile);
-  }
 }

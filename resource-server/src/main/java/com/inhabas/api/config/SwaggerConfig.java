@@ -16,8 +16,6 @@ import org.springdoc.core.models.GroupedOpenApi;
 @Configuration
 public class SwaggerConfig {
 
-  private static final String DOMAIN = "https://dev.inhabas.com/api";
-
   private Info apiInfo() {
     return new Info().version("v1.0.0").title("Inhabas API").description("spring-api docs");
   }
@@ -53,15 +51,6 @@ public class SwaggerConfig {
     }
 
     return openAPI;
-  }
-
-  @Bean
-  @Profile({"dev1", "dev2"})
-  public OpenAPI devOpenAPI() {
-    // HTTPS 서버 URL 설정
-    Server server = new Server().url(DOMAIN);
-
-    return createOpenAPI(apiInfo(), securityScheme(), securityRequirement(), server);
   }
 
   @Bean
