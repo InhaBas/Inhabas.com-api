@@ -70,7 +70,7 @@ public class WebSecurityConfig {
   @EnableMethodSecurity(jsr250Enabled = true)
   @EnableWebSecurity
   @RequiredArgsConstructor
-  @Profile({"local", "dev1", "dev2", "default_mvc_test", "prod1", "prod2", "integration_test"})
+  @Profile({"local", "default_mvc_test", "prod1", "prod2", "integration_test"})
   public static class ApiSecurityForDev {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;

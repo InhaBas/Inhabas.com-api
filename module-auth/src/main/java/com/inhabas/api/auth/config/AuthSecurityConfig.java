@@ -21,7 +21,7 @@ import com.inhabas.api.auth.domain.oauth2.handler.Oauth2AuthenticationSuccessHan
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@Profile({"dev1", "dev2", "local", "prod1", "prod2"}) // 테스트에는 포함시키지 않음.
+@Profile({"local", "prod1", "prod2"}) // 테스트에는 포함시키지 않음.
 public class AuthSecurityConfig {
 
   private final CustomOAuth2UserService customOAuth2UserService;
