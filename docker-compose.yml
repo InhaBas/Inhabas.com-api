@@ -37,32 +37,6 @@ services:
       TZ: Asia/Seoul
     entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=prod2"]
 
-  dev1:
-    image: whtmdgus56/ibas-config:dev
-    container_name: backend-dev1
-    networks:
-      ibas-network:
-        ipv4_address: 172.18.0.4
-    ports:
-      - "8082:8082"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev1
-      TZ: Asia/Seoul
-    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev1"]
-
-  dev2:
-    image: whtmdgus56/ibas-config:dev
-    container_name: backend-dev2
-    networks:
-      ibas-network:
-        ipv4_address: 172.18.0.5
-    ports:
-      - "8083:8083"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev2
-      TZ: Asia/Seoul
-    entrypoint: ["java", "-jar", "app.jar", "--spring.profiles.active=dev2"]
-
 
 networks:
   ibas-network:
