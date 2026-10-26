@@ -28,7 +28,11 @@ IBAS 공식 웹페이지는 인하대학교 빅데이터 학술 동아리의 활
 <br/>
 
 ## Architecture
+### Previous
 ![Architecture](docs/images/architecture.png)
+
+### Current
+![NewArchitecture](docs/images/new_architecture.png)
 
 <br/>
 
