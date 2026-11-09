@@ -39,7 +39,9 @@ class MyInfoControllerTest extends ControllerTestSupport {
 
   @MockitoBean private MemberProfileService memberProfileService;
   @MockitoBean private MyInfoService myInfoService;
-  @MockitoBean private com.inhabas.api.domain.member.usecase.MemberWithdrawalService memberWithdrawalService;
+
+  @MockitoBean
+  private com.inhabas.api.domain.member.usecase.MemberWithdrawalService memberWithdrawalService;
 
   @Test
   void withdrawReturnsNoContent() throws Exception {

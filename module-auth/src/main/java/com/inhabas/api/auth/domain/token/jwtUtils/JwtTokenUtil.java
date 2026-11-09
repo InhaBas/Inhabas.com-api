@@ -148,7 +148,8 @@ public class JwtTokenUtil implements TokenUtil {
   /* 토큰 body 에 넣어둔 사용자 정보를 가져옴
    * validation 검사를 먼저 꼭 해야함! */
   private Claims parseClaims(String token) throws JwtException {
-    Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+    Claims claims =
+        Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
     Long memberId = claims.get(MEMBER_ID, Long.class);
     if (memberId != null && memberRepository.existsByIdAndIsDeletedTrue(memberId)) {
       throw new InvalidTokenException();

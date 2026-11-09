@@ -31,18 +31,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 public class JwtTokenUtilTest {
 
   @Mock private RefreshTokenRepository refreshTokenRepository;
-  @Mock private com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository memberRepository;
+
+  @Mock
+  private com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository memberRepository;
 
   @Test
   void withdrawnMemberCannotAuthenticateOrRefresh() {
     String secret = (String) ReflectionTestUtils.getField(jwtTokenUtil, "SECRET_KEY");
-    String token = io.jsonwebtoken.Jwts.builder()
-        .claim("memberId", 1L)
-        .claim("authorities", List.of("ROLE_BASIC"))
-        .setExpiration(new java.util.Date(System.currentTimeMillis() + 60000))
-        .signWith(io.jsonwebtoken.security.Keys.hmacShaKeyFor(
-            io.jsonwebtoken.io.Decoders.BASE64.decode(secret)))
-        .compact();
+    String token =
+        io.jsonwebtoken.Jwts.builder()
+            .claim("memberId", 1L)
+            .claim("authorities", List.of("ROLE_BASIC"))
+            .setExpiration(new java.util.Date(System.currentTimeMillis() + 60000))
+            .signWith(
+                io.jsonwebtoken.security.Keys.hmacShaKeyFor(
+                    io.jsonwebtoken.io.Decoders.BASE64.decode(secret)))
+            .compact();
     org.mockito.Mockito.when(memberRepository.existsByIdAndIsDeletedTrue(1L)).thenReturn(true);
 
     assertThrows(InvalidTokenException.class, () -> jwtTokenUtil.getAuthentication(token));
