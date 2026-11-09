@@ -60,11 +60,7 @@ public class CommentDetailDto {
     this.id = id;
     if (writer != null) {
       this.writerInfo =
-          new WriterInfo(
-              writer.getId(),
-              writer.getName(),
-              writer.getSchoolInformation().getMajor(),
-              writer.getPicture());
+          new WriterInfo(writer.getId(), writer.getName(), writer.getMajor(), writer.getPicture());
     }
     this.content = content;
     this.isDeleted = isDeleted;
