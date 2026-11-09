@@ -198,7 +198,8 @@ public class Member {
     this.schoolInformation = null;
     this.ibasInformation = new IbasInformation(ANONYMOUS);
     this.provider = null;
-    this.uid = null;
+    // UID 컬럼은 NOT NULL 이므로 null 대신 재로그인과 충돌하지 않는 고유 placeholder 로 치환
+    this.uid = new UID("withdrawn-" + this.id);
     this.extraData = "{}";
   }
 
