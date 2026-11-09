@@ -39,7 +39,8 @@ class MemberWithdrawalServiceTest {
     assertThat(member.getEmail()).isNotEqualTo("member@example.com");
     assertThat(member.getRole()).isEqualTo(Role.ANONYMOUS);
     assertThat(member.getProvider()).isNull();
-    assertThat(member.getUid()).isNull();
+    assertThat(member.getUid()).isNotNull();
+    assertThat(member.getUid().getValue()).startsWith("withdrawn-");
     verify(socialAccountRepository).deleteByMember_IdIn(List.of(1L));
     verify(answerRepository).deleteByMember_IdIn(List.of(1L));
   }
