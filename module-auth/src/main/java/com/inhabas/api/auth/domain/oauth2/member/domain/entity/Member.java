@@ -122,6 +122,11 @@ public class Member {
     return this.schoolInformation != null ? this.schoolInformation : null;
   }
 
+  /** 탈퇴한 회원은 학적 정보가 없으므로(null) 안전하게 전공을 꺼낼 때 사용 */
+  public String getMajor() {
+    return this.schoolInformation != null ? this.schoolInformation.getMajor() : null;
+  }
+
   public String getEmail() {
     return this.email.getValue();
   }
