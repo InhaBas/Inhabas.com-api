@@ -72,7 +72,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         queryFactory
             .select(member.ibasInformation.role)
             .from(member)
-            .where(member.id.eq(id))
+            .where(member.isDeleted.isFalse(), member.id.eq(id))
             .fetchOne();
 
     return new MemberAuthorityProvider.RoleDto(role);
@@ -83,7 +83,12 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     condition.verifyTwoParameters();
 
-    return !queryFactory.selectFrom(member).where(eqAny(condition)).limit(1).fetch().isEmpty();
+    return !queryFactory
+        .selectFrom(member)
+        .where(member.isDeleted.isFalse(), eqAny(condition))
+        .limit(1)
+        .fetch()
+        .isEmpty();
   }
 
   @Override
@@ -91,7 +96,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return queryFactory
         .selectFrom(member)
-        .where(eqRole(role).and(member.studentId.id.like("%" + studentId + "%")))
+        .where(
+            member.isDeleted.isFalse(),
+            eqRole(role).and(member.studentId.id.like("%" + studentId + "%")))
         .orderBy(member.ibasInformation.dateJoined.asc())
         .fetch();
   }
@@ -101,7 +108,8 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return queryFactory
         .selectFrom(member)
-        .where(eqRole(role).and(member.name.value.like("%" + name + "%")))
+        .where(
+            member.isDeleted.isFalse(), eqRole(role).and(member.name.value.like("%" + name + "%")))
         .orderBy(member.ibasInformation.dateJoined.asc())
         .fetch();
   }
@@ -114,6 +122,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(
+            member.isDeleted.isFalse(),
             member
                 .ibasInformation
                 .role
@@ -132,6 +141,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(
+            member.isDeleted.isFalse(),
             member
                 .ibasInformation
                 .role
@@ -149,6 +159,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(
+            member.isDeleted.isFalse(),
             member
                 .ibasInformation
                 .role
@@ -166,7 +177,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return queryFactory
         .selectFrom(member)
-        .where(member.ibasInformation.role.in(roles).and(member.name.value.like("%" + name + "%")))
+        .where(
+            member.isDeleted.isFalse(),
+            member.ibasInformation.role.in(roles).and(member.name.value.like("%" + name + "%")))
         .orderBy(orderByStudentId)
         .fetch();
   }
@@ -180,6 +193,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(
+            member.isDeleted.isFalse(),
             member
                 .ibasInformation
                 .role
@@ -198,6 +212,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     return queryFactory
         .selectFrom(member)
         .where(
+            member.isDeleted.isFalse(),
             member
                 .ibasInformation
                 .role

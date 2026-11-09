@@ -40,6 +40,15 @@ class MyInfoControllerTest extends ControllerTestSupport {
   @MockitoBean private MemberProfileService memberProfileService;
   @MockitoBean private MyInfoService myInfoService;
 
+  @MockitoBean
+  private com.inhabas.api.domain.member.usecase.MemberWithdrawalService memberWithdrawalService;
+
+  @Test
+  void withdrawReturnsNoContent() throws Exception {
+    mvc.perform(delete("/myInfo")).andExpect(status().isNoContent());
+    org.mockito.Mockito.verify(memberWithdrawalService).withdraw(any());
+  }
+
   @DisplayName("내 정보를 조회한다.")
   @Test
   public void getMyProfileTest() throws Exception {

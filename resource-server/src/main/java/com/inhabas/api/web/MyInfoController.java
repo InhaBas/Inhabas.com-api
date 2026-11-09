@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.inhabas.api.auth.domain.oauth2.member.dto.*;
 import com.inhabas.api.domain.member.usecase.MemberProfileService;
+import com.inhabas.api.domain.member.usecase.MemberWithdrawalService;
 import com.inhabas.api.domain.myInfo.dto.MyBoardDto;
 import com.inhabas.api.domain.myInfo.dto.MyBudgetSupportApplicationDto;
 import com.inhabas.api.domain.myInfo.dto.MyCommentDto;
@@ -39,6 +40,14 @@ public class MyInfoController {
 
   private final MemberProfileService memberProfileService;
   private final MyInfoService myInfoService;
+  private final MemberWithdrawalService memberWithdrawalService;
+
+  @Operation(summary = "회원 탈퇴", description = "로그인한 본인의 계정을 탈퇴합니다.")
+  @DeleteMapping("/myInfo")
+  public ResponseEntity<Void> withdraw(@Authenticated Long memberId) {
+    memberWithdrawalService.withdraw(memberId);
+    return ResponseEntity.noContent().build();
+  }
 
   @Operation(summary = "내 정보 조회", description = "사용자 자신의 정보만 조회 가능")
   @GetMapping("/myInfo")
