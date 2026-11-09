@@ -188,6 +188,20 @@ public class Member {
     return this.id.equals(id);
   }
 
+  public void withdraw() {
+    this.isDeleted = true;
+    this.studentId = null;
+    this.name = new Name("탈퇴한 회원");
+    this.phone = null;
+    this.email = new Email("withdrawn-" + this.id + "@example.com");
+    this.picture = null;
+    this.schoolInformation = null;
+    this.ibasInformation = new IbasInformation(ANONYMOUS);
+    this.provider = null;
+    this.uid = null;
+    this.extraData = "{}";
+  }
+
   public void finishSignUp() {
     this.ibasInformation.finishSignUp();
   }

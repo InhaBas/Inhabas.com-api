@@ -20,6 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
   Optional<Member> findByIdAndStudentId_IdAndName_Value(Long id, String studentId, String name);
 
+  boolean existsByIdAndIsDeletedTrue(Long id);
+
   // OAuth
   boolean existsByProviderAndUid(OAuth2Provider provider, UID uid);
 

@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.stereotype.Component;
 
 import com.inhabas.api.auth.domain.oauth2.CustomOAuth2User;
+import com.inhabas.api.auth.domain.oauth2.member.repository.MemberRepository;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfo;
 import com.inhabas.api.auth.domain.oauth2.userInfo.OAuth2UserInfoFactory;
 import com.inhabas.api.auth.domain.token.TokenDto;
@@ -34,6 +35,8 @@ import io.jsonwebtoken.security.SignatureException;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil implements TokenUtil {
+
+  private final MemberRepository memberRepository;
 
   private final RefreshTokenRepository refreshTokenRepository;
 
@@ -145,7 +148,12 @@ public class JwtTokenUtil implements TokenUtil {
   /* 토큰 body 에 넣어둔 사용자 정보를 가져옴
    * validation 검사를 먼저 꼭 해야함! */
   private Claims parseClaims(String token) throws JwtException {
-    return Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+    Claims claims = Jwts.parserBuilder().setSigningKey(SECRET_KEY).build().parseClaimsJws(token).getBody();
+    Long memberId = claims.get(MEMBER_ID, Long.class);
+    if (memberId != null && memberRepository.existsByIdAndIsDeletedTrue(memberId)) {
+      throw new InvalidTokenException();
+    }
+    return claims;
   }
 
   @Override
